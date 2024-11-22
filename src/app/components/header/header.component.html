@@ -1,0 +1,49 @@
+<div class="container">
+    <div class="section-gov">
+        <img class="logo" src="/assets/img/icon-header-gov.svg" alt="gov.co">
+    </div>
+    <div class="section-icons">
+        <img class="logo" src="/assets/img/DNP_SICODIS.svg" alt="DNP_SICODIS">
+    </div>
+    <div class="section-menu">
+        <div class="menu">
+            <button mat-button routerLink="/" ng-reflect-router-link="/" (click)="redirectHome()">Inicio</button>
+            <!-- <mat-menu #aboveMenu="matMenu" yPosition="below">
+              <button mat-menu-item>Item 1</button>
+              <button mat-menu-item>Item 2</button>
+            </mat-menu> -->
+            
+            <button mat-button [matMenuTriggerFor]="belowMenu">Sobre SICODIS</button>
+            <mat-menu #belowMenu="matMenu" yPosition="below">
+              <button mat-menu-item>Item 1</button>
+              <button mat-menu-item>Item 2</button>
+            </mat-menu>
+            
+            <button mat-button  (click)="redirectSGR()">SGP</button>
+            <!-- <mat-menu #beforeMenu="matMenu" yPosition="below">
+              <button mat-menu-item>Item 1</button>
+              <button mat-menu-item>Item 2</button>
+            </mat-menu> -->
+            
+            
+            <button mat-button routerLink="/reports-sgr" ng-reflect-router-link="reports-sgr" (click)="redirectSGR()">SGR</button>
+            <!-- <mat-menu #afterMenu="matMenu" yPosition="below">
+              <button mat-menu-item>Item 1</button>
+              <button mat-menu-item>Item 2</button>
+            </mat-menu> -->
+
+            <button mat-button [matMenuTriggerFor]="afterMenu">Histórico</button>
+            <mat-menu #afterMenu="matMenu" yPosition="below">
+              <button mat-menu-item>Item 1</button>
+              <button mat-menu-item>Item 2</button>
+            </mat-menu>
+
+            <button mat-button [matMenuTriggerFor]="afterMenu">Ayuda</button>
+            <mat-menu #afterMenu="matMenu" yPosition="below">
+              <button mat-menu-item>Item 1</button>
+              <button mat-menu-item>Item 2</button>
+            </mat-menu>
+        </div>
+    </div>
+
+</div>

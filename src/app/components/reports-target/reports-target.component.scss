@@ -1,0 +1,25 @@
+.target{
+    width: 236px;
+    height: 318px;
+    border-radius: 16px;
+    border: solid 1px #E8E7E7;
+    img{
+        max-height: 220px;
+        border-radius: 16px 16px 0px 0px;
+    }
+    .date{
+        font-size: 14px;
+        font-weight: 400;
+        color: #333333;
+        margin-left: 16px;
+        margin-right: 16px;
+    }
+    .title{
+        font-size: 16px;
+        font-weight: 800;
+        color: #455A64;
+        margin-left: 16px;
+        margin-right: 16px;
+    }
+    cursor: pointer;
+}

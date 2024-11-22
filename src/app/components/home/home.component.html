@@ -1,0 +1,47 @@
+<div class="container">
+    <div class="banner">
+        <img src="/assets/img/banner_welcome.svg" alt="banner-welcome">
+        <!-- <button class="overlay-button">Sobre SICODIS</button> -->
+    </div>
+    <div class="reports">
+        <h1 class="reports-title">Últimos reportes</h1>
+        <mat-grid-list class="grid-styles" cols="4">
+            <mat-grid-tile class="grid-title-styles" *ngFor="let reportsItem of reports">
+                <app-reports-target [reports]="reportsItem"></app-reports-target>
+            </mat-grid-tile>
+        </mat-grid-list>
+        <h1 class="sicodis">¿Qué encontrará en SICODIS?</h1>
+        <p class="desc-sicodis">En SICODIS encontrará información detallada sobre la distribución de recursos asociada a:</p>
+        <mat-grid-list class="grid-styles" cols="2">
+            <mat-grid-tile class="grid-title-sicodis">
+                <div class="target">
+                    <img src="/assets/img/SGR.svg" alt="sgr">
+                    <img src="/assets/img/options-sgr.svg" alt="opt-sgr">
+                    <button (click)="redirectSGR()">Ver todos los reportes SGR</button>
+                </div>
+            </mat-grid-tile>
+            <mat-grid-tile class="grid-title-sicodis">
+                <div class="target">
+                    <img src="/assets/img/SGP.svg" alt="sgp">
+                    <img src="/assets/img/options-sgp.svg" alt="opt-sgp">
+                    <button (click)="redirectSGR()">Ver todos los reportes SGP</button>
+                </div>
+            </mat-grid-tile>
+        </mat-grid-list>
+    </div>
+    <div class="banner-questions">
+        <img class="banner-img-questions" src="/assets/img/questions.svg" alt="questions">
+        <img class="overlay-banner-questions" src="/assets/img/overlay-questions.svg" alt="overlay-questions">
+        <!-- <button class="overlay-button">Sobre SICODIS</button> -->
+    </div>
+    <div class="banner-questions">
+        <img class="banner-img-questions" src="/assets/img/history-sicodis.svg" alt="history-sicodis">
+    </div>
+    <div class="banner-questions">
+        <img class="banner-img-questions" src="/assets/img/applications.svg" alt="applications">
+    </div>
+    <div class="logo-colombia">
+        <img src="/assets/img/logo-colombia.svg" alt="logo-colombia">
+    </div>
+
+</div>

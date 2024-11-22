@@ -1,0 +1,73 @@
+<div class="container">
+    <div class="reports">
+        <h1 class="reports-title">Presupuesto Sistema General de Participaciones, documentos y anexos</h1>
+        <p class="desc-sicodis">Este módulo presenta los recursos presupuestados en cada vigencia por las entidades territoriales por concepto del SGP, recursos que son girados por los Ministerios competentes entre enero y diciembre de la vigencia seleccionada; y corresponden a la última doceava de la vigencia anterior y a las once doceavas de la vigencia seleccionada (excepto educación que corresponde a doce doceavas).</p>
+    </div>
+    <div class="options-years">
+        <p class="opt-select">Seleccione vigencia a consultar</p>
+        <mat-form-field>
+            <mat-label>Vigencia</mat-label>
+            <mat-select [(value)]="selected" (selectionChange)="optionChange($event)">
+                <mat-option *ngFor="let years of infoResume" [value]="years.year">{{years.year}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="resume">
+        <p class="title-graph">Resumen de la distribución del presupuesto vigencia</p>
+        <div class="container-columns">
+            <div class="columns">
+                <div class="col">
+                    <h1>Vigencia</h1>
+                    <p>{{selected}}</p>
+                </div>
+                <div class="col">
+                    <h1>Presupuesto SGP</h1>
+                    <p>{{infoToResume.budget | currency}}</p>
+                </div>
+                <div class="col">
+                    <h1>Recursos distribuidos hasta la fecha</h1>
+                    <p>{{infoToResume.budgetDistributed | currency}}</p>
+                </div>
+                <div class="col">
+                    <h1>Recursos pendientes por distribuir</h1>
+                    <p>{{infoToResume.pending | currency}}</p>
+                </div>
+                <div class="col">
+                    <h1>Avance de distribución</h1>
+                    <canvas id="gaugeChart"></canvas>
+                </div>
+            </div>
+            <div class="columns">
+                <h1 class="select-filters">Seleccione entidad a consultar</h1>
+                <mat-form-field class="department-select">
+                    <mat-label>Departamento</mat-label>
+                    <mat-select [(value)]="departmentSelected">
+                        <mat-option *ngFor="let department of departments" [value]="department.name">{{department.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field class="town-select">
+                    <mat-label>Municipio</mat-label>
+                    <mat-select [(value)]="townSelected">
+                        <mat-option *ngFor="let town of towns" [value]="town.name">{{town.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <button class="button-filter">Actualizar</button>
+                <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                    <ng-container matColumnDef="desc">
+                      <mat-header-cell *matHeaderCellDef> Concepto </mat-header-cell>
+                      <mat-cell *matCellDef="let element"> {{element.desc}} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="value">
+                      <mat-header-cell class="value-title" *matHeaderCellDef> Total </mat-header-cell>
+                      <mat-cell class="value-total" *matCellDef="let element"> {{element.value}} </mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                  </mat-table>
+                  <div class="button-export">
+                      <button>Exportar a Excel</button>
+                  </div>
+            </div>
+        </div>
+    </div>
+</div>

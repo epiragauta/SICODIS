@@ -1,0 +1,94 @@
+.container{
+    padding: 0;
+    margin: 0;
+}
+.banner{
+    position: relative;
+    img{
+        width: 100%;
+    }
+}
+.reports{
+    .reports-title{
+        color: #455A64;
+        font-weight: 800;
+        font-size: 32px;
+        padding: 40px 0px 0px 180px;
+    }
+    .desc-sicodis{
+        padding: 0px 0px 0px 180px;
+    }
+    .sicodis{
+        color: #455A64;
+        font-weight: 800;
+        font-size: 32px;
+        padding: 0px 0px 0px 180px;
+    }
+}
+.grid-styles{
+    margin: 0px 180px 0px 180px;
+}
+.grid-title-styles{
+    height: 322px;
+    padding-top: 0 !important;
+}
+.grid-title-sicodis{
+    width: 510px;
+    height: 586px;
+    padding-top: 0 !important;
+}
+.target{
+    width: 508px;
+    height: 582px;
+    border-radius: 16px;
+    border: solid 1px #E8E7E7;
+    img{
+        margin: 32px 32px 0px 32px;
+    }
+    button{
+        font-size: 16px;
+        font-weight: 600;
+        background-color: #504F4E;
+        color: white;
+        border-radius: 32px;
+        padding: 16px 24px 16px 24px;
+        cursor: pointer;
+        margin: 32px 32px 0px 32px;
+    }
+    button:hover {
+        background-color: rgb(67, 70, 71);
+    }
+}
+.banner-questions{
+    position: relative;
+    .banner-img-questions{
+        width: 100%;
+    }
+}
+.overlay-banner-questions{
+    position: absolute;
+    top: -16%;
+    left: 72%;
+}
+.logo-colombia{
+    padding-top: 8%;
+    padding-left: 45%;
+    padding: 4% 0% 4% 45%;
+}
+// .overlay-button {
+//     position: absolute;
+//     top: 77%;
+//     left: 264px;
+//     transform: translate(-50%, -50%);
+//     background-color: white;
+//     font-weight: bold;
+//     color: black;
+//     border: none;
+//     border-radius: 26px;
+//     padding: 17px 29px;
+//     cursor: pointer;
+// }
+
+// .overlay-button:hover {
+//     background-color: rgb(205, 210, 214);
+// }

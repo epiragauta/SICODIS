@@ -1,0 +1,32 @@
+.container{
+    padding: 0;
+    margin: 0;
+}
+.section-gov{
+    background-color: #3366CC;
+    height: 52px;
+    .logo{
+        width: 148px;
+        height: 30px;
+        margin: 12px 180px;
+    }
+}
+.section-icons{
+    background-color: white;
+    height: 120px;
+    .logo{
+        width: 342px;
+        height: 90px;
+        margin: 12px 180px;
+    }
+}
+.section-menu{
+    background-color: #F6F8F9;
+    height: 40px;
+    .menu{
+        margin-left: 162px;
+    }
+    button{
+        padding: 0px 18px 0px 18px;
+    }
+}
