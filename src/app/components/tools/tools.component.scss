@@ -1,0 +1,84 @@
+/* sgp-dashboard.component.scss */
+.sgp-dashboard {
+  padding: 20px;
+
+  .dashboard-header {
+    margin-bottom: 24px;
+
+    h1 {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #1976d2;
+      font-size: 24px;
+
+      mat-icon {
+        font-size: 32px;
+        width: 32px;
+        height: 32px;
+      }
+    }
+  }
+
+  .mat-tab-group {
+    .mat-tab-label {
+      min-width: 160px;
+      padding: 0 24px;
+
+      mat-icon {
+        margin-right: 8px;
+      }
+    }
+  }
+
+  .tab-content {
+    padding: 24px 0;
+
+    mat-card {
+      margin-bottom: 24px;
+
+      mat-card-header {
+        margin-bottom: 16px;
+      }
+
+      mat-card-title {
+        font-size: 20px;
+        color: #2c3e50;
+      }
+
+      mat-card-content {
+        min-height: 400px;
+      }
+
+      mat-card-actions {
+        padding: 16px;
+
+        button {
+          mat-icon {
+            margin-right: 8px;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Estilos responsivos
+@media (max-width: 768px) {
+  .sgp-dashboard {
+    padding: 12px;
+
+    .dashboard-header h1 {
+      font-size: 20px;
+    }
+
+    .mat-tab-label {
+      min-width: 120px;
+      padding: 0 16px;
+    }
+
+    .tab-content {
+      padding: 16px 0;
+    }
+  }
+}

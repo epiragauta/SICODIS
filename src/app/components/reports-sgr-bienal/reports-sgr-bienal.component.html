@@ -1,0 +1,46 @@
+<div class="container">
+  <div class="reports">
+      <h1 class="reports-title">Reportes SGR » Resumen Plan Bienal de Caja del Sistema General de Regalías</h1>
+      <mat-icon aria-hidden="false"
+        matTooltip="A continuación podrá generar reporte detallado de la información del plan bienal de caja para los recursos del SGR."
+        aria-label="Button that displays a tooltip when focused or hovered over" fontIcon="info">
+        </mat-icon>
+  </div>
+  <!-- <div>
+    <p class="desc-sicodis"> Este módulo contiene dos tipos de consulta, tomando como base los recursos distribuidos por once doceavas (excepto educación que corresponde a doce doceavas de la vigencia):</p>
+  </div> -->
+  <mat-grid-list cols="3" rowHeight="130px">
+    <mat-grid-tile>
+      <div class="options-years">
+        <p class="opt-select">Vigencia a consultar</p>
+        <mat-form-field>
+            <mat-label>Vigencia</mat-label>
+            <mat-select [(value)]="selected" (selectionChange)="optionChange($event)">
+                <mat-option *ngFor="let years of infoResume" [value]="years.year">{{years.year}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="2">
+      <div>
+        <p class="opt-select">Entidad a consultar</p>
+        <div style="display: flex;">
+          <mat-form-field class="department-select">
+            <mat-label>Departamento</mat-label>
+            <mat-select [(value)]="departmentSelected">
+                <mat-option *ngFor="let department of departments" [value]="department.name">{{department.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="town-select">
+              <mat-label>Municipio</mat-label>
+              <mat-select [(value)]="townSelected">
+                  <mat-option *ngFor="let town of towns" [value]="town.name">{{town.name}}</mat-option>
+              </mat-select>
+          </mat-form-field>
+          <button class="button-filter">Actualizar</button>
+        </div>
+      </div>
+    </mat-grid-tile>
+  </mat-grid-list>
+
+

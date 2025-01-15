@@ -1,0 +1,17 @@
+/* styles.scss */
+@layer tailwind-base {
+  @tailwind base;
+}
+
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
+}
+
+:root {
+  --md-font-family: var(--font-family);
+}
+
+.p-component {
+  font-family: var(--md-font-family);
+}

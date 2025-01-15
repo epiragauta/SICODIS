@@ -1,0 +1,293 @@
+<div class="container">
+  <div class="reports">
+      <h1 class="reports-title">Presupuesto Sistema General de Participaciones, documentos y anexos</h1>
+      <p class="desc-sicodis">Este módulo presenta los recursos presupuestados en cada vigencia por las entidades territoriales por concepto del SGP, recursos que son girados por los Ministerios competentes entre enero y diciembre de la vigencia seleccionada; y corresponden a la última doceava de la vigencia anterior y a las once doceavas de la vigencia seleccionada (excepto educación que corresponde a doce doceavas).</p>
+  </div>
+  <mat-grid-list cols="3" rowHeight="130px">
+    <mat-grid-tile>
+      <div class="options-years">
+        <p class="opt-select">Vigencia a consultar</p>
+        <mat-form-field>
+            <mat-label>Vigencia</mat-label>
+            <mat-select [(value)]="selected" (selectionChange)="optionChange($event)">
+                <mat-option *ngFor="let years of infoResume" [value]="years.year">{{years.year}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="2">
+      <div>
+        <p class="opt-select">Entidad a consultar</p>
+        <div style="display: flex;">
+          <mat-form-field class="department-select">
+            <mat-label>Departamento</mat-label>
+            <mat-select [(value)]="departmentSelected">
+                <mat-option *ngFor="let department of departments" [value]="department.name">{{department.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="town-select">
+              <mat-label>Municipio</mat-label>
+              <mat-select [(value)]="townSelected">
+                  <mat-option *ngFor="let town of towns" [value]="town.name">{{town.name}}</mat-option>
+              </mat-select>
+          </mat-form-field>
+          <button class="button-filter">Actualizar</button>
+        </div>
+      </div>
+    </mat-grid-tile>
+  </mat-grid-list>
+
+
+
+<!--   <div class="resume">
+      <p class="title-graph">Resumen de la distribución del presupuesto vigencia {{selected}}</p>
+      <mat-grid-list cols="2" rowHeight="520px">
+        <mat-grid-tile>
+          <div class="columns">
+            <div class="col">
+              <h3>Presupuesto SGP</h3>
+              <p>{{infoToResume.budget | currency}}</p>
+            </div>
+            <div class="col">
+              <h3>Recursos distribuidos hasta la fecha</h3>
+              <p>{{infoToResume.budgetDistributed | currency}}</p>
+            </div>
+            <div class="col">
+              <h3>Recursos pendientes por distribuir</h3>
+              <p>{{infoToResume.pending | currency}}</p>
+            </div>
+          </div>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <div class="columns">
+            <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+              <ng-container matColumnDef="desc">
+                <mat-header-cell *matHeaderCellDef> Concepto </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.desc}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="value">
+                <mat-header-cell class="value-title" *matHeaderCellDef> Total </mat-header-cell>
+                <mat-cell class="value-total" *matCellDef="let element"> {{element.value | currency}} </mat-cell>
+              </ng-container>
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+            <div class="button-export">
+                <button>Exportar a Excel</button>
+            </div>
+          </div>
+        </mat-grid-tile>
+      </mat-grid-list>
+      <div class="col" style="text-align: center;">
+        <h3>Avance de distribución</h3>
+        <canvas id="gaugeChart"></canvas>
+      </div>
+  </div> -->
+
+  <div class="resume">
+    <p class="title-graph">Resumen de la distribución del presupuesto vigencia {{selected}}</p>
+    <mat-grid-list cols="2" rowHeight="710px">
+      <mat-grid-tile>
+        <div class="columns">
+          <div class="col">
+            <h3>Presupuesto SGP</h3>
+            <p>{{infoToResume.budget | currency}}</p>
+          </div>
+          <div class="col">
+            <h3>Recursos distribuidos hasta la fecha</h3>
+            <p>{{infoToResume.budgetDistributed | currency}}</p>
+          </div>
+          <div class="col">
+            <h3>Recursos pendientes por distribuir</h3>
+            <p>{{infoToResume.pending | currency}}</p>
+          </div>
+          <div class="col">
+            <h3>Avance de distribución</h3>
+            <p>100%</p>
+          </div>
+        </div>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <div class="columns">
+          <div class="card">
+            <p-table [value]="dataSource2" dataKey="desc" stripedRows [tableStyle]="{ 'min-width': '40rem' }" [expandedRowKeys]="expandedRows" [styleClass]="tableClass">
+                <ng-template #header>
+                    <tr>
+                        <th class="table-header" style="width: 5rem"></th>
+                        <th pSortableColumn="desc" class="table-header">Concepto<p-sortIcon field="desc" /></th>
+                        <th pSortableColumn="value" class="table-header">Total<p-sortIcon field="value" /></th>
+                    </tr>
+                </ng-template>
+                <ng-template #body let-data let-expanded="expanded">
+                    <tr>
+                      <td>
+                          <p-button *ngIf="data.detail.length > 0" type="button" pRipple [pRowToggler]="data" [text]="true" [rounded]="true" [plain]="true" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" />
+                      </td>
+                      <td>{{ data.desc }}</td>
+                      <td>{{ data.value | currency}}</td>
+                    </tr>
+                </ng-template>
+                <ng-template #expandedrow let-data>
+                  <tr>
+                      <td colspan="3">
+                          <div class="p-4">
+                            <p-table [value]="data.detail" dataKey="desc">
+                              <ng-template #body let-detail let-expanded="expanded">
+                                <tr style="background-color: rgb(242, 245, 248);">
+                                  <td style="width:10%"></td>
+                                  <td style="width:52%">{{ detail.desc }}</td>
+                                  <td style="width:38%">{{ detail.value | currency}}</td>
+                                </tr>
+                              </ng-template>
+                            </p-table>
+                          </div>
+                      </td>
+                  </tr>
+                </ng-template>
+            </p-table>
+          </div>
+          <div class="button-export">
+              <button>Exportar a Excel</button>
+          </div>
+        </div>
+      </mat-grid-tile>
+    </mat-grid-list>
+    <div class="col" style="text-align: center;">
+      <h3>Avance de distribución</h3>
+      <canvas id="gaugeChart"></canvas>
+    </div>
+
+    <div class="resume">
+      <p class="title-graph">Documentos de distribución para la vigencia ({{selected}})</p>
+      <p-table
+          [value]="distributionData"
+          [paginator]="true"
+          showGridlines
+          [rows]="5"
+          [tableStyle]="{ 'min-width': '50rem' }"
+          [rowsPerPageOptions]="[5, 10, 20]"
+      >
+          <ng-template #header>
+              <tr>
+                  <th style="width:8%" class="table-header">Fecha Distribución</th>
+                  <th style="width:12%" class="table-header">Distribución</th>
+                  <th style="width:43%" class="table-header">Descripción</th>
+                  <th style="width:15%" class="table-header">Tipo de Distribución</th>
+                  <th style="width:5%" class="table-header">Año</th>
+                  <th style="width:12%" class="table-header">Total Descripción</th>
+                  <th style="width: 5%" class="table-header"></th>
+              </tr>
+          </ng-template>
+          <ng-template #body let-data>
+              <tr>
+                  <td>{{ data.b }}</td>
+                  <td>{{ data.c }}</td>
+                  <td>{{ data.d }}</td>
+                  <td>{{ data.e }}</td>
+                  <td>{{ data.f }}</td>
+                  <td>{{ data.g }}</td>
+                  <td>
+                    <p-button icon="pi pi-plus-circle" class="mr-2" [rounded]="true" [outlined]="true" (click)="showDetails(data)" />
+                    <p-button icon="pi pi-file" [rounded]="true" [outlined]="true" (click)="showFiles(data)" />
+                  </td>
+              </tr>
+          </ng-template>
+      </p-table>
+    </div>
+  </div>
+
+  <p-dialog
+    header="Resumen de Distribución"
+    [modal]="true"
+    [(visible)]="visibleDlgDetail"
+    [style]="{ width: '50rem' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
+    <div>
+      <p class="opt-select">Entidad a consultar</p>
+      <div style="display: flex;">
+        <mat-form-field class="department-select">
+          <mat-label>Departamento</mat-label>
+          <mat-select [(value)]="departmentSelected">
+              <mat-option *ngFor="let department of departments" [value]="department.name">{{department.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="town-select">
+            <mat-label>Municipio</mat-label>
+            <mat-select [(value)]="townSelected">
+                <mat-option *ngFor="let town of towns" [value]="town.name">{{town.name}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button class="button-filter">Actualizar</button>
+      </div>
+      <div class="card">
+        <p-table [value]="dataSource2" dataKey="desc" stripedRows [tableStyle]="{ 'min-width': '40rem' }" [expandedRowKeys]="expandedRows" [styleClass]="tableClass">
+            <ng-template #header>
+                <tr>
+                    <th class="table-header" style="width: 5rem"></th>
+                    <th pSortableColumn="desc" class="table-header">Concepto<p-sortIcon field="desc" /></th>
+                    <th pSortableColumn="value" class="table-header">Total<p-sortIcon field="value" /></th>
+                </tr>
+            </ng-template>
+            <ng-template #body let-data let-expanded="expanded">
+                <tr>
+                    <td>
+                      <p-button *ngIf="data.detail.length > 0" type="button" pRipple [pRowToggler]="data" [text]="true" [rounded]="true" [plain]="true" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" />
+                  </td>
+                  <td>{{ data.desc }}</td>
+                  <td>{{ data.value | currency}}</td>
+                </tr>
+            </ng-template>
+            <ng-template #expandedrow let-data>
+              <tr>
+                  <td colspan="3">
+                      <div class="p-4">
+                        <p-table [value]="data.detail" dataKey="desc">
+                          <ng-template #body let-detail let-expanded="expanded">
+                            <tr>
+                              <td>{{ detail.desc }}</td>
+                              <td>{{ detail.value | currency}}</td>
+                            </tr>
+                          </ng-template>
+                        </p-table>
+                      </div>
+                  </td>
+              </tr>
+            </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </p-dialog>
+
+  <p-dialog
+    header="Documentos de distribución y anexos"
+    [modal]="true"
+    [(visible)]="visibleDlgFiles"
+    [style]="{ width: '50rem' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
+    <div>
+      <div>
+        <p>Distribución: {{distributionName}}</p>
+        <p>Fecha (dd/mm/aaaa): {{distributionDate}}</p>
+      </div>
+      <p>(2) Registros encontrados</p>
+      <p-table [value]="distributionFiles">
+        <ng-template #header>
+          <tr>
+              <th class="table-header">Descripción Documento</th>
+              <th class="table-header">Tipo archivo</th>
+              <th class="table-header" style="width: 5rem"></th>
+          </tr>
+          <ng-template #body let-infoFile>
+            <tr>
+              <td>{{ infoFile.desc }}</td>
+              <td>{{ infoFile.value}}</td>
+              <td>
+                <p-button icon="pi pi-file" [rounded]="true" [outlined]="true" (click)="downloadFiles(infoFile)" />
+              </td>
+            </tr>
+          </ng-template>
+      </ng-template>
+      </p-table>
+    </div>
+  </p-dialog>
+</div>

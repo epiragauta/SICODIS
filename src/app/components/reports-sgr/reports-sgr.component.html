@@ -1,73 +1,215 @@
 <div class="container">
-    <div class="reports">
-        <h1 class="reports-title">Presupuesto Sistema General de Participaciones, documentos y anexos</h1>
-        <p class="desc-sicodis">Este módulo presenta los recursos presupuestados en cada vigencia por las entidades territoriales por concepto del SGP, recursos que son girados por los Ministerios competentes entre enero y diciembre de la vigencia seleccionada; y corresponden a la última doceava de la vigencia anterior y a las once doceavas de la vigencia seleccionada (excepto educación que corresponde a doce doceavas).</p>
-    </div>
+  <div class="reports">
+      <h1 class="reports-title">Reportes Sistema General de Regalías - SGR</h1>
+        <mat-icon aria-hidden="false"
+        matTooltip="Este módulo presenta el plan de recursos del SGR"
+        aria-label="Button that displays a tooltip when focused or hovered over" fontIcon="info">
+        </mat-icon>
+        <h4 style="text-align: right;padding-left: 50px;">Seleccione la vigencia a consultar</h4>
+  </div>
+
     <div class="options-years">
-        <p class="opt-select">Seleccione vigencia a consultar</p>
-        <mat-form-field>
-            <mat-label>Vigencia</mat-label>
-            <mat-select [(value)]="selected" (selectionChange)="optionChange($event)">
-                <mat-option *ngFor="let years of infoResume" [value]="years.year">{{years.year}}</mat-option>
-            </mat-select>
-        </mat-form-field>
+      <mat-form-field class="department-select">
+        <mat-label>Departamento</mat-label>
+        <mat-select [(value)]="departmentSelected">
+            <mat-option *ngFor="let department of departments" [value]="department.name">{{department.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="town-select">
+          <mat-label>Entidad</mat-label>
+          <mat-select [(value)]="townSelected">
+              <mat-option *ngFor="let town of towns" [value]="town.c">{{town.d}}</mat-option>
+          </mat-select>
+      </mat-form-field>
+      <mat-form-field class="law-period-select">
+        <mat-label>Vigencia</mat-label>
+          <mat-select [(value)]="lawPeriodSelected" (selectionChange)="fillDataTable()">
+            <mat-option *ngFor="let period of lawPeriods" [value]="period.name">{{period.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="town-select">
+        <mat-label>Fondos o conceptos</mat-label>
+          <mat-select [(value)]="attrSelected" multiple (selectionChange)="selectVariables($event)">
+            <mat-option *ngFor="let attr of attrs" [value]="attr.codigo">{{attr.nombre}}</mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
-    <div class="resume">
-        <p class="title-graph">Resumen de la distribución del presupuesto vigencia</p>
-        <div class="container-columns">
-            <div class="columns">
-                <div class="col">
-                    <h1>Vigencia</h1>
-                    <p>{{selected}}</p>
-                </div>
-                <div class="col">
-                    <h1>Presupuesto SGP</h1>
-                    <p>{{infoToResume.budget | currency}}</p>
-                </div>
-                <div class="col">
-                    <h1>Recursos distribuidos hasta la fecha</h1>
-                    <p>{{infoToResume.budgetDistributed | currency}}</p>
-                </div>
-                <div class="col">
-                    <h1>Recursos pendientes por distribuir</h1>
-                    <p>{{infoToResume.pending | currency}}</p>
-                </div>
-                <div class="col">
-                    <h1>Avance de distribución</h1>
-                    <canvas id="gaugeChart"></canvas>
-                </div>
+
+
+  <!-- <div #mainTable class="main-table">
+    <table mat-table [dataSource]="dataSourceTable" class="mat-elevation-z8">
+      <ng-container matColumnDef="a">
+        <th mat-header-cell class="value-title" *matHeaderCellDef> Concepto </th>
+        <td mat-cell *matCellDef="let element"> {{element.a}} </td>
+      </ng-container>
+      <ng-container matColumnDef="b">
+        <th mat-header-cell class="value-title" *matHeaderCellDef> 2022-2023 </th>
+        <td mat-cell class="value-total" *matCellDef="let element"> {{element.b.y}} </td>
+      </ng-container>
+      <ng-container matColumnDef="c">
+        <th mat-header-cell class="value-title" *matHeaderCellDef> 2024-2025 </th>
+        <td mat-cell class="value-total" *matCellDef="let element"> {{element.c.y}} </td>
+      </ng-container>
+      <ng-container matColumnDef="d">
+        <th mat-header-cell class="value-title" *matHeaderCellDef> 2026-2027 </th>
+        <td mat-cell class="value-total" *matCellDef="let element"> {{element.d.y}} </td>
+      </ng-container>
+      <ng-container matColumnDef="e">
+        <th mat-header-cell class="value-title" *matHeaderCellDef> 2028-2029 </th>
+        <td mat-cell class="value-total" *matCellDef="let element"> {{element.e.y}} </td>
+      </ng-container>
+      <ng-container matColumnDef="f">
+        <th mat-header-cell class="value-title" *matHeaderCellDef> 2030-2031 </th>
+        <td mat-cell class="value-total" *matCellDef="let element"> {{element.f.y}} </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+      <tr class="sicodis-row" mat-row (click)="clickedRow(row)"
+        *matRowDef="let row; columns: displayedColumns2;"></tr>
+    </table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+              showFirstLastButtons
+              aria-label="Select page of periodic elements">
+    </mat-paginator>
+  </div> -->
+  <p-tabs value="0">
+    <p-tablist>
+        <p-tab value="0">
+          <i class="pi pi-list"></i>
+          Datos (Tabla)</p-tab>
+        <p-tab value="1">
+          <i class="pi pi-chart-line"></i>
+          Estadísticas (Gráficos)</p-tab>
+        <p-tab value="2">
+          <i class="pi pi-map-marker"></i>
+          Mapa</p-tab>
+    </p-tablist>
+    <p-tabpanels>
+        <p-tabpanel value="0">
+          <div id="panel-0">
+            <div #mainTable class="resume">
+              <p-table
+                  #dt2
+                  [value]="dataTable"
+                  [paginator]="true"
+                  selectionMode="single"
+                  [(selection)]="selectedRow"
+                  showGridlines
+                  [rows]="5"
+                  [tableStyle]="{ 'min-width': '50rem' }"
+                  [rowsPerPageOptions]="[5, 10, 20]"
+                  dataKey="a"
+                  (onRowSelect)="onRowSelect($event)"
+                  (onRowUnselect)="onRowUnselect($event)"
+                  [globalFilterFields]="['a']"
+                  [loading]="loading"
+                  dataKey="a"
+                  [expandedRowKeys]="expandedRows"
+                  >
+                  <ng-template #caption>
+                    <div style="display: flex;">
+                      <div class="flex">
+                        <p-iconfield iconPosition="left" class="ml-auto">
+                            <p-inputicon>
+                                <i class="pi pi-search"></i>
+                            </p-inputicon>
+                            <input
+                                pInputText
+                                type="text"
+                                (input)="dt2.filterGlobal($event.target, 'contains')"
+                                placeholder="Buscar..."
+                            />
+                        </p-iconfield>
+                      </div>
+                      <div class="text-end pb-4 export-btn">
+                        <p-button icon="pi pi-external-link" label="Exportar (csv)" (click)="dt2.exportCSV()" />
+                      </div>
+                    </div>
+
+                </ng-template>
+                  <ng-template #header>
+                      <tr>
+                          <th class="table-header" style="width: 5rem"></th>
+                          <th pSortableColumn="a" style="width:25%" class="table-header">
+                            Concepto
+                            <p-sortIcon field="a" />
+                          </th>
+                          <th style="width:15%" class="table-header">2022-2023</th>
+                          <th style="width:15%" class="table-header">2024-2025</th>
+                          <th style="width:15%" class="table-header">2026-2027</th>
+                          <th style="width:15%" class="table-header">2028-2029</th>
+                          <th style="width:15%" class="table-header">2030-2031</th>
+                      </tr>
+                  </ng-template>
+                  <ng-template #body let-data let-expanded="expanded">
+                      <tr [pSelectableRow]="data">
+                          <td>
+                            <p-button *ngIf="data.x.length > 0" type="button" pRipple [pRowToggler]="data" [text]="true" [rounded]="true" [plain]="true" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" />
+                          </td>
+                          <td>{{ data.a }}</td>
+                          <td>{{ data.b.y }}</td>
+                          <td>{{ data.c.y }}</td>
+                          <td>{{ data.d.y }}</td>
+                          <td>{{ data.e.y }}</td>
+                          <td>{{ data.f.y }}</td>
+                      </tr>
+                  </ng-template>
+                  <ng-template #expandedrow let-data>
+                    <tr>
+                        <td colspan="7">
+                            <div class="p-4">
+                              <p-table [value]="data.x" dataKey="a">
+                                <ng-template #body let-detail let-expanded="expanded">
+                                  <tr style="background-color: rgb(242, 245, 248);">
+                                    <td style="width:28.2%">{{ detail.a }}</td>
+                                    <td style="width:14.5%">{{ detail.b.y }}</td>
+                                    <td style="width:14.5%">{{ detail.c.y }}</td>
+                                    <td style="width:14.6%">{{ detail.d.y }}</td>
+                                    <td style="width:14.6%">{{ detail.e.y }}</td>
+                                    <td style="width:14.6%">{{ detail.f.y }}</td>
+                                  </tr>
+                                </ng-template>
+                              </p-table>
+                            </div>
+                        </td>
+                    </tr>
+                  </ng-template>
+              </p-table>
             </div>
-            <div class="columns">
-                <h1 class="select-filters">Seleccione entidad a consultar</h1>
-                <mat-form-field class="department-select">
-                    <mat-label>Departamento</mat-label>
-                    <mat-select [(value)]="departmentSelected">
-                        <mat-option *ngFor="let department of departments" [value]="department.name">{{department.name}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field class="town-select">
-                    <mat-label>Municipio</mat-label>
-                    <mat-select [(value)]="townSelected">
-                        <mat-option *ngFor="let town of towns" [value]="town.name">{{town.name}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <button class="button-filter">Actualizar</button>
-                <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-                    <ng-container matColumnDef="desc">
-                      <mat-header-cell *matHeaderCellDef> Concepto </mat-header-cell>
-                      <mat-cell *matCellDef="let element"> {{element.desc}} </mat-cell>
-                    </ng-container>
-                    <ng-container matColumnDef="value">
-                      <mat-header-cell class="value-title" *matHeaderCellDef> Total </mat-header-cell>
-                      <mat-cell class="value-total" *matCellDef="let element"> {{element.value}} </mat-cell>
-                    </ng-container>
-                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-                  </mat-table>
-                  <div class="button-export">
-                      <button>Exportar a Excel</button>
-                  </div>
+          </div>
+        </p-tabpanel>
+        <p-tabpanel value="1">
+          <div #panel1Tab id="panel-1">
+            <div class="card flex justify-center chart-div">
+              <p-chart type="bar" [data]="basicData" [options]="basicOptions" />
             </div>
-        </div>
-    </div>
+            <p-divider/>
+            <div class="card flex justify-center chart-div">
+              <p-chart type="pie" [data]="pieData" [options]="pieChartOptions" class="w-full md:w-[30rem]" />
+            </div>
+            <p-divider/>
+            <div class="card justify-center chart-div">
+              <p-chart type="bar" [data]="horizontalData" [options]="horizontalChartoptions" class="h-[30rem]" />
+            </div>
+
+          </div>
+        </p-tabpanel>
+        <p-tabpanel value="2">
+          <div #panel2Tab id="panel-2">
+
+          </div>
+        </p-tabpanel>
+    </p-tabpanels>
+  </p-tabs>
+
+
+
+  <div #chartContainer class="chart-container" [hidden]="!showChart">
+    <canvas #chartCanva id="chart-canva">{{ chart }}</canvas>
+  </div>
+  <div #mapContainer class="report-map">
+    <app-reports-map></app-reports-map>
+  </div>
+
+
+
 </div>

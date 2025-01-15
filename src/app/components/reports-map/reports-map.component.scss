@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+body {
+    font-family: 'Roboto';
+    color: var(--text-color);
+    margin: 0;
+    --header-color: #D1DFB7;
+    --sidebar-color: #FAE6BE;
+    --text-color: black;
+}
+
+:host {
+  display: flex;
+  flex-direction: column;
+  /* height: 100vh; */
+}
+header {
+  background-color: var(--header-color);
+  padding: 2em;
+}
+header .title {
+  font-size: 28px;
+}
+main {
+  display: flex;
+  flex-grow: 1;
+}
+.left-bar {
+  width: 20em;
+  background-color: var(--sidebar-color);
+}
+
+footer {
+  background-color: var(--header-color);
+  padding: 1em;
+}
+#ol-map{
+  width: 100%;
+  height: 500px;
+}
+.map .ol-custom-overviewmap,
+.map .ol-custom-overviewmap.ol-uncollapsible {
+  bottom: auto;
+  left: auto;
+  right: 0;
+  top: 0;
+}
+
+.map .ol-custom-overviewmap:not(.ol-collapsed)  {
+  border: 1px solid black;
+}
+
+.map .ol-custom-overviewmap .ol-overviewmap-map {
+  border: none;
+  width: 300px;
+}
+
+.map .ol-custom-overviewmap .ol-overviewmap-box {
+  border: 2px solid red;
+}
+
+.map .ol-custom-overviewmap:not(.ol-collapsed) button{
+  bottom: auto;
+  left: auto;
+  right: 1px;
+  top: 1px;
+}

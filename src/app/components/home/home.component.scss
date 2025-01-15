@@ -1,7 +1,7 @@
-.container{
+/* .container{
     padding: 0;
     margin: 0;
-}
+} */
 .banner{
     position: relative;
     img{
@@ -12,21 +12,24 @@
     .reports-title{
         color: #455A64;
         font-weight: 800;
-        font-size: 32px;
-        padding: 40px 0px 0px 180px;
+        padding: 2rem 1rem 2rem 0.1rem;
+        font-size: 24px;
     }
     .desc-sicodis{
-        padding: 0px 0px 0px 180px;
+        padding: 1rem 1rem 1rem 0.1rem;
     }
     .sicodis{
-        color: #455A64;
         font-weight: 800;
-        font-size: 32px;
-        padding: 0px 0px 0px 180px;
+        padding: 1rem 1rem 1rem 0.1rem;
+    }
+    .sicodis-title{
+      color: #455A64;
+      font-size: 24px;
+      font-weight: 800;
     }
 }
 .grid-styles{
-    margin: 0px 180px 0px 180px;
+    margin: 1rem 1rem 1rem 0.1rem;
 }
 .grid-title-styles{
     height: 322px;
@@ -37,13 +40,31 @@
     height: 586px;
     padding-top: 0 !important;
 }
+
+.sicodis-card{
+  text-align: center;
+  .p-button{
+    font-size: 16px;
+    font-weight: 600;
+    background-color: #504F4E;
+    color: white;
+    border-radius: 32px !important;
+    padding: 16px 24px 16px 24px;
+    cursor: pointer;
+    margin: 32px 32px 0px 32px;
+  }
+  .p-button:hover {
+      background-color: rgb(67, 70, 71);
+  }
+}
+
 .target{
-    width: 508px;
+    /* width: 508px;
     height: 582px;
     border-radius: 16px;
-    border: solid 1px #E8E7E7;
+    border: solid 1px #E8E7E7; */
     img{
-        margin: 32px 32px 0px 32px;
+        margin: 4px 4px 4px 4px;
     }
     button{
         font-size: 16px;
@@ -71,9 +92,11 @@
     left: 72%;
 }
 .logo-colombia{
-    padding-top: 8%;
-    padding-left: 45%;
-    padding: 4% 0% 4% 45%;
+    text-align: center;
+    padding-top: 2rem;
+    img{
+      margin: auto;
+    }
 }
 // .overlay-button {
 //     position: absolute;
@@ -92,3 +115,240 @@
 // .overlay-button:hover {
 //     background-color: rgb(205, 210, 214);
 // }
+.sicodis-questions{
+  background-color: #455A64;
+  color: #fff;
+  padding: 1rem 1rem 1rem 1rem;
+  position: relative;
+  .title-questions{
+    font-size: 24px;
+    font-weight: 800;
+    padding-bottom: 1rem;
+  }
+
+  @media only screen and (max-width: 600px) {
+    .overlay-questions{
+      position: absolute;
+      top: -45px;
+      right: 6px;
+      height: 5rem;
+    }
+  }
+
+  /* Small devices (portrait tablets and large phones, 600px and up) */
+  @media only screen and (min-width: 600px) {
+    .overlay-questions{
+      position: absolute;
+      top: -45px;
+      right: 25px;
+      height: 13rem;
+    }
+  }
+
+  /* Medium devices (landscape tablets, 768px and up) */
+  @media only screen and (min-width: 768px) {
+    .overlay-questions{
+      position: absolute;
+      top: -45px;
+      right: 25px;
+      height: 13rem;
+    }
+  }
+
+  /* Large devices (laptops/desktops, 992px and up) */
+  @media only screen and (min-width: 992px) {
+    .overlay-questions{
+      position: absolute;
+      top: -45px;
+      right: 25px;
+      height: 13rem;
+    }
+  }
+
+  /* Extra large devices (large laptops and desktops, 1200px and up) */
+  @media only screen and (min-width: 1200px) {
+    .overlay-questions{
+      position: absolute;
+      top: -45px;
+      right: 25px;
+      height: 13rem;
+    }
+  }
+}
+
+:host ::ng-deep .p-button{
+  font-weight: bold;
+}
+
+.sicodis-historic-panel{
+  background-color: #fff;
+  color: #455A64;
+  padding: 1rem 1rem 1rem 0.1rem;
+  .sicodis-title{
+    color: #455A64;
+    font-size: 24px;
+    font-weight: 800;
+  }
+  .desc-sicodis{
+    padding: 1rem 1rem 1rem 0.1rem;
+  }
+}
+
+.sicodis-apps-panel{
+  background-color: #fff;
+  color: #455A64;
+  padding: 1rem 1rem 1rem 0.1rem;
+}
+
+.p-carousel .p-carousel-indicators .p-carousel-indicator button {
+  background-color: #a94897;
+  width: 1rem;
+  height: 1rem;
+  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+  border-radius: 50%;
+}
+
+.rounded-border{
+  border-radius: 50%;
+  width: 200px;
+  height: 200px;
+  object-fit: none;
+}
+
+:host ::ng-deep .p-button-contrast{
+  background-color: #44464a;
+}
+
+:host ::ng-deep .p-button-contrast:hover{
+  background-color: #cbcb0f !important;
+}
+
+:host ::ng-deep .p-carousel-next-button{
+  background-color: #44464a;
+  border-radius: 50%;
+}
+
+:host ::ng-deep .p-carousel-next-button:hover{
+  background-color: #252525;
+  border-radius: 50%;
+}
+
+:host ::ng-deep .p-carousel-prev-button{
+  background-color: #44464a;
+  border-radius: 50%;
+}
+
+:host ::ng-deep .p-carousel-prev-button:hover{
+  background-color: #252525;
+  border-radius: 50%;
+}
+
+:host ::ng-deep .p-button-text{
+  color: #fff;
+  width: 2.4rem;
+}
+
+:host ::ng-deep .p-carousel-indicator-active .p-carousel-indicator-button{
+  background-color: #44464a;
+}
+
+.sicodis-item{
+  cursor: pointer;
+  padding: 2px;
+}
+.sicodis-item:hover{
+  background-color: #44464a;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 18px;
+  padding: 2px;
+}
+
+
+// home.component.scss
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.grid-container {
+  margin: 0 -8px;
+}
+
+.card-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-style: solid;
+  border-width: thin;
+  border-color: #ccc;
+  border-radius: 12px;
+
+  img {
+    height: 200px;
+    object-fit: cover;
+    border-top-left-radius: 12px;
+    border-top-left-radius: 12px;
+  }
+
+  .img-icon{
+    height: 4rem;
+  }
+
+  mat-card-content {
+    /* flex-grow: 1; */
+    padding: 16px;
+  }
+
+  .sicodis-title {
+    display: flex;
+    color: #455A64;
+    font-size: 17px;
+    font-weight: 800;
+  }
+
+  .sicodis-large-title {
+    display: flex;
+    color: #455A64;
+    font-size: 24px;
+    font-weight: 800;
+    padding-left: 1rem;
+  }
+
+  .description {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    color: rgba(0, 0, 0, 0.9);
+    margin-left: 1rem;
+  }
+
+  mat-card-actions {
+    padding: 16px;
+    margin: 0;
+
+    .full-width {
+      width: 100%;
+    }
+  }
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
+// Media queries para el grid responsive
+@media screen and (max-width: 599px) {
+  :host ::ng-deep {
+    .mat-grid-tile {
+      margin-bottom: 16px;
+    }
+  }
+}

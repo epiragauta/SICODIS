@@ -30,7 +30,9 @@
             ],
             "styles": [
               "src/styles.scss",
-              "node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
+              "src/assets/styles/global.scss",
+              "node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "node_modules/ol/ol.css"
             ],
             "scripts": [],
             "server": "src/main.server.ts",
@@ -44,13 +46,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "900kB",
+                  "maximumError": "3MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kB",
-                  "maximumError": "4kB"
+                  "maximumWarning": "20kB",
+                  "maximumError": "40kB"
                 }
               ],
               "outputHashing": "all"

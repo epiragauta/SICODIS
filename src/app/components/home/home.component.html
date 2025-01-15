@@ -4,42 +4,202 @@
         <!-- <button class="overlay-button">Sobre SICODIS</button> -->
     </div>
     <div class="reports">
-        <h1 class="reports-title">Últimos reportes</h1>
-        <mat-grid-list class="grid-styles" cols="4">
+
+
+        <!-- <mat-grid-list class="grid-styles" cols="4">
             <mat-grid-tile class="grid-title-styles" *ngFor="let reportsItem of reports">
                 <app-reports-target [reports]="reportsItem"></app-reports-target>
             </mat-grid-tile>
-        </mat-grid-list>
-        <h1 class="sicodis">¿Qué encontrará en SICODIS?</h1>
+        </mat-grid-list> -->
+
+        <h1 class="sicodis sicodis-title">¿Qué encontrará en SICODIS?</h1>
         <p class="desc-sicodis">En SICODIS encontrará información detallada sobre la distribución de recursos asociada a:</p>
-        <mat-grid-list class="grid-styles" cols="2">
-            <mat-grid-tile class="grid-title-sicodis">
+        <div class="grid-container">
+          <mat-grid-list [cols]="cols2" rowHeight="569px" gutterSize="16">
+            <mat-grid-tile>
+              <mat-card class="card-container">
                 <div class="target">
-                    <img src="/assets/img/SGR.svg" alt="sgr">
-                    <img src="/assets/img/options-sgr.svg" alt="opt-sgr">
-                    <button (click)="redirectSGR()">Ver todos los reportes SGR</button>
+                  <div class="flex items-center justify-center">
+                    <p-card [style]="{ overflow: 'hidden' }">
+                        <div style="display: flex;">
+                          <div><img class="img-icon" src="/assets/img/icon-sgr.png" alt="SGR"></div>
+                          <h2 class="sicodis-large-title">{{titleSGR}}</h2>
+                        </div>
+                        <p>{{descriptionSGR}}</p>
+                        <div class="sicodis-item" style="display: flex;" (click)="redirectTo('reports-sgr')">
+                          <p style="width: 95%;">Plan de Recursos</p>
+                          <p><span class="pi pi-angle-right"></span></p>
+                        </div>
+                      <p-divider/>
+                      <div class="sicodis-item" style="display: flex;" (click)="redirectTo('reports-sgr-comparative')">
+                        <p style="width: 95%;">Comparativo de Avance IAC frente a Presupuesto</p>
+                        <p><span class="pi pi-angle-right"></span></p>
+                      </div>
+                      <p-divider />
+                      <div class="sicodis-item" style="display: flex;" (click)="redirectTo('reports-sgr-bienal')">
+                        <p style="width: 95%;">Plan Bienal de Caja</p>
+                        <p><span class="pi pi-angle-right"></span></p>
+                      </div>
+                        <ng-template pTemplate="footer">
+                            <div class="flex gap-4 mt-1 sicodis-card">
+                                <p-button severity="contrast" [rounded]="true" label="Ver todos los reportes del SGR" (click)="redirectSGR()"
+                                class="w-full" styleClass="w-full" />
+                            </div>
+                        </ng-template>
+                    </p-card>
+                  </div>
                 </div>
+              </mat-card>
             </mat-grid-tile>
-            <mat-grid-tile class="grid-title-sicodis">
+            <mat-grid-tile>
+              <mat-card class="card-container">
                 <div class="target">
-                    <img src="/assets/img/SGP.svg" alt="sgp">
-                    <img src="/assets/img/options-sgp.svg" alt="opt-sgp">
-                    <button (click)="redirectSGR()">Ver todos los reportes SGP</button>
+                  <div class="flex items-center justify-center">
+                    <p-card [style]="{ overflow: 'hidden' }">
+                        <div  style="display: flex;">
+                          <div>
+                            <img class="img-icon" src="/assets/img/icon-sgp.png" alt="SGR">
+                          </div>
+                          <h2 class="sicodis-large-title">{{titleSGP}}</h2>
+                        </div>
+                        <p>{{descriptionSGP}}</p>
+                        <div class="sicodis-item" style="display: flex;" (click)="redirectTo('reports-sgp')">
+                          <p style="width: 95%;">Distribución presupuestal, documentos y anexos</p>
+                          <p><span class="pi pi-angle-right"></span></p>
+                        </div>
+                      <p-divider/>
+                      <div class="sicodis-item" style="display: flex;" (click)="redirectTo('reports-sgp-dist')">
+                        <p style="width: 95%;">Ficha comparativa de distribución, criterios y variables</p>
+                        <p><span class="pi pi-angle-right"></span></p>
+                      </div>
+                      <p-divider />
+                      <div class="sicodis-item" style="display: flex;" (click)="redirectTo('reports-sgp-budget')">
+                        <p style="width: 95%;">Ficha SGP - Presupuestal</p>
+                        <p><span class="pi pi-angle-right"></span></p>
+                      </div>
+                        <ng-template pTemplate="footer">
+                            <div class="flex gap-4 mt-1 sicodis-card">
+                                <p-button class="button" severity="contrast" [rounded]="true" label="Ver todos los reportes del SGP" (click)="redirectSGP()"
+                                class="w-full" styleClass="w-full" />
+                            </div>
+                        </ng-template>
+                    </p-card>
+                  </div>
                 </div>
+              </mat-card>
             </mat-grid-tile>
-        </mat-grid-list>
+          </mat-grid-list>
+        </div>
+
+    <p-divider />
+
+    <h1 class="reports-title">Últimos reportes</h1>
+
+        <div class="grid-container">
+          <mat-grid-list [cols]="cols" rowHeight="300px" gutterSize="16">
+            <mat-grid-tile *ngFor="let card of cards">
+              <mat-card class="card-container">
+                <img mat-card-image [src]="card.imageUrl" [alt]="card.title">
+                <p class="description">{{card.description}}</p>
+                <mat-card-header>
+                  <h1 class="sicodis-title">{{card.title}}</h1>
+                </mat-card-header>
+                <!-- <mat-card-actions>
+                  <p-button severity="contrast" [rounded]="true">
+                    {{card.buttonLabel}}
+                  </p-button>
+                </mat-card-actions> -->
+              </mat-card>
+            </mat-grid-tile>
+          </mat-grid-list>
+        </div>
+    <p-divider />
+
+    <div class="sicodis-questions">
+      <img class="overlay-questions" src="/assets/img/overlay-questions.svg" alt="overlay-questions">
+      <div>
+        <h1 class="title-questions">¿Tiene Preguntas acerca de SICODIS?</h1>
+      </div>
+      <div>
+        <p>
+          En SICODIS encontrará información detallada sobre la distribución de recursos asociada a diferentes recursos
+        </p>
+      </div>
+      <div style="padding-bottom: 1rem;">
+        <ul>
+          <li>
+            ¿Cómo encontrar un reporte?
+          </li>
+          <li>
+            ¿Cómo descargar un elemento?
+          </li>
+          <li>
+            No se preocupe, acá respondemos sus preguntas
+          </li>
+        </ul>
+      </div>
+      <div>
+        <p-button severity="secondary" [rounded]="true" [raised]="true">
+          Ir a preguntas frecuentes
+        </p-button>
+      </div>
     </div>
-    <div class="banner-questions">
-        <img class="banner-img-questions" src="/assets/img/questions.svg" alt="questions">
-        <img class="overlay-banner-questions" src="/assets/img/overlay-questions.svg" alt="overlay-questions">
-        <!-- <button class="overlay-button">Sobre SICODIS</button> -->
+
+    <p-divider />
+      <div class="sicodis-historic-panel">
+        <div>
+          <h1 class="sicodis-title">
+            Consulte la información histórica de SICODIS
+          </h1>
+        </div>
+        <div>
+          <p class="desc-sicodis">
+            En esta sección encontrará reportes asociados al Esquema entre entidades territoriales y el gonierno nacional con la cual se determina la distribución, objetibos, fines, administración, ejecución y control eficiente de los ingresos provenientes de la explotación de los recursos naturales no renovables ....
+          </p>
+          <div>
+            <p-button severity="contrast" [rounded]="true">
+              Consultar los históricos
+            </p-button>
+          </div>
+        </div>
+      </div>
+
+    <p-divider />
+    <div class="sicodis-apps-panel">
+      <div>
+        <h1 class="sicodis-title">
+          Aplicaciones de interés
+        </h1>
+      </div>
+      <div class="card">
+        <p-carousel
+            severity="contrast"
+            [value]="highlightApps"
+            [numVisible]="4"
+            [numScroll]="3"
+            [circular]="false"
+                        [responsiveOptions]="responsiveOptions">
+                <ng-template let-app #item>
+                    <div class="border border-surface m-2 p-4">
+                        <div class="mb-4" style="text-align: center;">
+                            <div class="relative mx-auto">
+                                <img
+                                    src="{{ app.image }}"
+                                    [alt]="app.name"
+                                    class="w-full rounded-border" />
+                            </div>
+                        </div>
+                        <div class="mb-4 font-medium" style="text-align: center;">
+                            {{ app.name }}
+                        </div>
+                    </div>
+                </ng-template>
+        </p-carousel>
+      </div>
     </div>
-    <div class="banner-questions">
-        <img class="banner-img-questions" src="/assets/img/history-sicodis.svg" alt="history-sicodis">
-    </div>
-    <div class="banner-questions">
-        <img class="banner-img-questions" src="/assets/img/applications.svg" alt="applications">
-    </div>
+
+    <p-divider />
+
     <div class="logo-colombia">
         <img src="/assets/img/logo-colombia.svg" alt="logo-colombia">
     </div>

@@ -1,0 +1,80 @@
+<!-- sgp-dashboard.component.html -->
+<div class="sgp-dashboard">
+  <header class="dashboard-header">
+    <h1>
+      <mat-icon>dashboard</mat-icon>
+      Baul de Herramientas
+    </h1>
+  </header>
+
+  <mat-tab-group (selectedTabChange)="onTabChange($event)" [selectedIndex]="activeTab">
+    <mat-tab *ngFor="let section of sections">
+      <ng-template mat-tab-label>
+        <mat-icon>{{section.icon}}</mat-icon>
+        <span>{{section.title}}</span>
+      </ng-template>
+
+      <div class="tab-content">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>{{section.description}}</mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content>
+            <!-- Contenedor dinámico para cada sección -->
+            <ng-container [ngSwitch]="section.id">
+
+              <!-- Variables SGP y SGR -->
+              <div *ngSwitchCase="1">
+                <app-variables-distribucion></app-variables-distribucion>
+              </div>
+
+              <!-- Histórico 1994-2001 -->
+              <div *ngSwitchCase="2">
+                <app-historico-fiscal></app-historico-fiscal>
+              </div>
+
+              <!-- Detalle Histórico -->
+              <div *ngSwitchCase="3">
+                <app-detalle-historico></app-detalle-historico>
+              </div>
+
+              <!-- Proyección 2025 -->
+              <div *ngSwitchCase="4">
+                <app-proyeccion-sgp></app-proyeccion-sgp>
+              </div>
+
+              <!-- Histórico SGP -->
+              <div *ngSwitchCase="5">
+                <app-historico-sgp></app-historico-sgp>
+              </div>
+
+              <!-- Detalle por Entidad -->
+              <div *ngSwitchCase="6">
+                <app-detalle-entidad></app-detalle-entidad>
+              </div>
+
+              <!-- Eficiencia -->
+              <div *ngSwitchCase="7">
+                <app-eficiencia></app-eficiencia>
+              </div>
+
+              <!-- Visor Recursos -->
+              <div *ngSwitchCase="8">
+                <app-visor-recursos></app-visor-recursos>
+              </div>
+
+            </ng-container>
+          </mat-card-content>
+
+          <mat-card-actions align="end">
+            <button mat-raised-button color="primary" (click)="exportData()">
+              <mat-icon>file_download</mat-icon>
+              Exportar Datos
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
