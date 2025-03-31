@@ -7,6 +7,7 @@ import { ReportsSgpDistComponent } from './components/reports-sgp-dist/reports-s
 import { ReportsSgpBudgetComponent } from './components/reports-sgp-budget/reports-sgp-budget.component';
 import { ReportsSgrBienalComponent } from './components/reports-sgr-bienal/reports-sgr-bienal.component';
 import { ReportsSgrComparativeComponent } from './components/reports-sgr-comparative/reports-sgr-comparative.component';
+import { IacComparativeVsBudgetComponent} from './components/iac-comparative-vs-budget/iac-comparative-vs-budget.component';
 import { FaqComponent } from './components/faq/faq.component';
 import { ToolsComponent } from './components/tools/tools.component';
 
@@ -19,6 +20,7 @@ export const routes: Routes = [
     { path: 'reports-sgr-bienal', component: ReportsSgrBienalComponent },
     { path: 'reports-sgr-comparative', component: ReportsSgrComparativeComponent },
     { path: 'reports-map', component: ReportsMapComponent },
+    { path: 'iac-comparative-vs-budget', component: IacComparativeVsBudgetComponent },
     { path: 'faq', component: FaqComponent },
     { path: 'tools', component: ToolsComponent }
 ];
