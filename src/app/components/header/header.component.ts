@@ -26,38 +26,30 @@ export class HeaderComponent implements OnInit{
     this.items = [
         {
             label: 'Inicio',
-            icon: 'pi pi-home',
             command: () => this.redirectHome()
         },
         {
             label: 'Sobre SICODIS',
-            icon: 'pi pi-star'
         },
         {
             label: 'Documentos Financiamiento Territorial',
-            icon: 'pi pi-list-check',
             items: [
                 {
                     label: 'Sistema General de Participaciones -SGP',
-                    icon: 'pi pi-bolt',
                     command: () => this.redirectDocs("sgp")
                 },
                 {
                     label: 'Sistema General de Regalías -SGR',
-                    icon: 'pi pi-server',
                     command: () => this.redirectDocs("sgr")
                 },
                 {
                     label: 'Más Información',
-                    icon: 'pi pi-palette',
                     items: [
                         {
                             label: 'Información',
-                            icon: 'pi pi-palette'
                         },
                         {
                             label: 'Baúl de herramientas',
-                            icon: 'pi pi-palette',
                             command: () => this.redirectTools()
                         }
                     ]
@@ -66,21 +58,17 @@ export class HeaderComponent implements OnInit{
         },
         {
             label: 'SGR',
-            icon: 'pi pi-wrench',
             command: () => this.redirectSGR()
         },
         {
             label: 'SGP',
-            icon: 'pi pi-warehouse',
             command: () => this.redirectSGP()
         },
         {
             label: 'Servicio al Ciudadano',
-            icon: 'pi pi-user'
         },
         {
             label: 'Preguntas Frecuentes',
-            icon: 'pi pi-question-circle',
             command: () => this.redirectFAQ()
         }
     ]

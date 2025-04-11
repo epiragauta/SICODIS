@@ -13,7 +13,7 @@
   .reports-title{
       color: #455A64;
       font-weight: 800;
-      font-size: 32px;
+      font-size: 24px;
   }
   .sicodis{
       color: #455A64;
@@ -42,6 +42,9 @@
 }
 .container-columns{
   display: flex;
+}
+.font-bold {
+  font-weight: 600 !important;
 }
 .columns{
   padding: 5px;
@@ -106,4 +109,10 @@ canvas {
 }
 .town-select{
   margin: 0px 4px 0px 4px;
+}
+.concepto-educacion{
+  background-color: rgb(179, 229, 246) !important;
+}
+.concepto-salud{
+  background-color: rgb(151, 186, 212) !important;
 }

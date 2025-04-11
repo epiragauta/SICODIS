@@ -1,6 +1,6 @@
 <div class="container">
   <div class="reports">
-      <h1 class="reports-title">Reportes SGP » Ficha comparativa de distribución y variables por entidad territorial</h1>
+      <h4 class="reports-title">Reportes SGP » Ficha comparativa de distribución y variables por entidad territorial</h4>
       <mat-icon aria-hidden="false"
         matTooltip="Este módulo contiene dos tipos de consulta, tomando como base los recursos distribuidos por once doceavas (excepto educación que corresponde a doce doceavas de la vigencia)"
         aria-label="Button that displays a tooltip when focused or hovered over" fontIcon="info">
@@ -12,23 +12,21 @@
   <mat-grid-list cols="3" rowHeight="130px">
     <mat-grid-tile>
       <div class="options-years">
-        <p class="opt-select">Vigencia a consultar</p>
         <mat-form-field>
-            <mat-label>Vigencia</mat-label>
-            <mat-select [(value)]="selected" (selectionChange)="optionChange($event)">
-                <mat-option *ngFor="let years of infoResume" [value]="years.year">{{years.year}}</mat-option>
+            <mat-label>Vigencia a consultar</mat-label>
+            <mat-select [(value)]="selectedYear" (selectionChange)="optionChange($event)">
+                <mat-option *ngFor="let year of years" [value]="year">{{year}}</mat-option>
             </mat-select>
         </mat-form-field>
       </div>
     </mat-grid-tile>
     <mat-grid-tile [colspan]="2">
       <div>
-        <p class="opt-select">Entidad a consultar</p>
         <div style="display: flex;">
           <mat-form-field class="department-select">
             <mat-label>Departamento</mat-label>
             <mat-select [(value)]="departmentSelected">
-                <mat-option *ngFor="let department of departments" [value]="department.name">{{department.name}}</mat-option>
+                <mat-option *ngFor="let department of departamentos" [value]="department">{{department.nombre}}</mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field class="town-select">
@@ -43,4 +41,65 @@
     </mat-grid-tile>
   </mat-grid-list>
 
+  <p-treetable [value]="budgetData"
+                [columns]="cols"
+                [paginator]="true"
+                [rows]="10"
+                [scrollable]="true"
+                scrollHeight="450px"
+                selectionMode="single"
+                [(selection)]="selectedNode"
+                styleClass="sgp-treetable"
+                [resizableColumns]="true"
+                (onNodeSelect)="nodeSelect($event)"
+                columnResizeMode="expand">
+    <ng-template pTemplate="colgroup" let-columns>
+      <colgroup>
+        <col *ngFor="let col of columns" [style.width]="col.field === 'Concepto' ? '40%' : '20%'">
+      </colgroup>
+    </ng-template>
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns; let i = index"
+          ttResizableColumn [ngClass]="{'text-right': i > 0}">
+          {{col.header}}
+        </th>
+      </tr>
+    </ng-template>
 
+    <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+      <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode" [ngClass]="classConcepto(rowData.Concepto)">
+        <td>
+          <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+          <span>
+            {{rowData.Concepto}}
+          </span>
+        </td>
+        <td class="text-right">
+          <div>
+            {{rowData['2024'] | currency}}
+          </div>
+        </td>
+        <td class="text-right">
+          <div>
+            {{rowData['2025'] | currency}}
+          </div>
+        </td>
+        <td class="text-right">
+          <span>
+            {{rowData.diferencia | currency}}
+          </span>
+        </td>
+        <td class="text-right">
+          <span>
+            {{rowData.variacion}}
+          </span>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td [attr.colspan]="4">No se encontraron registros.</td>
+      </tr>
+    </ng-template>
+  </p-treetable>
