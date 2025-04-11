@@ -1,0 +1,259 @@
+.sgp-container {
+  width: 100%;
+  height: 100%;
+}
+
+.sgp-title {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.reports-title{
+  color: #455A64;
+  font-weight: 800;
+  font-size: 24px;
+}
+
+.sgp-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+
+  h3 {
+    margin: 0;
+    font-weight: 500;
+  }
+}
+
+.department-select, .law-period-select, .town-select{
+  margin: 0px 4px 0px 4px;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+// Estilos para las filas principales (negrita)
+.font-bold {
+  font-weight: 600 !important;
+}
+
+// Estilos para los badges de avance
+.avance-badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.avance-completo {
+  background-color: #e6f7ea;
+  color: #1e8e3e;
+}
+
+.avance-parcial {
+  background-color: #fff8e1;
+  color: #f9a825;
+}
+
+.avance-bajo {
+  background-color: #fdecea;
+  color: #d93025;
+}
+
+// Estilos para iconos informativos
+.value-with-info {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.info-icon {
+  color: #007ad9;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #005b9f;
+  }
+}
+
+/* Estilos para el panel de información */
+:host ::ng-deep .p-popover {
+  .p-popover-content {
+    padding: 0; /* Eliminar el padding por defecto */
+  }
+}
+
+// Estilos para el panel de información
+.info-panel-content {
+  min-width: 300px;
+  max-width: 400px;
+  padding: 0.5rem;
+
+  h4 {
+    margin: 0 0 0.5rem 0;
+    color: #495057;
+  }
+
+  h5 {
+    margin: 1rem 0 0.5rem 0;
+    font-size: 0.9rem;
+    color: #495057;
+  }
+
+  p {
+    margin: 0 0 1rem 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .document-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0;
+
+    li {
+      margin-bottom: 0.5rem;
+
+      a {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: #007ad9;
+        font-size: 0.9rem;
+        gap: 0.5rem;
+
+        &:hover {
+          text-decoration: underline;
+        }
+
+        i {
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+
+  .info-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    border-top: 1px solid #e9ecef;
+    padding-top: 0.75rem;
+  }
+}
+
+/* Estilos específicos por tipo de documento */
+.pi-file-pdf {
+  color: #dc3545;
+}
+
+.pi-file-excel {
+  color: #28a745;
+}
+
+.pi-file-word {
+  color: #0d6efd;
+}
+
+
+// Estilos específicos para el TreeTable
+:host ::ng-deep {
+  .sgp-treetable {
+    .p-treetable-header {
+      background-color: transparent;
+      border: none;
+      padding: 0.5rem 1rem;
+    }
+
+    .p-treetable-thead > tr > th {
+      background-color: #f5f5f5;
+      color: #495057;
+      font-weight: 600;
+      border: 1px solid #dee2e6;
+      border-width: 0 0 1px 0;
+      padding: 0.75rem 1rem;
+
+      // Alineación por defecto
+      text-align: left;
+
+      // Alineación para encabezados con la clase text-right
+      &.text-right {
+        text-align: right !important;
+      }
+    }
+
+    .p-treetable-tbody > tr {
+      &:hover {
+        background-color: #f8f9fa;
+      }
+
+      > td {
+        border: 1px solid #dee2e6;
+        border-width: 0 0 1px 0;
+        padding: 0.5rem 1rem;
+
+        // Para alinear correctamente el contenido con el toggler
+        &:first-child {
+          display: flex;
+          align-items: center;
+
+          .p-treetable-toggler {
+            margin-right: 0.5rem;
+          }
+        }
+      }
+
+      // Estilo para las filas seleccionadas
+      &.p-highlight {
+        background-color: #eef5ff !important;
+      }
+    }
+  }
+
+  // Ajuste para niveles jerárquicos
+  .p-treetable-indent {
+    width: 1rem;
+  }
+
+  // Estilos para el OverlayPanel
+  .p-overlaypanel {
+    .p-overlaypanel-content {
+      padding: 1rem;
+
+      h4 {
+        margin-top: 0;
+      }
+    }
+  }
+}
+
+// Ajustes responsivos
+@media screen and (max-width: 768px) {
+  .sgp-table-header {
+    flex-direction: column;
+    align-items: flex-start;
+
+    h3 {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .info-panel-content {
+    min-width: 250px;
+    max-width: 100%;
+    padding: 0.75rem;
+  }
+}
+
+mat-grid-tile {
+  background: rgb(222, 234, 238);
+}
