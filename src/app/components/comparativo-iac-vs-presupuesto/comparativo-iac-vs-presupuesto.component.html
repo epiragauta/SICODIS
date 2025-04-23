@@ -1,0 +1,107 @@
+<div class="sicodis-container">
+
+  <p-treetable [value]="data"
+                [columns]="cols"
+                [paginator]="true"
+                [rows]="20"
+                [scrollable]="true"
+                scrollHeight="450px"
+                selectionMode="single"
+                [(selection)]="selectedNode"
+                styleClass="sgp-treetable"
+                [resizableColumns]="true"
+                columnResizeMode="expand">
+
+    <ng-template pTemplate="caption">
+      <div class="sgp-table-header">
+        <h2 class="reports-title">Comparativo IAC vs Presupuesto</h2>
+        <div class="options-years">
+          <mat-form-field class="vigencia-select">
+            <mat-label>Vigencia</mat-label>
+              <mat-select [(value)]="selectedVigencia">
+                <mat-option *ngFor="let v of vigencia" [value]="v">{{v.label}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="search-type-select">
+            <mat-label>Buscar por</mat-label>
+              <mat-select [(value)]="selectedSearchType" (selectionChange)="updateSelectedSearchType($event)">
+                <mat-option *ngFor="let s of searchTypes" [value]="s">{{s.label}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field *ngIf="selectedSearchType.id == 2" class="dpto-select">
+            <mat-label>Seleccionar por departamento</mat-label>
+              <mat-select [(value)]="selectedDpto"  (selectionChange)="updateSelectedDpto($event)">
+                <mat-option *ngFor="let d of dptos" [value]="d">{{d.nombre}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field *ngIf="selectedSearchType.id == 3" class="entity-select">
+            <mat-label>Seleccionar por entidad</mat-label>
+              <mat-select [(value)]="selectedEntity" (selectionChange)="updateSelectedEntity($event)">
+                <mat-option *ngFor="let e of entities" [value]="e">{{e.dpto}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field *ngIf="selectedSearchType.id == 3 && selectedEntity.codigo != -1" class="detail-entity-select">
+            <mat-label>Seleccionar detalle</mat-label>
+              <mat-select [(value)]="selectedDetailEntity">
+                <mat-option *ngFor="let d of detailEntitiesFiltered" [value]="d">{{d.entidad}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <button pButton type="button"
+                icon="pi pi-download"
+                label="Exportar"
+                class="p-button-primary"
+                (click)="exportData()">
+        </button>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="colgroup" let-columns>
+      <colgroup>
+        <col *ngFor="let col of columns" [style.width]="col.field === 'concepto' ? '40%' : '20%'">
+      </colgroup>
+    </ng-template>
+
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns">
+          {{col.header}}
+
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+      <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode">
+        <td>
+          <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+          <span [ngClass]="{'font-bold': !rowNode.parent || (rowNode.parent && !rowNode.parent.parent) || (rowNode.parent?.parent && !rowNode.parent.parent.parent)}">
+            {{rowData.categoria}} - {{rowData.concepto}}
+          </span>
+        </td>
+        <td class="text-right">
+          <div class="value-with-info">
+            {{rowData.presupuesto | currency}}
+            <i class="pi pi-info-circle info-icon"
+               *ngIf="hasPresupuestoInfo(rowData)"
+                (click)="showInfo($event, 'presupuesto', rowData)"></i>
+          </div>
+        </td>
+        <td class="text-right">
+          <div class="value-with-info">
+            {{rowData.iac | currency}}
+            <i class="pi pi-info-circle info-icon"
+               *ngIf="hasPresupuestoInfo(rowData)"
+                (click)="showInfo($event, 'presupuesto', rowData)"></i>
+          </div>
+        </td>
+        <td class="text-right">
+          <div class="value-with-info">
+            {{rowData.avance }}
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+  </p-treetable>
+
+</div>

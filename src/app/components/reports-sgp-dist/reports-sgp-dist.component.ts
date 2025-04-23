@@ -13,7 +13,7 @@ import { ButtonModule } from 'primeng/button';
 import { TableRowCollapseEvent, TableRowExpandEvent } from 'primeng/table';
 import { Dialog } from 'primeng/dialog';
 import Chart from 'chart.js/auto';
-import { organizeCategoryData, processArrayData} from '../../data/hierarchicalDataStructure';
+import { organizeCategoryData, processArrayData} from '../../utils/hierarchicalDataStructure';
 import { sgpComparativaDistribucionPorEntidad } from '../../data/sgp-comparativa-distribucion-por-entidad';
 import { departamentos } from '../../data/departamentos';
 import { TreeTableModule } from 'primeng/treetable';

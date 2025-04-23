@@ -2,7 +2,7 @@
  * Organiza datos en una estructura jerárquica basada en categorías
  * Las categorías tipo "1.2.3" se anidan bajo sus categorías padre "1.2"
  * Cada objeto se encapsula dentro de una propiedad 'data'
- * @param {Array} data - Array de objetos con propiedad "Categoria"
+ * @param {Array} data - Array de objetos con propiedad "categoria"
  * @returns {Array} - Estructura jerárquica de datos con el formato:
  * [
  *   {
@@ -24,8 +24,8 @@
 function organizeCategoryData(data: any) {
   // Ordenamos los datos por categoría para asegurar que los padres se procesen antes que los hijos
   const sortedData = [...data].sort((a, b) => {
-    const aSegments = a.Categoria.split('.');
-    const bSegments = b.Categoria.split('.');
+    const aSegments = a.categoria.split('.');
+    const bSegments = b.categoria.split('.');
 
     // Primero comparamos por la profundidad (número de segmentos)
     if (aSegments.length !== bSegments.length) {
@@ -33,7 +33,7 @@ function organizeCategoryData(data: any) {
     }
 
     // Si tienen la misma profundidad, comparamos alfabéticamente
-    return a.Categoria.localeCompare(b.Categoria);
+    return a.categoria.localeCompare(b.categoria);
   });
 
   // Creamos un mapa para acceder fácilmente a los nodos
@@ -48,18 +48,18 @@ function organizeCategoryData(data: any) {
       children: [],  // Inicializamos el array de hijos
       expanded: false,  // Estado de expansión inicial del nodo
     };
-    nodeMap.set(item.Categoria, node);
+    nodeMap.set(item.categoria, node);
   });
 
   // Segunda pasada: establecemos las relaciones padre-hijo
   const rootNodes: any = [];
 
   sortedData.forEach(item => {
-    const node = nodeMap.get(item.Categoria);
+    const node = nodeMap.get(item.categoria);
 
     // Si la categoría tiene un punto, buscamos a su padre
-    if (item.Categoria.includes('.')) {
-      const segments = item.Categoria.split('.');
+    if (item.categoria.includes('.')) {
+      const segments = item.categoria.split('.');
 
       // Construimos la categoría del padre eliminando el último segmento
       const parentCategory = segments.slice(0, -1).join('.');
@@ -83,11 +83,11 @@ function organizeCategoryData(data: any) {
   const childNodeCategories = new Set();
   nodeMap.forEach(node => {
     node.children.forEach((child: any) => {
-      childNodeCategories.add(child.data.Categoria);
+      childNodeCategories.add(child.data.categoria);
     });
   });
 
-  return rootNodes.filter((node: any) => !childNodeCategories.has(node.data.Categoria));
+  return rootNodes.filter((node: any) => !childNodeCategories.has(node.data.categoria));
 }
 
 /**
@@ -113,8 +113,8 @@ function processArrayData(inputData: any) {
 // Ejemplo de uso directo con datos:
 /*
 const result = processArrayData([
-  { Categoria: "1", Concepto: "INVERSION", "2025": 11731118462647, ... },
-  { Categoria: "1.1", Concepto: "Asignación para la Paz", ... },
+  { categoria: "1", concepto: "INVERSION", "2025": 11731118462647, ... },
+  { categoria: "1.1", concepto: "Asignación para la Paz", ... },
   ...
 ]);
 console.log(result);

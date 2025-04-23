@@ -6,7 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { PopoverModule } from 'primeng/popover';
 import { Popover } from 'primeng/popover';
 import { SGPBudgetItem, convertToTreeTableData, getAvanceClass } from '../iac-comparative-vs-budget/sgp-budget-converter';
-import { organizeCategoryData, processArrayData} from '../../data/hierarchicalDataStructure';
+import { organizeCategoryData} from '../../utils/hierarchicalDataStructure';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 
@@ -50,7 +50,6 @@ export class ReportsSgrResumenPlanRecursosComponent implements OnInit {
   @ViewChild('infoPanel') infoPanel!: Popover;
 
   platformId = inject(PLATFORM_ID);
-
   departmentSelected: any = { codigo: 'Todos', nombre: 'Todos los departamentos' };
   townSelected: string = '';
   lawPeriodSelected: string = '';
@@ -95,7 +94,7 @@ export class ReportsSgrResumenPlanRecursosComponent implements OnInit {
 
   ngOnInit() {
     this.cols = [
-      { field: 'Concepto', header: 'Concepto' },
+      { field: 'concepto', header: 'Concepto' },
       { field: this.selectedYear, header: `Presupuesto (${this.selectedYear})` },
       { field: 'avance', header: '% del Total' }
     ];
@@ -112,7 +111,7 @@ export class ReportsSgrResumenPlanRecursosComponent implements OnInit {
           hoverBackgroundColor: ['#FF6344', '#36A2AB', '#FFCE16'],
         }]};
     this.budgetData.forEach((node: any) => {
-      if (node.data.Categoria !== 'total') {
+      if (node.data.categoria !== 'total') {
         this.dataChart.datasets[0].data.push(node.data[this.selectedYear]);
       }
     });
@@ -180,7 +179,7 @@ export class ReportsSgrResumenPlanRecursosComponent implements OnInit {
       // Si se proporcionaron datos externos, úsalos
       this.budgetData = convertToTreeTableData(this.budgetItems);
     } else {
-      this.budgetData = processArrayData(resumenPlanRecursos);
+      this.budgetData = organizeCategoryData(resumenPlanRecursos);
       this.updateAvance();
     }
   }
@@ -188,7 +187,7 @@ export class ReportsSgrResumenPlanRecursosComponent implements OnInit {
   updateAvance(){
     console.log('Actualizando avance... selectedYear:', this.selectedYear);
     // Actualiza el avance de cada nodo basado en el año seleccionado
-    let totalItem = this.budgetData.filter((node: any) => node.data.Categoria === 'total')[0];
+    let totalItem = this.budgetData.filter((node: any) => node.data.categoria === 'total')[0];
     let total = totalItem.data[this.selectedYear];
     this.budgetData.forEach((node: any) => {
       let ratio = (node.data[this.selectedYear] / total) * 100;
@@ -207,12 +206,12 @@ export class ReportsSgrResumenPlanRecursosComponent implements OnInit {
         });
       }
     });
-    console.log("updateAvance :: finished", this.budgetData);
+    //console.log("updateAvance :: finished", this.budgetData);
   }
 
   calculateAdvanceByYear(hierarchicalData: any, year: string, decimals = 2) {
-    // Primero, buscamos el nodo con Categoria = "total"
-    const totalNode = hierarchicalData.find((node: any) => node.data.Categoria === "total");
+    // Primero, buscamos el nodo con categoria = "total"
+    const totalNode = hierarchicalData.find((node: any) => node.data.categoria === "total");
 
     if (!totalNode || !totalNode.data[year]) {
       console.warn(`No se encontró nodo total o el año ${year} no existe en el nodo total`);
@@ -227,7 +226,7 @@ export class ReportsSgrResumenPlanRecursosComponent implements OnInit {
     function updateAdvance(nodes: any) {
       nodes.forEach((node: any) => {
         // Actualizamos el avance solo si no es el nodo total
-        if (node.data.Categoria !== "total" && node.data[year] !== undefined) {
+        if (node.data.categoria !== "total" && node.data[year] !== undefined) {
           const percentage = (node.data[year] / totalValue) * 100;
           node.avance = `${percentage.toFixed(decimals)}%`;
         }
@@ -257,15 +256,15 @@ export class ReportsSgrResumenPlanRecursosComponent implements OnInit {
 
   updateSelectedDepartamento(event: any) {
     console.log('Selected department:', event.value);
-    this.budgetData = processArrayData(resumenPlanRecursos);
+    this.budgetData = organizeCategoryData(resumenPlanRecursos);
     if (event.value === '-1') {
       this.updateAvance();
       return;
     }
-    let totalItem = this.budgetData.filter((node: any) => node.data.Categoria === 'total')[0];
+    let totalItem = this.budgetData.filter((node: any) => node.data.categoria === 'total')[0];
     totalItem.data[this.selectedYear] = totalItem.data[this.selectedYear] * (this.departmentSelected.porcentaje / 100);
     this.budgetData.forEach((node: any) => {
-      if (node.data.Categoria !== 'total') {
+      if (node.data.categoria !== 'total') {
         node.data[this.selectedYear] = node.data[this.selectedYear] * (this.departmentSelected.porcentaje / 100);
         if (node.children.length > 0) {
           node.children.forEach((child: any) => {
@@ -296,12 +295,12 @@ export class ReportsSgrResumenPlanRecursosComponent implements OnInit {
 
   // Verifica si hay información disponible para el presupuesto de un nodo
   hasPresupuestoInfo(rowData: any): boolean {
-    return this.hasInfo(rowData.Concepto, 'presupuesto');
+    return this.hasInfo(rowData.concepto, 'presupuesto');
   }
 
   // Verifica si hay información disponible para el IAC de un nodo
   hasIacInfo(rowData: any): boolean {
-    return this.hasInfo(rowData.Concepto, 'iac');
+    return this.hasInfo(rowData.concepto, 'iac');
   }
 
   // Método genérico para verificar si hay información
@@ -319,11 +318,11 @@ export class ReportsSgrResumenPlanRecursosComponent implements OnInit {
     event.preventDefault();
     event.stopPropagation();
 
-    if (!this.infoMap.has(rowData.Concepto)) {
+    if (!this.infoMap.has(rowData.concepto)) {
       return;
     }
 
-    const categoryInfo = this.infoMap.get(rowData.Concepto);
+    const categoryInfo = this.infoMap.get(rowData.concepto);
     const info = categoryInfo?.get(field);
 
     if (info) {

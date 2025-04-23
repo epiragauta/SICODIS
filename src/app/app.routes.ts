@@ -11,6 +11,7 @@ import { IacComparativeVsBudgetComponent} from './components/iac-comparative-vs-
 import { ReportsSgrResumenPlanRecursosComponent} from './components/reports-sgr-resumen-plan-recursos/reports-sgr-resumen-plan-recursos.component';
 import { FaqComponent } from './components/faq/faq.component';
 import { ToolsComponent } from './components/tools/tools.component';
+import { ComparativoIacVsPresupuestoComponent } from './components/comparativo-iac-vs-presupuesto/comparativo-iac-vs-presupuesto.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -22,6 +23,7 @@ export const routes: Routes = [
     { path: 'reports-sgr-comparative', component: ReportsSgrComparativeComponent },
     { path: 'reports-map', component: ReportsMapComponent },
     { path: 'iac-comparative-vs-budget', component: IacComparativeVsBudgetComponent },
+    { path: 'comparativo-iac-presupuesto', component: ComparativoIacVsPresupuestoComponent },
     { path: 'reports-sgr-resumen-plan-recursos', component: ReportsSgrResumenPlanRecursosComponent },
     { path: 'faq', component: FaqComponent },
     { path: 'tools', component: ToolsComponent }

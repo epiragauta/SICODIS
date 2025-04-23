@@ -9,8 +9,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 7131964455065,
   "2033": 5958945624682,
   "2034": 5837049342081,
-  "Categoria": "1",
-  "Concepto": "INVERSION"
+  "categoria": "1",
+  "concepto": "INVERSION"
 }, {
   "2025": 887760316092,
   "2026": 899771053864,
@@ -22,8 +22,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 539716229032,
   "2033": 450947236462,
   "2034": 441722652914,
-  "Categoria": "1.1",
-  "Concepto": "Asignación para la Paz"
+  "categoria": "1.1",
+  "concepto": "Asignación para la Paz"
 }, {
   "2025": 3170572557472,
   "2026": 3213468049513,
@@ -35,8 +35,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 1927557960829,
   "2033": 1610525844509,
   "2034": 1577580903265,
-  "Categoria": "1.2",
-  "Concepto": "Asignaciones Directas"
+  "categoria": "1.2",
+  "concepto": "Asignaciones Directas"
 }, {
   "2025": 2536458045978,
   "2026": 2570774439610,
@@ -48,8 +48,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 1542046368663,
   "2033": 1288420675607,
   "2034": 1262064722612,
-  "Categoria": "1.2.1",
-  "Concepto": "20% Asignaciones Directas"
+  "categoria": "1.2.1",
+  "concepto": "20% Asignaciones Directas"
 }, {
   "2025": 634114511494,
   "2026": 642693609903,
@@ -61,8 +61,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 385511592166,
   "2033": 322105168902,
   "2034": 315516180653,
-  "Categoria": "1.2.2",
-  "Concepto": "5% Asignaciones Directas Anticipadas"
+  "categoria": "1.2.2",
+  "concepto": "5% Asignaciones Directas Anticipadas"
 }, {
   "2025": 4311978678162,
   "2026": 4370316547338,
@@ -74,8 +74,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 2621478826727,
   "2033": 2190315148532,
   "2034": 2145510028440,
-  "Categoria": "1.3",
-  "Concepto": "Asignación para la Inversión Regional"
+  "categoria": "1.3",
+  "concepto": "Asignación para la Inversión Regional"
 }, {
   "2025": 2587187206897,
   "2026": 2622189928403,
@@ -87,8 +87,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 1572887296036,
   "2033": 1314189089119,
   "2034": 1287306017064,
-  "Categoria": "1.3.1",
-  "Concepto": "Departamentos"
+  "categoria": "1.3.1",
+  "concepto": "Departamentos"
 }, {
   "2025": 1724791471265,
   "2026": 1748126618935,
@@ -100,8 +100,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 1048591530691,
   "2033": 876126059413,
   "2034": 858204011376,
-  "Categoria": "1.3.2",
-  "Concepto": "Regiones"
+  "categoria": "1.3.2",
+  "concepto": "Regiones"
 }, {
   "2025": 1902343534484,
   "2026": 1928080829708,
@@ -113,8 +113,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 1156534776496,
   "2033": 966315506705,
   "2034": 946548541960,
-  "Categoria": "1.4",
-  "Concepto": "Asignación para la Inversión Local"
+  "categoria": "1.4",
+  "concepto": "Asignación para la Inversión Local"
 }, {
   "2025": 1608114401151,
   "2026": 1629870994713,
@@ -126,8 +126,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 977657397733,
   "2033": 816858708335,
   "2034": 800149034136,
-  "Categoria": "1.4.1",
-  "Concepto": "Municipios más pobres"
+  "categoria": "1.4.1",
+  "concepto": "Municipios más pobres"
 }, {
   "2025": 214415253487,
   "2026": 217316132628,
@@ -139,8 +139,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 130354319698,
   "2033": 108914494445,
   "2034": 106686537885,
-  "Categoria": "1.4.1.2",
-  "Concepto": "Destinación para medio ambiente y desarrollo sostenible"
+  "categoria": "1.4.1.2",
+  "concepto": "Destinación para medio ambiente y desarrollo sostenible"
 }, {
   "2025": 1393699147664,
   "2026": 1412554862085,
@@ -152,8 +152,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 847303078035,
   "2033": 707944213890,
   "2034": 693462496251,
-  "Categoria": "1.4.1.2",
-  "Concepto": "Resto de Inversión"
+  "categoria": "1.4.1.2",
+  "concepto": "Resto de Inversión"
 }, {
   "2025": 294229133333,
   "2026": 298209834995,
@@ -165,8 +165,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 178877378763,
   "2033": 149456798370,
   "2034": 146399507824,
-  "Categoria": "1.5",
-  "Concepto": "Comunidades Étnicas"
+  "categoria": "1.5",
+  "concepto": "Comunidades Étnicas"
 }, {
   "2025": 126822902299,
   "2026": 128538721980,
@@ -178,8 +178,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 77102318433,
   "2033": 64421033781,
   "2034": 63103236130,
-  "Categoria": "1.6",
-  "Concepto": "Comunidades Indígenas"
+  "categoria": "1.6",
+  "concepto": "Comunidades Indígenas"
 }, {
   "2025": 16909720307,
   "2026": 17138496264,
@@ -191,8 +191,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 10280309124,
   "2033": 8589471171,
   "2034": 8413764817,
-  "Categoria": "1.7",
-  "Concepto": "Destinación para medio ambiente y desarrollo sostenible"
+  "categoria": "1.7",
+  "concepto": "Destinación para medio ambiente y desarrollo sostenible"
 }, {
   "2025": 109913181992,
   "2026": 111400225716,
@@ -204,8 +204,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 66822009309,
   "2033": 55831562610,
   "2034": 54689471313,
-  "Categoria": "1.8",
-  "Concepto": "Resto de Inversión"
+  "categoria": "1.8",
+  "concepto": "Resto de Inversión"
 }, {
   "2025": 139505192529,
   "2026": 141392594178,
@@ -217,8 +217,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 84812550277,
   "2033": 70863137159,
   "2034": 69413559744,
-  "Categoria": "1.9",
-  "Concepto": "Comunidades NARP"
+  "categoria": "1.9",
+  "concepto": "Comunidades NARP"
 }, {
   "2025": 18600692337,
   "2026": 18852345890,
@@ -230,8 +230,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 11308340037,
   "2033": 9448418288,
   "2034": 9255141299,
-  "Categoria": "1.10",
-  "Concepto": "Destinación para medio ambiente y desarrollo sostenible"
+  "categoria": "1.10",
+  "concepto": "Destinación para medio ambiente y desarrollo sostenible"
 }, {
   "2025": 120904500192,
   "2026": 122540248288,
@@ -243,8 +243,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 73504210240,
   "2033": 61414718871,
   "2034": 60158418445,
-  "Categoria": "1.11",
-  "Concepto": "Resto de Inversión"
+  "categoria": "1.11",
+  "concepto": "Resto de Inversión"
 }, {
   "2025": 27901038505,
   "2026": 28278518837,
@@ -256,8 +256,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 16962510053,
   "2033": 14172627430,
   "2034": 13882711950,
-  "Categoria": "1.12",
-  "Concepto": "Comunidades Rrom"
+  "categoria": "1.12",
+  "concepto": "Comunidades Rrom"
 }, {
   "2025": 3720138467,
   "2026": 3770469178,
@@ -269,8 +269,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 2261668007,
   "2033": 1889683658,
   "2034": 1851028260,
-  "Categoria": "1.13",
-  "Concepto": "Destinación para medio ambiente y desarrollo sostenible"
+  "categoria": "1.13",
+  "concepto": "Destinación para medio ambiente y desarrollo sostenible"
 }, {
   "2025": 24180900038,
   "2026": 24508049659,
@@ -282,8 +282,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 14700842046,
   "2033": 12282943772,
   "2034": 12031683690,
-  "Categoria": "1.14",
-  "Concepto": "Resto de Inversión"
+  "categoria": "1.14",
+  "concepto": "Resto de Inversión"
 }, {
   "2025": 1268229022989,
   "2026": 1285387219805,
@@ -295,8 +295,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 771023184331,
   "2033": 644210337804,
   "2034": 631032361306,
-  "Categoria": "1.15",
-  "Concepto": "Asignación para Ciencia, Tecnología e Innovación"
+  "categoria": "1.15",
+  "concepto": "Asignación para Ciencia, Tecnología e Innovación"
 }, {
   "2025": 253645804598,
   "2026": 257077443961,
@@ -308,8 +308,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 154204636866,
   "2033": 128842067561,
   "2034": 126206472261,
-  "Categoria": "1.15.1",
-  "Concepto": "Asignación para Inversión en Ciencia, Tecnología e Innovación Ambiental"
+  "categoria": "1.15.1",
+  "concepto": "Asignación para Inversión en Ciencia, Tecnología e Innovación Ambiental"
 }, {
   "2025": 1014583218391,
   "2026": 1028309775844,
@@ -321,8 +321,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 616818547465,
   "2033": 515368270243,
   "2034": 504825889045,
-  "Categoria": "1.15.2",
-  "Concepto": "Resto de inversión"
+  "categoria": "1.15.2",
+  "concepto": "Resto de inversión"
 }, {
   "2025": 126822902299,
   "2026": 128538721981,
@@ -334,8 +334,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 77102318433,
   "2033": 64421033780,
   "2034": 63103236131,
-  "Categoria": "1.16",
-  "Concepto": "Asignación Ambiental"
+  "categoria": "1.16",
+  "concepto": "Asignación Ambiental"
 }, {
   "2025": 63411451149,
   "2026": 64269360990,
@@ -347,8 +347,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 38551159217,
   "2033": 32210516890,
   "2034": 31551618065,
-  "Categoria": "1.17",
-  "Concepto": "Municipios Río Magdalena y Canal Dique"
+  "categoria": "1.17",
+  "concepto": "Municipios Río Magdalena y Canal Dique"
 }, {
   "2025": 570703060344,
   "2026": 578424248912,
@@ -360,8 +360,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 346960432950,
   "2033": 289894652012,
   "2034": 283964562588,
-  "Categoria": "2",
-  "Concepto": "AHORRO"
+  "categoria": "2",
+  "concepto": "AHORRO"
 }, {
   "2025": 285351530172,
   "2026": 289212124456,
@@ -373,8 +373,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 173480216475,
   "2033": 144947326006,
   "2034": 141982281294,
-  "Categoria": "2.1",
-  "Concepto": "Fondo de Ahorro y Estabilización (Ahorro)"
+  "categoria": "2.1",
+  "concepto": "Fondo de Ahorro y Estabilización (Ahorro)"
 }, {
   "2025": 285351530172,
   "2026": 289212124456,
@@ -386,8 +386,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 173480216475,
   "2033": 144947326006,
   "2034": 141982281294,
-  "Categoria": "2.2",
-  "Concepto": "Fondo Ahorro Pensional Territorial(FONPET)"
+  "categoria": "2.2",
+  "concepto": "Fondo Ahorro Pensional Territorial(FONPET)"
 }, {
   "2025": 380468706897,
   "2026": 385616165941,
@@ -399,8 +399,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 231306955299,
   "2033": 193263101341,
   "2034": 189309708392,
-  "Categoria": "3",
-  "Concepto": "OTROS"
+  "categoria": "3",
+  "concepto": "OTROS"
 }, {
   "2025": 253645804598,
   "2026": 257077443961,
@@ -412,8 +412,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 154204636866,
   "2033": 128842067561,
   "2034": 126206472261,
-  "Categoria": "3.1",
-  "Concepto": "Funcionamiento, operatividad y fiscalización"
+  "categoria": "3.1",
+  "concepto": "Funcionamiento, operatividad y fiscalización"
 }, {
   "2025": 126822902299,
   "2026": 128538721980,
@@ -425,8 +425,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 77102318433,
   "2033": 64421033780,
   "2034": 63103236131,
-  "Categoria": "3.2",
-  "Concepto": "Sistema de Seguimiento, Control y Evaluación (SSEC)"
+  "categoria": "3.2",
+  "concepto": "Sistema de Seguimiento, Control y Evaluación (SSEC)"
 }, {
   "2025": 63411451149,
   "2026": 64269360990,
@@ -438,8 +438,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 38551159217,
   "2033": 32210516890,
   "2034": 31551618065,
-  "Categoria": "3.2.1",
-  "Concepto": "Contraloría"
+  "categoria": "3.2.1",
+  "concepto": "Contraloría"
 }, {
   "2025": 12682290230,
   "2026": 12853872198,
@@ -451,8 +451,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 7710231843,
   "2033": 6442103378,
   "2034": 6310323614,
-  "Categoria": "3.2.2",
-  "Concepto": "Procuraduría"
+  "categoria": "3.2.2",
+  "concepto": "Procuraduría"
 }, {
   "2025": 50729160920,
   "2026": 51415488792,
@@ -464,8 +464,8 @@ export const resumenPlanRecursos: any = [{
   "2032": 30840927373,
   "2033": 25768413512,
   "2034": 25241294452,
-  "Categoria": "3.2.3",
-  "Concepto": "DNP"
+  "categoria": "3.2.3",
+  "concepto": "DNP"
 }, {
   "2025": 12682290229888,
   "2026": 12853872198052,
@@ -477,7 +477,7 @@ export const resumenPlanRecursos: any = [{
   "2032": 7710231843314,
   "2033": 6442103378035,
   "2034": 6310323613061,
-  "Categoria": "total",
-  "Concepto": "Total"
+  "categoria": "total",
+  "concepto": "Total"
 }
 ]

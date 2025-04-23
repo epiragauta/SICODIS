@@ -1,0 +1,40 @@
+.sgp-table-header {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.reports-title {
+  margin-bottom: 1rem;
+}
+
+.options-years {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.vigencia-select,
+.search-type-select,
+.dpto-select,
+.entity-select,
+.detail-entity-select {
+  flex: 1 1 200px;
+  min-width: 200px;
+}
+
+/* Reglas para dispositivos móviles */
+@media screen and (max-width: 768px) {
+  .options-years {
+    flex-direction: column;
+  }
+
+  .vigencia-select,
+  .search-type-select,
+  .dpto-select,
+  .entity-select,
+  .detail-entity-select {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
