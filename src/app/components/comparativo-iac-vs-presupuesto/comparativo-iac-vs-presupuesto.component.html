@@ -28,31 +28,41 @@
                 <mat-option *ngFor="let s of searchTypes" [value]="s">{{s.label}}</mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field *ngIf="selectedSearchType.id == 2" class="dpto-select">
+          <mat-form-field *ngIf="selectedSearchType.id == 2"  class="dpto-select">
             <mat-label>Seleccionar por departamento</mat-label>
               <mat-select [(value)]="selectedDpto"  (selectionChange)="updateSelectedDpto($event)">
                 <mat-option *ngFor="let d of dptos" [value]="d">{{d.nombre}}</mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field *ngIf="selectedSearchType.id == 3" class="entity-select">
+          <mat-form-field *ngIf="selectedSearchType.id == 3 || selectedSearchType.id == -1" class="entity-select">
             <mat-label>Seleccionar por entidad</mat-label>
               <mat-select [(value)]="selectedEntity" (selectionChange)="updateSelectedEntity($event)">
                 <mat-option *ngFor="let e of entities" [value]="e">{{e.dpto}}</mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field *ngIf="selectedSearchType.id == 3 && selectedEntity.codigo != -1" class="detail-entity-select">
+          <mat-form-field class="detail-entity-select">
             <mat-label>Seleccionar detalle</mat-label>
               <mat-select [(value)]="selectedDetailEntity">
                 <mat-option *ngFor="let d of detailEntitiesFiltered" [value]="d">{{d.entidad}}</mat-option>
             </mat-select>
           </mat-form-field>
-        </div>
-        <button pButton type="button"
+          <div>
+            <button pButton type="button"
                 icon="pi pi-download"
-                label="Exportar"
+                label="Consultar"
                 class="p-button-primary"
-                (click)="exportData()">
-        </button>
+                (click)="queryData()">
+            </button>
+          </div>
+          <div>
+            <p-splitbutton label="Save" Button type="button"
+            icon="pi pi-download"
+            label="Exportar"
+            class="p-button-primary"
+            (click)="exportData()"
+            [model]="menuItems" />
+          </div>
+        </div>
       </div>
     </ng-template>
 

@@ -1,7 +1,8 @@
 import { Input, ViewChild, ChangeDetectorRef, Component, effect, inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { TreeNode } from 'primeng/api';
+import { TreeNode, MenuItem, MessageService } from 'primeng/api';
 import { CommonModule } from '@angular/common';
 import { TreeTableModule } from 'primeng/treetable';
+import { SplitButtonModule } from 'primeng/splitbutton';
 import { ButtonModule } from 'primeng/button';
 import { PopoverModule } from 'primeng/popover';
 import { Popover } from 'primeng/popover';
@@ -38,6 +39,7 @@ interface NodeInfo {
     MatSelectModule,
     TreeTableModule,
     ButtonModule,
+    SplitButtonModule,
     MatGridListModule,
     ChartModule,
     PopoverModule],
@@ -65,6 +67,8 @@ export class ComparativoIacVsPresupuestoComponent {
   selectedInfoDescription: string = '';
   selectedInfoDocuments: DocumentInfo[] = [];
   selectedInfoMoreDetailsUrl: string | undefined = undefined;
+
+  menuItems: MenuItem[];
 
   territorialEntitiesDetailUrl = '/assets/data/territorial-entities-detail.json';
   detailedDataUrl = '/assets/data/comparativo-iac-vs-presupuesto-detallado-entidades.json';
@@ -118,6 +122,22 @@ export class ComparativoIacVsPresupuestoComponent {
   detailedData: any[] = [];
   detailedDataFiltered: any[] = [];
 
+  constructor(private cd: ChangeDetectorRef) {
+    this.menuItems = [
+      {
+        label: 'Exportar Reporte',
+        icon: 'pi pi-fw pi-file',
+        command: () => this.exportData()
+      },
+      {
+        label: 'Exportar Detalle',
+        icon: 'pi pi-fw pi-question',
+        command: () => this.exportData()
+      }
+    ];
+
+  }
+
   ngOnInit() {
     this.cols = [
       { field: 'concepto', header: 'Concepto' },
@@ -137,7 +157,10 @@ export class ComparativoIacVsPresupuestoComponent {
 
   exportData() {
     console.log('Exportando datos...');
+  }
 
+  queryData(){
+    console.log("Query Data...");
   }
 
   hasPresupuestoInfo(rowData: any): boolean {
