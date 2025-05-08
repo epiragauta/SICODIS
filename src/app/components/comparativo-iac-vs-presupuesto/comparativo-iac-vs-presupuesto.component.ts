@@ -142,7 +142,7 @@ export class ComparativoIacVsPresupuestoComponent {
     this.cols = [
       { field: 'concepto', header: 'Concepto' },
       { field: 'presupuesto', header: 'Presupuesto/2' },
-      { field: 'iac', header: 'Instrucción de abono a cuenta' },
+      { field: 'iac', header: 'Instrucción de abono a cuenta (Recaudo)' },
       { field: 'avance-iac-vs-presupuesto', header: 'Avance IAC frente  a presupuesto' }
     ];
     this.loadData();

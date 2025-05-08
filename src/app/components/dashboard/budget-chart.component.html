@@ -1,0 +1,28 @@
+<div class="chart-container">
+  <div class="chart-header">
+    <h3>Distribución del Presupuesto SGP</h3>
+    <p-selectButton [options]="viewOptions" [(ngModel)]="selectedView" (onChange)="onChartTypeChange($event)" optionLabel="label" optionValue="value"></p-selectButton>
+  </div>
+
+  <div class="chart-content">
+    <p-card>
+      <div class="chart-area">
+        <!-- Gráfico Circular (PIE) -->
+        <div *ngIf="selectedView === 'pie'" class="chart-wrapper">
+          <p-chart type="pie" [data]="chartData.pie" [options]="chartOptions.pie"></p-chart>
+        </div>
+
+        <!-- Gráfico de Barras -->
+        <div *ngIf="selectedView === 'bar'" class="chart-wrapper">
+          <p-chart type="bar" [data]="chartData.bar" [options]="chartOptions.bar" class="h-[30rem]"></p-chart>
+        </div>
+      </div>
+
+      <div class="chart-footer">
+        <div class="chart-info">
+          <p>Valores expresados en miles de millones de pesos colombianos (COP). La distribución muestra la proporción de recursos asignados a cada categoría del Sistema General de Participaciones (SGP).</p>
+        </div>
+      </div>
+    </p-card>
+  </div>
+</div>

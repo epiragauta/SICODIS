@@ -8,7 +8,7 @@
                 scrollHeight="450px"
                 selectionMode="single"
                 [(selection)]="selectedNode"
-                styleClass="sgp-treetable"
+                styleClass="p-treetable-sm"
                 [resizableColumns]="true"
                 columnResizeMode="expand">
 
@@ -74,7 +74,7 @@
 
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th *ngFor="let col of columns">
+        <th *ngFor="let col of columns" [ngClass]="col.field === 'concepto' ? 'text-left' : 'text-right'">
           {{col.header}}
 
         </th>

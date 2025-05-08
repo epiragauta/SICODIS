@@ -6,7 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { PopoverModule } from 'primeng/popover';
 import { Popover } from 'primeng/popover';
 import { SGPBudgetItem, convertToTreeTableData, getAvanceClass } from '../iac-comparative-vs-budget/sgp-budget-converter';
-import { organizeCategoryData} from '../../utils/hierarchicalDataStructure';
+import { organizeCategoryData} from '../../utils/hierarchicalDataStructureV2';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 
@@ -14,7 +14,7 @@ import { resumenPlanRecursos} from '../../data/resumen-plan-recursos';
 import { departamentos } from '../../data/departamentos';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { ChartModule } from 'primeng/chart';
-
+import { SplitterModule } from 'primeng/splitter';
 
 interface DocumentInfo {
   name: string;
@@ -39,7 +39,8 @@ interface NodeInfo {
     ButtonModule,
     MatGridListModule,
     ChartModule,
-    PopoverModule],
+    PopoverModule,
+    SplitterModule ],
   templateUrl: './reports-sgr-resumen-plan-recursos.component.html',
   styleUrl: './reports-sgr-resumen-plan-recursos.component.scss'
 })

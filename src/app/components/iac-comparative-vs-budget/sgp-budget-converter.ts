@@ -453,6 +453,10 @@ export function calcularAvance(presupuesto: string | number, iac: string | numbe
  * @returns Nombre de la clase CSS a aplicar
  */
 export function getAvanceClass(avance: string): string {
+  //console.log('Avance:', avance);
+  if (avance == null || avance === undefined) {
+    return 'avance-bajo'; // Valor por defecto si no se proporciona un avance válido
+  }
   const value = parseFloat(avance.replace('%', ''));
   if (value >= 100) {
     return 'avance-completo';

@@ -255,5 +255,18 @@
 }
 
 mat-grid-tile {
-  background: rgb(222, 234, 238);
+  background: rgb(252, 252, 252);
+}
+
+
+.options-years {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+
+.table-and-chart {
+  display: flex;
+  gap: 1rem;
 }

@@ -2,111 +2,147 @@
   <!-- Título principal solo si es necesario -->
   <!-- <h2 class="sgp-title">Sistema General de Participaciones</h2> -->
 
-  <!-- TreeTable de PrimeNG -->
-  <p-treetable [value]="budgetData"
-                [columns]="cols"
-                [paginator]="true"
-                [rows]="20"
-                [scrollable]="true"
-                scrollHeight="450px"
-                selectionMode="single"
-                [(selection)]="selectedNode"
-                styleClass="sgp-treetable"
-                [resizableColumns]="true"
-                columnResizeMode="expand">
 
-    <ng-template pTemplate="caption">
-      <div class="sgp-table-header">
-        <h2 class="reports-title">Reportes SGR» Resumen Plan de Recursos del Sistema General de Regalías</h2>
+    <div class="sgp-table-header">
+      <h2 class="reports-title">Reportes SGR» Resumen Plan de Recursos del Sistema General de Regalías</h2>
+
+    </div>
+    <div class="options-years">
+      <mat-form-field class="department-select">
+        <mat-label>Departamento</mat-label>
+        <mat-select [(value)]="departmentSelected" (selectionChange)="updateSelectedDepartamento($event)">
+            <mat-option *ngFor="let department of departamentos" [value]="department">{{department.nombre}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="town-select">
+          <mat-label>Entidad</mat-label>
+          <mat-select [(value)]="townSelected">
+              <mat-option *ngFor="let town of towns" [value]="town.c">{{town.d}}</mat-option>
+          </mat-select>
+      </mat-form-field>
+      <mat-form-field class="law-period-select">
+        <mat-label>Vigencia</mat-label>
+          <mat-select [(value)]="lawPeriodSelected">
+            <mat-option *ngFor="let period of lawPeriods" [value]="period.name">{{period.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="law-period-select">
+        <mat-label>Años</mat-label>
+          <mat-select [(value)]="selectedYear" (selectionChange)="updateSelectedYear($event)">
+            <mat-option *ngFor="let year of years" [value]="year">{{year}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="law-period-select">
         <button pButton type="button"
-                icon="pi pi-download"
-                label="Exportar"
-                class="p-button-primary"
-                (click)="exportData()">
+              icon="pi pi-download"
+              label="Exportar"
+              class="p-button-primary"
+              (click)="exportData()">
         </button>
       </div>
-      <div class="options-years">
-        <mat-form-field class="department-select">
-          <mat-label>Departamento</mat-label>
-          <mat-select [(value)]="departmentSelected" (selectionChange)="updateSelectedDepartamento($event)">
-              <mat-option *ngFor="let department of departamentos" [value]="department">{{department.nombre}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field class="town-select">
-            <mat-label>Entidad</mat-label>
-            <mat-select [(value)]="townSelected">
-                <mat-option *ngFor="let town of towns" [value]="town.c">{{town.d}}</mat-option>
-            </mat-select>
-        </mat-form-field>
-        <mat-form-field class="law-period-select">
-          <mat-label>Vigencia</mat-label>
-            <mat-select [(value)]="lawPeriodSelected">
-              <mat-option *ngFor="let period of lawPeriods" [value]="period.name">{{period.name}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field class="law-period-select">
-          <mat-label>Años</mat-label>
-            <mat-select [(value)]="selectedYear" (selectionChange)="updateSelectedYear($event)">
-              <mat-option *ngFor="let year of years" [value]="year">{{year}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-    </ng-template>
-
-    <ng-template pTemplate="colgroup" let-columns>
-      <colgroup>
-        <col *ngFor="let col of columns" [style.width]="col.field === 'Concepto' ? '40%' : '20%'">
-      </colgroup>
-    </ng-template>
-    <ng-template pTemplate="header" let-columns>
-      <tr>
-        <th *ngFor="let col of columns; let i = index"
-          ttResizableColumn [ngClass]="{'text-right': i > 0}">
-          {{col.header}}
-        </th>
-      </tr>
-    </ng-template>
-
-    <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
-      <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode">
-        <td>
-          <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-          <span [ngClass]="{'font-bold': !rowNode.parent || (rowNode.parent && !rowNode.parent.parent) || (rowNode.parent?.parent && !rowNode.parent.parent.parent)}">
-            {{rowData.Concepto}}
-          </span>
-        </td>
-        <td class="text-right">
-          <div class="value-with-info">
-            {{rowData[selectedYear] | currency}}
-            <i class="pi pi-info-circle info-icon"
-               *ngIf="hasPresupuestoInfo(rowData)"
-                (click)="showInfo($event, 'presupuesto', rowData)"></i>
-          </div>
-        </td>
-        <td class="text-right">
-          <span class="avance-badge" [ngClass]="getAvanceClass(rowData.avance)">
-            {{rowData.avance}}
-          </span>
-        </td>
-      </tr>
-    </ng-template>
-
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td [attr.colspan]="4">No se encontraron registros.</td>
-      </tr>
-    </ng-template>
-  </p-treetable>
-
-  <mat-grid-list cols="2" rowHeight="2:1">
-    <mat-grid-tile>
-      <div class="card flex justify-center">
-        <p-chart type="pie" [data]="dataChart" [options]="optionsChart" class="w-full md:w-[30rem]" />
     </div>
-    </mat-grid-tile>
-    <mat-grid-tile>2</mat-grid-tile>
+    <p-splitter [panelSizes]="[75, 25]" [style]="{ height: '400px' }" styleClass="mb-8">
+      <ng-template pTemplate="panel">
+          <div class="flex items-center justify-center h-full">
+            <!-- TreeTable de PrimeNG -->
+            <p-treetable [value]="budgetData"
+                          [columns]="cols"
+                          [paginator]="true"
+                          [rows]="20"
+                          [scrollable]="true"
+                          scrollHeight="300px"
+                          selectionMode="single"
+                          [(selection)]="selectedNode"
+                          styleClass="sgp-treetable"
+                          [resizableColumns]="true"
+                          columnResizeMode="expand">
 
-  </mat-grid-list>
+              <ng-template pTemplate="colgroup" let-columns>
+                <colgroup>
+                  <col *ngFor="let col of columns" [style.width]="col.field === 'Concepto' ? '40%' : '20%'">
+                </colgroup>
+              </ng-template>
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th *ngFor="let col of columns; let i = index"
+                    ttResizableColumn [ngClass]="{'text-right': i > 0}">
+                    {{col.header}}
+                  </th>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+                <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode">
+                  <td>
+                    <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                    <span [ngClass]="{'font-bold': !rowNode.parent || (rowNode.parent && !rowNode.parent.parent) || (rowNode.parent?.parent && !rowNode.parent.parent.parent)}">
+                      {{rowData.concepto}}
+                    </span>
+                  </td>
+                  <td class="text-right">
+                    <div class="value-with-info">
+                      {{rowData[selectedYear] | currency}}
+                      <i class="pi pi-info-circle info-icon"
+                        *ngIf="hasPresupuestoInfo(rowData)"
+                          (click)="showInfo($event, 'presupuesto', rowData)"></i>
+                    </div>
+                  </td>
+                  <td class="text-right">
+                    <span class="avance-badge" [ngClass]="getAvanceClass(rowData.avance)">
+                      {{rowData.avance}}
+                    </span>
+                  </td>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td [attr.colspan]="4">No se encontraron registros.</td>
+                </tr>
+              </ng-template>
+            </p-treetable>
+
+          </div>
+      </ng-template>
+      <ng-template pTemplate="panel">
+          <div class="flex items-center justify-center h-full">
+            <div class="chart-container">
+              <p-chart type="pie" [data]="dataChart" [options]="" class="w-full md:w-[30rem]" />
+            </div>
+          </div>
+      </ng-template>
+    </p-splitter>
+
+    <p-splitter [style]="{ height: '300px' }" [panelSizes]="[20, 80]" [minSizes]="[10, 0]" styleClass="mb-8">
+
+      <ng-template pTemplate="panel">
+          <p-splitter layout="vertical" [panelSizes]="[50, 50]">
+              <ng-template pTemplate="panel">
+                  <p-splitter [panelSizes]="[75, 25]">
+                      <ng-template pTemplate="panel">
+                          <div class="col flex items-center justify-center">Panel 3</div>
+                      </ng-template>
+                      <ng-template pTemplate="panel">
+                          <div class="col flex items-center justify-center">Panel 4</div>
+                      </ng-template>
+                  </p-splitter>
+              </ng-template>
+              <ng-template pTemplate="panel">
+                <div style="flex-grow: 1;" class="flex items-center justify-center">Panel 2</div>
+            </ng-template>
+          </p-splitter>
+      </ng-template>
+  </p-splitter>
+
+
+  <div class="table-and-chart">
+    <div>
+
+    </div>
+
+  </div>
+
+
 
   <!-- Panel de información -->
   <p-popover #infoPanel [showCloseIcon]="true">
