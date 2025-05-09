@@ -6,20 +6,10 @@
   padding: 6px 10px 0 !important;
 }
 
-mat-menu-item {
-  font-size: 10px !important;
-}
 
-:host ::ng-deep .mat-menu-item {
-  font-size: 10px !important;
-}
-
-:host ::ng-deep .mat-mdc-menu-item {
-  font-size: 10px !important;
-}
-
-:host ::ng-deep mat-menu-item {
-  font-size: 10px !important;
+.mat-mdc-menu-item{
+  min-height: 32px !important;
+  font-family: inherit !important;
 }
 
 .grid-container {

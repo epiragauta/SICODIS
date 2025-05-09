@@ -94,8 +94,18 @@ export class BudgetMapComponent implements OnInit, OnChanges, AfterViewInit {
     // Verificamos si estamos en un navegador y si Leaflet está disponible
     if (typeof window !== 'undefined' && typeof L !== 'undefined') {
       try {
+
+        const southWest = L.latLng(-9.53, -89.56);
+        const northEast = L.latLng(19.06, -59.18);
+        const bounds = L.latLngBounds(southWest, northEast);
+
         // Creamos el mapa centrado en Colombia
-        this.map = L.map('budget-map').setView([4.5, -74.3], 5);
+        this.map = L.map('budget-map', {
+          minZoom: 4, // Nivel mínimo de zoom permitido (más alejado)
+          maxZoom: 8, // Nivel máximo de zoom permitido (más cercano)
+          maxBounds: bounds, // Establecemos los límites del mapa
+          maxBoundsViscosity: 1.0, // Evita que el mapa se desplace fuera de los límites
+        }).setView([4.5, -74.3], 5);
 
         // Añadimos el layer de OpenStreetMap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -107,6 +117,29 @@ export class BudgetMapComponent implements OnInit, OnChanges, AfterViewInit {
 
         // Añadimos los marcadores de los departamentos
         this.updateMapMarkers();
+
+        let self = this
+        this.map.on('zoomend', function() {
+          const currentZoom = self.map.getZoom();
+          const center = self.map.getCenter();
+          const bounds = self.map.getBounds();
+          console.log('Bounds:', bounds);
+
+          // Por ejemplo, limita el zoom máximo a 15 para una región específica
+          //if (isInSpecificArea(center) && currentZoom > 15) {
+          //  self.map.setZoom(15);
+          //}
+        });
+
+        function isInSpecificArea(latLng: any) {
+          // Define un límite rectangular (bounds)
+          const restrictedBounds = L.latLngBounds(
+            L.latLng(-9.53, -89.56), // Esquina suroeste
+            L.latLng(19.06, -59.18)  // Esquina noreste
+          );
+
+          return restrictedBounds.contains(latLng);
+        }
 
       } catch (error) {
         console.error('Error al inicializar el mapa:', error);
@@ -125,6 +158,8 @@ export class BudgetMapComponent implements OnInit, OnChanges, AfterViewInit {
       }
     }
   }
+
+
 
   updateMapMarkers(): void {
     // Si el mapa no está inicializado, no hacemos nada
