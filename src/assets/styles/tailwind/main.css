@@ -10,6 +10,7 @@
 
 :root {
   --md-font-family: var(--font-family);
+  --mat-sys-label-large-size: 0.75rem;
 }
 
 .p-component {

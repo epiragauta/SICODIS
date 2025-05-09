@@ -10,6 +10,9 @@ body {
 html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
     Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  --mat-menu-item-label-text-size: 0.75rem !important;
+  --mat-menu-item-label-text-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'
 }
 
 body {
@@ -33,3 +36,4 @@ body {
 .p-button {
   @apply focus:ring-2 focus:ring-offset-2 focus:ring-primary-500;
 }
+
