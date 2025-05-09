@@ -1,3 +1,14 @@
+:host ::ng-deep .p-menubar {
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 0.25rem;
+}
+
+:host ::ng-deep .p-menubar-item {
+  font-family: inherit;
+  font-size: 0.85rem;
+}
+
 .container{
     padding: 0;
     margin: 0;
@@ -79,6 +90,7 @@
 .barra-superior-govco .idioma-icon-barra-superior-govco:hover::before {
   color: #FFFFFF;
 }
+
 
 @media (max-width: 991px) {
   .barra-superior-govco {
