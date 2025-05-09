@@ -1,17 +1,19 @@
 <div class="grid-container">
-  <h1 class="mat-h1">Presupuesto Sistema General de Participaciones, documentos y anexos</h1>
-  <p>Este módulo presenta los recursos presupuestados en cada vigencia por las entidades territoriales por concepto del SGP, recursos que son girados por los Ministerios competentes entre enero y diciembre de la vigencia seleccionada; y corresponden a la última doceava de la vigencia anterior y a las once doceavas de la vigencia seleccionada (excepto educación que corresponde a doce doceavas).</p>
+  <h2 class="font-bold">Presupuesto Sistema General de Participaciones, documentos y anexos</h2>
+  <p class="text-sm">Este módulo presenta los recursos presupuestados en cada vigencia por las entidades territoriales por concepto del SGP, recursos que son girados por los Ministerios competentes entre enero y diciembre de la vigencia seleccionada; y corresponden a la última doceava de la vigencia anterior y a las once doceavas de la vigencia seleccionada (excepto educación que corresponde a doce doceavas).</p>
+
+
 
   <mat-grid-list cols="4" rowHeight="150px" class="dashboard-grid-list">
     <mat-grid-tile [rowspan]="3" [colspan]="2">
-      <div class="chart-section">
+      <div class="chart-section-main">
         <app-budget-chart [budgetData]="budgetData"></app-budget-chart>
       </div>
     </mat-grid-tile>
     <mat-grid-tile *ngFor="let card of cardsSummary | async" [colspan]="card.cols" [rowspan]="card.rows">
       <mat-card class="dashboard-card summary-card" [ngStyle]="{'border-left': '4px solid ' + card.color}">
         <mat-card-header>
-          <mat-card-title>
+          <mat-card-title class="card-title">
             {{card.title}}
             <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
               <mat-icon>more_vert</mat-icon>
@@ -34,30 +36,38 @@
     </mat-grid-tile>
   </mat-grid-list>
 
-  <!-- Sección de Estadísticas por Categoría -->
-  <h2 class="mat-h2 mt-4">Distribución por Categorías</h2>
-  <mat-grid-list cols="4" rowHeight="150px">
-    <mat-grid-tile *ngFor="let card of cardsStatistics | async" [colspan]="card.cols" [rowspan]="card.rows">
-      <mat-card class="dashboard-card category-card" [ngStyle]="{'border-left': '4px solid ' + card.color}">
-        <mat-card-header>
-          <mat-card-title>
-            {{card.title}}
-            <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
-              <mat-icon>more_vert</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu" xPosition="before">
-              <button mat-menu-item>Expandir</button>
-              <button mat-menu-item>Ver detalles</button>
-            </mat-menu>
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content class="dashboard-card-content">
-          <div class="value-container">
-            <span class="value" [ngStyle]="{'color': card.color}">{{card.formattedValue}}</span>
-          </div>
-        </mat-card-content>
-      </mat-card>
-    </mat-grid-tile>
-  </mat-grid-list>
-
+  <div class="dashboard-main-row">
+    <div class="chart-map-container">
+      <!-- Sección de Estadísticas por Categoría -->
+      <div class="chart-section">
+        <h2 class="font-bold">Distribución por Categorías</h2>
+        <mat-grid-list cols="4" rowHeight="150px">
+            <mat-grid-tile *ngFor="let card of cardsStatistics | async" [colspan]="card.cols" [rowspan]="card.rows">
+              <mat-card class="dashboard-card category-card" [ngStyle]="{'border-left': '4px solid ' + card.color}">
+                <mat-card-header>
+                  <mat-card-title>
+                    {{card.title}}
+                    <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu" xPosition="before" class="small-menu">
+                      <button mat-menu-item class="menu-item-text">Expandir</button>
+                      <button mat-menu-item class="menu-item-text">Ver detalles</button>
+                    </mat-menu>
+                  </mat-card-title>
+                </mat-card-header>
+                <mat-card-content class="dashboard-card-content">
+                  <div class="value-container">
+                    <span class="value" [ngStyle]="{'color': card.color}">{{card.formattedValue}}</span>
+                  </div>
+                </mat-card-content>
+              </mat-card>
+            </mat-grid-tile>
+          </mat-grid-list>
+      </div>
+      <div class="map-section">
+        <app-budget-map [budgetData]="budgetData"></app-budget-map>
+      </div>
+    </div>
 </div>
+

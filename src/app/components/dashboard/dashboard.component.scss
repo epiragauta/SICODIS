@@ -1,5 +1,51 @@
+:host ::ng-deep .p-card-body{
+  padding: 0.75rem !important;
+}
+
+:host ::ng-deep .mat-mdc-card-header{
+  padding: 6px 10px 0 !important;
+}
+
+:host ::ng-deep .mat-menu-item {
+  font-size: 10px !important;
+}
+
+:host ::ng-deep .mat-mdc-menu-item-text {
+  font-size: 10px !important;
+}
+
 .grid-container {
   margin: 20px;
+}
+
+.font-bold {
+  font-weight: bold;
+}
+
+.text-sm {
+  font-size: 0.75rem;
+}
+
+// Nueva distribución para el mapa y los gráficos
+.dashboard-main-row {
+  margin-bottom: 20px;
+}
+
+.chart-map-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  height: 500px; // Altura fija para mantener consistencia
+}
+
+.chart-section {
+  flex: 0 0 70%; // 70% del espacio
+  max-width: 70%;
+}
+
+.map-section {
+  flex: 0 0 30%; // 30% del espacio
+  max-width: 30%;
 }
 
 .dashboard-card {
@@ -45,7 +91,8 @@
 }
 
 .value {
-  font-size: 24px;
+  font-size: 1.1rem;
+  font-family: inherit;
   font-weight: bold;
   margin-bottom: 8px;
 }
@@ -81,9 +128,10 @@
 }
 
 mat-card-title {
-  font-size: 1.2rem !important;
-  font-weight: 500 !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
   color: #444;
+  font-family: inherit;
 }
 
 .mt-4 {
@@ -92,8 +140,10 @@ mat-card-title {
 
 /* Estilos para la sección de gráficos */
 .chart-section {
-  margin-top: 30px;
-  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-top: 0.75rem;
 }
 
 .chart-container {
@@ -102,6 +152,36 @@ mat-card-title {
   justify-content: center;
   align-items: center;
   position: relative;
-  height: 200px;
+  height: 130px;
+
+  canvas {
+    max-width: 100% !important;
+    max-height: 100% !important;
+  }
 }
 
+/* Media queries para dispositivos móviles */
+@media (max-width: 768px) {
+  .chart-map-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .chart-section, .map-section {
+    flex: 0 0 100%;
+    max-width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .chart-section {
+    height: 550px;
+  }
+
+  .map-section {
+    height: 400px;
+  }
+}
+
+.p-card-body{
+  padding: 0.1rem !important;
+}

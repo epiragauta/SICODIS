@@ -1,0 +1,119 @@
+.map-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.map-header {
+  margin-bottom: 1px;
+
+  h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #333;
+  }
+}
+
+.map-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.map-area {
+  height: 390px;
+  width: 100%;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  z-index: 1; // Aseguramos que el mapa tenga un z-index correcto
+}
+
+.map-footer {
+  margin-top: 10px;
+
+  .map-info {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 8px;
+
+    p {
+      margin: 0;
+    }
+  }
+}
+
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    font-size: 0.8rem;
+
+    .legend-color {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+
+    .legend-text {
+      color: #555;
+      font-size: 0.75rem;
+    }
+  }
+}
+
+.map-placeholder {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  color: #6c757d;
+  font-style: italic;
+  text-align: center;
+  padding: 20px;
+}
+
+.map-error {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff3f3;
+  color: #dc3545;
+  text-align: center;
+  padding: 20px;
+}
+
+// Sobrescribir algunos estilos de Leaflet
+:host ::ng-deep {
+  .leaflet-popup-content-wrapper {
+    border-radius: 4px;
+  }
+
+  .leaflet-popup-content {
+    margin: 12px;
+
+    strong {
+      color: #333;
+    }
+  }
+}
+
+.font-bold {
+  font-weight: bold;
+}
+
+.p-togglebutton{
+  font-size: 0.8rem !important;
+}

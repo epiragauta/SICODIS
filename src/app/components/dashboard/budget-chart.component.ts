@@ -68,7 +68,8 @@ export class BudgetChartComponent implements OnInit, OnChanges {
           labels: {
             usePointStyle: true,
             font: {
-              size: 12
+              size: 9,
+              family: 'Roboto, Helvetica',
             }
           }
         },
@@ -97,7 +98,7 @@ export class BudgetChartComponent implements OnInit, OnChanges {
         ...commonOptions,
         indexAxis: 'y',  // Para barras horizontales
         maintainAspectRatio: false,
-        aspectRatio: 0.8,
+        aspectRatio: 0.93,
         scales: {
           x: {
             beginAtZero: true,

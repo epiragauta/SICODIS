@@ -12,6 +12,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { BudgetItem, BudgetServiceStatic } from './budget.service';
 //import { HttpClientModule, provideHttpClient } from '@angular/common/http';
 import { BudgetChartComponent } from './budget-chart.component';
+import { BudgetMapComponent } from './budget-map.component';
 import { ChartModule } from 'primeng/chart';
 import { layouts } from 'chart.js';
 
@@ -43,6 +44,7 @@ interface CardData {
     MatCardModule,
     SplitterModule,
     BudgetChartComponent,
+    BudgetMapComponent,
     ChartModule
   ],
   providers: [
@@ -116,7 +118,7 @@ export class DashboardComponent implements OnInit {
         return items.map(item => {
           return {
             title: item.desc,
-            cols: matches ? 5 : 1,  // Ocupa todo el ancho en modo móvil
+            cols: matches ? 4 : 1,  // Ocupa todo el ancho en modo móvil
             rows: 1,
             value: item.value,
             formattedValue: this.formatCurrency(item.value),
@@ -213,7 +215,8 @@ export class DashboardComponent implements OnInit {
           rotation: -90,
           circumference: 180,
           cutout: '80%',
-          maintainAspectRatio: false,
+          maintainAspectRatio: true,
+          aspectRatio: 2,
           layout: {
             padding: {
               top: 0,
@@ -227,7 +230,7 @@ export class DashboardComponent implements OnInit {
               enabled: true,
             },
             legend: {
-              display: false,
+              display: true,
             },
           },
         };

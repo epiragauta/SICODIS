@@ -1,0 +1,21 @@
+<div class="map-container">
+  <p-card>
+    <div class="map-header">
+      <h2 class="font-bold">Distribución Geográfica SGP</h2>
+    </div>
+    <div class="map-content">
+      <div id="budget-map" class="map-area"></div>
+    </div>
+    <div class="map-footer">
+      <div class="map-legend">
+        <div class="legend-item" *ngFor="let category of getLegendItems(); let i = index">
+          <span class="legend-color" [style.background-color]="mapColors[i % mapColors.length]"></span>
+          <span class="legend-text">{{ category.nombre }}</span>
+        </div>
+      </div>
+      <div class="map-info">
+        <p>El tamaño de los círculos representa el monto asignado a cada departamento.</p>
+      </div>
+    </div>
+  </p-card>
+</div>
