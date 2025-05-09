@@ -58,11 +58,45 @@ export class HeaderComponent implements OnInit{
         },
         {
             label: 'SGR',
-            command: () => this.redirectSGR()
+            items: [
+              {
+                  label: 'Sistema General de Regalias -SGR',
+                  command: () => this.redirectSGR()
+              },
+              {
+                  label: 'SGR - Plan Bienal de Caja',
+                  command: () => this.redirectUrl("reports-sgr-bienal")
+              },
+              {
+                  label: 'SGR - Comparativo Avance vs Presupuesto',
+                  command: () => this.redirectUrl("comparativo-iac-presupuesto")
+              },
+              {
+                  label: 'SGR - Tablero de Control',
+                  command: () => this.redirectUrl("dashboard")
+              }
+            ]
         },
         {
             label: 'SGP',
-            command: () => this.redirectSGP()
+            items: [
+              {
+                  label: 'Sistema General de Participaciones -SGP',
+                  command: () => this.redirectSGP(  )
+              },
+              {
+                  label: 'SGP - Distribución de recursos',
+                  command: () => this.redirectUrl("reports-sgp-dist")
+              },
+              {
+                  label: 'SGP - Presupuesto',
+                  command: () => this.redirectUrl("reports-sgp-budget")
+              },
+              {
+                  label: 'SGP - Tablero de Control',
+                  command: () => this.redirectUrl("dashboard")
+              }
+          ]
         },
         {
             label: 'Servicio al Ciudadano',
@@ -80,6 +114,10 @@ export class HeaderComponent implements OnInit{
   }
   redirectSGR(){
     this.route.navigate(['/reports-sgr']);
+  }
+
+  redirectUrl(path:string){
+    this.route.navigate([path]);
   }
 
   redirectSGP(){
