@@ -9,10 +9,10 @@
 }
 
 :root {
-  --md-font-family: var(--font-family);
+  --md-font-family: "Montserrat", sans-serif;
   --mat-sys-label-large-size: 0.75rem;
 }
 
 .p-component {
-  font-family: var(--md-font-family);
+  font-family: "Montserrat", sans-serif;
 }

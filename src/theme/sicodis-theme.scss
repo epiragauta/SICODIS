@@ -1,0 +1,73 @@
+/* src/theme/custom-theme.scss */
+
+// 1. Importar las funciones de Angular Material
+@use '@angular/material' as mat;
+
+// 2. Definir las paletas de colores (puedes personalizar estos valores)
+$primary-palette: mat.$indigo-palette;  // Azul indigo
+$accent-palette: mat.$pink-palette;     // Rosa
+$warn-palette: mat.$red-palette;        // Rojo
+
+// 3. Crear las paletas de colores
+$primary: mat.define-palette($primary-palette);
+$accent: mat.define-palette($accent-palette, A200, A100, A400);
+$warn: mat.define-palette($warn-palette);
+
+// 4. Definir la configuración de tipografía (opcional, puedes personalizarla)
+$typography-config: mat.define-typography-config(
+  $font-family: '"Roboto", "Helvetica Neue", sans-serif',
+  $headline-1: mat.define-typography-level(32px, 40px, 500),
+  $headline-2: mat.define-typography-level(28px, 36px, 500),
+  $headline-3: mat.define-typography-level(24px, 32px, 500),
+  $headline-4: mat.define-typography-level(20px, 28px, 500),
+  $headline-5: mat.define-typography-level(18px, 24px, 500),
+  $headline-6: mat.define-typography-level(16px, 20px, 500),
+  $body-1: mat.define-typography-level(16px, 24px, 400),
+  $body-2: mat.define-typography-level(14px, 20px, 400),
+  $subtitle-1: mat.define-typography-level(16px, 24px, 500),
+  $subtitle-2: mat.define-typography-level(14px, 20px, 500),
+  $caption: mat.define-typography-level(12px, 20px, 400),
+  $button: mat.define-typography-level(14px, 36px, 500),
+);
+
+// 5. Definir la configuración de densidad para el tema global
+// Valores: -3 (más compacto), -2, -1, 0 (predeterminado)
+$density-scale: -2;
+
+// 6. Crear el tema con todas las configuraciones
+$my-theme: mat.define-light-theme((
+  color: (
+    primary: $primary,
+    accent: $accent,
+    warn: $warn,
+  ),
+  density: $density-scale,  // Aquí aplicamos la densidad global
+));
+
+// 7. Incluir los estilos de los componentes con el tema personalizado
+@include mat.core();
+//@include mat.all-component-themes($my-theme);
+
+// 8. Aplicar configuración de densidad específica para ciertos componentes
+// Esto es adicional a la densidad global y puede anular dicha configuración
+//@include mat.form-field-density($density-scale);  // Aplicar densidad específica a form-fields
+@include mat.select-density($density-scale);      // Aplicar densidad específica a selects
+@include mat.button-density($density-scale);      // Aplicar densidad específica a botones
+
+// 9. Estilos adicionales específicos para ajustar la altura de los form-fields
+// Solo si la API de densidad no es suficiente para tus necesidades específicas
+.mat-mdc-form-field {
+  // Podemos añadir ajustes adicionales si la densidad no es suficiente
+  .mat-mdc-text-field-wrapper {
+    // Solo añade esto si necesitas más personalización que la densidad
+    // padding-top: 0;
+    // padding-bottom: 0;
+  }
+
+  // Eliminar el espacio para mensajes de error cuando no son necesarios
+  &.without-hints .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+}
+
+

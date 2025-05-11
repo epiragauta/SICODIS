@@ -1,5 +1,6 @@
 @import "primeicons/primeicons.css";
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+@import './theme/sicodis-theme.scss';
 /* You can add global styles to this file, and also import other style files */
 /* @import "@angular/material/prebuilt-themes/indigo-pink.css";
 body {
@@ -8,11 +9,15 @@ body {
     box-sizing: border-box;
 } */
 html {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-  --mat-menu-item-label-text-size: 0.75rem !important;
-  --mat-menu-item-label-text-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.75rem !important;
+  --mat-menu-item-label-text-size: 0.8rem !important;
+  --mat-menu-item-label-text-font: "Montserrat", sans-serif;
+  --mat-select-trigger-text-size: 0.75rem !important;
+  --p-form-field-sm-font-size: 0.75rem !important;
+  --p-form-field-lg-font-size: 0.85rem !important;
+  --mat-option-label-text-size: 0.75rem !important;
+  --mdc-filled-text-field-label-text-size: 0.8rem !important;
 }
 
 body {
@@ -37,3 +42,89 @@ body {
   @apply focus:ring-2 focus:ring-offset-2 focus:ring-primary-500;
 }
 
+:root {
+  --app-font-family: 'Montserrat', sans-serif;
+  --app-heading-weight: 600;
+  --app-body-weight: 400;
+}
+
+// Aplicar la fuente a los elementos de Angular Material
+.mat-typography,
+.mat-mdc-button,
+.mat-mdc-card,
+.mat-card-title,
+.mat-card-subtitle,
+.mat-mdc-form-field,
+.mat-mdc-menu-item,
+.mat-mdc-select,
+.mat-mdc-table,
+.mat-mdc-paginator,
+.mat-mdc-dialog-container,
+.mat-calendar,
+.mat-h1, .mat-headline, .mat-typography h1,
+.mat-h2, .mat-title, .mat-typography h2,
+.mat-h3, .mat-subheading-2, .mat-typography h3,
+.mat-h4, .mat-subheading-1, .mat-typography h4 {
+  font-family: var(--app-font-family) !important;
+}
+
+// Aplicar también a elementos HTML básicos para consistencia
+body,
+button,
+input,
+select,
+textarea,
+p, div, span, h1, h2, h3, h4, h5, h6 {
+  font-family: var(--app-font-family);
+}
+
+// Estilos específicos para los encabezados en tu dashboard
+.mat-h1, .mat-headline, .mat-typography h1 {
+  font-weight: var(--app-heading-weight);
+  margin-bottom: 16px;
+}
+
+.mat-h2, .mat-title, .mat-typography h2 {
+  font-weight: var(--app-heading-weight);
+  color: #455a64;
+}
+
+// Estilos para las tarjetas que has definido en tu dashboard
+.dashboard-card mat-card-title {
+  font-family: var(--app-font-family) !important;
+  font-weight: var(--app-heading-weight);
+}
+
+// Estilos para los gráficos de PrimeNG (que estás usando en tu aplicación)
+.p-chart {
+  font-family: var(--app-font-family) !important;
+}
+
+// Ajustes para los botones y menús de Material
+.mat-button-base,
+.mat-mdc-button-base,
+.mat-mdc-menu-item {
+  font-family: var(--app-font-family) !important;
+  font-weight: 500;
+}
+
+.mat-mdc-select-value-text{
+  font-size: 1rem !important;
+}
+
+.mat-mdc-option.mdc-list-item {
+  font-size: 1rem !important;
+}
+
+.mdc-floating-label {
+  font-size: 1rem !important;
+}
+
+// Ajustes para los selectores de PrimeNG
+.p-selectbutton .p-button {
+  font-family: var(--app-font-family) !important;
+}
+
+.mat-mdc-option {
+  min-height: 32px !important;
+}

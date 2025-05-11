@@ -11,20 +11,20 @@
 .reports{
   display: flex;
   .reports-title{
-      color: #455A64;
+      color: #004583;
       font-weight: 800;
-      font-size: 32px;
+      font-size: 24px;
   }
   .sicodis{
-      color: #455A64;
+      color: #004583;
       font-weight: 800;
-      font-size: 32px;
+      font-size: 24px;
   }
 }
 .opt-select{
-  color: #455A64;
+  color: #004583;
   font-weight: 600;
-  font-size: 20px;
+  font-size: 14px;
 }
 .resume{
   border: solid 1px #E8E7E7;
@@ -34,7 +34,7 @@
   margin: 5px 5px 5px 5px;
 }
 .title-graph{
-  color: #455A64;
+  color: #004583;
   font-weight: 600;
   font-size: 26px;
   text-align: center;
@@ -47,7 +47,7 @@
   padding: 5px;
   h3{
       text-align: center;
-      color: #455A64;
+      color: #004583;
       font-weight: 600;
       font-size: 20px;
   }
@@ -55,7 +55,7 @@
       text-align: center;
       color: #3366CC;
       font-weight: bold;
-      font-size: 32px;
+      font-size: 24px;
   }
   mat-header-cell{
       background-color: #3366CC;
@@ -77,7 +77,7 @@ canvas {
       font-weight: 600;
       background-color: #356ad4;
       color: white;
-      border-radius: 32px;
+      border-radius: 24px;
       padding: 16px 24px 16px 24px;
       cursor: pointer;
       margin-top: 4%;
