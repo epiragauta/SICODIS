@@ -16,37 +16,46 @@
       <div class="sgp-table-header">
         <h2 class="reports-title">Comparativo IAC vs Presupuesto</h2>
         <div class="options-years">
-          <mat-form-field class="vigencia-select">
-            <mat-label>Vigencia</mat-label>
-              <mat-select [(value)]="selectedVigencia">
-                <mat-option *ngFor="let v of vigencia" [value]="v">{{v.label}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field class="search-type-select">
-            <mat-label>Buscar por</mat-label>
-              <mat-select [(value)]="selectedSearchType" (selectionChange)="updateSelectedSearchType($event)">
-                <mat-option *ngFor="let s of searchTypes" [value]="s">{{s.label}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field *ngIf="selectedSearchType.id == 2"  class="dpto-select">
-            <mat-label>Seleccionar por departamento</mat-label>
-              <mat-select [(value)]="selectedDpto"  (selectionChange)="updateSelectedDpto($event)">
-                <mat-option *ngFor="let d of dptos" [value]="d">{{d.nombre}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field *ngIf="selectedSearchType.id == 3 || selectedSearchType.id == -1" class="entity-select">
-            <mat-label>Seleccionar por entidad</mat-label>
-              <mat-select [(value)]="selectedEntity" (selectionChange)="updateSelectedEntity($event)">
-                <mat-option *ngFor="let e of entities" [value]="e">{{e.dpto}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field class="detail-entity-select">
-            <mat-label>Seleccionar detalle</mat-label>
-              <mat-select [(value)]="selectedDetailEntity">
-                <mat-option *ngFor="let d of detailEntitiesFiltered" [value]="d">{{d.entidad}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <div>
+          <div class="p-field vigencia-select">
+            <p-floatlabel class="w-full md:w-56" variant="on">
+              <p-select id="vigencia" [options]="vigencia" inputId="vigenciaSelect" [(ngModel)]="selectedVigencia"
+              optionLabel="label" [showClear]="false" placeholder="Seleccione Vigencia"></p-select>
+              <label for="vigenciaSelect">Vigencia</label>
+            </p-floatlabel>
+          </div>
+
+          <div class="p-field search-type-select">
+            <p-floatlabel class="w-full md:w-56" variant="on">
+              <p-select id="searchType" inputId="searchType" [options]="searchTypes" [(ngModel)]="selectedSearchType" fluid="true"
+              placeholder="Seleccione Por" optionLabel="label" [showClear]="false" (onChange)="updateSelectedSearchType($event)"></p-select>
+              <label for="searchType">Buscar por</label>
+            </p-floatlabel>
+          </div>
+
+          <div *ngIf="selectedSearchType.id == 2" class="p-field dpto-select">
+            <p-floatlabel class="w-full md:w-56" variant="on">
+              <p-select id="dpto" inputId="dptoSelect" [options]="dptos" [(ngModel)]="selectedDpto" optionLabel="nombre" fluid="true"
+              placeholder="Seleccionar departamento" [showClear]="false" (onChange)="updateSelectedDpto($event)"></p-select>
+              <label for="dptoSelect">Seleccionar por departamento</label>
+            </p-floatlabel>
+          </div>
+
+          <div *ngIf="selectedSearchType.id == 3 || selectedSearchType.id == -1" class="p-field entity-select">
+            <p-floatlabel class="w-full md:w-56" variant="on">
+              <p-select id="entity" inputId="entitySelect" [options]="entities" [(ngModel)]="selectedEntity" fluid="true"
+              placeholder="Seleccionar entidad" optionLabel="dpto" [showClear]="false" (onChange)="updateSelectedEntity($event)"></p-select>
+              <label for="entitySelect">Seleccionar por entidad</label>
+            </p-floatlabel>
+          </div>
+
+          <div class="p-field detail-entity-select">
+            <p-floatlabel class="w-full md:w-56" variant="on">
+              <p-select id="detailEntity" inputId="detailEntitySelect" [options]="detailEntitiesFiltered" fluid="true"
+              placeholder="Seleccione detalle" [(ngModel)]="selectedDetailEntity" optionLabel="entidad" [showClear]="false"></p-select>
+            </p-floatlabel>
+          </div>
+
+          <div class="p-field">
             <button pButton type="button"
                 icon="pi pi-download"
                 label="Consultar"
@@ -54,13 +63,14 @@
                 (click)="queryData()">
             </button>
           </div>
-          <div>
-            <p-splitbutton label="Save" Button type="button"
-            icon="pi pi-download"
-            label="Exportar"
-            class="p-button-primary"
-            (click)="exportData()"
-            [model]="menuItems" />
+
+          <div class="p-field">
+            <p-splitButton label="Exportar"
+                icon="pi pi-download"
+                class="p-button-primary"
+                (onClick)="exportData()"
+                [model]="menuItems">
+            </p-splitButton>
           </div>
         </div>
       </div>

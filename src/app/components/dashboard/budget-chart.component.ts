@@ -92,7 +92,7 @@ export class BudgetChartComponent implements OnInit, OnChanges {
     this.chartOptions = {
       pie: {
         ...commonOptions,
-        cutout: '0%',  // 0% hace un gráfico de pie, >0% crea un donut
+        cutout: '50%',  // 0% hace un gráfico de pie, >0% crea un donut
         maintainAspectRatio: false,
         aspectRatio: 0.87,
       },
@@ -101,6 +101,8 @@ export class BudgetChartComponent implements OnInit, OnChanges {
         indexAxis: 'y',  // Para barras horizontales
         maintainAspectRatio: false,
         aspectRatio: 0.87,
+        categoryPercentage: 0.5,
+        barThickness: 10,
         scales: {
           x: {
             beginAtZero: true,

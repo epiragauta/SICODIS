@@ -39,35 +39,48 @@
   <div class="dashboard-main-row">
     <div class="chart-map-container">
       <!-- Sección de Estadísticas por Categoría -->
+      <!-- Sección de Estadísticas por Categoría -->
       <div class="chart-section">
         <h2 class="font-bold">Distribución por Categorías</h2>
         <mat-grid-list cols="4" rowHeight="150px">
-            <mat-grid-tile *ngFor="let card of cardsStatistics | async" [colspan]="card.cols" [rowspan]="card.rows">
-              <mat-card class="dashboard-card category-card" [ngStyle]="{'border-left': '4px solid ' + card.color}">
-                <mat-card-header>
-                  <mat-card-title>
+          <mat-grid-tile *ngFor="let card of cardsStatistics | async" [colspan]="card.cols" [rowspan]="card.rows">
+            <mat-card class="dashboard-card category-card" [ngStyle]="{'border-left': '4px solid ' + card.color}">
+              <mat-card-header>
+                <mat-card-title>
+                  <div class="flex items-center">
+                    <mat-icon [ngStyle]="{'color': card.color}" class="mr-2">{{getCardIcon(card.title)}}</mat-icon>
                     {{card.title}}
-                    <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
-                      <mat-icon>more_vert</mat-icon>
-                    </button>
-                    <mat-menu #menu="matMenu" xPosition="before" class="small-menu">
-                      <button mat-menu-item class="menu-item-text">Expandir</button>
-                      <button mat-menu-item class="menu-item-text">Ver detalles</button>
-                    </mat-menu>
-                  </mat-card-title>
-                </mat-card-header>
-                <mat-card-content class="dashboard-card-content">
-                  <div class="value-container">
-                    <span class="value" [ngStyle]="{'color': card.color}">{{card.formattedValue}}</span>
                   </div>
-                </mat-card-content>
-              </mat-card>
-            </mat-grid-tile>
-          </mat-grid-list>
+                  <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #menu="matMenu" xPosition="before" class="small-menu">
+                    <button mat-menu-item class="menu-item-text">Expandir</button>
+                    <button mat-menu-item class="menu-item-text">Ver detalles</button>
+                  </mat-menu>
+                </mat-card-title>
+              </mat-card-header>
+              <mat-card-content class="dashboard-card-content">
+                <div class="value-container">
+                  <div class="chart-container" *ngIf="card.percent > 0">
+                    <p-chart type="doughnut"
+                            [data]="getCategoryChartData(card)"
+                            [options]="getCategoryChartOptions(card)">
+                    </p-chart>
+                    <div class="chart-value">
+                      <span class="percentage">{{card.percent | number:'1.1-1'}}%</span>
+                      <span class="value" [ngStyle]="{'color': card.color}">{{card.formattedValue}}</span>
+                    </div>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </mat-grid-tile>
+        </mat-grid-list>
       </div>
       <div class="map-section">
         <app-budget-map [budgetData]="budgetData"></app-budget-map>
       </div>
     </div>
-</div>
+  </div>
 

@@ -68,11 +68,11 @@
     </ng-template>
 
     <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
-      <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode" [ngClass]="classConcepto(rowData.Concepto)">
+      <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode" [ngClass]="classConcepto(rowData.concepto)">
         <td>
           <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
           <span>
-            {{rowData.Concepto}}
+            {{rowData.concepto}}
           </span>
         </td>
         <td class="text-right">

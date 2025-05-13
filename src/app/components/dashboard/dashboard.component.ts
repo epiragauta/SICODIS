@@ -10,14 +10,9 @@ import { MatCardModule } from '@angular/material/card';
 import { SplitterModule } from 'primeng/splitter';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BudgetItem, BudgetServiceStatic } from './budget.service';
-//import { HttpClientModule, provideHttpClient } from '@angular/common/http';
 import { BudgetChartComponent } from './budget-chart.component';
 import { BudgetMapComponent } from './budget-map.component';
 import { ChartModule } from 'primeng/chart';
-import { layouts } from 'chart.js';
-
-// Importamos el custom element
-//import './budget-chart-element';
 
 interface CardData {
   title: string;
@@ -27,7 +22,8 @@ interface CardData {
   formattedValue?: string;
   category?: string;
   color?: string;
-  percentaje?: number;
+  percent: number;
+  icon?: string;
 }
 
 @Component({
@@ -74,6 +70,20 @@ export class DashboardComponent implements OnInit {
   chartData: any;
   chartOptions: any;
 
+  // Mapa de iconos para categorías
+  private categoryIcons: { [key: string]: string } = {
+    'Educación': 'school',
+    'Salud': 'local_hospital',
+    'Agua Potable': 'water_drop',
+    'Propósito General': 'public',
+    'Alimentación Escolar': 'restaurant',
+    'Ribereños': 'water',
+    'Resguardos Indígenas': 'groups',
+    'Fonpet Asignaciones Especiales': 'account_balance',
+    // Valores por defecto para otras categorías
+    'default': 'attach_money'
+  };
+
   constructor(private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
@@ -116,6 +126,9 @@ export class DashboardComponent implements OnInit {
         const items = this.budgetData.filter(item => item.desc !== 'Total SGP');
 
         return items.map(item => {
+          // Calcular el porcentaje de este ítem respecto al total
+          const percent = this.totalSGP > 0 ? (item.value / this.totalSGP) * 100 : 0;
+
           return {
             title: item.desc,
             cols: matches ? 4 : 1,  // Ocupa todo el ancho en modo móvil
@@ -123,7 +136,8 @@ export class DashboardComponent implements OnInit {
             value: item.value,
             formattedValue: this.formatCurrency(item.value),
             category: 'budget-item',
-            color: this.getRandomColor()
+            color: this.getRandomColor(),
+            percent: percent
           };
         });
       })
@@ -144,7 +158,8 @@ export class DashboardComponent implements OnInit {
             value: this.totalSGP,
             formattedValue: this.formatCurrency(this.totalSGP),
             category: 'total',
-            color: '#4CAF50'
+            color: '#4CAF50',
+            percent: 100
           },
           {
             title: 'Recursos distribuidos a la fecha',
@@ -153,7 +168,8 @@ export class DashboardComponent implements OnInit {
             value: this.distributedResources,
             formattedValue: this.formatCurrency(this.distributedResources),
             category: 'distributed',
-            color: '#2196F3'
+            color: '#2196F3',
+            percent: this.distributionPercentage
           },
           {
             title: 'Avance de distribución',
@@ -162,7 +178,8 @@ export class DashboardComponent implements OnInit {
             value: this.distributionPercentage,
             formattedValue: `${this.distributionPercentage.toFixed(2)}%`,
             category: 'percentage',
-            color: '#9C27B0'
+            color: '#9C27B0',
+            percent: this.distributionPercentage
           },
           {
             title: 'Recursos pendientes por distribuir',
@@ -171,13 +188,63 @@ export class DashboardComponent implements OnInit {
             value: this.pendingResources,
             formattedValue: this.formatCurrency(this.pendingResources),
             category: 'pending',
-            color: '#FFC107'
+            color: '#FFC107',
+            percent: this.totalSGP > 0 ? (this.pendingResources / this.totalSGP) * 100 : 0
           },
         ];
       })
     ).subscribe(cards => {
       this.cardsSummarySubject.next(cards);
     });
+  }
+
+  // Método para obtener el icono según el título de la categoría
+  getCardIcon(title: string): string {
+    return this.categoryIcons[title] || this.categoryIcons['default'];
+  }
+
+  // Método para crear datos de gráfico para categorías
+  getCategoryChartData(card: CardData): any {
+    return {
+      datasets: [
+        {
+          data: [card.percent || 0, 100 - (card.percent || 0)],
+          backgroundColor: [card.color || '#2196F3', '#EEEEEE'],
+          hoverBackgroundColor: [this.adjustBrightness(card.color || '#2196F3', -10), '#E0E0E0'],
+          borderWidth: 0
+        }
+      ],
+      labels: ['Porcentaje', 'Restante']
+    };
+  }
+
+  // Método para configurar opciones del gráfico de categorías
+  getCategoryChartOptions(card: CardData): any {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      rotation: -90,
+      circumference: 180,
+      aspectRatio: 4,
+      cutout: '85%',
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          enabled: true,
+          // callbacks: {
+          //   label: (context: any) => {
+          //     return `${context.label}: ${context.parsed}%`;
+          //   }
+          // }
+        }
+      },
+      animation: {
+        animateRotate: false,
+        animateScale: false
+      }
+    };
   }
 
   formatCurrency(value: number): string {
@@ -192,6 +259,32 @@ export class DashboardComponent implements OnInit {
   getRandomColor(): string {
     const colors = ['#3F51B5', '#673AB7', '#009688', '#795548', '#FF5722', '#607D8B', '#E91E63'];
     return colors[Math.floor(Math.random() * colors.length)];
+  }
+
+  // Método para ajustar el brillo de un color
+  adjustBrightness(col: string, amt: number): string {
+    let usePound = false;
+
+    if (col[0] === '#') {
+      col = col.slice(1);
+      usePound = true;
+    }
+
+    const num = parseInt(col, 16);
+
+    let r = (num >> 16) + amt;
+    if (r > 255) r = 255;
+    else if (r < 0) r = 0;
+
+    let b = ((num >> 8) & 0x00FF) + amt;
+    if (b > 255) b = 255;
+    else if (b < 0) b = 0;
+
+    let g = (num & 0x0000FF) + amt;
+    if (g > 255) g = 255;
+    else if (g < 0) g = 0;
+
+    return (usePound ? '#' : '') + (g | (b << 8) | (r << 16)).toString(16).padStart(6, '0');
   }
 
   initChart() {
@@ -236,5 +329,5 @@ export class DashboardComponent implements OnInit {
         };
         this.cd.markForCheck()
     }
-}
+  }
 }

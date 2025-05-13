@@ -10,7 +10,7 @@
       <div class="chart-area">
         <!-- Gráfico Circular (PIE) -->
         <div *ngIf="selectedView === 'pie'" class="chart-wrapper">
-          <p-chart type="pie" [data]="chartData.pie" [options]="chartOptions.pie"></p-chart>
+          <p-chart type="doughnut" [data]="chartData.pie" [options]="chartOptions.pie"></p-chart>
         </div>
 
         <!-- Gráfico de Barras -->

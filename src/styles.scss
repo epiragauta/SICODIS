@@ -46,6 +46,18 @@ body {
   --app-font-family: 'Montserrat', sans-serif;
   --app-heading-weight: 600;
   --app-body-weight: 400;
+
+  /* Dimensiones */
+  --input-height: 40px;           /* Altura reducida para inputs */
+  --input-padding: 0.5rem 0.75rem; /* Padding reducido */
+  --border-radius: 4px;           /* Radio de borde más pequeño */
+  --font-size: 14px;              /* Tamaño de fuente base */
+  --spacing-unit: 0.5rem;         /* Unidad de espaciado base */
+  --select-fixed-width: 240px;
+  --select-content-width: 200px;
+  --select-expanded-width: 360px;      /* Ancho máximo del panel desplegable */
+  --select-spacing: 16px;              /* Espaciado entre elementos */
+  --select-height: 40px;               /* Altura del select */
 }
 
 // Aplicar la fuente a los elementos de Angular Material
@@ -128,3 +140,110 @@ p, div, span, h1, h2, h3, h4, h5, h6 {
 .mat-mdc-option {
   min-height: 32px !important;
 }
+
+/* Personalización completa de componentes PrimeNG */
+:host ::ng-deep {
+  .p-field {
+    margin-bottom: 0;
+    width: 100%;
+
+    @media (min-width: 768px) {
+      width: var(--select-fixed-width) !important;
+      min-width: var(--select-fixed-width) !important;
+    }
+  }
+
+  p-select {
+    .p-select {
+      width: 100%; /* Asegurar que ocupa el ancho del contenedor */
+
+      .p-select-label {
+        /* Truncar el texto largo con puntos suspensivos */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%; /* Limitar al ancho del contenedor */
+      }
+    }
+
+    /* Panel desplegable - ancho fijo pero permitir más espacio para opciones largas */
+    .p-select-panel {
+      width: auto !important; /* Anular el width: 100% que PrimeNG aplica por defecto */
+      min-width: 240px; /* Mínimo igual al ancho del select */
+      max-width: 360px; /* Máximo para valores muy largos */
+
+      .p-select-items {
+        .p-select-item {
+          /* Permitir múltiples líneas en los items si son muy largos */
+          white-space: normal;
+          word-break: break-word;
+        }
+      }
+    }
+  }
+
+  /* ===== Botones ===== */
+  .p-button {
+    height: var(--input-height);
+    padding: 0 calc(var(--spacing-unit) * 2);
+    font-size: var(--font-size);
+    font-weight: 500;
+    border-radius: var(--border-radius);
+    transition: all 0.2s ease;
+
+    .p-button-icon {
+      font-size: 0.85rem;
+      margin-right: calc(var(--spacing-unit) * 0.75);
+    }
+
+    &.p-button-sm {
+      height: calc(var(--input-height) * 0.85);
+      padding: 0 calc(var(--spacing-unit) * 1.5);
+      font-size: calc(var(--font-size) * 0.85);
+    }
+
+    &.p-button-lg {
+      height: calc(var(--input-height) * 1.2);
+      padding: 0 calc(var(--spacing-unit) * 2.5);
+      font-size: calc(var(--font-size) * 1.1);
+    }
+  }
+
+  /* ===== SplitButton ===== */
+  p-splitButton {
+    .p-splitbutton {
+      .p-button {
+        height: var(--input-height);
+      }
+
+      .p-splitbutton-menubutton {
+        height: var(--input-height);
+        width: 2.5rem;
+      }
+    }
+
+    .p-menu {
+      border-radius: var(--border-radius);
+      padding: calc(var(--spacing-unit) * 0.5) 0;
+
+      .p-menuitem {
+        .p-menuitem-link {
+          padding: calc(var(--spacing-unit) * 0.75) var(--spacing-unit);
+          font-size: var(--font-size);
+
+          .p-menuitem-icon {
+            font-size: 0.85rem;
+            margin-right: calc(var(--spacing-unit) * 0.75);
+          }
+
+          &:hover {
+            background-color: rgba(59, 130, 246, 0.04);
+          }
+        }
+      }
+    }
+  }
+}
+
+
+

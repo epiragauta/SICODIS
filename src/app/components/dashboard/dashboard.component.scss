@@ -81,11 +81,11 @@
 }
 
 .value-container {
-  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 100%;
 }
 
 .value {
@@ -132,6 +132,31 @@ mat-card-title {
   font-family: inherit;
 }
 
+mat-card-title .mat-icon {
+  font-size: 1.7rem;
+  height: 1.5rem;
+  width: 1.8rem;
+  vertical-align: middle;
+}
+
+.flex.items-center {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+}
+
+.mr-2 {
+  margin-right: 0.5rem;
+}
+
+/* Ajustes para las tarjetas de categoría */
+.category-card mat-card-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 0;
+}
+
 .mt-4 {
   margin-top: 2rem;
 }
@@ -145,24 +170,50 @@ mat-card-title {
 }
 
 .chart-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   position: relative;
-  height: 130px;
+  height: 80px;
+  width: 80px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  canvas {
-    max-width: 100% !important;
-    max-height: 100% !important;
+.chart-value {
+  position: absolute;
+  top: 87%;
+  left: 45%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: 100%;
+}
+
+.chart-value .value {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.chart-value .percentage {
+  display: block;
+  font-size: 1.25rem;
+  color: #666;
+}
+
+@media (max-width: 1350px) {
+  .flex.items-center {
+    display: flex;
+    align-items: center;
+    font-size: 0.68rem;
   }
 }
 
 /* Media queries para dispositivos móviles */
 @media (max-width: 768px) {
   .chart-map-container {
-    flex-direction: column;
-    height: auto;
+    height: 60px;
+    width: 60px;
   }
 
   .chart-section, .map-section {
@@ -177,6 +228,14 @@ mat-card-title {
 
   .map-section {
     height: 400px;
+  }
+
+  .chart-value .value {
+    font-size: 0.7rem;
+  }
+
+  .chart-value .percentage {
+    font-size: 0.55rem;
   }
 }
 

@@ -1,16 +1,21 @@
-import { Input, ViewChild, ChangeDetectorRef, Component, effect, inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { TreeNode, MenuItem, MessageService } from 'primeng/api';
+import { ViewChild, ChangeDetectorRef, Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
+import { TreeNode, MenuItem } from 'primeng/api';
 import { TreeTableModule } from 'primeng/treetable';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { ButtonModule } from 'primeng/button';
 import { PopoverModule } from 'primeng/popover';
+import { ChartModule } from 'primeng/chart';
 import { Popover } from 'primeng/popover';
+import { Select  } from 'primeng/select';
+import { FloatLabel } from "primeng/floatlabel"
+
+import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { ChartModule } from 'primeng/chart';
-import { processArrayData} from '../../utils/hierarchicalDataStructure';
+
 import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
 import { departamentos } from '../../data/departamentos';
 import { ComparativoIacVsPresupuesto } from '../../data/comparativo-iac-vs-presupuesto';
@@ -39,6 +44,9 @@ interface NodeInfo {
     MatSelectModule,
     TreeTableModule,
     ButtonModule,
+    FormsModule,
+    Select,
+    FloatLabel,
     SplitButtonModule,
     MatGridListModule,
     ChartModule,
@@ -46,7 +54,7 @@ interface NodeInfo {
   templateUrl: './comparativo-iac-vs-presupuesto.component.html',
   styleUrl: './comparativo-iac-vs-presupuesto.component.scss'
 })
-export class ComparativoIacVsPresupuestoComponent {
+export class ComparativoIacVsPresupuestoComponent implements OnInit {
 
   @ViewChild('infoPanel') infoPanel!: Popover;
 
@@ -269,7 +277,7 @@ export class ComparativoIacVsPresupuestoComponent {
 
     if (isDpto) {
       if (codigo == '05000' || codigo == '08000') {
-        codigo = codigo.substring(1,5);
+        codigo = codigo.toString().substring(1,5);
       }
     }
     this.detailedDataFiltered = this.detailedData.filter((item: any) => {
