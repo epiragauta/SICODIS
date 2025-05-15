@@ -47,19 +47,6 @@
 
 
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1rem;
-}
-
-.page-title {
-  color: #004583;
-  font-weight: 800;
-  margin-bottom: 1.5rem;
-  font-size: 24px;
-}
-
 .caption-container {
   padding: 1rem 0;
 
@@ -74,20 +61,56 @@
     font-size: 14px;
     color: #666;
     font-style: italic;
+    display: flex;
+    align-items: center;
+
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23666"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>');
+      background-size: contain;
+      margin-right: 6px;
+    }
   }
 }
 
 .tree-table-container {
   margin-bottom: 2rem;
+  overflow-x: auto; // Habilitar scroll horizontal para la tabla
+  max-width: 100%;
 
   // Aplicar estilos para hacer que la tabla sea más compacta
   :host ::ng-deep {
     .p-treetable {
       font-size: 14px;
+      min-width: 100%;
+
+      // Asegurar que las columnas tengan un ancho mínimo
+      .p-treetable-thead > tr > th {
+        min-width: 150px;
+        white-space: nowrap;
+      }
+
+      .p-treetable-tbody > tr > td {
+        min-width: 150px;
+        white-space: nowrap;
+      }
+
+      // Primera columna (concepto) puede ser más ancha
+      .p-treetable-thead > tr > th:first-child,
+      .p-treetable-tbody > tr > td:first-child {
+        min-width: 300px;
+        max-width: 400px;
+      }
 
       .p-treetable-header {
         background-color: #f8f9fa;
         padding: 0.5rem;
+        position: sticky;
+        top: 0;
+        z-index: 1;
       }
 
       th {
@@ -95,19 +118,40 @@
         padding: 0.5rem;
         font-weight: 600;
         color: #495057;
+        position: sticky;
+        top: 0;
+        z-index: 1;
 
         &.expandable-column {
-          cursor: pointer;
+          cursor: pointer !important;
           position: relative;
 
+          &::after {
+            content: '';
+            position: absolute;
+            bottom: 3px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #3366CC;
+            opacity: 0.5;
+          }
+
           &:hover {
-            background-color: #dee2e6;
+            background-color: rgba(51, 102, 204, 0.15);
+
+            &::after {
+              opacity: 1;
+            }
           }
 
           .toggle-icon {
             margin-left: 0.5rem;
             font-weight: bold;
-            color: #666;
+            color: #3366CC;
+            background-color: rgba(51, 102, 204, 0.1);
+            padding: 2px 5px;
+            border-radius: 3px;
           }
         }
       }
@@ -139,8 +183,13 @@
         background-color: rgba(51, 102, 204, 0.1) !important;
       }
 
+      // Ajuste para el paginador
       .p-paginator {
         padding: 0.5rem;
+        position: sticky;
+        bottom: 0;
+        background-color: #fff;
+        z-index: 1;
 
         .p-paginator-element {
           min-width: 2rem;

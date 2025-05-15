@@ -194,8 +194,21 @@ export class PropuestaResumenSgrComponent implements OnInit{
         .then(response => response.json())
         .then(data => {
           this.data = organizeCategoryData(data);
+          this.expandTopLevelNodes();
         })
         .catch(error => console.error('Error fetching data:', error));
+    }
+
+    expandTopLevelNodes() {
+      console.log('Expanding top-level nodes...');
+      // Expandir los nodos de primer nivel para mejor visualización
+      if (this.data && this.data.length > 0) {
+        this.data.forEach(node => {
+          if (node.children && node.children.length > 0) {
+            node.expanded = node.data.categoria.split(".").length < 2;
+          }
+        });
+      }
     }
 
     toggleColumns() {
