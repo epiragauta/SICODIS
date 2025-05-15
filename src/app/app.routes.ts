@@ -13,6 +13,7 @@ import { FaqComponent } from './components/faq/faq.component';
 import { ToolsComponent } from './components/tools/tools.component';
 import { ComparativoIacVsPresupuestoComponent } from './components/comparativo-iac-vs-presupuesto/comparativo-iac-vs-presupuesto.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { PropuestaResumenSgrComponent } from './components/propuesta-resumen-sgr/propuesta-resumen-sgr.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -29,4 +30,5 @@ export const routes: Routes = [
     { path: 'faq', component: FaqComponent },
     { path: 'tools', component: ToolsComponent },
     { path: 'dashboard', component: DashboardComponent },
+    { path: 'propuesta-resumen-sgr', component: PropuestaResumenSgrComponent } // Redirect to home for any unknown routes
 ];
