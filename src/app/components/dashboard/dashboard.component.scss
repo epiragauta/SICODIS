@@ -139,11 +139,11 @@ mat-card-title .mat-icon {
   vertical-align: middle;
 }
 
-.flex.items-center {
-  display: flex;
-  align-items: center;
-  font-size: 1rem;
-}
+// .flex.items-center {
+//   display: flex;
+//   align-items: center;
+//   font-size: 1rem;
+// }
 
 .mr-2 {
   margin-right: 0.5rem;
@@ -201,14 +201,6 @@ mat-card-title .mat-icon {
   color: #666;
 }
 
-@media (max-width: 1350px) {
-  .flex.items-center {
-    display: flex;
-    align-items: center;
-    font-size: 0.68rem;
-  }
-}
-
 /* Media queries para dispositivos móviles */
 @media (max-width: 768px) {
   .chart-map-container {
@@ -236,6 +228,30 @@ mat-card-title .mat-icon {
 
   .chart-value .percentage {
     font-size: 0.55rem;
+  }
+}
+
+@media (max-width: 1350px) {
+  .flex.items-center {
+    display: flex;
+    align-items: center;
+    font-size: 0.68rem;
+  }
+}
+
+@media (min-width: 1351px) and (max-width: 1596px) {
+  .flex.items-center {
+    display: flex;
+    align-items: center;
+    font-size: 0.75rem;
+  }
+}
+
+@media (min-width: 1597px) and (max-width: 1920px) {
+  .flex.items-center {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
   }
 }
 

@@ -1,0 +1,36 @@
+<div class="stats-container">
+  <div class="stats-row">
+    <!-- Tarjeta 1: Gráfico de Barras -->
+    <div class="stats-card">
+      <div class="stats-card-header">
+        <h3>Distribución por Períodos</h3>
+        <p class="stats-card-subtitle">Valores expresados en miles de millones</p>
+      </div>
+      <div class="stats-card-body">
+        <p-chart type="bar" [data]="basicData" [options]="basicOptions"></p-chart>
+      </div>
+    </div>
+
+    <!-- Tarjeta 2: Gráfico Circular -->
+    <div class="stats-card">
+      <div class="stats-card-header">
+        <h3>Distribución por Categorías</h3>
+        <p class="stats-card-subtitle">Porcentaje por componente</p>
+      </div>
+      <div class="stats-card-body">
+        <p-chart type="pie" [data]="pieData" [options]="pieChartOptions"></p-chart>
+      </div>
+    </div>
+
+    <!-- Tarjeta 3: Gráfico de Barras Horizontal -->
+    <div class="stats-card">
+      <div class="stats-card-header">
+        <h3>Tendencia por Componentes</h3>
+        <p class="stats-card-subtitle">Comparativa de variables (miles de millones)</p>
+      </div>
+      <div class="stats-card-body">
+        <p-chart type="bar" [data]="horizontalData" [options]="horizontalChartoptions"></p-chart>
+      </div>
+    </div>
+  </div>
+</div>

@@ -34,6 +34,7 @@ import { SelectModule } from 'primeng/select';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { ChartModule } from 'primeng/chart';
 import { DividerModule } from 'primeng/divider';
+import { ReportsSgrStatsComponent } from './reports-sgr-stats.component';
 
 @Component({
     selector: 'app-reports-sgr',
@@ -59,7 +60,8 @@ import { DividerModule } from 'primeng/divider';
         MultiSelectModule,
         SelectModule,
         ChartModule,
-        DividerModule
+        DividerModule,
+        ReportsSgrStatsComponent
     ],
     templateUrl: './reports-sgr.component.html',
     styleUrl: './reports-sgr.component.scss'

@@ -179,18 +179,7 @@
         </p-tabpanel>
         <p-tabpanel value="1">
           <div #panel1Tab id="panel-1">
-            <div class="card flex justify-center chart-div">
-              <p-chart type="bar" [data]="basicData" [options]="basicOptions" />
-            </div>
-            <p-divider/>
-            <div class="card flex justify-center chart-div">
-              <p-chart type="pie" [data]="pieData" [options]="pieChartOptions" class="w-full md:w-[30rem]" />
-            </div>
-            <p-divider/>
-            <div class="card justify-center chart-div">
-              <p-chart type="bar" [data]="horizontalData" [options]="horizontalChartoptions" class="h-[30rem]" />
-            </div>
-
+            <app-reports-sgr-stats [dataTable]="dataTable"></app-reports-sgr-stats>
           </div>
         </p-tabpanel>
         <p-tabpanel value="2">
