@@ -172,7 +172,7 @@ export class ComparativoIacVsPresupuestoComponent implements OnInit {
   }
 
   hasPresupuestoInfo(rowData: any): boolean {
-    return this.hasInfo(rowData.Concepto, 'presupuesto');
+    return this.hasInfo(rowData.concepto, 'presupuesto');
   }
 
   private hasInfo(category: string, field: string): boolean {
@@ -188,11 +188,11 @@ export class ComparativoIacVsPresupuestoComponent implements OnInit {
     event.preventDefault();
     event.stopPropagation();
 
-    if (!this.infoMap.has(rowData.Concepto)) {
+    if (!this.infoMap.has(rowData.concepto)) {
       return;
     }
 
-    const categoryInfo = this.infoMap.get(rowData.Concepto);
+    const categoryInfo = this.infoMap.get(rowData.concepto);
     const info = categoryInfo?.get(field);
 
     if (info) {

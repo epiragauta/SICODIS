@@ -1,0 +1,45 @@
+.sgr-table-header {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.reports-title {
+  margin-bottom: 1rem;
+}
+
+.options-years {
+  @media (min-width: 768px) {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 16px;
+
+    & > div:not(:nth-last-child(-n+2)) {
+      width: 240px; /* Ancho fijo */
+      flex: 0 0 auto;
+    }
+
+    & > div:nth-last-child(-n+2) {
+      margin-top: 1px;
+      align-self: flex-end;
+    }
+  }
+}
+
+
+.vigencia-select,
+.search-type-select,
+.dpto-select,
+.entity-select,
+.detail-entity-select {
+  flex: 1 1 200px;
+  min-width: 200px;
+}
+
+@media (min-width: 768px) {
+  .md\:w-56 {
+    width: 240px !important; /* Sobreescribir para usar nuestro ancho fijo */
+  }
+}

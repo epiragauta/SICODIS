@@ -1,1 +1,147 @@
-<p>propuesta-resumen-sgr works!</p>
+<div class="sicodis-container">
+
+  <p-treetable [value]="data"
+                [columns]="cols"
+                [paginator]="true"
+                [rows]="20"
+                [scrollable]="true"
+                scrollHeight="450px"
+                selectionMode="single"
+                [(selection)]="selectedNode"
+                styleClass="p-treetable-sm"
+                [resizableColumns]="true"
+                columnResizeMode="expand">
+
+    <ng-template pTemplate="caption">
+      <div class="sgr-table-header">
+        <h2 class="reports-title">Propuesta Resumen SGR</h2>
+        <div class="options-years">
+          <div class="p-field vigencia-select">
+            <p-floatlabel class="w-full md:w-56" variant="on">
+              <p-select id="vigencia" [options]="vigencia" inputId="vigenciaSelect" [(ngModel)]="selectedVigencia"
+              optionLabel="label" [showClear]="false" placeholder="Seleccione Vigencia"></p-select>
+              <label for="vigenciaSelect">Vigencia</label>
+            </p-floatlabel>
+          </div>
+
+          <div class="p-field search-type-select">
+            <p-floatlabel class="w-full md:w-56" variant="on">
+              <p-select id="searchType" inputId="searchType" [options]="searchTypes" [(ngModel)]="selectedSearchType" fluid="true"
+              placeholder="Seleccione Por" optionLabel="label" [showClear]="false" (onChange)="updateSelectedSearchType($event)"></p-select>
+              <label for="searchType">Buscar por</label>
+            </p-floatlabel>
+          </div>
+
+          <div *ngIf="selectedSearchType.id == 2" class="p-field dpto-select">
+            <p-floatlabel class="w-full md:w-56" variant="on">
+              <p-select id="dpto" inputId="dptoSelect" [options]="dptos" [(ngModel)]="selectedDpto" optionLabel="nombre" fluid="true"
+              placeholder="Seleccionar departamento" [showClear]="false" (onChange)="updateSelectedDpto($event)"></p-select>
+              <label for="dptoSelect">Seleccionar por departamento</label>
+            </p-floatlabel>
+          </div>
+
+          <div *ngIf="selectedSearchType.id == 3 || selectedSearchType.id == -1" class="p-field entity-select">
+            <p-floatlabel class="w-full md:w-56" variant="on">
+              <p-select id="entity" inputId="entitySelect" [options]="entities" [(ngModel)]="selectedEntity" fluid="true"
+              placeholder="Seleccionar entidad" optionLabel="dpto" [showClear]="false" (onChange)="updateSelectedEntity($event)"></p-select>
+              <label for="entitySelect">Seleccionar por entidad</label>
+            </p-floatlabel>
+          </div>
+
+          <div class="p-field detail-entity-select">
+            <p-floatlabel class="w-full md:w-56" variant="on">
+              <p-select id="detailEntity" inputId="detailEntitySelect" [options]="detailEntitiesFiltered" fluid="true"
+              placeholder="Seleccione detalle" [(ngModel)]="selectedDetailEntity" optionLabel="entidad" [showClear]="false"></p-select>
+            </p-floatlabel>
+          </div>
+
+          <div class="p-field">
+            <button pButton type="button"
+                icon="pi pi-download"
+                label="Consultar"
+                class="p-button-primary"
+                (click)="queryData()">
+            </button>
+          </div>
+
+          <div class="p-field">
+            <p-splitButton label="Exportar"
+                icon="pi pi-download"
+                class="p-button-primary"
+                (onClick)="exportData()"
+                [model]="menuItems">
+            </p-splitButton>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="colgroup" let-columns>
+      <colgroup>
+        <col *ngFor="let col of columns" [style.width]="col.field === 'concepto' ? '40%' : '20%'">
+      </colgroup>
+    </ng-template>
+
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns" [ngClass]="col.field === 'concepto' ? 'text-left' : 'text-right'">
+          {{col.header}}
+
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+      <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode">
+        <td>
+          <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+          <span [ngClass]="{'font-bold': !rowNode.parent || (rowNode.parent && !rowNode.parent.parent) || (rowNode.parent?.parent && !rowNode.parent.parent.parent)}">
+            {{rowData.categoria}} - {{rowData.concepto}}
+          </span>
+        </td>
+        <td class="text-right">
+          <div class="value-with-info">
+            {{rowData.presupuesto_total_vigente | currency}}
+            <i class="pi pi-info-circle info-icon"
+               *ngIf="hasPresupuestoInfo(rowData)"
+                (click)="showInfo($event, 'presupuesto', rowData)"></i>
+          </div>
+        </td>
+        <td class="text-right">
+          <div class="value-with-info">
+            {{rowData.presupuesto_otros | currency}}
+            <i class="pi pi-info-circle info-icon"
+               *ngIf="hasPresupuestoInfo(rowData)"
+                (click)="showInfo($event, 'presupuesto', rowData)"></i>
+          </div>
+        </td>
+        <td class="text-right">
+          <div class="value-with-info">
+            {{rowData.presupuesto_corriente | currency}}
+          </div>
+        </td>
+        <td class="text-right">
+          <div class="value-with-info">
+            {{rowData.caja_corriente_informada | currency}}
+          </div>
+        </td>
+        <td class="text-right">
+          <div class="value-with-info">
+            {{rowData.porcentaje_1 | percent}}
+          </div>
+        </td>
+        <td class="text-right">
+          <div class="value-with-info">
+            {{rowData.caja_total | currency}}
+          </div>
+        </td>
+        <td class="text-right">
+          <div class="value-with-info">
+            {{rowData.porcentaje_2 | percent}}
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+  </p-treetable>
+
+</div>
