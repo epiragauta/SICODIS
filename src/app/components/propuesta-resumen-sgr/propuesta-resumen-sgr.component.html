@@ -31,8 +31,9 @@
       <ng-template pTemplate="header" let-columns>
         <tr>
           <th *ngFor="let col of columns"
-              [ngStyle]="{'width': col.width}"
-              [ngClass]="col.field === 'presupuesto_otros' ? 'expandable-column' : ''"
+              [ngStyle]="{'width': col.width, 'backgroundColor': col.color}"
+              [ngClass]="[col.field === 'presupuesto_otros' ? 'expandable-column' : '',
+                          col.class ? col.class : '']"
               (click)="col.field === 'presupuesto_otros' ? toggleColumns() : null">
             {{col.header}}
             <span *ngIf="col.field === 'presupuesto_otros'" class="toggle-icon">
@@ -43,25 +44,35 @@
       </ng-template>
       <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
           <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode">
-            <td *ngFor="let col of cols">
+            <td *ngFor="let col of cols"
+              [ngClass]="[col.field === 'presupuesto_otros' ? 'expandable-column' : '',
+                          col.class ? col.class : '']">
               <p-treeTableToggler [rowNode]="rowNode" *ngIf="col.field === 'concepto'"></p-treeTableToggler>
               <ng-container [ngSwitch]="col.field">
                 <ng-container *ngSwitchCase="'concepto'">
-                  <span [ngClass]="{'font-bold': rowNode.level <= 1}">
+                  <span [ngClass]="{'font-bold': rowNode.level <= 1,
+                                    'expandable-column': col.field === 'presupuesto_otros',
+                                    'col-style': col.field === 'presupuesto_otros' && col.class}">
                     {{rowData.categoria ? rowData.categoria + ' - ' : ''}}{{rowData.concepto}}
                   </span>
                 </ng-container>
 
                 <ng-container *ngSwitchCase="'porcentaje_1'">
-                  {{formatPercentage(rowData[col.field])}}
+                  <div [ngClass]="{'font-bold': rowNode.level <= 1}">
+                    {{formatPercentage(rowData[col.field])}}
+                  </div>
+
                 </ng-container>
 
                 <ng-container *ngSwitchCase="'porcentaje_2'">
-                  {{formatPercentage(rowData[col.field])}}
+                  <div [ngClass]="{'font-bold': rowNode.level <= 1}">
+                    {{formatPercentage(rowData[col.field])}}
+                  </div>
                 </ng-container>
 
                 <ng-container *ngSwitchDefault>
-                  <div class="text-right" *ngIf="rowData[col.field] !== null && rowData[col.field] !== undefined">
+                  <div [ngClass]="{'font-bold': rowNode.level <= 1, 'col-style': col.field === 'presupuesto_otros' && col.class}" class="text-right"
+                      *ngIf="rowData[col.field] !== null && rowData[col.field] !== undefined">
                     {{formatCurrency(rowData[col.field])}}
                   </div>
                   <div class="text-right no-data" *ngIf="rowData[col.field] === null || rowData[col.field] === undefined">

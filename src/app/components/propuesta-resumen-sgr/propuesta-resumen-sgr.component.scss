@@ -76,6 +76,20 @@
   }
 }
 
+.expandable-column {
+    cursor: pointer !important;
+    position: relative;
+    background-color: #9bc2e7 !important;
+}
+
+.col-expanded {
+  background-color: #9bc2e77c !important;
+}
+
+.font-bold {
+  font-weight: 600 !important;
+}
+
 .tree-table-container {
   margin-bottom: 2rem;
   overflow-x: auto; // Habilitar scroll horizontal para la tabla
@@ -125,6 +139,7 @@
         &.expandable-column {
           cursor: pointer !important;
           position: relative;
+          background-color: rgb(212, 223, 244);
 
           &::after {
             content: '';

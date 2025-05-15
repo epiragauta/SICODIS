@@ -158,16 +158,16 @@ export class PropuestaResumenSgrComponent implements OnInit{
       // Configurar columnas principales siempre visibles
 
       this.colsA = [
-        { field: 'concepto', header: 'Concepto', width: '20%' },
-        { field: 'presupuesto_total_vigente', header: 'Presupuesto Total Vigente', width: '14%' },
-        { field: 'presupuesto_otros', header: 'Presupuesto Otros', width: '14%' },
+        { field: 'concepto', header: 'Concepto', width: '20%', 'color': '#e4e6e8', 'class': 'col-standar' },
+        { field: 'presupuesto_total_vigente', header: 'Presupuesto Total Vigente', width: '14%', 'color': '#e4e6e8', 'class': 'col-standar' },
+        { field: 'presupuesto_otros', header: 'Presupuesto Otros', width: '14%', 'color': '#e4e6e8', 'class': 'col-standar' },
       ]
       this.colsB = [
-        { field: 'presupuesto_corriente', header: 'Presupuesto Corriente', width: '14%' },
-        { field: 'caja_corriente_informada', header: 'Caja Corriente Informada', width: '14%' },
-        { field: 'porcentaje_1', header: '%', width: '5%' },
-        { field: 'caja_total', header: 'Caje Total', width: '14%' },
-        { field: 'porcentaje_2', header: '%', width: '5%' },
+        { field: 'presupuesto_corriente', header: 'Presupuesto Corriente', width: '14%', 'color': '#e4e6e8', 'class': 'col-standar' },
+        { field: 'caja_corriente_informada', header: 'Caja Corriente Informada', width: '14%', 'color': '#e4e6e8', 'class': 'col-standar' },
+        { field: 'porcentaje_1', header: '%', width: '5%', 'color': '#e4e6e8', 'class': 'col-standar' },
+        { field: 'caja_total', header: 'Caje Total', width: '14%', 'color': '#e4e6e8', 'class': 'col-standar' },
+        { field: 'porcentaje_2', header: '%', width: '5%', 'color': '#e4e6e8', 'class': 'col-standar' },
       ]
       this.cols = [
         ...this.colsA,
@@ -176,12 +176,12 @@ export class PropuestaResumenSgrComponent implements OnInit{
 
       // Configurar columnas expandidas que serán mostradas/ocultadas
       this.expandedCols = [
-        { field: 'rendimientos_financieros', header: 'Rendimientos Financieros', width: '14%' },
-        { field: 'reintegros', header: 'Reintegros', width: '14%' },
-        { field: 'excedentes_faep_fonpet', header: 'Excedentes FAEP FONPET', width: '14%' },
-        { field: 'multas', header: 'Multas', width: '14%' },
-        { field: 'mineral_sin_identificacion_de_origen', header: 'Mineral Sin Identificación', width: '14%' },
-        { field: 'mr', header: 'MR', width: '14%' }
+        { field: 'rendimientos_financieros', header: 'Rendimientos Financieros', width: '14%', 'color': '#a5cef6', 'class': 'col-expanded' },
+        { field: 'reintegros', header: 'Reintegros', width: '14%', 'color': '#a5cef6', 'class': 'col-expanded' },
+        { field: 'excedentes_faep_fonpet', header: 'Excedentes FAEP FONPET', width: '14%', 'color': '#a5cef6', 'class': 'col-expanded' },
+        { field: 'multas', header: 'Multas', width: '14%', 'color': '#a5cef6', 'class': 'col-expanded'  },
+        { field: 'mineral_sin_identificacion_de_origen', header: 'Mineral Sin Identificación', width: '14%', 'color': '#a5cef6', 'class': 'col-expanded' },
+        { field: 'mr', header: 'MR', width: '14%', 'color': '#a5cef6', 'class': 'col-expanded' }
       ];
         this.loadData();
         this.selectedVigencia = this.vigencia[0];
