@@ -158,16 +158,16 @@ export class PropuestaResumenSgrComponent implements OnInit{
       // Configurar columnas principales siempre visibles
 
       this.colsA = [
-        { field: 'concepto', header: 'Concepto', width: '20%', 'color': '#e4e6e8', 'class': 'col-standar' },
-        { field: 'presupuesto_total_vigente', header: 'Presupuesto Total Vigente', width: '14%', 'color': '#e4e6e8', 'class': 'col-standar' },
-        { field: 'presupuesto_otros', header: 'Presupuesto Otros', width: '14%', 'color': '#e4e6e8', 'class': 'col-standar' },
+        { field: 'concepto', header: 'Concepto', width: '25%', 'color': '#e4e6e8', 'class': 'col-standar' },
+        { field: 'presupuesto_total_vigente', header: 'Presupuesto Total Vigente', width: '12.5%', 'color': '#e4e6e8', 'class': 'col-standar' },
+        { field: 'presupuesto_otros', header: 'Presupuesto Otros', width: '12.5%', 'color': '#e4e6e8', 'class': 'col-standar' },
       ]
       this.colsB = [
-        { field: 'presupuesto_corriente', header: 'Presupuesto Corriente', width: '14%', 'color': '#e4e6e8', 'class': 'col-standar' },
-        { field: 'caja_corriente_informada', header: 'Caja Corriente Informada', width: '14%', 'color': '#e4e6e8', 'class': 'col-standar' },
-        { field: 'porcentaje_1', header: '%', width: '5%', 'color': '#e4e6e8', 'class': 'col-standar' },
-        { field: 'caja_total', header: 'Caje Total', width: '14%', 'color': '#e4e6e8', 'class': 'col-standar' },
-        { field: 'porcentaje_2', header: '%', width: '5%', 'color': '#e4e6e8', 'class': 'col-standar' },
+        { field: 'presupuesto_corriente', header: 'Presupuesto Corriente', width: '12.5%', 'color': '#e4e6e8', 'class': 'col-standar' },
+        { field: 'caja_corriente_informada', header: 'Caja Corriente Informada', width: '12.5%', 'color': '#e4e6e8', 'class': 'col-standar' },
+        { field: 'porcentaje_1', header: '%', width: '6%', 'color': '#e4e6e8', 'class': 'col-standar' },
+        { field: 'caja_total', header: 'Caje Total', width: '13%', 'color': '#e4e6e8', 'class': 'col-standar' },
+        { field: 'porcentaje_2', header: '%', width: '6%', 'color': '#e4e6e8', 'class': 'col-standar' },
       ]
       this.cols = [
         ...this.colsA,
