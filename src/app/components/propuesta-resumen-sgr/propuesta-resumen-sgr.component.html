@@ -32,7 +32,7 @@
           <th *ngFor="let col of columns"
               [ngStyle]="{'width': col.width}"
               [ngClass]="col.field === 'presupuesto_otros' ? 'expandable-column' : ''"
-              (dblclick)="col.field === 'presupuesto_otros' ? toggleColumns() : null">
+              (click)="col.field === 'presupuesto_otros' ? toggleColumns() : null">
             {{col.header}}
             <span *ngIf="col.field === 'presupuesto_otros'" class="toggle-icon">
               {{isExpanded ? '(-)' : '(+)'}}
