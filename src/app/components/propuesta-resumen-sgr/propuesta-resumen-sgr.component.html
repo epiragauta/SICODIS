@@ -84,98 +84,48 @@
 
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th *ngFor="let col of columns" [ngClass]="col.field === 'concepto' ? 'text-left' : 'text-right'">
+        <th *ngFor="let col of columns"
+            [ngStyle]="{'width': col.width}"
+            [ngClass]="col.field === 'presupuesto_otros' ? 'expandable-column' : ''"
+            (dblclick)="col.field === 'presupuesto_otros' ? toggleColumns() : null">
           {{col.header}}
-
+          <span *ngIf="col.field === 'presupuesto_otros'" class="toggle-icon">
+            {{isExpanded ? '(-)' : '(+)'}}
+          </span>
         </th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
-      <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode">
-        <td>
-          <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-          <span [ngClass]="{'font-bold': !rowNode.parent || (rowNode.parent && !rowNode.parent.parent) || (rowNode.parent?.parent && !rowNode.parent.parent.parent)}">
-            {{rowData.categoria}} - {{rowData.concepto}}
-          </span>
-        </td>
-        <td class="text-right">
-          <div class="value-with-info">
-            {{rowData.presupuesto_total_vigente | currency}}
-            <i class="pi pi-info-circle info-icon"
-               *ngIf="hasPresupuestoInfo(rowData)"
-                (click)="showInfo($event, 'presupuesto', rowData)"></i>
-          </div>
-        </td>
-        <td class="text-right">
-          <div class="value-with-info">
-            {{rowData.presupuesto_otros | currency}}
-            <i class="pi pi-info-circle info-icon"
-               *ngIf="hasPresupuestoInfo(rowData)"
-                (click)="showInfo($event, 'presupuesto', rowData)"></i>
-          </div>
-        </td>
-        <td class="text-right">
-          <div class="value-with-info">
-            {{rowData.rendimientos_financieros | currency}}
-          </div>
-        </td>
-        <td class="text-right">
-          <div class="value-with-info">
-            {{rowData.multas | currency}}
-          </div>
-        </td>
-        <td class="text-right">
-          <div class="value-with-info">
-            {{rowData.reintegros | currency}}
-          </div>
-        </td>
-        <td class="text-right">
-          <div class="value-with-info">
-            {{rowData.mineral_sin_identificacion_de_origen | currency}}
-          </div>
-        </td>
-        <td class="text-right">
-          <div class="value-with-info">
-            {{rowData.excedentes_faep_fonpet | currency}}
-          </div>
-        </td>
-        <td class="text-right">
-          <div class="value-with-info">
-            {{rowData.disponibilidad_inicial | currency}}
-          </div>
-        </td>
-        <td class="text-right">
-          <div class="value-with-info">
-            {{rowData.mr | currency}}
-          </div>
-        </td>
-        <td class="text-right">
-          <div class="value-with-info">
-            {{rowData.presupuesto_corriente | currency}}
-          </div>
-        </td>
-        <td class="text-right">
-          <div class="value-with-info">
-            {{rowData.caja_corriente_informada | currency}}
-          </div>
-        </td>
-        <td class="text-right">
-          <div class="value-with-info">
-            {{rowData.porcentaje_1 | percent}}
-          </div>
-        </td>
-        <td class="text-right">
-          <div class="value-with-info">
-            {{rowData.caja_total | currency}}
-          </div>
-        </td>
-        <td class="text-right">
-          <div class="value-with-info">
-            {{rowData.porcentaje_2 | percent}}
-          </div>
-        </td>
-      </tr>
-    </ng-template>
+        <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode">
+          <td *ngFor="let col of cols">
+            <p-treeTableToggler [rowNode]="rowNode" *ngIf="col.field === 'concepto'"></p-treeTableToggler>
+            <ng-container [ngSwitch]="col.field">
+              <ng-container *ngSwitchCase="'concepto'">
+                <span [ngClass]="{'font-bold': rowNode.level <= 1}">
+                  {{rowData.categoria ? rowData.categoria + ' - ' : ''}}{{rowData.concepto}}
+                </span>
+              </ng-container>
+
+              <ng-container *ngSwitchCase="'porcentaje_1'">
+                {{formatPercentage(rowData[col.field])}}
+              </ng-container>
+
+              <ng-container *ngSwitchCase="'porcentaje_2'">
+                {{formatPercentage(rowData[col.field])}}
+              </ng-container>
+
+              <ng-container *ngSwitchDefault>
+                <div class="text-right" *ngIf="rowData[col.field] !== null && rowData[col.field] !== undefined">
+                  {{formatCurrency(rowData[col.field])}}
+                </div>
+                <div class="text-right no-data" *ngIf="rowData[col.field] === null || rowData[col.field] === undefined">
+                  -
+                </div>
+              </ng-container>
+            </ng-container>
+          </td>
+        </tr>
+      </ng-template>
 
   </p-treetable>
 

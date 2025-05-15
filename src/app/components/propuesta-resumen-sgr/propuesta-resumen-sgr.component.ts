@@ -20,8 +20,6 @@ import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
 import { departamentos } from '../../data/departamentos';
 
 import { territorialEntities } from '../../data/territorial-entities';
-import { plantillaComparacionIacVsPresupuestoDetalleEntidad } from '../../data/plantilla-comparacion-iac-vs-presupuesto-detalle-entidad';
-
 
 interface DocumentInfo {
   name: string;
@@ -59,6 +57,18 @@ export class PropuestaResumenSgrComponent implements OnInit{
   @ViewChild('infoPanel') infoPanel!: Popover;
 
     cols: any[] = [];
+    colsA: any[] = [];
+    colsB: any[] = [];
+    expandedCols: any[] = [];
+    hiddenCols: string[] = [
+      'rendimientos_financieros',
+      'reintegros',
+      'excedentes_faep_fonpet',
+      'multas',
+      'mineral_sin_identificacion_de_origen',
+      'mr'
+    ];
+  isExpanded: boolean = false;
     data: TreeNode[] = [];
     platformId = inject(PLATFORM_ID);
 
@@ -80,8 +90,6 @@ export class PropuestaResumenSgrComponent implements OnInit{
 
     territorialEntitiesDetailUrl = '/assets/data/territorial-entities-detail.json';
     detailedDataUrl = '/assets/data/propuesta-resumen-sgr.json';
-
-    templateComparison = plantillaComparacionIacVsPresupuestoDetalleEntidad;
 
     searchTypes: any[] = [
       { id: 1, label: 'General' },
@@ -147,27 +155,36 @@ export class PropuestaResumenSgrComponent implements OnInit{
     }
 
     ngOnInit() {
+      // Configurar columnas principales siempre visibles
+
+      this.colsA = [
+        { field: 'concepto', header: 'Concepto', width: '20%' },
+        { field: 'presupuesto_total_vigente', header: 'Presupuesto Total Vigente', width: '14%' },
+        { field: 'presupuesto_otros', header: 'Presupuesto Otros', width: '14%' },
+      ]
+      this.colsB = [
+        { field: 'presupuesto_corriente', header: 'Presupuesto Corriente', width: '14%' },
+        { field: 'caja_corriente_informada', header: 'Caja Corriente Informada', width: '14%' },
+        { field: 'porcentaje_1', header: '%', width: '5%' },
+        { field: 'caja_total', header: 'Caje Total', width: '14%' },
+        { field: 'porcentaje_2', header: '%', width: '5%' },
+      ]
       this.cols = [
-        { field: 'concepto', header: 'Concepto' },
-        { field: 'presupuesto_total_vigente', header: 'Presupuesto Total Vigente'},
-        { field: 'presupuesto_otros', header: 'Presupuesto Otros'},
-        { field: 'rendimientos_financieros', header: 'Rendimientos Financieros'},
-        { field: 'multas', header: 'Multas'},
-        { field: 'reintegros', header: 'Reintegros'},
-        { field: 'mineral_sin_identificacion_de_origen', header: 'Mineral sin identificación de origen'},
-        { field: 'excedentes_faep_fonpet', header: 'Excedentes FAEP/FONPET'},
-        { field: 'disponibilidad_inicial', header: 'Disponibilidad Inicial'},
-        { field: 'mr', header: 'MR'},
-        { field: 'presupuesto_corriente', header: 'Presupuesto Corriente'},
-        { field: 'caja_corriente_informada', header: 'Caja Corriente Informada'},
-        { field: 'porcentaje_1', header: '%'},
-        { field: 'caja_total', header: 'Caja Total'},
-        { field: 'porcentaje_2', header: '%'},
-
-
+        ...this.colsA,
+        ...this.colsB
       ];
-      this.loadData();
-      this.selectedVigencia = this.vigencia[0];
+
+      // Configurar columnas expandidas que serán mostradas/ocultadas
+      this.expandedCols = [
+        { field: 'rendimientos_financieros', header: 'Rendimientos Financieros', width: '14%' },
+        { field: 'reintegros', header: 'Reintegros', width: '14%' },
+        { field: 'excedentes_faep_fonpet', header: 'Excedentes FAEP FONPET', width: '14%' },
+        { field: 'multas', header: 'Multas', width: '14%' },
+        { field: 'mineral_sin_identificacion_de_origen', header: 'Mineral Sin Identificación', width: '14%' },
+        { field: 'mr', header: 'MR', width: '14%' }
+      ];
+        this.loadData();
+        this.selectedVigencia = this.vigencia[0];
 
     }
 
@@ -179,6 +196,26 @@ export class PropuestaResumenSgrComponent implements OnInit{
           this.data = organizeCategoryData(data);
         })
         .catch(error => console.error('Error fetching data:', error));
+    }
+
+    toggleColumns() {
+      this.isExpanded = !this.isExpanded;
+
+      if (this.isExpanded) {
+        // Mostrar todas las columnas
+        this.cols = [
+          ...this.colsA,
+          ...this.expandedCols,
+          ...this.colsB
+        ];
+      } else {
+        // Ocultar las columnas expandidas
+        this.cols = this.cols.filter(col => !this.hiddenCols.includes(col.field));
+      }
+    }
+
+    isHiddenColumn(field: string): boolean {
+      return this.hiddenCols.includes(field);
     }
 
     exportData() {
@@ -293,128 +330,6 @@ export class PropuestaResumenSgrComponent implements OnInit{
     filterDetailedData(codigo:string, isDpto:boolean = true) {
       console.log('Filtering detailed data...');
 
-      if (isDpto) {
-        if (codigo == '05000' || codigo == '08000') {
-          codigo = codigo.toString().substring(1,5);
-        }
-      }
-      this.detailedDataFiltered = this.detailedData.filter((item: any) => {
-        return item.codDpto  == codigo;
-      });
-      let template: any = [...this.templateComparison];
-      // let idx = template.findIndex((i: any) => i.categoria == '2.1.1.1.1');
-      // template[idx].presupuesto = this.detailedDataFiltered.reduce((acc: number, item: any) => acc + parseFloat(item.presup20AD), 0);
-      // template[idx].iac = this.detailedDataFiltered.reduce((acc: number, item: any) => acc + parseFloat(item.recaudo20AD), 0);
-      // template[idx].avance = this.detailedDataFiltered.reduce((acc: number, item: any) => acc + parseFloat(item.avance20AD.toString().replace(",",".")), 0);
-      let data20Ad = this.updateCategoryData('2.1.1.1.1', 'presup20AD', 'recaudo20AD', 'avance20AD', this.detailedDataFiltered, template);
-
-      // idx = template.findIndex((i: any) => i.categoria == '2.1.1.1.2');
-      // template[idx].presupuesto = this.detailedDataFiltered.reduce((acc: number, item: any) => acc + parseFloat(item.presup5ADA), 0);
-      // template[idx].iac = this.detailedDataFiltered.reduce((acc: number, item: any) => acc + parseFloat(item.recaudo5ADA), 0);
-      // template[idx].avance = this.detailedDataFiltered.reduce((acc: number, item: any) => acc + parseFloat(item.avance5ADA.toString().replace(",",".")), 0);
-      let data5Ad = this.updateCategoryData('2.1.1.1.2', 'presup5ADA', 'recaudo5ADA', 'avance5ADA', this.detailedDataFiltered, template);
-      let idx = template.findIndex((i: any) => i.categoria == '2.1.1.1');
-      template[idx].presupuesto = data20Ad.presupuesto + data5Ad.presupuesto;
-      template[idx].iac = data20Ad.iac + data5Ad.iac;
-      template[idx].avance = data20Ad.avance + data5Ad.avance;
-
-      let presupuestoCorienteInversion = template[idx].presupuesto;
-      let iACCorienteInversion = template[idx].iac;
-      let avanceCorrienteInversion = template[idx].avance;
-
-      let dataAIRDep = this.updateCategoryData('2.1.1.2.1', 'presupAIRDep', 'recaudoAIRDep', 'avanceAIRDep', this.detailedDataFiltered, template);
-      idx = template.findIndex((i: any) => i.categoria == '2.1.1.2');
-      template[idx].presupuesto = dataAIRDep.presupuesto;
-      template[idx].iac = dataAIRDep.iac;
-      template[idx].avance = dataAIRDep.avance;
-
-      presupuestoCorienteInversion += template[idx].presupuesto;
-      iACCorienteInversion += template[idx].iac;
-      avanceCorrienteInversion += template[idx].avance;
-
-      let dataMADSMMP = this.updateCategoryData('2.1.1.3.1.1', 'presupMADSMMP', 'recaudoMADSMMP', 'avanceMADSMMP', this.detailedDataFiltered, template);
-      let dataRIMMP = this.updateCategoryData('2.1.1.3.1.2', 'presupRIMMP', 'recaudoRIMMP', 'avanceRIMMP', this.detailedDataFiltered, template);
-
-      idx = template.findIndex((i: any) => i.categoria == '2.1.1.3.1');
-      template[idx].presupuesto = dataMADSMMP.presupuesto + dataRIMMP.presupuesto;
-      template[idx].iac = dataMADSMMP.iac + dataRIMMP.iac;
-      template[idx].avance = dataMADSMMP.avance + dataRIMMP.avance;
-
-      idx = template.findIndex((i: any) => i.categoria == '2.1.1.3');
-      template[idx].presupuesto = dataMADSMMP.presupuesto + dataRIMMP.presupuesto;
-      template[idx].iac = dataMADSMMP.iac + dataRIMMP.iac;
-      template[idx].avance = dataMADSMMP.avance + dataRIMMP.avance;
-
-      presupuestoCorienteInversion += template[idx].presupuesto;
-      iACCorienteInversion += template[idx].iac;
-      avanceCorrienteInversion += template[idx].avance;
-
-      idx = template.findIndex((i: any) => i.categoria == '2.1.1');
-      template[idx].presupuesto = presupuestoCorienteInversion;
-      template[idx].iac = iACCorienteInversion;
-      template[idx].avance = avanceCorrienteInversion;
-
-
-      const dataFAE = this.updateCategoryData('2.1.2.1', 'presupFAE', 'recaudoFAE', 'avanceFAE', this.detailedDataFiltered, template);
-      const dataFONPET = this.updateCategoryData('2.1.2.2', 'presupFONPET', 'recaudoFONPET', 'avanceFONPET', this.detailedDataFiltered, template);
-
-      idx = template.findIndex((i: any) => i.categoria == '2.1.2');
-      template[idx].presupuesto = dataFAE.presupuesto + dataFONPET.presupuesto;
-      template[idx].iac = dataFAE.iac + dataFONPET.iac;
-      template[idx].avance = dataFAE.avance + dataFONPET.avance;
-
-      idx = template.findIndex((i: any) => i.categoria == '2.1');
-      template[idx].presupuesto = presupuestoCorienteInversion + dataFAE.presupuesto + dataFONPET.presupuesto;
-      template[idx].iac = iACCorienteInversion + dataFAE.iac + dataFONPET.iac;
-      template[idx].avance = avanceCorrienteInversion + dataFAE.avance + dataFONPET.avance;
-
-      idx = template.findIndex((i: any) => i.categoria == '2');
-      template[idx].presupuesto = presupuestoCorienteInversion + dataFAE.presupuesto + dataFONPET.presupuesto;
-      template[idx].iac = iACCorienteInversion + dataFAE.iac + dataFONPET.iac;
-      template[idx].avance = avanceCorrienteInversion + dataFAE.avance + dataFONPET.avance;
-
-      const dataRFAD20 = this.updateCategoryData('2.2.1.1.1', 'presupRFAD20', 'recaudoRFAD20', 'avanceRFAD20', this.detailedDataFiltered, template);
-
-      const dataArt9AD20 = this.updateCategoryData('2.2.1.1.2', 'presupArt9AD20', 'recaudoArt9AD20', 'avanceArt9AD20', this.detailedDataFiltered, template);
-      idx = template.findIndex((i: any) => i.categoria == '2.2.1.1');
-      template[idx].presupuesto = dataRFAD20.presupuesto + dataArt9AD20.presupuesto;
-      template[idx].iac = dataRFAD20.iac + dataArt9AD20.iac;
-      template[idx].avance = dataRFAD20.avance + dataArt9AD20.avance;
-      idx = template.findIndex((i: any) => i.categoria == '2.2.1');
-      template[idx].presupuesto = dataRFAD20.presupuesto + dataArt9AD20.presupuesto;
-      template[idx].iac = dataRFAD20.iac + dataArt9AD20.iac;
-      template[idx].avance = dataRFAD20.avance + dataArt9AD20.avance;
-
-
-      idx = template.findIndex((i: any) => i.categoria == '2.2.2.1');
-      let presupuesto = this.detailedDataFiltered.reduce((acc: number, item: any) => acc + parseFloat(item.presupReintAD20), 0) +
-                        this.detailedDataFiltered.reduce((acc: number, item: any) => acc + parseFloat(item.presupReintACTI21), 0);
-      template[idx].presupuesto = presupuesto;
-      let iac = this.detailedDataFiltered.reduce((acc: number, item: any) => acc + parseFloat(item.recaudoReintAD20), 0) +
-                  this.detailedDataFiltered.reduce((acc: number, item: any) => acc + parseFloat(item.recaudoReintACTI21), 0);
-      template[idx].iac = iac;
-      let avance = this.detailedDataFiltered.reduce((acc: number, item: any) => acc + parseFloat(item.avanceReintAD20.toString().replace(",",".")), 0) +
-                  this.detailedDataFiltered.reduce((acc: number, item: any) => acc + parseFloat(item.avanceReintACTI21.toString().replace(",",".")), 0);
-      template[idx].avance = avance;
-
-      idx = template.findIndex((i: any) => i.categoria == '2.2.2');
-      template[idx].presupuesto = presupuesto;
-      template[idx].iac = iac;
-      template[idx].avance = avance;
-
-      idx = template.findIndex((i: any) => i.categoria == '2.2');
-      template[idx].presupuesto = dataRFAD20.presupuesto + dataArt9AD20.presupuesto + presupuesto;
-      template[idx].iac = dataRFAD20.iac + dataArt9AD20.iac + iac;
-      template[idx].avance = dataRFAD20.avance + dataArt9AD20.avance + avance;
-
-      idx = template.findIndex((i: any) => i.categoria == '1');
-      template[idx].presupuesto = presupuestoCorienteInversion + dataFAE.presupuesto + dataFONPET.presupuesto +
-                                  dataRFAD20.presupuesto + dataArt9AD20.presupuesto + presupuesto;
-      template[idx].iac = iACCorienteInversion + dataFAE.iac + dataFONPET.iac + dataRFAD20.iac + dataArt9AD20.iac + iac;
-      template[idx].avance = avanceCorrienteInversion + dataFAE.avance + dataFONPET.avance + dataRFAD20.avance + dataArt9AD20.avance + avance;
-
-
-      this.data = organizeCategoryData(template);
 
       console.log('Filtered detailed data:', this.detailedData);
     }
@@ -428,6 +343,31 @@ export class PropuestaResumenSgrComponent implements OnInit{
       }
       console.log('Updated category data:', template[idx]);
       return template[idx];
+    }
+
+    formatCurrency(value: any): string {
+      if (value === null || value === undefined) return '';
+
+      // Convertir a número si es string
+      const numValue = typeof value === 'string' ? parseFloat(value) : value;
+
+      // Formatear como moneda
+      return new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format(numValue);
+    }
+
+    formatPercentage(value: any): string {
+      if (value === null || value === undefined) return '';
+
+      // Convertir a número si es string
+      const numValue = typeof value === 'string' ? parseFloat(value) : value;
+
+      // Formatear como porcentaje
+      return (numValue * 100).toFixed(2) + '%';
     }
 
   }

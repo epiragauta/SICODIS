@@ -43,3 +43,124 @@
     width: 240px !important; /* Sobreescribir para usar nuestro ancho fijo */
   }
 }
+
+
+
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.page-title {
+  color: #004583;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  font-size: 24px;
+}
+
+.caption-container {
+  padding: 1rem 0;
+
+  h3 {
+    color: #004583;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    font-size: 18px;
+  }
+
+  .instruction-text {
+    font-size: 14px;
+    color: #666;
+    font-style: italic;
+  }
+}
+
+.tree-table-container {
+  margin-bottom: 2rem;
+
+  // Aplicar estilos para hacer que la tabla sea más compacta
+  :host ::ng-deep {
+    .p-treetable {
+      font-size: 14px;
+
+      .p-treetable-header {
+        background-color: #f8f9fa;
+        padding: 0.5rem;
+      }
+
+      th {
+        background-color: #e9ecef;
+        padding: 0.5rem;
+        font-weight: 600;
+        color: #495057;
+
+        &.expandable-column {
+          cursor: pointer;
+          position: relative;
+
+          &:hover {
+            background-color: #dee2e6;
+          }
+
+          .toggle-icon {
+            margin-left: 0.5rem;
+            font-weight: bold;
+            color: #666;
+          }
+        }
+      }
+
+      td {
+        padding: 0.5rem;
+        border-bottom: 1px solid #e9ecef;
+
+        &.text-right {
+          text-align: right;
+        }
+
+        .no-data {
+          color: #aaa;
+        }
+      }
+
+      .p-treetable-toggler {
+        margin-right: 0.5rem;
+      }
+
+      // Estilo para filas con jerarquía
+      .font-bold {
+        font-weight: 600;
+      }
+
+      // Estilo para filas seleccionadas
+      .p-highlight {
+        background-color: rgba(51, 102, 204, 0.1) !important;
+      }
+
+      .p-paginator {
+        padding: 0.5rem;
+
+        .p-paginator-element {
+          min-width: 2rem;
+          height: 2rem;
+        }
+      }
+    }
+  }
+}
+
+// Estilos para las columnas financieras
+:host ::ng-deep th:not(:first-child),
+:host ::ng-deep td:not(:first-child) {
+  text-align: right !important;
+}
+
+// Estilo para cuando las columnas expandidas están visibles
+:host ::ng-deep .expanded-view {
+  th, td {
+    font-size: 13px;
+    padding: 0.4rem !important;
+  }
+}
