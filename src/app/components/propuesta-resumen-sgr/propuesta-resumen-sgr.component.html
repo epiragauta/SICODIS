@@ -56,7 +56,7 @@
                         <span [ngClass]="{'font-bold': rowNode.level <= 1,
                                           'expandable-column': col.field === 'presupuesto_otros',
                                           'col-style': col.field === 'presupuesto_otros' && col.class}">
-                          {{rowData.categoria ? rowData.categoria + ' - ' : ''}}{{rowData.concepto}}
+                          {{rowData.concepto}}
                         </span>
                       </ng-container>
 
