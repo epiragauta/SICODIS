@@ -63,10 +63,10 @@ function organizeCategoryData(data: any) {
         // Añadimos este nodo como hijo del padre
         parent.children.push(node);
         if (segments.length < 4)
-          node.expanded = true;
+          node.expanded = false;
       } else {
         // Si no encontramos el padre, lo agregamos como nodo raíz
-        node.expanded = true; // Expandimos los nodos raíz por defecto
+        node.expanded = false; // Expandimos los nodos raíz por defecto
         rootNodes.push(node);
       }
     } else {
