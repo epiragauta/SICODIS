@@ -20,6 +20,7 @@ import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
 import { departamentos } from '../../data/departamentos';
 
 import { territorialEntities } from '../../data/territorial-entities';
+import { SplitterModule } from 'primeng/splitter';
 
 interface DocumentInfo {
   name: string;
@@ -48,7 +49,8 @@ interface NodeInfo {
       SplitButtonModule,
       MatGridListModule,
       ChartModule,
-      PopoverModule],
+      PopoverModule,
+      SplitterModule],
   templateUrl: './propuesta-resumen-sgr.component.html',
   styleUrl: './propuesta-resumen-sgr.component.scss'
 })
