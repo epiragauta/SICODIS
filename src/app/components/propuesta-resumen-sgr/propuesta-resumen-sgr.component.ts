@@ -158,16 +158,16 @@ export class PropuestaResumenSgrComponent implements OnInit{
       // Configurar columnas principales siempre visibles
 
       this.colsA = [
-        { field: 'concepto', header: 'Concepto', width: '25%', 'color': '#e4e6e8', 'class': 'col-standar' },
-        { field: 'presupuesto_total_vigente', header: 'Presupuesto Total Vigente', width: '12.5%', 'color': '#e4e6e8', 'class': 'col-standar' },
-        { field: 'presupuesto_otros', header: 'Presupuesto Otros', width: '12.5%', 'color': '#e4e6e8', 'class': 'col-standar' },
+        { field: 'concepto', header: 'Concepto', width: '40%', 'color': '#e4e6e8', 'class': 'col-standar' },
+        { field: 'presupuesto_total_vigente', header: 'Presupuesto Total Vigente', width: '10%', 'color': '#e4e6e8', 'class': 'col-standar' },
+        { field: 'presupuesto_otros', header: 'Presupuesto Otros', width: '10%', 'color': '#e4e6e8', 'class': 'col-standar' },
       ]
       this.colsB = [
-        { field: 'presupuesto_corriente', header: 'Presupuesto Corriente', width: '12.5%', 'color': '#e4e6e8', 'class': 'col-standar' },
-        { field: 'caja_corriente_informada', header: 'Caja Corriente Informada', width: '12.5%', 'color': '#e4e6e8', 'class': 'col-standar' },
-        { field: 'porcentaje_1', header: '%', width: '6%', 'color': '#e4e6e8', 'class': 'col-standar' },
-        { field: 'caja_total', header: 'Caje Total', width: '13%', 'color': '#e4e6e8', 'class': 'col-standar' },
-        { field: 'porcentaje_2', header: '%', width: '6%', 'color': '#e4e6e8', 'class': 'col-standar' },
+        { field: 'presupuesto_corriente', header: 'Presupuesto Corriente', width: '10%', 'color': '#e4e6e8', 'class': 'col-standar' },
+        { field: 'caja_corriente_informada', header: 'Caja Corriente Informada', width: '10%', 'color': '#e4e6e8', 'class': 'col-standar' },
+        { field: 'porcentaje_1', header: '%', width: '5%', 'color': '#e4e6e8', 'class': 'col-standar' },
+        { field: 'caja_total', header: 'Caje Total', width: '10%', 'color': '#e4e6e8', 'class': 'col-standar' },
+        { field: 'porcentaje_2', header: '%', width: '5%', 'color': '#e4e6e8', 'class': 'col-standar' },
       ]
       this.cols = [
         ...this.colsA,
@@ -221,6 +221,11 @@ export class PropuestaResumenSgrComponent implements OnInit{
           ...this.expandedCols,
           ...this.colsB
         ];
+        const listWidths = [16,8,8,8,6,6,6,6,6,6,9,3,8,4];
+        this.cols.forEach((col, index) => {
+          col.width = listWidths[index] + '%';
+        });
+        
       } else {
         // Ocultar las columnas expandidas
         this.cols = this.cols.filter(col => !this.hiddenCols.includes(col.field));

@@ -24,7 +24,7 @@
 
       <ng-template pTemplate="colgroup" let-columns>
         <colgroup>
-          <col *ngFor="let col of columns" [style.width]="col.field === 'concepto' ? '40%' : '20%'">
+          <col *ngFor="let col of columns" [style.width]="col.width">
         </colgroup>
       </ng-template>
 
