@@ -14,6 +14,7 @@ import { ToolsComponent } from './components/tools/tools.component';
 import { ComparativoIacVsPresupuestoComponent } from './components/comparativo-iac-vs-presupuesto/comparativo-iac-vs-presupuesto.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { PropuestaResumenSgrComponent } from './components/propuesta-resumen-sgr/propuesta-resumen-sgr.component';
+import { HighchartsDashboardComponent } from './components/highcharts-dashboard/highcharts-dashboard.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -30,5 +31,6 @@ export const routes: Routes = [
     { path: 'faq', component: FaqComponent },
     { path: 'tools', component: ToolsComponent },
     { path: 'dashboard', component: DashboardComponent },
+    { path: 'highcharts-dashboard', component: HighchartsDashboardComponent },
     { path: 'propuesta-resumen-sgr', component: PropuestaResumenSgrComponent } // Redirect to home for any unknown routes
 ];

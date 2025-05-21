@@ -1,0 +1,267 @@
+:host ::ng-deep .p-card-body{
+  padding: 0.75rem !important;
+}
+
+:host ::ng-deep .mat-mdc-card-header{
+  padding: 6px 10px 0 !important;
+}
+
+
+.mat-mdc-menu-item{
+  min-height: 32px !important;
+  font-family: inherit !important;
+}
+
+.grid-container {
+  margin: 20px;
+}
+
+.font-bold {
+  font-weight: bold;
+}
+
+.text-sm {
+  font-size: 0.75rem;
+}
+
+// Nueva distribución para el mapa y los gráficos
+.dashboard-main-row {
+  margin-bottom: 20px;
+}
+
+.chart-map-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  height: 500px; // Altura fija para mantener consistencia
+}
+
+.chart-section {
+  flex: 0 0 70%; // 70% del espacio
+  max-width: 70%;
+}
+
+.map-section {
+  flex: 0 0 30%; // 30% del espacio
+  max-width: 30%;
+}
+
+.dashboard-card {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.more-button {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+}
+
+.dashboard-card-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 16px;
+}
+
+.value-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.value {
+  font-size: 1.1rem;
+  font-family: inherit;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.mat-h2 {
+  margin-top: 30px;
+  margin-bottom: 15px;
+  color: #555;
+  font-weight: 500;
+}
+
+.progress-container {
+  width: 100%;
+  height: 8px;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.progress-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.summary-card {
+  background-color: #fafafa;
+}
+
+.category-card {
+  background-color: #ffffff;
+}
+
+mat-card-title {
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  color: #444;
+  font-family: inherit;
+}
+
+mat-card-title .mat-icon {
+  font-size: 1.7rem;
+  height: 1.5rem;
+  width: 1.8rem;
+  vertical-align: middle;
+}
+
+// .flex.items-center {
+//   display: flex;
+//   align-items: center;
+//   font-size: 1rem;
+// }
+
+.mr-2 {
+  margin-right: 0.5rem;
+}
+
+/* Ajustes para las tarjetas de categoría */
+.category-card mat-card-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 0;
+}
+
+.mt-4 {
+  margin-top: 2rem;
+}
+
+/* Estilos para la sección de gráficos */
+.chart-section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-top: 0.75rem;
+}
+
+.chart-container {
+  position: relative;
+  height: 80px;
+  width: 80px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chart-value {
+  position: absolute;
+  top: 87%;
+  left: 45%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: 100%;
+}
+
+.chart-value .value {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.chart-value .percentage {
+  display: block;
+  font-size: 1.25rem;
+  color: #666;
+}
+
+/* Media queries para dispositivos móviles */
+@media (max-width: 768px) {
+  .chart-map-container {
+    height: 60px;
+    width: 60px;
+  }
+
+  .chart-section, .map-section {
+    flex: 0 0 100%;
+    max-width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .chart-section {
+    height: 550px;
+  }
+
+  .map-section {
+    height: 400px;
+  }
+
+  .chart-value .value {
+    font-size: 0.7rem;
+  }
+
+  .chart-value .percentage {
+    font-size: 0.55rem;
+  }
+}
+
+@media (max-width: 1350px) {
+  .flex.items-center {
+    display: flex;
+    align-items: center;
+    font-size: 0.68rem;
+  }
+}
+
+@media (min-width: 1351px) and (max-width: 1596px) {
+  .flex.items-center {
+    display: flex;
+    align-items: center;
+    font-size: 0.75rem;
+  }
+}
+
+@media (min-width: 1597px) and (max-width: 1920px) {
+  .flex.items-center {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+  }
+}
+
+.p-card-body{
+  padding: 0.1rem !important;
+}
+
+.chart-section-main {
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+}
