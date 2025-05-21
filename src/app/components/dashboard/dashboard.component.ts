@@ -257,7 +257,16 @@ export class DashboardComponent implements OnInit {
   }
 
   getRandomColor(): string {
-    const colors = ['#3F51B5', '#673AB7', '#009688', '#795548', '#FF5722', '#607D8B', '#E91E63'];
+    const colors = ['#3366CC', // Azul real (el original)
+    '#6699FF', // Azul cielo
+    '#1A3366', // Azul marino
+    '#4F81BD', // Azul acero
+    '#0047AB', // Azul cobalto
+    '#0F52BA', // Azul zafiro
+    '#7CB9E8', // Azul celeste
+    '#4B0082', // Azul índigo
+    '#40E0D0', // Azul turquesa
+    '#ADDFFF'];
     return colors[Math.floor(Math.random() * colors.length)];
   }
 

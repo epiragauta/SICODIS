@@ -74,6 +74,10 @@ export class HeaderComponent implements OnInit{
               {
                   label: 'SGR - Tablero de Control',
                   command: () => this.redirectUrl("dashboard")
+              },
+              {
+                  label: 'SGR - Propuesta Resumen',
+                  command: () => this.redirectUrl("propuesta-resumen-sgr")
               }
             ]
         },

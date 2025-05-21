@@ -38,9 +38,17 @@ export class BudgetChartComponent implements OnInit, OnChanges {
 
   // Colores para los segmentos
   chartColors = [
-    '#3366CC', '#DC3912', '#FF9900', '#109618', '#990099',
-    '#3B3EAC', '#0099C6', '#DD4477', '#66AA00', '#B82E2E'
-  ];
+    '#3366CC', // Azul real (el original)
+    '#6699FF', // Azul cielo
+    '#1A3366', // Azul marino
+    '#4F81BD', // Azul acero
+    '#0047AB', // Azul cobalto
+    '#0F52BA', // Azul zafiro
+    '#7CB9E8', // Azul celeste
+    '#4B0082', // Azul índigo
+    '#40E0D0', // Azul turquesa
+    '#ADDFFF'  // Azul pálido
+];
 
   constructor() {
     this.viewOptions = [
