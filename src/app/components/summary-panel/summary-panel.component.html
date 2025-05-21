@@ -1,0 +1,19 @@
+<div class="summary-panel-container">
+  <div class="p-card-container">
+    <p-card header="Presupuesto Total Vigente" styleClass="total-budget-card">
+      {{ totalPresupuestoVigente | currency:'COP':'symbol-narrow':'1.0-0' }}
+    </p-card>
+  </div>
+
+  <div class="p-card-container">
+    <p-card header="Distribución P. Total Vigente" styleClass="chart-card">
+      <p-chart type="pie" [data]="pieChartData" [options]="pieChartOptions"></p-chart>
+    </p-card>
+  </div>
+
+  <div class="p-card-container">
+    <p-card header="Detalle P. Corriente" styleClass="chart-card">
+      <p-chart type="bar" [data]="barChartData" [options]="barChartOptions"></p-chart>
+    </p-card>
+  </div>
+</div>

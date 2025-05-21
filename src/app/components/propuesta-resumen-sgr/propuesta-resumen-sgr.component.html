@@ -1,4 +1,6 @@
 <div class="sicodis-container">
+  <app-info-popup [infoText]="infoPopupContent" contentTitle="Información Detallada del Reporte"></app-info-popup>
+  <app-summary-panel [summaryData]="summaryPanelData"></app-summary-panel>
 
   <p-splitter [panelSizes]="[80, 20]" [style]="{ height: '530px' }" styleClass="mb-8">
     <ng-template pTemplate="panel">
@@ -19,6 +21,64 @@
             <ng-template pTemplate="caption">
               <div class="caption-container">
                 <h2 class="reports-title">Propuesta Resumen SGR</h2>
+                <div class="options-years">
+                  <div class="p-field vigencia-select">
+                    <p-floatlabel class="w-full md:w-56" variant="on">
+                      <p-select id="vigencia" [options]="vigencia" inputId="vigenciaSelect" [(ngModel)]="selectedVigencia"
+                      optionLabel="label" [showClear]="false" placeholder="Seleccione Vigencia"></p-select>
+                      <label for="vigenciaSelect">Vigencia</label>
+                    </p-floatlabel>
+                  </div>
+
+                  <div class="p-field search-type-select">
+                    <p-floatlabel class="w-full md:w-56" variant="on">
+                      <p-select id="searchType" inputId="searchType" [options]="searchTypes" [(ngModel)]="selectedSearchType" fluid="true"
+                      placeholder="Seleccione Por" optionLabel="label" [showClear]="false" (onChange)="updateSelectedSearchType($event)"></p-select>
+                      <label for="searchType">Buscar por</label>
+                    </p-floatlabel>
+                  </div>
+
+                  <div *ngIf="selectedSearchType.id == 2" class="p-field dpto-select">
+                    <p-floatlabel class="w-full md:w-56" variant="on">
+                      <p-select id="dpto" inputId="dptoSelect" [options]="dptos" [(ngModel)]="selectedDpto" optionLabel="nombre" fluid="true"
+                      placeholder="Seleccionar departamento" [showClear]="false" (onChange)="updateSelectedDpto($event)"></p-select>
+                      <label for="dptoSelect">Seleccionar por departamento</label>
+                    </p-floatlabel>
+                  </div>
+
+                  <div *ngIf="selectedSearchType.id == 3 || selectedSearchType.id == -1" class="p-field entity-select">
+                    <p-floatlabel class="w-full md:w-56" variant="on">
+                      <p-select id="entity" inputId="entitySelect" [options]="entities" [(ngModel)]="selectedEntity" fluid="true"
+                      placeholder="Seleccionar entidad" optionLabel="dpto" [showClear]="false" (onChange)="updateSelectedEntity($event)"></p-select>
+                      <label for="entitySelect">Seleccionar por entidad</label>
+                    </p-floatlabel>
+                  </div>
+
+                  <div class="p-field detail-entity-select">
+                    <p-floatlabel class="w-full md:w-56" variant="on">
+                      <p-select id="detailEntity" inputId="detailEntitySelect" [options]="detailEntitiesFiltered" fluid="true"
+                      placeholder="Seleccione detalle" [(ngModel)]="selectedDetailEntity" optionLabel="entidad" [showClear]="false"></p-select>
+                    </p-floatlabel>
+                  </div>
+
+                  <div class="p-field">
+                    <button pButton type="button"
+                        icon="pi pi-download"
+                        label="Consultar"
+                        class="p-button-primary"
+                        (click)="queryData()">
+                    </button>
+                  </div>
+
+                  <div class="p-field">
+                    <p-splitButton label="Exportar"
+                        icon="pi pi-download"
+                        class="p-button-primary"
+                        (onClick)="exportData()"
+                        [model]="menuItems">
+                    </p-splitButton>
+                  </div>
+                </div>
                 <p class="instruction-text">
                     Haga clic en el encabezado "Presupuesto Otros" para ver el detalle de las fuentes
                   </p>
@@ -37,7 +97,8 @@
                     [ngStyle]="{'width': col.width, 'backgroundColor': col.color}"
                     [ngClass]="[col.field === 'presupuesto_otros' ? 'expandable-column' : '',
                                 col.class ? col.class : '']"
-                    (click)="col.field === 'presupuesto_otros' ? toggleColumns() : null">
+                    (click)="col.field === 'presupuesto_otros' ? toggleColumns() : null"
+                    [pTooltip]="col.tooltip" tooltipPosition="top">
                   {{col.header}}
                   <span *ngIf="col.field === 'presupuesto_otros'" class="toggle-icon">
                     {{isExpanded ? '(-)' : '(+)'}}
@@ -91,61 +152,7 @@
         </div>
     </ng-template>
     <ng-template pTemplate="panel">
-        
-        <div class="flex items-center justify-center h-full" style="overflow: auto;font-size: 11px;">
-          <p>Información detallada sobre presupuestos, recaudos y distribución de recursos del Sistema General de Regalías de Colombia, organizada jerárquicamente por diferentes conceptos presupuestales.</p>
-          
-          <br>
-          <ul>
-            <li><strong>Concepto</strong>: Descripción de la categoría presupuestal</li>
-            <li><strong>Presupuesto corriente</strong>: Monto presupuestado para ingresos corrientes</li>
-            <li><strong>Presupuesto otros</strong>: Montos presupuestados para otras fuentes de ingreso</li>
-            <li><strong>Presupuesto total vigente</strong>: Suma total del presupuesto vigente (corriente + otros)</li>
-            <li><strong>Caja corriente informada</strong>: Valores de caja reportados para los ingresos corrientes</li>
-            <li><strong>Caja total</strong>: Monto total de caja</li>
-            <li><strong>Disponibilidad inicial</strong>: Recursos disponibles al inicio del periodo</li>
-            <li><strong>Excedentes faep fonpet</strong>: Excedentes provenientes del Fondo de Ahorro y Estabilización (FAE) y del Fondo de Pensiones Territoriales (FONPET)</li>
-            <li><strong>Mineral sin identificacion de origen</strong>: Ingresos provenientes de minerales cuyo origen no está identificado</li>
-            <li><strong>MR</strong>: Categoría específica de ingresos</li>
-            <li><strong>Multas</strong>: Ingresos provenientes de sanciones o penalidades</li>
-            <li><strong>Reintegros</strong>: Devoluciones o retornos de recursos</li>
-            <li><strong>Rendimientos financieros</strong>: Ingresos generados por rendimientos de inversiones</li>
-            <li><strong>Porcentaje 1</strong> y <strong>Porcentaje 2</strong>: Indicadores porcentuales que miden proporciones entre valores</li>
-          </ul>
-          <h3>Estructura de conceptos principales:</h3>
-          <ul>
-            <li>TOTAL</li>
-            <li>INVERSIÓN
-              <ul>
-                <li>Asignaciones Directas 20%</li>
-                <li>Asignación para la Inversión Regional</li>
-                <li>Asignación para la Inversión Local</li>
-                <li>Asignación para Ciencia, Tecnología e Innovación</li>
-                <li>Asignación para la Paz</li>
-                <li>Asignación Ambiental</li>
-                <li>Municipios Río Magdalena y Canal Dique</li>
-                <li>Emprendimiento</li>
-                <li>Incentivo a la producción</li>
-              </ul>
-            </li>
-            <li>AHORRO
-              <ul>
-                <li>Fondo de Ahorro y Estabilización (FAE)</li>
-                <li>Fondo Ahorro Pensional Territorial (FONPET)</li>
-              </ul>
-            </li>
-            <li>OTROS
-              <ul>
-                <li>Funcionamiento</li>
-                <li>Fiscalización</li>
-                <li>Sistema de Seguimiento, Evaluación y Control (SSEC)</li>
-              </ul>
-            </li>
-            <li>RECAUDO CORRIENTE NO AFORADO</li>
-          </ul>
-
-          <p>Los valores monetarios están expresados en pesos colombianos y representan cifras considerables (en el orden de billones de pesos), correspondientes al presupuesto nacional del Sistema General de Regalías.</p>
-        </div>
+      <!-- Informational panel content has been moved to a popup -->
     </ng-template>
 </p-splitter>
 

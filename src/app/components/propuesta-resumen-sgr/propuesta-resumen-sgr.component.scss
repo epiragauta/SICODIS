@@ -8,69 +8,64 @@
   margin-bottom: 1rem;
 }
 
+// Styles for the filter/options bar integrated from comparativo-iac-vs-presupuesto
 .options-years {
-  @media (min-width: 768px) {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: 16px;
+  display: flex; // Start with flex display for mobile, will be overridden by media query
+  flex-direction: column; // Stack items vertically on mobile
+  gap: 16px; // Consistent gap for mobile
+  margin-bottom: 1rem; // Space below the filter bar
+  width: 100%; // Ensure it takes full width within caption-container
 
-    & > div:not(:nth-last-child(-n+2)) {
-      width: 240px; /* Ancho fijo */
-      flex: 0 0 auto;
-    }
+  @media (min-width: 768px) { // Styles for medium screens and up
+    flex-direction: row; // Arrange items in a row
+    flex-wrap: wrap; // Allow wrapping
+    align-items: flex-start; // Align items to the start of the cross axis
 
-    & > div:nth-last-child(-n+2) {
-      margin-top: 1px;
-      align-self: flex-end;
+    // Target direct children divs (which should have .p-field class)
+    & > .p-field {
+      flex: 0 0 auto; // Don't grow or shrink, base size on content or fixed width
+      width: 240px; // Default fixed width for most filter dropdowns
+
+      // Last two .p-field elements (buttons: Consultar, Exportar)
+      // Assuming they are indeed the last two direct children with .p-field
+      &:nth-last-child(-n+2):not(:first-child) { // Ensure not also the first child if few items
+        align-self: flex-end; // Align buttons to the bottom of the flex line if items wrap
+                               // or to the baseline if single line.
+        margin-top: 1px;      // Minor alignment tweak, might need adjustment
+        width: auto;          // Let buttons size to their content (label + icon)
+      }
     }
   }
 }
 
-
-.vigencia-select,
-.search-type-select,
-.dpto-select,
-.entity-select,
-.detail-entity-select {
-  flex: 1 1 200px;
-  min-width: 200px;
-}
-
+// This ensures the .md:w-56 class (if used directly on p-select or p-floatlabel in HTML) works as intended.
+// The HTML from comparativo-iac-vs-presupuesto used this on p-floatlabel.
 @media (min-width: 768px) {
-  .md\:w-56 {
-    width: 240px !important; /* Sobreescribir para usar nuestro ancho fijo */
+  .md\:w-56 { // Class name includes a colon, so it needs to be escaped in CSS.
+    width: 240px !important;
   }
 }
 
-
-
-
+// Adjust .caption-container to properly lay out title, options-years, and instruction-text
+// This replaces or merges with any existing .caption-container styles.
 .caption-container {
-  padding: 1rem 0;
+  display: flex;
+  flex-direction: column; // Stack title, options-years, and instruction-text vertically
+  align-items: flex-start; // Align items to the left
+  padding-bottom: 10px; // Keep padding
 
-  h3 {
-    color: #004583;
-    margin-bottom: 0.5rem;
-    font-weight: bold;
-    font-size: 18px;
+  .reports-title {
+    font-size: 1.5em; // Keep existing font size
+    font-weight: bold; // Keep existing font weight
+    margin-bottom: 1rem; // Add space after the title, before options-years
   }
 
+  // .instruction-text styling can remain as it was if not specified here,
+  // or be ensured:
   .instruction-text {
-    font-size: 11px;
-    color: #666;
-    font-style: italic;
-    display: flex;
-    align-items: center;
-
-    &::before {
-      content: '';
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      margin-right: 6px;
-    }
+      font-size: 0.9em;
+      color: #555;
+      margin-top: 1rem; // Add space above instruction text, after options-years
   }
 }
 
