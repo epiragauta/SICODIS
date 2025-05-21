@@ -71,14 +71,14 @@ export class SummaryPanelComponent implements OnChanges {
             this.otrosPresupuestoVigente
           ],
           backgroundColor: [
-            documentStyle.getPropertyValue('--blue-500') || '#3B82F6',
-            documentStyle.getPropertyValue('--green-500') || '#22C55E',
-            documentStyle.getPropertyValue('--orange-500') || '#F97316'
+            '#6699FF',
+            '#1A3366',
+            '#4F81BD'
           ],
           hoverBackgroundColor: [
-            documentStyle.getPropertyValue('--blue-400') || '#60A5FA',
-            documentStyle.getPropertyValue('--green-400') || '#4ADE80',
-            documentStyle.getPropertyValue('--orange-400') || '#FB923C'
+            '#4B0082',
+            '#40E0D0',
+            '#ADDFFF'
           ]
         }
       ]
@@ -105,8 +105,8 @@ export class SummaryPanelComponent implements OnChanges {
       datasets: [
         {
           label: 'Presupuesto Corriente',
-          backgroundColor: documentStyle.getPropertyValue('--cyan-500') || '#06B6D4',
-          borderColor: documentStyle.getPropertyValue('--cyan-400') || '#22D3EE',
+          backgroundColor: ['#6699FF','#1A3366','#4F81BD'],
+          borderColor: '#7CB9E8',
           data: [
             this.inversionPresupuestoCorriente,
             this.ahorroPresupuestoCorriente,
