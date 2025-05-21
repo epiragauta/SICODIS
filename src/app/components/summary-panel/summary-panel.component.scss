@@ -1,0 +1,85 @@
+.summary-panel-container {
+  margin-bottom: 2rem; // Space below the panel before the next element (filters/table)
+  display: flex;
+  flex-wrap: wrap; // Allow cards to wrap on smaller screens if needed
+  gap: 1rem; // Space between cards
+
+  .p-card-container { // A wrapper for each card + chart combo for flex sizing
+    flex: 1 1 300px; // Flex properties: grow, shrink, basis (min-width before wrapping)
+    display: flex; // To make p-card take full height of this container
+    flex-direction: column;
+
+    .p-card {
+      width: 100%; // Card takes full width of its container
+      height: 100%; // Card takes full height of its container
+      display: flex;
+      flex-direction: column;
+
+      // PrimeNG 17+ uses .p-card-header for title, .p-card-body for the main content area
+      // Adjust if older PrimeNG version uses .p-card-title, .p-card-content
+      ::ng-deep .p-card-header, ::ng-deep .p-card-title { // Targeting title area
+        text-align: center;
+        font-size: 1.1rem; // Slightly smaller for card headers
+        font-weight: bold;
+        padding-bottom: 0.5rem;
+      }
+
+      ::ng-deep .p-card-body {
+        padding-top: 0.5rem; // Adjust padding for content area
+        flex-grow: 1; // Allow body to grow to fill space (useful if chart is inside)
+        display: flex;
+        flex-direction: column;
+        justify-content: center; // Center content like single stat value
+      }
+
+      // Specific styling for the first card (total budget value)
+      &.total-budget-card {
+        ::ng-deep .p-card-body {
+          font-size: 2rem; // Larger font for the main statistic
+          font-weight: bold;
+          text-align: center;
+          color: var(--primary-color, #3B82F6); // Use theme's primary color
+        }
+      }
+
+      // Styling for cards containing charts
+      &.chart-card {
+        ::ng-deep .p-card-body {
+          padding: 0.5rem; // Reduce padding if chart has its own
+        }
+        p-chart {
+          width: 100%;
+          height: 280px; // Fixed height for charts, adjust as needed
+        }
+      }
+    }
+  }
+}
+
+// Responsive adjustments for smaller screens
+@media (max-width: 768px) { // md breakpoint in PrimeNG
+  .summary-panel-container {
+    .p-card-container {
+      flex-basis: 100%; // Each card takes full width on smaller screens
+    }
+  }
+}
+
+@media (max-width: 576px) { // sm breakpoint in PrimeNG
+    .summary-panel-container {
+        .p-card-container {
+            .p-card {
+                &.total-budget-card {
+                    ::ng-deep .p-card-body {
+                        font-size: 1.5rem; // Slightly smaller font for very small screens
+                    }
+                }
+                &.chart-card {
+                    p-chart {
+                        height: 220px; // Reduce chart height on very small screens
+                    }
+                }
+            }
+        }
+    }
+}

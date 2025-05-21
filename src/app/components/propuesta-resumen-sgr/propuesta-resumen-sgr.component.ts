@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { TooltipModule } from 'primeng/tooltip';
+import { SummaryPanelComponent } from '../summary-panel/summary-panel.component';
 
 import { TreeNode, MenuItem } from 'primeng/api';
 import { TreeTableModule } from 'primeng/treetable';
@@ -55,7 +56,8 @@ interface NodeInfo {
       PopoverModule,
       SplitterModule,
       InfoPopupComponent,
-      TooltipModule],
+      TooltipModule,
+      SummaryPanelComponent],
   templateUrl: './propuesta-resumen-sgr.component.html',
   styleUrl: './propuesta-resumen-sgr.component.scss'
 })
@@ -63,47 +65,48 @@ export class PropuestaResumenSgrComponent implements OnInit{
 
   @ViewChild('infoPanel') infoPanel!: Popover;
   infoPopupContent: string = '';
+  summaryPanelData: any = null;
 
-  cols: any[] = [];
-  colsA: any[] = [];
-  colsB: any[] = [];
-  expandedCols: any[] = [];
-  hiddenCols: string[] = [
-    'rendimientos_financieros',
-    'reintegros',
-    'excedentes_faep_fonpet',
-    'multas',
-    'mineral_sin_identificacion_de_origen',
-    'mr'
-  ];
+    cols: any[] = [];
+    colsA: any[] = [];
+    colsB: any[] = [];
+    expandedCols: any[] = [];
+    hiddenCols: string[] = [
+      'rendimientos_financieros',
+      'reintegros',
+      'excedentes_faep_fonpet',
+      'multas',
+      'mineral_sin_identificacion_de_origen',
+      'mr'
+    ];
   isExpanded: boolean = false;
-  data: TreeNode[] = [];
-  platformId = inject(PLATFORM_ID);
+    data: TreeNode[] = [];
+    platformId = inject(PLATFORM_ID);
 
-  selectedNode: TreeNode | null = null;
-  infoMap: Map<string, Map<string, NodeInfo>> = new Map();
+    selectedNode: TreeNode | null = null;
+    infoMap: Map<string, Map<string, NodeInfo>> = new Map();
 
-  selectedVigencia: any = { id: 1, label: 'Vigencia Bienio 2025 - 2026' };
-  selectedSearchType: any = { id: 1, label: 'General' };
-  selectedDpto: any = { codigo: '-1', nombre: 'Por departamento' };
-  selectedEntity: any;
-  selectedDetailEntity: any;
+    selectedVigencia: any = { id: 1, label: 'Vigencia Bienio 2025 - 2026' };
+    selectedSearchType: any = { id: 1, label: 'General' };
+    selectedDpto: any = { codigo: '-1', nombre: 'Por departamento' };
+    selectedEntity: any;
+    selectedDetailEntity: any;
 
-  selectedInfoTitle: string = '';
-  selectedInfoDescription: string = '';
-  selectedInfoDocuments: DocumentInfo[] = [];
-  selectedInfoMoreDetailsUrl: string | undefined = undefined;
+    selectedInfoTitle: string = '';
+    selectedInfoDescription: string = '';
+    selectedInfoDocuments: DocumentInfo[] = [];
+    selectedInfoMoreDetailsUrl: string | undefined = undefined;
 
-  menuItems: MenuItem[];
+    menuItems: MenuItem[];
 
-  territorialEntitiesDetailUrl = '/assets/data/territorial-entities-detail.json';
-  detailedDataUrl = '/assets/data/propuesta-resumen-sgr.json';
+    territorialEntitiesDetailUrl = '/assets/data/territorial-entities-detail.json';
+    detailedDataUrl = '/assets/data/propuesta-resumen-sgr.json';
 
-  searchTypes: any[] = [
-    { id: 1, label: 'General' },
-    { id: 2, label: 'Por departamento' },
-    { id: 3, label: 'Por entidad' }
-  ];
+    searchTypes: any[] = [
+      { id: 1, label: 'General' },
+      { id: 2, label: 'Por departamento' },
+      { id: 3, label: 'Por entidad' }
+    ];
 
     vigencia = [
         {
@@ -144,7 +147,7 @@ export class PropuestaResumenSgrComponent implements OnInit{
     detailEntities: any[] = [];
     detailEntitiesFiltered: any[] = [];
     detailedData: any[] = [];
-    detailedDataFiltered: any[] = [];
+    // detailedDataFiltered: any[] = []; // This seems unused, consider removing if confirmed
 
     constructor(private cd: ChangeDetectorRef, private cookieService: CookieService) {
       this.menuItems = [
@@ -191,8 +194,14 @@ export class PropuestaResumenSgrComponent implements OnInit{
         { field: 'mineral_sin_identificacion_de_origen', header: 'Mineral Sin Identificación', width: '14%', 'color': '#a5cef6', 'class': 'col-expanded', tooltip: 'Ingresos provenientes de minerales cuyo origen no está identificado' },
         { field: 'mr', header: 'MR', width: '14%', 'color': '#a5cef6', 'class': 'col-expanded', tooltip: 'Categoría específica de ingresos MR (Mayor Recaudo)' }
       ];
-        this.loadData();
-        this.selectedVigencia = this.vigencia[0];
+        // Initialize selectedVigencia, but loadData and queryData will handle initial table population
+        this.selectedVigencia = this.vigencia.find(v => v.id === 1) || this.vigencia[0];
+        this.selectedSearchType = this.searchTypes.find(st => st.id === 1) || this.searchTypes[0];
+
+
+        this.loadData().then(() => {
+          this.queryData(); // Load initial data with default filters
+        });
 
         this.infoPopupContent = `
         <div style="font-size: 11px;">
@@ -250,24 +259,115 @@ export class PropuestaResumenSgrComponent implements OnInit{
         `;
     }
 
-    loadData() {
-      console.log('Loading data...');
-      fetch(this.detailedDataUrl)
-        .then(response => response.json())
-        .then(data => {
-          this.data = organizeCategoryData(data);
-          this.expandTopLevelNodes();
-        })
-        .catch(error => console.error('Error fetching data:', error));
+    async loadData(): Promise<void> {
+      console.log('Loading base data...');
+      try {
+        const response = await fetch(this.detailedDataUrl);
+        this.detailedData = await response.json();
+        this.data = organizeCategoryData(this.detailedData);
+        console.log('Base data loaded successfully.');
+        this.prepareSummaryPanelData(); // Prepare summary data once full data is loaded
+      } catch (error) {
+        console.error('Error fetching base data:', error);
+        this.detailedData = []; // Ensure detailedData is an array in case of error
+        this.summaryPanelData = null; // Ensure summary is cleared on error
+      }
+    }
+
+    private prepareSummaryPanelData(): void {
+      if (!this.detailedData || this.detailedData.length === 0) {
+        this.summaryPanelData = null;
+        this.cd.detectChanges();
+        return;
+      }
+
+      // Assuming 'categoria' is a string like '1', '1.1', '1.2', '1.3'
+      // And numeric values are stored as strings, needing parseFloat.
+      const totalData = this.detailedData.find(item => item.categoria === '1'); 
+      const inversionData = this.detailedData.find(item => item.categoria === '1.1');
+      const ahorroData = this.detailedData.find(item => item.categoria === '1.2'); 
+      const otrosData = this.detailedData.find(item => item.categoria === '1.3'); 
+
+      if (totalData && inversionData && ahorroData && otrosData) {
+        this.summaryPanelData = {
+          totalVigente: parseFloat(totalData.presupuesto_total_vigente) || 0,
+          inversionVigente: parseFloat(inversionData.presupuesto_total_vigente) || 0,
+          ahorroVigente: parseFloat(ahorroData.presupuesto_total_vigente) || 0,
+          otrosVigente: parseFloat(otrosData.presupuesto_total_vigente) || 0,
+          inversionCorriente: parseFloat(inversionData.presupuesto_corriente) || 0,
+          ahorroCorriente: parseFloat(ahorroData.presupuesto_corriente) || 0,
+          otrosCorriente: parseFloat(otrosData.presupuesto_corriente) || 0
+        };
+      } else {
+        this.summaryPanelData = null; 
+        console.warn('Could not find all required data categories for summary panel in detailedData.');
+      }
+      this.cd.detectChanges(); 
+    }
+
+    filterAndReloadTableData() {
+      console.log('Filtering and reloading table data...');
+      if (!this.detailedData || this.detailedData.length === 0) {
+        console.warn('No detailed data available to filter.');
+        this.data = [];
+        // Even if table data is empty, summary might still be relevant based on full detailedData
+        // However, prepareSummaryPanelData is usually called after loadData or if filters might change summary scope
+        // For now, if table is empty due to no base data, summary is likely already null.
+        // If table is empty due to filters, summary based on full data is still valid.
+        this.cd.detectChanges();
+        return;
+      }
+
+      let filteredResults = [...this.detailedData];
+
+      // 1. Vigencia Filter (assuming 'id_vigencia' field in data items)
+      if (this.selectedVigencia && this.selectedVigencia.id !== -1) { // Assuming -1 means "all vigencias" or similar
+        filteredResults = filteredResults.filter(item => item.id_vigencia === this.selectedVigencia.id);
+      }
+
+      // 2. Search Type Filter
+      if (this.selectedSearchType) {
+        switch (this.selectedSearchType.id) {
+          case 1: // General - no further filtering based on Dpto/Entidad needed here
+            break;
+          case 2: // Por departamento
+            if (this.selectedDpto && this.selectedDpto.codigo !== '-1') {
+              // Assuming data items have a 'cod_departamento' field
+              filteredResults = filteredResults.filter(item => item.cod_departamento === this.selectedDpto.codigo);
+            }
+            break;
+          case 3: // Por entidad
+            if (this.selectedEntity && this.selectedEntity.codigo !== '-1') {
+              // Assuming data items have a 'cod_entidad' field that matches selectedEntity.codigo
+              // This might be a more complex filter if entities are hierarchical (e.g. DANE codes)
+              filteredResults = filteredResults.filter(item => item.cod_entidad && item.cod_entidad.startsWith(this.selectedEntity.codigo));
+
+              // Further filter by selectedDetailEntity if applicable
+              if (this.selectedDetailEntity && this.selectedDetailEntity.codigo !== '-1') {
+                // Assuming data items also have a field for detailed entity, or selectedDetailEntity.codigo is a more specific 'cod_entidad'
+                 filteredResults = filteredResults.filter(item => item.cod_entidad === this.selectedDetailEntity.codigo);
+              }
+            }
+            break;
+        }
+      }
+
+      if (filteredResults.length > 0) {
+        this.data = organizeCategoryData(filteredResults);
+      } else {
+        this.data = [];
+      }
+      this.expandTopLevelNodes();
+      this.cd.detectChanges(); // Trigger change detection
     }
 
     expandTopLevelNodes() {
       console.log('Expanding top-level nodes...');
-      // Expandir los nodos de primer nivel para mejor visualización
       if (this.data && this.data.length > 0) {
         this.data.forEach(node => {
           if (node.children && node.children.length > 0) {
-            node.expanded = node.data.categoria.split(".").length < 2;
+            // Expand only the first level (e.g., "TOTAL", "INVERSIÓN", "AHORRO", "OTROS")
+            node.expanded = node.data.categoria.split(".").length === 1;
           }
         });
       }
@@ -300,10 +400,28 @@ export class PropuestaResumenSgrComponent implements OnInit{
 
     exportData() {
       console.log('Exportando datos...');
+      // Actual export logic would go here
     }
 
-    queryData(){
-      console.log("Query Data...");
+    async queryData() {
+      console.log("Query Data initiated...");
+      if (!this.detailedData || this.detailedData.length === 0) {
+        console.log("Detailed data is empty, attempting to load first...");
+        await this.loadData(); // This will call prepareSummaryPanelData
+      }
+      //this.filterAndReloadTableData(); // Applies filters to this.data for the table
+      // If summary data should reflect the *filtered* table data, call prepareSummaryPanelData based on `this.data` or `filteredResults`
+      // However, the current implementation of prepareSummaryPanelData uses `this.detailedData`, so it reflects overall totals.
+      // If it should reflect filtered data, prepareSummaryPanelData would need to accept data as a parameter.
+      // For now, assuming summary is always based on the full `detailedData` set.
+      // If loadData was called above, summary is already prepared. If detailedData was already present,
+      // and filters might conceptually change what summary is shown (not current logic), then call it again.
+      // Re-calling it here based on full `detailedData` is redundant if `loadData` was just called,
+      // but harmless if `detailedData` was already present and `loadData` was skipped.
+      // Let's ensure it's consistent if queryData is called multiple times without re-fetching.
+      if (this.detailedData && this.detailedData.length > 0) {
+         this.prepareSummaryPanelData();
+      }
     }
 
     hasPresupuestoInfo(rowData: any): boolean {
@@ -342,80 +460,61 @@ export class PropuestaResumenSgrComponent implements OnInit{
 
     updateSelectedSearchType(event: any) {
       console.log('Selected search type:', event.value);
-      this.selectedSearchType = event.value;
-      switch (this.selectedSearchType.id) {
-        case 2:
-          this.selectedDpto = { codigo: '-1', nombre: 'Por departamento' };
-          break;
-        case 3:
-          this.selectedEntity = { codigo: '-1', nombre: 'Por entidad' };
-          break;
-        default:
-          break;
-      }
+      this.selectedSearchType = event.value; // event.value already contains the selected object {id, label}
+
+      // Reset dependent filters
+      this.selectedDpto = { codigo: '-1', nombre: 'Por departamento' };
+      this.selectedEntity = undefined; // Or a default object like { codigo: '-1', dpto: 'Por entidad' } if your HTML expects it
+      this.selectedDetailEntity = undefined;
+      this.detailEntitiesFiltered = [];
+
+      // Do not automatically query data here, user will click "Consultar"
+      // this.queryData();
     }
 
     updateSelectedDpto(event: any) {
       console.log('Selected department:', event.value);
       this.selectedDpto = event.value;
-      this.updateData(this.selectedDpto.codigo, true);
-
+      // Do not automatically query data here
+      // this.queryData();
     }
 
     updateSelectedEntity(event: any) {
       console.log('Selected entity:', event.value);
-      if (this.detailEntities.length == 0) {
-        fetch(this.territorialEntitiesDetailUrl)
-          .then(response => response.json())
-          .then(data => {
-            this.detailEntities = data;
-            this.detailEntitiesFiltered = this.detailEntities.filter((entity: any) => entity.codPadre == this.selectedEntity.codigo);
-          })
-          .catch(error => console.error('Error fetching detail entities:', error));
-      }else{
-        this.detailEntitiesFiltered = this.detailEntities.filter((entity: any) => entity.codPadre == this.selectedEntity.codigo);
+      this.selectedEntity = event.value;
+      this.selectedDetailEntity = undefined; // Reset detail entity when main entity changes
+      this.detailEntitiesFiltered = [];
+
+      if (this.selectedEntity && this.selectedEntity.codigo !== '-1') {
+        // Fetch detail entities if a valid entity is selected
+        if (this.detailEntities.length === 0) { // Assuming detailEntities holds all possible detail entities
+          fetch(this.territorialEntitiesDetailUrl)
+            .then(response => response.json())
+            .then(data => {
+              this.detailEntities = data;
+              this.detailEntitiesFiltered = this.detailEntities.filter((entity: any) => entity.codPadre === this.selectedEntity.codigo);
+            })
+            .catch(error => console.error('Error fetching detail entities:', error));
+        } else {
+          this.detailEntitiesFiltered = this.detailEntities.filter((entity: any) => entity.codPadre === this.selectedEntity.codigo);
+        }
       }
-      this.updateData(this.selectedEntity.codigo);
+      // Do not automatically query data here
+      // this.queryData();
     }
 
     updateSelectedDetailEntity(event: any) {
       console.log('Selected detail entity:', event.value);
       this.selectedDetailEntity = event.value;
+      // Do not automatically query data here
+      // this.queryData();
     }
 
-    updateData(codigo:string, isDpto:boolean = true) {
-      console.log('Uopdating data for entity with code:', codigo);
-      // console.log('Selected vigencia:', this.selectedVigencia);
-      // console.log('Selected search type:', this.selectedSearchType);
-      // console.log('Selected department:', this.selectedDpto);
-      // console.log('Selected entity:', this.selectedEntity);
-      // console.log('Selected detail entity:', this.selectedDetailEntity);
-
-
-      if (this.detailedData.length == 0) {
-        fetch(this.detailedDataUrl)
-          .then(response => response.json())
-          .then(data => {
-            this.detailedData = data;
-            this.filterDetailedData(codigo, isDpto);
-          })
-          .catch(error => console.error('Error fetching detailed data:', error));
-      }
-      else {
-        this.filterDetailedData(codigo, isDpto);
-      }
-
-    }
-
-    filterDetailedData(codigo:string, isDpto:boolean = true) {
-      console.log('Filtering detailed data...');
-
-
-      console.log('Filtered detailed data:', this.detailedData);
-    }
+    // updateData and filterDetailedData methods are now obsolete and replaced by filterAndReloadTableData
+    // Remove them.
 
     updateCategoryData(idCategory: string, fieldPresupuesto: string, fieldRecaudo: string, fieldAvance: string, data: any, template: any) {
-      let idx = template.findIndex((i: any) => i.categoria ==  idCategory);
+      let idx = template.findIndex((i: any) => i.categoria == idCategory);
       if (idx !== -1) {
         template[idx].presupuesto = data.reduce((acc: number, item: any) => acc + parseFloat(item[fieldPresupuesto]), 0);
         template[idx].iac = data.reduce((acc: number, item: any) => acc + parseFloat(item[fieldRecaudo]), 0);

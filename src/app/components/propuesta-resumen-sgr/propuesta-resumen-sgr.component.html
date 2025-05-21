@@ -1,6 +1,8 @@
 <div class="sicodis-container">
   <app-info-popup [infoText]="infoPopupContent" contentTitle="Información Detallada del Reporte"></app-info-popup>
-  <p-splitter [panelSizes]="[95, 5]" [style]="{ height: '530px' }" styleClass="mb-8">
+  <app-summary-panel [summaryData]="summaryPanelData"></app-summary-panel>
+
+  <p-splitter [panelSizes]="[80, 20]" [style]="{ height: '530px' }" styleClass="mb-8">
     <ng-template pTemplate="panel">
         <div class="tree-table-container">
           <p-treetable [value]="data"
@@ -19,6 +21,64 @@
             <ng-template pTemplate="caption">
               <div class="caption-container">
                 <h2 class="reports-title">Propuesta Resumen SGR</h2>
+                <div class="options-years">
+                  <div class="p-field vigencia-select">
+                    <p-floatlabel class="w-full md:w-56" variant="on">
+                      <p-select id="vigencia" [options]="vigencia" inputId="vigenciaSelect" [(ngModel)]="selectedVigencia"
+                      optionLabel="label" [showClear]="false" placeholder="Seleccione Vigencia"></p-select>
+                      <label for="vigenciaSelect">Vigencia</label>
+                    </p-floatlabel>
+                  </div>
+
+                  <div class="p-field search-type-select">
+                    <p-floatlabel class="w-full md:w-56" variant="on">
+                      <p-select id="searchType" inputId="searchType" [options]="searchTypes" [(ngModel)]="selectedSearchType" fluid="true"
+                      placeholder="Seleccione Por" optionLabel="label" [showClear]="false" (onChange)="updateSelectedSearchType($event)"></p-select>
+                      <label for="searchType">Buscar por</label>
+                    </p-floatlabel>
+                  </div>
+
+                  <div *ngIf="selectedSearchType.id == 2" class="p-field dpto-select">
+                    <p-floatlabel class="w-full md:w-56" variant="on">
+                      <p-select id="dpto" inputId="dptoSelect" [options]="dptos" [(ngModel)]="selectedDpto" optionLabel="nombre" fluid="true"
+                      placeholder="Seleccionar departamento" [showClear]="false" (onChange)="updateSelectedDpto($event)"></p-select>
+                      <label for="dptoSelect">Seleccionar por departamento</label>
+                    </p-floatlabel>
+                  </div>
+
+                  <div *ngIf="selectedSearchType.id == 3 || selectedSearchType.id == -1" class="p-field entity-select">
+                    <p-floatlabel class="w-full md:w-56" variant="on">
+                      <p-select id="entity" inputId="entitySelect" [options]="entities" [(ngModel)]="selectedEntity" fluid="true"
+                      placeholder="Seleccionar entidad" optionLabel="dpto" [showClear]="false" (onChange)="updateSelectedEntity($event)"></p-select>
+                      <label for="entitySelect">Seleccionar por entidad</label>
+                    </p-floatlabel>
+                  </div>
+
+                  <div class="p-field detail-entity-select">
+                    <p-floatlabel class="w-full md:w-56" variant="on">
+                      <p-select id="detailEntity" inputId="detailEntitySelect" [options]="detailEntitiesFiltered" fluid="true"
+                      placeholder="Seleccione detalle" [(ngModel)]="selectedDetailEntity" optionLabel="entidad" [showClear]="false"></p-select>
+                    </p-floatlabel>
+                  </div>
+
+                  <div class="p-field">
+                    <button pButton type="button"
+                        icon="pi pi-download"
+                        label="Consultar"
+                        class="p-button-primary"
+                        (click)="queryData()">
+                    </button>
+                  </div>
+
+                  <div class="p-field">
+                    <p-splitButton label="Exportar"
+                        icon="pi pi-download"
+                        class="p-button-primary"
+                        (onClick)="exportData()"
+                        [model]="menuItems">
+                    </p-splitButton>
+                  </div>
+                </div>
                 <p class="instruction-text">
                     Haga clic en el encabezado "Presupuesto Otros" para ver el detalle de las fuentes
                   </p>
@@ -92,8 +152,7 @@
         </div>
     </ng-template>
     <ng-template pTemplate="panel">
-        
-        <div></div>
+      <!-- Informational panel content has been moved to a popup -->
     </ng-template>
 </p-splitter>
 
