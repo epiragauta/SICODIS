@@ -1,0 +1,203 @@
+<div class="sicodis-container">
+  
+  <!-- Sección principal con dos columnas -->
+  <div class="main-content">
+    <mat-grid-list [cols]="cols" rowHeight="500px" gutterSize="16">
+      
+      <!-- Columna izquierda: Tarjetas financieras -->
+      <mat-grid-tile>
+        <div class="cards-section">
+          <h2 class="section-title">Resumen Financiero</h2>
+          
+          <!-- Grid de tarjetas 3x2 (3 filas, 2 columnas) -->
+          <mat-grid-list cols="2" rowHeight="120px" gutterSize="12" class="cards-grid">
+            
+            <!-- Primera fila -->
+            <mat-grid-tile>
+              <div class="financial-card">
+                <h4 class="card-title">Presupuesto Total Vigente</h4>
+                <div class="card-value">
+                  {{ formatCurrency(financialData.presupuesto_total_vigente) }}
+                </div>
+              </div>
+            </mat-grid-tile>
+            
+            <mat-grid-tile>
+              <div class="financial-card">
+                <h4 class="card-title">Caja Total</h4>
+                <div class="card-value">
+                  {{ formatCurrency(financialData.caja_total) }}
+                </div>
+              </div>
+            </mat-grid-tile>
+            
+            <!-- Segunda fila -->
+            <mat-grid-tile>
+              <div class="financial-card">
+                <h4 class="card-title">Presupuesto Corriente</h4>
+                <div class="card-value">
+                  {{ formatCurrency(financialData.presupuesto_corriente) }}
+                </div>
+              </div>
+            </mat-grid-tile>
+            
+            <mat-grid-tile>
+              <div class="financial-card">
+                <h4 class="card-title">Caja Corriente Informada</h4>
+                <div class="card-value">
+                  {{ formatCurrency(financialData.caja_corriente_informada) }}
+                </div>
+              </div>
+            </mat-grid-tile>
+            
+            <!-- Tercera fila -->
+            <mat-grid-tile>
+              <div class="financial-card">
+                <h4 class="card-title">Presupuesto Otros</h4>
+                <div class="card-value">
+                  {{ formatCurrency(financialData.presupuesto_otros) }}
+                </div>
+              </div>
+            </mat-grid-tile>
+            
+            <mat-grid-tile>
+              <div class="financial-card">
+                <h4 class="card-title">Caja Total</h4>
+                <div class="card-value">
+                  {{ formatCurrency(financialData.caja_total) }}
+                </div>
+              </div>
+            </mat-grid-tile>
+            
+          </mat-grid-list>
+        </div>
+      </mat-grid-tile>
+      
+      <!-- Columna derecha: Gráfico de barras horizontales -->
+      <mat-grid-tile>
+        <div class="chart-section">
+          <h2 class="section-title">Comparativo Presupuesto vs Caja</h2>
+          <div class="chart-container">
+            <p-chart 
+              type="bar" 
+              [data]="chartData" 
+              [options]="chartOptions"
+              height="400px">
+            </p-chart>
+          </div>
+        </div>
+      </mat-grid-tile>
+      
+    </mat-grid-list>
+  </div>
+
+  <!-- Separador -->
+  <div class="divider"></div>
+
+  <!-- Sección de tabla con filtros -->
+  <div class="table-section">
+    <p-treetable 
+      [value]="treeTableData"
+      [columns]="treeTableCols"
+      [paginator]="true"
+      [rows]="20"
+      [scrollable]="true"
+      scrollHeight="450px"
+      selectionMode="single"
+      [(selection)]="selectedNode"
+      styleClass="p-treetable-sm"
+      [resizableColumns]="true"
+      columnResizeMode="expand">
+
+      <ng-template pTemplate="caption">
+        <div class="table-header">
+          <h2 class="reports-title">Detalle Presupuesto y Recaudo</h2>
+          <div class="filter-section">
+            
+            <div class="p-field vigencia-select">
+              <p-floatlabel class="w-full md:w-56" variant="on">
+                <p-select 
+                  id="vigencia" 
+                  [options]="vigencia" 
+                  inputId="vigenciaSelect" 
+                  [(ngModel)]="selectedVigencia"
+                  optionLabel="label" 
+                  [showClear]="false" 
+                  placeholder="Seleccione Vigencia">
+                </p-select>
+                <label for="vigenciaSelect">Vigencia</label>
+              </p-floatlabel>
+            </div>
+
+            <div class="p-field">
+              <button 
+                pButton 
+                type="button"
+                icon="pi pi-refresh"
+                label="Consultar"
+                class="p-button-primary"
+                (click)="queryData()">
+              </button>
+            </div>
+
+            <div class="p-field">
+              <p-splitButton 
+                label="Exportar"
+                icon="pi pi-download"
+                class="p-button-primary"
+                (onClick)="exportData('excel')"
+                [model]="menuItems">
+              </p-splitButton>
+            </div>
+            
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="colgroup" let-columns>
+        <colgroup>
+          <col *ngFor="let col of columns" [style.width]="col.field === 'concepto' ? '30%' : '17.5%'">
+        </colgroup>
+      </ng-template>
+
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th *ngFor="let col of columns" [ngClass]="col.field === 'concepto' ? 'text-left' : 'text-right'">
+            {{ col.header }}
+          </th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+        <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode">
+          
+          <td>
+            <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+            <span [ngClass]="{'font-bold': !rowNode.parent || (rowNode.parent && !rowNode.parent.parent)}">
+              {{ rowData.categoria }} - {{ rowData.concepto }}
+            </span>
+          </td>
+          
+          <td class="text-right">
+            {{ rowData.presupuesto_total_vigente | currency:'COP':'symbol':'1.0-0' }}
+          </td>
+          
+          <td class="text-right">
+            {{ rowData.caja_total | currency:'COP':'symbol':'1.0-0' }}
+          </td>
+          
+          <td class="text-right">
+            {{ rowData.presupuesto_corriente | currency:'COP':'symbol':'1.0-0' }}
+          </td>
+          
+          <td class="text-right">
+            {{ rowData.caja_corriente_informada | currency:'COP':'symbol':'1.0-0' }}
+          </td>
+          
+        </tr>
+      </ng-template>
+
+    </p-treetable>
+  </div>
+
+</div>
