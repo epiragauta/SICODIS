@@ -275,7 +275,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
 
   formatCurrency(value: number): string {
     const billions = this.formatToBillions(value);
-    return `${billions.toFixed(2)} Billones`;
+    return `${billions.toFixed(2).replace(".",",")} Billones`;
   }
 
   exportData(format: string) {
