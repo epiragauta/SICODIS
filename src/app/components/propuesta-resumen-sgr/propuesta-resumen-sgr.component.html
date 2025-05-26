@@ -108,9 +108,7 @@
             </ng-template>
             <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
                 <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode">
-                  <td *ngFor="let col of cols"
-                    [ngClass]="[col.field === 'presupuesto_otros' ? 'expandable-column' : '',
-                                col.class ? col.class : '']">
+                  <td *ngFor="let col of cols">
                     <p-treeTableToggler [rowNode]="rowNode" *ngIf="col.field === 'concepto'"></p-treeTableToggler>
                     <ng-container [ngSwitch]="col.field">
                       <ng-container *ngSwitchCase="'concepto'">
