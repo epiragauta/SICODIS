@@ -1,0 +1,41 @@
+.graficos-sgp-container {
+  padding: 20px;
+}
+
+.chart-card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  mat-card-header {
+    padding-bottom: 8px;
+  }
+
+  mat-card-content {
+    flex-grow: 1;
+    padding: 0 16px 16px 16px; // Adjust as needed
+  }
+}
+
+.chart-pair-card {
+  mat-card-content {
+    display: flex;
+    flex-direction: row; // Default for wider screens
+    gap: 16px;
+
+    .chart-container {
+      flex: 1; // Each chart takes half the space
+      min-width: 0; // Important for flex items to shrink correctly
+    }
+  }
+}
+
+// Responsive adjustments for chart pairs on small screens
+@media (max-width: 600px) { // Example breakpoint for handset
+  .chart-pair-card {
+    mat-card-content {
+      flex-direction: column; // Stack charts vertically
+    }
+  }
+}

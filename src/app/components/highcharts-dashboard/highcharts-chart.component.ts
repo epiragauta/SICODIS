@@ -1,3 +1,4 @@
+// src/app/components/highcharts-dashboard/highcharts-chart.component.ts
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as Highcharts from 'highcharts';
@@ -5,63 +6,43 @@ import { HighchartsChartModule } from 'highcharts-angular';
 
 @Component({
   selector: 'app-highcharts-chart',
-  templateUrl: './highcharts-chart.component.html',  
+  templateUrl: './highcharts-chart.component.html',
   styleUrls: ['./highcharts-chart.component.scss'],
   standalone: true,
   imports: [CommonModule, HighchartsChartModule]
 })
 export class HighchartsChartComponent implements OnChanges {
-  @Input() data: any;
-  @Input() chartType: string = 'bar'; // Default chart type
+  @Input() options: Highcharts.Options = {}; // Changed from data and chartType
 
   Highcharts: typeof Highcharts = Highcharts;
-  chartOptions: Highcharts.Options = {};
+  chartOptions: Highcharts.Options = {}; // This will now be directly set by the input 'options'
 
   constructor() { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['data'] || changes['chartType']) {
-      this.updateChart();
+    if (changes['options'] && this.options) { // Check if options is provided
+      // Ensure that the provided options are not empty and are valid
+      if (Object.keys(this.options).length > 0) {
+        this.chartOptions = this.options;
+      } else {
+        // Provide a default minimal configuration if options are empty or invalid
+        this.chartOptions = {
+          title: { text: 'Chart is not configured' },
+          series: [{
+            type: 'line', // Default type
+            data: []
+          }]
+        };
+      }
+    } else if (!this.options && changes['options']) {
+      // Handle the case where options might be explicitly set to null or undefined
+       this.chartOptions = {
+          title: { text: 'Chart options were reset or not provided' },
+          series: [{
+            type: 'line',
+            data: []
+          }]
+        };
     }
-  }
-
-  updateChart(): void {
-    if (!this.data) {
-      return;
-    }
-
-    if (this.chartType === 'pie') {
-      this.chartOptions = {
-        chart: {
-          type: 'pie'
-        },
-        title: {
-          text: 'Pie Chart'
-        },
-        series: [{
-          type: 'pie',
-          data: this.data // Assuming data is in a format Highcharts pie chart expects
-        }]
-        // Add other pie chart specific options
-      };
-    } else if (this.chartType === 'bar') {
-      this.chartOptions = {
-        chart: {
-          type: 'bar'
-        },
-        title: {
-          text: 'Bar Chart'
-        },
-        xAxis: {
-          // categories: this.data.categories // Assuming data structure
-        },
-        series: [{
-          type: 'bar',
-          data: this.data // Assuming data is in a format Highcharts bar chart expects
-        }]
-        // Add other bar chart specific options
-      };
-    }
-    // Add more chart types if needed
   }
 }

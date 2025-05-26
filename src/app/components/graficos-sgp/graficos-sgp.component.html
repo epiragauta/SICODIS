@@ -1,0 +1,122 @@
+<div class="graficos-sgp-container">
+  <h1>Visualización SGP</h1> <!-- Overall Title -->
+  <mat-grid-list [cols]="cols$ | async" gutterSize="16px" rowHeight="400px">
+
+    <!-- Row 1: Chart 1 -->
+    <mat-grid-tile [colspan]="getColspan(false) | async" rowspan="1">
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>Evolución SGP – Precios Corrientes</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <app-highcharts-chart [options]="chartOptions1"></app-highcharts-chart>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <!-- Row 2: Chart 2 -->
+    <mat-grid-tile [colspan]="getColspan(false) | async" rowspan="1">
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>Evolución SGP Por Participaciones– Precios Corrientes</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <app-highcharts-chart [options]="chartOptions2"></app-highcharts-chart>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <!-- Row 3: Chart 3 -->
+    <mat-grid-tile [colspan]="getColspan(false) | async" rowspan="1">
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>Evolución SGP – Precios Constantes</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <app-highcharts-chart [options]="chartOptions3"></app-highcharts-chart>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <!-- Row 4: Chart 4 -->
+    <mat-grid-tile [colspan]="getColspan(false) | async" rowspan="1">
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>Evolución SGP por Participaciones – Precios Constantes</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <app-highcharts-chart [options]="chartOptions4"></app-highcharts-chart>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <!-- Row 5: Chart Pair 5.1 and 5.2 -->
+    <mat-grid-tile [colspan]="getColspan(true) | async" rowspan="1">
+      <mat-card class="chart-card chart-pair-card">
+        <mat-card-header>
+          <mat-card-title>Evolución Educación SGP</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="chart-pair-content">
+          <div class="chart-container">
+            <app-highcharts-chart [options]="chartOptions5_1"></app-highcharts-chart>
+          </div>
+          <div class="chart-container">
+            <app-highcharts-chart [options]="chartOptions5_2"></app-highcharts-chart>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <!-- Row 6: Chart Pair 6.1 and 6.2 -->
+    <mat-grid-tile [colspan]="getColspan(true) | async" rowspan="1">
+      <mat-card class="chart-card chart-pair-card">
+        <mat-card-header>
+          <mat-card-title>Evolución Agua Potable - SGP</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="chart-pair-content">
+          <div class="chart-container">
+            <app-highcharts-chart [options]="chartOptions6_1"></app-highcharts-chart>
+          </div>
+          <div class="chart-container">
+            <app-highcharts-chart [options]="chartOptions6_2"></app-highcharts-chart>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <!-- Row 7: Chart Pair 7.1 and 7.2 -->
+    <mat-grid-tile [colspan]="getColspan(true) | async" rowspan="1">
+      <mat-card class="chart-card chart-pair-card">
+        <mat-card-header>
+          <mat-card-title>Evolución Propósito General - SGP</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="chart-pair-content">
+          <div class="chart-container">
+            <app-highcharts-chart [options]="chartOptions7_1"></app-highcharts-chart>
+          </div>
+          <div class="chart-container">
+            <app-highcharts-chart [options]="chartOptions7_2"></app-highcharts-chart>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <!-- Row 8: Chart Pair 8.1 and 8.2 -->
+    <mat-grid-tile [colspan]="getColspan(true) | async" rowspan="1">
+      <mat-card class="chart-card chart-pair-card">
+        <mat-card-header>
+          <mat-card-title>Evolución Asignaciones Especiales - SGP</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="chart-pair-content">
+          <div class="chart-container">
+            <app-highcharts-chart [options]="chartOptions8_1"></app-highcharts-chart>
+          </div>
+          <div class="chart-container">
+            <app-highcharts-chart [options]="chartOptions8_2"></app-highcharts-chart>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+  </mat-grid-list>
+</div>
