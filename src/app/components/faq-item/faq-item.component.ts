@@ -31,12 +31,13 @@ export class FaqItemComponent {
 
   toggle(): void {
     this.isOpen = !this.isOpen;
-    this.toggleAnswer.emit(this.item.id);
+    //this.toggleAnswer.emit(this.item.id);
   }
 }
 
 export interface FaqItem {
-  id: number;
-  question: string;
-  answer: string;
+  title: string;
+  content: string;
+  route?: string;
+  value: string;
 }

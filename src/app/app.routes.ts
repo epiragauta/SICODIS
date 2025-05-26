@@ -16,6 +16,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { PropuestaResumenSgrComponent } from './components/propuesta-resumen-sgr/propuesta-resumen-sgr.component';
 import { HighchartsDashboardComponent } from './components/highcharts-dashboard/highcharts-dashboard.component';
 import { PresupuestoYRecaudoComponent } from './components/presupuesto-y-recaudo/presupuesto-y-recaudo.component';
+import { GraphicsSgpComponent } from './components/graphics-sgp/graphics-sgp.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -34,5 +35,7 @@ export const routes: Routes = [
     { path: 'dashboard', component: DashboardComponent },
     { path: 'dashboard2', component: HighchartsDashboardComponent },
     { path: 'propuesta-resumen-sgr', component: PropuestaResumenSgrComponent }, // Redirect to home for any unknown routes
-    { path: 'presupuesto-y-recaudo', component: PresupuestoYRecaudoComponent }
+    { path: 'presupuesto-y-recaudo', component: PresupuestoYRecaudoComponent },
+    { path: 'graphics-sgp', component: GraphicsSgpComponent}
+
 ];

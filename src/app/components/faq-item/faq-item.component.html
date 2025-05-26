@@ -1,9 +1,9 @@
 <div class="faq-item" [class.active]="isOpen">
   <div class="faq-question" (click)="toggle()">
-    <span>{{ item.question }}</span>
+    <span>{{ item.title }}</span>
     <i class="arrow" [class.down]="!isOpen" [class.up]="isOpen"></i>
   </div>
   <div class="faq-answer" [@slideInOut]="isOpen">
-    {{ item.answer }}
+    {{ item.content }}
   </div>
 </div>

@@ -1,14 +1,74 @@
 <div class="faq-container">
-  <h2 class="faq-title">Preguntas Frecuentes</h2>
-  <div class="faq-list">
-    <div class="faq-item" [class.active]="isOpen">
-      <div class="faq-question" (click)="toggle()">
-        <span>{{ item.question }}</span>
-        <i class="arrow" [class.down]="!isOpen" [class.up]="isOpen"></i>
-      </div>
-      <div class="faq-answer" [@slideInOut]="isOpen">
-        {{ item.answer }}
-      </div>
+  <div class="faq-header">
+    <h1 class="faq-title">
+      <mat-icon>help_outline</mat-icon>
+      Preguntas Frecuentes
+    </h1>
+    <p class="faq-subtitle">
+      Encuentre respuestas a las preguntas más comunes sobre SICODIS, 
+      el Sistema General de Participaciones (SGP) y el Sistema General de Regalías (SGR)
+    </p>
+  </div>
+
+  <div class="faq-content">
+    <div class="faq-section" *ngFor="let section of faqSections">
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="section-header">
+            <mat-icon class="section-icon">{{ section.icon }}</mat-icon>
+            <h2 class="section-title">{{ section.title }}</h2>
+          </div>
+        </ng-template>
+        
+        <p-accordion [value]="0">
+          @for (tab of section.items; track tab.title) {
+            <p-accordion-panel [value]="tab.value">
+              <p-accordion-header>{{tab.title}}</p-accordion-header>
+              <p-accordion-content>
+                <div>
+                  <p>{{ tab.content }}</p>
+                  <div class="faq-actions" *ngIf="tab.route">
+                    <button 
+                      pButton 
+                      type="button" 
+                      icon="pi pi-external-link" 
+                      label="Ir al módulo"
+                      class="p-button-outlined p-button-primary p-button-sm"
+                      (click)="navigateToRoute(tab.route)">
+                    </button>
+                  </div>
+                </div>
+              </p-accordion-content>              
+            </p-accordion-panel>
+          }
+        </p-accordion>
+      </p-card>
     </div>
+  </div>
+
+  <div class="faq-footer">
+    <p-card>
+      <div class="contact-info">
+        <h3>¿No encontró la respuesta que buscaba?</h3>
+        <p>
+          Si tiene preguntas adicionales o necesita soporte técnico especializado, 
+          puede contactarnos a través de los siguientes canales:
+        </p>
+        <div class="contact-methods">
+          <div class="contact-item">
+            <mat-icon>email</mat-icon>
+            <span>servicioalciudadano&#64;dnp.gov.co</span>
+          </div>
+          <div class="contact-item">
+            <mat-icon>phone</mat-icon>
+            <span>+57 601 381 50 00</span>
+          </div>
+          <div class="contact-item">
+            <mat-icon>web</mat-icon>
+            <span>Formulario PQRSD en línea</span>
+          </div>
+        </div>
+      </div>
+    </p-card>
   </div>
 </div>

@@ -1,0 +1,271 @@
+<div class="graphics-sgp-container">
+  <h1 class="main-title">Gráficas del Sistema General de Participaciones (SGP)</h1>
+  
+  <mat-grid-list [cols]="1" rowHeight="500px" gutterSize="16">
+    
+    <!-- Fila 1: Evolución SGP – Precios Corrientes -->
+    <mat-grid-tile>
+      <p-card class="chart-card full-width">
+        <ng-template pTemplate="header">
+          <h2 class="chart-title">Evolución SGP – Precios Corrientes</h2>
+          <p class="chart-subtitle">
+            El crecimiento promedio anual en términos corrientes es del 9% anual durante los últimos 20 años (2005 – 2025).
+            La información se presenta en miles de millones de pesos corrientes.
+          </p>
+        </ng-template>
+        <div class="chart-container">
+          <p-chart 
+            type="bar" 
+            [data]="chartData1" 
+            [options]="mixedChartOptions"
+            height="400px">
+          </p-chart>
+        </div>
+      </p-card>
+    </mat-grid-tile>
+
+    <!-- Fila 2: Evolución SGP Por Participaciones– Precios Corrientes -->
+    <mat-grid-tile>
+      <p-card class="chart-card full-width">
+        <ng-template pTemplate="header">
+          <h2 class="chart-title">Evolución SGP Por Participaciones– Precios Corrientes</h2>
+          <p class="chart-subtitle">
+            El crecimiento promedio anual en términos corrientes es del 9% anual durante los últimos 20 años (2005 – 2025).
+            La información se presenta en miles de millones de pesos corrientes.
+          </p>
+        </ng-template>
+        <div class="chart-container">
+          <p-chart 
+            type="bar" 
+            [data]="chartData2" 
+            [options]="stackedBarOptions"
+            height="400px">
+          </p-chart>
+        </div>
+      </p-card>
+    </mat-grid-tile>
+
+    <!-- Fila 3: Evolución SGP – Precios Constantes -->
+    <mat-grid-tile style="display: none;">
+      <p-card class="chart-card full-width">
+        <ng-template pTemplate="header">
+          <h2 class="chart-title">Evolución SGP – Precios Constantes</h2>
+          <p class="chart-subtitle">
+            El crecimiento promedio anual en términos reales es del 4% anual durante los últimos 20 años (2005 – 2025).
+            La información se presenta en miles de millones de pesos constantes.
+          </p>
+        </ng-template>
+        <div class="chart-container">
+          <p-chart 
+            type="bar" 
+            [data]="chartData3" 
+            [options]="barChartOptions"
+            height="400px">
+          </p-chart>
+        </div>
+      </p-card>
+    </mat-grid-tile>
+
+    <!-- Fila 4: Evolución SGP por Participaciones – Precios Constantes -->
+    <mat-grid-tile style="display: none;">
+      <p-card class="chart-card full-width">
+        <ng-template pTemplate="header">
+          <h2 class="chart-title">Evolución SGP por Participaciones – Precios Constantes</h2>
+          <p class="chart-subtitle">
+            El crecimiento promedio anual en términos reales es del 4% anual durante los últimos 20 años (2005 – 2025).
+            La información se presenta en miles de millones de pesos constantes.
+          </p>
+        </ng-template>
+        <div class="chart-container">
+          <p-chart 
+            type="bar" 
+            [data]="chartData4" 
+            [options]="stackedBarOptions"
+            height="400px">
+          </p-chart>
+        </div>
+      </p-card>
+    </mat-grid-tile>
+
+  </mat-grid-list>
+
+  <!-- Filas 5-9: Gráficos de dos columnas -->
+  <mat-grid-list [cols]="cols" rowHeight="400px" gutterSize="16" style="display: none;">
+    
+    <!-- Fila 5: Evolución Educación SGP -->
+    <mat-grid-tile>
+      <p-card class="chart-card">
+        <ng-template pTemplate="header">
+          <h3 class="chart-title-small">Evolución Educación SGP</h3>
+          <p class="chart-subtitle-small">Precios Corrientes</p>
+        </ng-template>
+        <div class="chart-container-small">
+          <p-chart 
+            type="bar" 
+            [data]="chartData5Left" 
+            [options]="smallMixedChartOptions"
+            height="300px">
+          </p-chart>
+        </div>
+      </p-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile>
+      <p-card class="chart-card">
+        <ng-template pTemplate="header">
+          <h3 class="chart-title-small">Evolución Educación SGP</h3>
+          <p class="chart-subtitle-small">Precios Constantes - 2025</p>
+        </ng-template>
+        <div class="chart-container-small">
+          <p-chart 
+            type="bar" 
+            [data]="chartData5Right" 
+            [options]="smallMixedChartOptions"
+            height="300px">
+          </p-chart>
+        </div>
+      </p-card>
+    </mat-grid-tile>
+
+    <!-- Fila 6: Evolución Salud SGP -->
+    <mat-grid-tile>
+      <p-card class="chart-card">
+        <ng-template pTemplate="header">
+          <h3 class="chart-title-small">Evolución Salud SGP</h3>
+          <p class="chart-subtitle-small">Precios Corrientes</p>
+        </ng-template>
+        <div class="chart-container-small">
+          <p-chart 
+            type="bar" 
+            [data]="chartData6Left" 
+            [options]="smallMixedChartOptions"
+            height="300px">
+          </p-chart>
+        </div>
+      </p-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile>
+      <p-card class="chart-card">
+        <ng-template pTemplate="header">
+          <h3 class="chart-title-small">Evolución Salud SGP</h3>
+          <p class="chart-subtitle-small">Precios Constantes - 2025</p>
+        </ng-template>
+        <div class="chart-container-small">
+          <p-chart 
+            type="bar" 
+            [data]="chartData6Right" 
+            [options]="smallMixedChartOptions"
+            height="300px">
+          </p-chart>
+        </div>
+      </p-card>
+    </mat-grid-tile>
+
+    <!-- Fila 7: Evolución Agua Potable SGP -->
+    <mat-grid-tile>
+      <p-card class="chart-card">
+        <ng-template pTemplate="header">
+          <h3 class="chart-title-small">Evolución Agua Potable - SGP</h3>
+          <p class="chart-subtitle-small">Precios Corrientes</p>
+        </ng-template>
+        <div class="chart-container-small">
+          <p-chart 
+            type="bar" 
+            [data]="chartData7Left" 
+            [options]="smallMixedChartOptions"
+            height="300px">
+          </p-chart>
+        </div>
+      </p-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile>
+      <p-card class="chart-card">
+        <ng-template pTemplate="header">
+          <h3 class="chart-title-small">Evolución Agua Potable - SGP</h3>
+          <p class="chart-subtitle-small">Precios Constantes - 2025</p>
+        </ng-template>
+        <div class="chart-container-small">
+          <p-chart 
+            type="bar" 
+            [data]="chartData7Right" 
+            [options]="smallMixedChartOptions"
+            height="300px">
+          </p-chart>
+        </div>
+      </p-card>
+    </mat-grid-tile>
+
+    <!-- Fila 8: Evolución Propósito General SGP -->
+    <mat-grid-tile>
+      <p-card class="chart-card">
+        <ng-template pTemplate="header">
+          <h3 class="chart-title-small">Evolución Propósito General - SGP</h3>
+          <p class="chart-subtitle-small">Precios Corrientes</p>
+        </ng-template>
+        <div class="chart-container-small">
+          <p-chart 
+            type="bar" 
+            [data]="chartData8Left" 
+            [options]="smallMixedChartOptions"
+            height="300px">
+          </p-chart>
+        </div>
+      </p-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile>
+      <p-card class="chart-card">
+        <ng-template pTemplate="header">
+          <h3 class="chart-title-small">Evolución Propósito General - SGP</h3>
+          <p class="chart-subtitle-small">Precios Constantes - 2025</p>
+        </ng-template>
+        <div class="chart-container-small">
+          <p-chart 
+            type="bar" 
+            [data]="chartData8Right" 
+            [options]="smallMixedChartOptions"
+            height="300px">
+          </p-chart>
+        </div>
+      </p-card>
+    </mat-grid-tile>
+
+    <!-- Fila 9: Evolución Asignaciones Especiales SGP -->
+    <mat-grid-tile>
+      <p-card class="chart-card">
+        <ng-template pTemplate="header">
+          <h3 class="chart-title-small">Evolución Asignaciones Especiales - SGP</h3>
+          <p class="chart-subtitle-small">Precios Corrientes</p>
+        </ng-template>
+        <div class="chart-container-small">
+          <p-chart 
+            type="bar" 
+            [data]="chartData9Left" 
+            [options]="smallMixedChartOptions"
+            height="300px">
+          </p-chart>
+        </div>
+      </p-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile>
+      <p-card class="chart-card">
+        <ng-template pTemplate="header">
+          <h3 class="chart-title-small">Evolución Asignaciones Especiales - SGP</h3>
+          <p class="chart-subtitle-small">Precios Constantes - 2025</p>
+        </ng-template>
+        <div class="chart-container-small">
+          <p-chart 
+            type="bar" 
+            [data]="chartData9Right" 
+            [options]="smallMixedChartOptions"
+            height="300px">
+          </p-chart>
+        </div>
+      </p-card>
+    </mat-grid-tile>
+
+  </mat-grid-list>
+</div>

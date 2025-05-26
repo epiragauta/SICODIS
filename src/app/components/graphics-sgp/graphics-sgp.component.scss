@@ -1,0 +1,286 @@
+.graphics-sgp-container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  font-family: "Montserrat", sans-serif;
+
+  .main-title {
+    color: #004583;
+    font-size: 2rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 3px solid #004583;
+  }
+
+  // Estilos para las tarjetas de gráficos
+  .chart-card {
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    &.full-width {
+      width: 100%;
+    }
+  }
+
+  // Estilos para títulos de gráficos
+  .chart-title {
+    color: #004583;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    text-align: center;
+  }
+
+  .chart-title-small {
+    color: #004583;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+    text-align: center;
+  }
+
+  // Estilos para subtítulos
+  .chart-subtitle {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 0 0 1rem 0;
+    text-align: center;
+    padding: 0 1rem;
+  }
+
+  .chart-subtitle-small {
+    color: #666;
+    font-size: 0.8rem;
+    margin: 0 0 0.5rem 0;
+    text-align: center;
+    font-style: italic;
+  }
+
+  // Contenedores de gráficos
+  .chart-container {
+    width: 100%;
+    height: 400px;
+    padding: 1rem;
+    // display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .chart-container-small {
+    width: 100%;
+    height: 300px;
+    padding: 0.5rem;
+    //display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // Grid responsivo
+  :host ::ng-deep {
+    .mat-grid-tile {
+      .mat-grid-tile-content {
+        padding: 0.5rem;
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    // Estilos específicos para PrimeNG Cards
+    .p-card {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #e2e8f0;
+
+      .p-card-header {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        padding: 1rem;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .p-card-body {
+        flex: 1;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .p-card-content {
+        flex: 1;
+        padding: 0;
+      }
+    }
+
+    // Ajustes para los gráficos de Chart.js
+    .p-chart {
+      width: 100% !important;
+      height: 100% !important;
+
+      canvas {
+        max-width: 100% !important;
+        max-height: 100% !important;
+      }
+    }
+  }
+
+  // Media queries para responsividad
+  @media (max-width: 768px) {
+    padding: 1rem;
+
+    .main-title {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .chart-title {
+      font-size: 1.2rem;
+    }
+
+    .chart-title-small {
+      font-size: 0.9rem;
+    }
+
+    .chart-subtitle {
+      font-size: 0.8rem;
+      padding: 0 0.5rem;
+    }
+
+    .chart-subtitle-small {
+      font-size: 0.7rem;
+    }
+
+    .chart-container {
+      height: 350px;
+      padding: 0.5rem;
+    }
+
+    .chart-container-small {
+      height: 250px;
+      padding: 0.25rem;
+    }
+
+    :host ::ng-deep {
+      .p-card-header {
+        padding: 0.75rem;
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.5rem;
+
+    .main-title {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .chart-title {
+      font-size: 1rem;
+    }
+
+    .chart-title-small {
+      font-size: 0.8rem;
+    }
+
+    .chart-subtitle {
+      font-size: 0.75rem;
+    }
+
+    .chart-subtitle-small {
+      font-size: 0.65rem;
+    }
+
+    .chart-container {
+      height: 300px;
+    }
+
+    .chart-container-small {
+      height: 200px;
+    }
+  }
+}
+
+// Estilos adicionales para mejorar la apariencia de los gráficos
+:host ::ng-deep {
+  // Personalización de colores para las leyendas
+  .chartjs-legend {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+
+    .chartjs-legend-item {
+      display: flex;
+      align-items: center;
+      margin: 0.25rem 0.5rem;
+      font-size: 0.875rem;
+
+      .chartjs-legend-color {
+        width: 12px;
+        height: 12px;
+        margin-right: 8px;
+        border-radius: 2px;
+      }
+    }
+  }
+
+  // Mejoras en las tooltips
+  .chartjs-tooltip {
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 0.875rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  // Animaciones suaves para las transiciones
+  .p-chart canvas {
+    transition: opacity 0.3s ease;
+  }
+}
+
+// Colores personalizados para cada tipo de gráfico
+.chart-card {
+  // Bordes de color según el tipo de contenido
+  &.corrientes {
+    border-left: 4px solid #FF8C00;
+  }
+
+  &.constantes {
+    border-left: 4px solid #007BFF;
+  }
+
+  &.participaciones {
+    border-left: 4px solid #28A745;
+  }
+
+  &.especiales {
+    border-left: 4px solid #DC3545;
+  }
+}
+
+// Efectos hover adicionales
+.graphics-sgp-container {
+  .chart-card {
+    &:hover {
+      .chart-title,
+      .chart-title-small {
+        color: #003366;
+        transition: color 0.2s ease;
+      }
+    }
+  }
+}

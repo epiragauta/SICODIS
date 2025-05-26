@@ -1,18 +1,255 @@
 .faq-container {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 2rem;
+  font-family: "Montserrat", sans-serif;
 }
 
-.faq-title {
-  color: #1a365d;
+.faq-header {
   text-align: center;
-  margin-bottom: 30px;
-  font-size: 2em;
+  margin-bottom: 3rem;
+
+  .faq-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    color: #004583;
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+
+    mat-icon {
+      font-size: 2.5rem;
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+  }
+
+  .faq-subtitle {
+    color: #6b7280;
+    font-size: 1.125rem;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+  }
 }
 
-.faq-list {
+.faq-content {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 2rem;
+}
+
+.faq-section {
+  :host ::ng-deep {
+    .p-card {
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      border: 1px solid #e5e7eb;
+
+      .p-card-header {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        border-bottom: 2px solid #004583;
+        border-radius: 12px 12px 0 0;
+        padding: 1.5rem;
+      }
+
+      .p-card-body {
+        padding: 1.5rem;
+      }
+    }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .section-icon {
+      color: #004583;
+      font-size: 2rem;
+      width: 2rem;
+      height: 2rem;
+    }
+
+    .section-title {
+      color: #004583;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0;
+    }
+  }
+}
+
+:host ::ng-deep {
+  .p-accordion {
+    .p-accordion-panel {
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+
+      .p-accordion-header {
+        .p-accordion-header-link {
+          background-color: #f9fafb;
+          color: #374151;
+          font-weight: 600;
+          padding: 1rem 1.5rem;
+          border: none;
+          transition: all 0.2s ease;
+
+          &:hover, &:focus {
+            background-color: #f3f4f6;
+            color: #004583;
+          }
+
+          &[aria-expanded="true"] {
+            background-color: #004583;
+            color: white;
+          }
+
+          .p-accordion-toggle-icon {
+            margin-left: auto;
+          }
+        }
+      }
+
+      .p-accordion-content {
+        background-color: white;
+        border-top: 1px solid #e5e7eb;
+
+        .p-accordion-content-wrapper {
+          padding: 0;
+        }
+      }
+    }
+  }
+}
+
+.faq-item-content {
+  padding: 1.5rem;
+
+  p {
+    color: #4b5563;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .faq-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+  }
+}
+
+.faq-footer {
+  margin-top: 3rem;
+
+  :host ::ng-deep .p-card {
+    background: linear-gradient(135deg, #004583 0%, #3366CC 100%);
+    color: white;
+    border-radius: 12px;
+
+    .p-card-body {
+      padding: 2rem;
+    }
+  }
+
+  .contact-info {
+    text-align: center;
+
+    h3 {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: #cbd5e1;
+      font-size: 1.125rem;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+  }
+
+  .contact-methods {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: white;
+      font-weight: 500;
+
+      mat-icon {
+        font-size: 1.25rem;
+        width: 1.25rem;
+        height: 1.25rem;
+        color: #cbd5e1;
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .faq-container {
+    padding: 1rem;
+  }
+
+  .faq-header {
+    .faq-title {
+      font-size: 2rem;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .faq-subtitle {
+      font-size: 1rem;
+    }
+  }
+
+  .section-header {
+    .section-title {
+      font-size: 1.25rem;
+    }
+  }
+
+  .contact-methods {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .faq-header {
+    .faq-title {
+      font-size: 1.75rem;
+    }
+  }
+
+  .faq-item-content {
+    padding: 1rem;
+  }
+
+  :host ::ng-deep {
+    .p-accordion {
+      .p-accordion-panel {
+        .p-accordion-header {
+          .p-accordion-header-link {
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+  }
 }
