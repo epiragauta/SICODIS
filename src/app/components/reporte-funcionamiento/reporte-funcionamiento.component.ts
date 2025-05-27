@@ -104,12 +104,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
       labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
       datasets: [
         {
-          type: 'bar',
-          label: 'Presupuesto',
-          backgroundColor: '#6c757d',
-          data: [850, 920, 780, 1100, 950, 860]
-        },
-        {
           type: 'line',
           label: 'Variación',
           borderColor: '#3366CC',
@@ -117,18 +111,25 @@ export class ReporteFuncionamientoComponent implements OnInit {
           fill: false,
           tension: 0.4,
           data: [800, 950, 750, 1150, 980, 840]
-        }
+        },
+        {
+          type: 'bar',
+          label: 'Presupuesto',
+          backgroundColor: '#6c757d',
+          data: [850, 920, 780, 1100, 950, 860]
+        }        
       ]
     };
 
     this.barChartOptions = {
       maintainAspectRatio: false,
-      aspectRatio: 0.8,
+      aspectRatio: 1.25,
+      responsive: true,
       plugins: {
         legend: {
           labels: {
             color: textColor,
-            font: { size: 10 }
+            font: { size: 9 }
           }
         }
       },
@@ -136,7 +137,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         x: {
           ticks: {
             color: textColor,
-            font: { size: 9 }
+            font: { size: 8 }
           },
           grid: {
             color: surfaceBorder
@@ -145,7 +146,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         y: {
           ticks: {
             color: textColor,
-            font: { size: 9 }
+            font: { size: 8 }
           },
           grid: {
             color: surfaceBorder
@@ -179,12 +180,13 @@ export class ReporteFuncionamientoComponent implements OnInit {
     this.horizontalBarOptions = {
       indexAxis: 'y',
       maintainAspectRatio: false,
-      aspectRatio: 1.2,
+      aspectRatio: 1.25,
+      responsive: true,
       plugins: {
         legend: {
           labels: {
             color: textColor,
-            font: { size: 10 }
+            font: { size: 9 }
           }
         }
       },
@@ -193,7 +195,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
           stacked: true,
           ticks: {
             color: textColor,
-            font: { size: 9 }
+            font: { size: 8 }
           },
           grid: {
             color: surfaceBorder
@@ -203,7 +205,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
           stacked: true,
           ticks: {
             color: textColor,
-            font: { size: 9 }
+            font: { size: 8 }
           },
           grid: {
             color: surfaceBorder
@@ -230,18 +232,19 @@ export class ReporteFuncionamientoComponent implements OnInit {
       circumference: 180,
       maintainAspectRatio: false,
       aspectRatio: 1.5,
+      responsive: true,
       plugins: {
         legend: {
           labels: {
             color: textColor,
-            font: { size: 10 }
+            font: { size: 9 }
           }
         },
         title: {
           display: true,
           text: 'Recaudo vs Presupuesto',
           color: textColor,
-          font: { size: 11, weight: 'bold' }
+          font: { size: 10, weight: 'bold' }
         }
       }
     };

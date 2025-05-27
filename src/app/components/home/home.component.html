@@ -145,63 +145,6 @@
       </div>
     </div>
 
-    <p-divider />
-      <div class="sicodis-historic-panel">
-        <div>
-          <h1 class="sicodis-title">
-            Consulte la información histórica de SICODIS
-          </h1>
-        </div>
-        <div>
-          <p class="desc-sicodis">
-            En esta sección encontrará reportes asociados al Esquema entre entidades territoriales y el gonierno nacional con la cual se determina la distribución, objetibos, fines, administración, ejecución y control eficiente de los ingresos provenientes de la explotación de los recursos naturales no renovables ....
-          </p>
-          <div>
-            <p-button severity="contrast" [rounded]="true">
-              Consultar los históricos
-            </p-button>
-          </div>
-        </div>
-      </div>
-
-    <p-divider />
-    <div class="sicodis-apps-panel">
-      <div>
-        <h1 class="sicodis-title">
-          Aplicaciones de interés
-        </h1>
-      </div>
-      <div class="card">
-        <p-carousel
-            severity="contrast"
-            [value]="highlightApps"
-            [numVisible]="4"
-            [numScroll]="3"
-            [circular]="false"
-                        [responsiveOptions]="responsiveOptions">
-                <ng-template let-app #item>
-                    <div class="border border-surface m-2 p-4">
-                        <div class="mb-4" style="text-align: center;">
-                            <div class="relative mx-auto">
-                                <img
-                                    src="{{ app.image }}"
-                                    [alt]="app.name"
-                                    class="w-full rounded-border" />
-                            </div>
-                        </div>
-                        <div class="mb-4 font-medium" style="text-align: center;">
-                            {{ app.name }}
-                        </div>
-                    </div>
-                </ng-template>
-        </p-carousel>
-      </div>
-    </div>
-
-    <p-divider />
-
-    <div class="logo-colombia">
-        <img src="/assets/img/logo-colombia.svg" alt="logo-colombia">
-    </div>
+    <p-divider />    
 
 </div>
