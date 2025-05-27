@@ -2,7 +2,7 @@
   <app-info-popup [infoText]="infoPopupContent" contentTitle="Información Detallada del Reporte"></app-info-popup>
   <app-summary-panel [summaryData]="summaryPanelData"></app-summary-panel>
 
-  <p-splitter [panelSizes]="[80, 20]" [style]="{ height: '530px' }" styleClass="mb-8">
+  <p-splitter [panelSizes]="[99, 1]" [style]="{ height: '530px' }" styleClass="mb-8">
     <ng-template pTemplate="panel">
         <div class="tree-table-container">
           <p-treetable [value]="data"
