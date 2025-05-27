@@ -136,7 +136,7 @@
                       <ng-container *ngSwitchDefault>
                         <div [ngClass]="{'font-bold': rowNode.level <= 1, 'col-style': col.field === 'presupuesto_otros' && col.class}" class="text-right"
                             *ngIf="rowData[col.field] !== null && rowData[col.field] !== undefined">
-                          {{formatCurrency(rowData[col.field])}}
+                          {{rowData[col.field] | numberFormat}} 
                         </div>
                         <div class="text-right no-data" *ngIf="rowData[col.field] === null || rowData[col.field] === undefined">
                           -

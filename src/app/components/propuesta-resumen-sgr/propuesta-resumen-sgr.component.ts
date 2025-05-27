@@ -25,6 +25,7 @@ import { departamentos } from '../../data/departamentos';
 
 import { territorialEntities } from '../../data/territorial-entities';
 import { SplitterModule } from 'primeng/splitter';
+import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 
 interface DocumentInfo {
   name: string;
@@ -57,7 +58,8 @@ interface NodeInfo {
       SplitterModule,
       InfoPopupComponent,
       TooltipModule,
-      SummaryPanelComponent],
+      SummaryPanelComponent,
+      NumberFormatPipe],
   templateUrl: './propuesta-resumen-sgr.component.html',
   styleUrl: './propuesta-resumen-sgr.component.scss'
 })
