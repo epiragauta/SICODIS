@@ -1,0 +1,227 @@
+<div class="reporte-funcionamiento-container">
+  <!-- Panel superior con selects -->
+  <div class="filters-panel">
+    <div class="filters-row">
+      <mat-form-field class="filter-select">
+        <mat-label>Bienio</mat-label>
+        <mat-select [(value)]="selectedBienio">
+          <mat-option *ngFor="let bienio of bienios" [value]="bienio.value">
+            {{bienio.label}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="filter-select">
+        <mat-label>Fuente</mat-label>
+        <mat-select [(value)]="selectedFuente">
+          <mat-option *ngFor="let fuente of fuentes" [value]="fuente.value">
+            {{fuente.label}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="filter-select">
+        <mat-label>Concepto</mat-label>
+        <mat-select [(value)]="selectedConcepto">
+          <mat-option *ngFor="let concepto of conceptos" [value]="concepto.value">
+            {{concepto.label}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="filter-select">
+        <mat-label>Beneficiario</mat-label>
+        <mat-select [(value)]="selectedBeneficiario">
+          <mat-option *ngFor="let beneficiario of beneficiarios" [value]="beneficiario.value">
+            {{beneficiario.label}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Botones horizontales -->
+  <div class="buttons-panel">
+    <p-button 
+      label="Administración - SSEC" 
+      icon="pi pi-cog"
+      class="action-button"
+      (click)="onAdministracionClick()">
+    </p-button>
+    <p-button 
+      label="Comisión Rectora" 
+      icon="pi pi-users"
+      class="action-button"
+      severity="secondary"
+      (click)="onComisionRectoraClick()">
+    </p-button>
+  </div>
+
+  <!-- Párrafo con notas -->
+  <div class="notes-section">
+    <p class="note-text">* Los valores presentados corresponden al último corte disponible del sistema</p>
+    <p class="note-text">* Las cifras están expresadas en millones y billones de pesos colombianos</p>
+    <p class="note-text">* La información se actualiza de forma periódica según disponibilidad de datos</p>
+  </div>
+
+  <!-- Panel principal con dos columnas -->
+  <div class="main-panel">
+    <!-- Columna izquierda (60%) - Tarjetas -->
+    <div class="left-column">
+      <!-- Tarjeta 1: Presupuesto -->
+      <mat-card class="info-card">
+        <mat-card-header>
+          <mat-card-title class="card-title">Presupuesto</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="metrics-row">
+            <div class="metric-item">
+              <div class="metric-value">{{formatMillions(presupuestoData.presupuestoAsignado)}}</div>
+              <div class="metric-label">Presupuesto Asignado</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value">{{formatMillions(presupuestoData.disponibilidadInicial)}}</div>
+              <div class="metric-label">Disponibilidad Inicial</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value">{{formatMillions(presupuestoData.recursosBloquedos)}}</div>
+              <div class="metric-label">Recursos Bloqueados</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value">{{formatBillions(presupuestoData.presupuestoVigenteDisponible)}}</div>
+              <div class="metric-label">Presupuesto Vigente Disponible</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Tarjeta 2: Ejecución Presupuestal -->
+      <mat-card class="info-card">
+        <mat-card-header>
+          <mat-card-title class="card-title">Ejecución Presupuestal</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="metrics-row">
+            <div class="metric-item">
+              <div class="metric-value">{{formatMillions(ejecucionData.cdp)}}</div>
+              <div class="metric-label">CDP</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value">{{formatMillions(ejecucionData.compromiso)}}</div>
+              <div class="metric-label">Compromiso</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value">{{formatMillions(ejecucionData.pagos)}}</div>
+              <div class="metric-label">Pagos</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value">{{formatBillions(ejecucionData.recursoComprometer)}}</div>
+              <div class="metric-label">Recurso por Comprometer</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Tarjeta 3: Situación de Caja -->
+      <mat-card class="info-card">
+        <mat-card-header>
+          <mat-card-title class="card-title">Situación de Caja</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="metrics-row">
+            <div class="metric-item">
+              <div class="metric-value">{{formatMillions(situacionCajaData.presupuestoCorriente)}}</div>
+              <div class="metric-label">Presupuesto Corriente</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value">{{formatMillions(situacionCajaData.recaudoCorriente)}}</div>
+              <div class="metric-label">Recaudo Corriente</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value">{{formatMillions(situacionCajaData.cajaTotal)}}</div>
+              <div class="metric-label">Caja Total</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value">{{formatBillions(situacionCajaData.cajaDisponible)}}</div>
+              <div class="metric-label">Caja Disponible</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Columna derecha (40%) - Gráficos -->
+    <div class="right-column">
+      <!-- Gráfico 1: Barras verticales con línea -->
+      <div class="chart-container">
+        <p-chart 
+          type="bar" 
+          [data]="barChartData" 
+          [options]="barChartOptions"
+          class="chart">
+        </p-chart>
+      </div>
+
+      <!-- Gráfico 2: Barra horizontal -->
+      <div class="chart-container">
+        <p-chart 
+          type="bar" 
+          [data]="horizontalBarData" 
+          [options]="horizontalBarOptions"
+          class="chart">
+        </p-chart>
+      </div>
+
+      <!-- Gráfico 3: Dona 180 grados -->
+      <div class="chart-container">
+        <p-chart 
+          type="doughnut" 
+          [data]="donutData" 
+          [options]="donutOptions"
+          class="chart">
+        </p-chart>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botones de acción -->
+  <div class="action-buttons">
+    <p-button 
+      label="Detalle Gestión Financiera" 
+      icon="pi pi-chart-line"
+      class="detail-button"
+      (click)="onDetalleGestionClick()">
+    </p-button>
+    <p-button 
+      label="Detalle de Recaudo" 
+      icon="pi pi-money-bill"
+      class="detail-button"
+      severity="secondary"
+      (click)="onDetalleRecaudoClick()">
+    </p-button>
+    <p-button 
+      label="Informe Trimestral de Gestión Financiera" 
+      icon="pi pi-file-pdf"
+      class="detail-button"
+      severity="info"
+      (click)="onInformeTrimestraClick()">
+    </p-button>
+  </div>
+
+  <!-- Notas finales -->
+  <div class="final-notes">
+    <h4 class="notes-title">Notas:</h4>
+    <p class="final-note">
+      <strong>Avance de ejecución:</strong> corresponde al porcentaje de ejecución de los compromisos respecto a los recursos disponibles del bienio
+    </p>
+    <p class="final-note">
+      <strong>Caja disponible:</strong> corresponde a los recursos en caja que tiene la entidad para realizar pagos
+    </p>
+    <p class="final-note">
+      <strong>Saldo a compromiso:</strong> corresponde a los recursos disponibles para comprometer en gasto
+    </p>
+    <p class="final-note">
+      <strong>Saldo a pagos:</strong> corresponde a los recursos disponibles para realizar pagos
+    </p>
+  </div>
+</div>
