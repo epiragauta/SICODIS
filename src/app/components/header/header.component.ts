@@ -64,19 +64,19 @@ export class HeaderComponent implements OnInit{
                   command: () => this.redirectSGR()
               },
               {
-                  label: 'SGR - Plan Bienal de Caja',
+                  label: 'Plan Bienal de Caja',
                   command: () => this.redirectUrl("reports-sgr-bienal")
               },
               {
-                  label: 'SGR - Comparativo Avance vs Presupuesto',
+                  label: 'Comparativo Avance vs Presupuesto',
                   command: () => this.redirectUrl("comparativo-iac-presupuesto")
               },
               {
-                  label: 'SGR - Tablero de Control',
+                  label: 'Tablero de Control',
                   command: () => this.redirectUrl("dashboard")
               },
               {
-                  label: 'SGR - Propuesta Resumen',
+                  label: 'Propuesta Resumen',
                   command: () => this.redirectUrl("propuesta-resumen-sgr")
               }
             ]
@@ -89,15 +89,15 @@ export class HeaderComponent implements OnInit{
                   command: () => this.redirectSGP(  )
               },
               {
-                  label: 'SGP - Distribución de recursos',
+                  label: 'Distribución de recursos',
                   command: () => this.redirectUrl("reports-sgp-dist")
               },
               {
-                  label: 'SGP - Presupuesto',
+                  label: 'Presupuesto',
                   command: () => this.redirectUrl("reports-sgp-budget")
               },
               {
-                  label: 'SGP - Tablero de Control',
+                  label: 'Tablero de Control',
                   command: () => this.redirectUrl("dashboard")
               }
           ]

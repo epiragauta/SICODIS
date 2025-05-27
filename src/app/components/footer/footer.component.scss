@@ -1,431 +1,421 @@
-/* FOOTER */
 footer {
-  padding: unset;
-  border: unset;
-  color: unset;
-  background: unset;
+    display: block;
+    unicode-bidi: isolate;
 }
 
-footer p {
-  color: #fff;
-  font-size: 14px;
-  line-height: 21px;
-  margin-bottom: unset;
-  -webkit-margin-before: unset;
-  margin-block-start: unset;
-}
-
-.gov-co-footer {
-  font-size: 16px;
+.DNPFooter-info {
+  position: relative;
   display: -webkit-box;
-  display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  background-color: #3366CC;
-}
-
-.gov-co-footer a {
-  color: #fff !important;
-}
-
-.gov-co-footer a:visited {
-  color: #fff !important;
-}
-
-/* Footer subcontainer */
-.gov-co-footer .gov-co-footer-pie.footer-venta {
-  padding: 40px 20px;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
+  -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-  -webkit-flex-flow: column wrap;
-  -ms-flex-flow: column wrap;
-  flex-flow: column wrap;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-align-content: center;
-  -ms-flex-line-pack: center;
-  align-content: center;
-  row-gap: 35px;
-  width: 100%;
-  background-color: #36c;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -ms-flex-line-pack: justify;
+  align-content: space-between;
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    from(#fff),
+    color-stop(15%, #fff),
+    color-stop(15%, #ededed),
+    color-stop(85%, #ededed),
+    color-stop(85%, #ededed)
+  );
+  background-image: linear-gradient(
+    to bottom,
+    #fff,
+    #fff 15%,
+    #ededed 15%,
+    #ededed 85%,
+    #ededed 85%
+  );
+  background-color: #ededed;
 }
 
-/* Sección logos */
-.gov-co-footer .gov-co-footer-venta {
-  -webkit-box-ordinal-group: 4;
-  -webkit-order: 3;
-  -ms-flex-order: 3;
-  order: 3;
+.DNPFooter-info-container {
+  position: relative;
+  overflow: hidden;
+  background-color: #fff;
   display: -webkit-box;
-  display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  width: 90%;
+  padding: 50px 50px 10px;
+  max-width: 1180px;
+  -webkit-box-shadow: 0 0 3px grey;
+  box-shadow: 0 0 3px grey;
+  margin: 0 auto 15px;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
 }
 
-.gov-co-footer-venta-imgs-container {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
+@media screen and (min-width: 600px) and (max-width: 1200px) {
+  .DNPFooter-info-container {
+    width: 80vw;
+    padding: 4vw 5vw 1vw;
+    margin-bottom: 1vw;
+  }
 }
 
-.gov-co-footer-venta-imgs-container img {
-  -webkit-box-sizing: unset;
-  box-sizing: unset;
+@media screen and (max-width: 600px) {
+  .DNPFooter-info-container {
+    width: 80vw;
+    padding: 4vw 5vw 1vw;
+    margin-bottom: 1vw;
+  }
 }
 
-.gov-co-logo-pie-blanco-container {
-  border-right: 1px solid #fff;
-  height: 48px;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -webkit-align-items: center;
-  -ms-flex-align: center;
-  align-items: center;
-}
-
-.gov-co-logo-pie-blanco {
-  width: 134px;
-  height: 48px;
-  padding-right: 20px;
-}
-
-.gov-co-logo-pie-mesa {
-  padding-left: 10px;
-  margin-left: 10px;
-  height: 48px;
-  width: 48px;
-  -webkit-box-ordinal-group: 3;
-  -webkit-order: 2;
-  -ms-flex-order: 2;
-  order: 2;
-}
-
-/* Seccion Información y redes sociales */
-.gov-co-footer .gov-co-presen-venta {
-  -webkit-box-ordinal-group: 2;
-  -webkit-order: 1;
-  -ms-flex-order: 1;
-  order: 1;
-  -webkit-box-flex: 1;
-  -webkit-flex: 1 1 auto;
-  -ms-flex: 1 1 auto;
-  flex: 1 1 auto;
-}
-
-.titulo-venta {
-  font-family: "Montserrat", sans-serif !important;
-  font-weight: 600;
-  font-size: 16px;
-  color: #fff;
-  margin-bottom: 15px;
-}
-
-.gov-co-presen-venta .row-data {
-  margin-bottom: 25px;
-}
-
-.gov-detalles-venta {
+.DNPFooter-info-title {
   font-family: "Work Sans", sans-serif;
-  font-weight: 400;
-  color: #fff;
+  color: #004884;
+  font-weight: 500;
+  width: 60%;
+  font-size: 20px;
+  margin: 0;
 }
 
-/* Redes sociales */
-.gov-co-footer .gov-co-presen-venta .gov-co-social-media-venta {
+@media screen and (min-width: 600px) and (max-width: 1200px) {
+  .DNPFooter-info-title {
+    font-size: 1.8vw;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .DNPFooter-info-title {
+    width: 100%;
+    font-size: 5vw;
+    padding-bottom: 3vw;
+  }
+}
+
+.DNPFooter-info-logos {
   display: -webkit-box;
-  display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
-  -webkit-flex-flow: column wrap;
-  -ms-flex-flow: column wrap;
-  flex-flow: column wrap;
-  row-gap: 15px;
-  -webkit-box-pack: start;
-  -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
+  width: 35%;
+  -webkit-box-align: end;
+  -ms-flex-align: end;
+  align-items: flex-end;
+  height: 50px;
 }
 
-.gov-co-link-venta {
+@media screen and (min-width: 600px) and (max-width: 1200px) {
+  .DNPFooter-info-logos {
+    height: 4.1vw;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .DNPFooter-info-logos {
+    height: auto;
+    width: 100%;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+  }
+}
+
+.DNPFooter-info-logos a img {
+  height: 54px;
+}
+
+.DNPFooter-info-logos-element {
+  height: 80px;
+  margin-bottom: 10px;
+}
+
+@media screen and (min-width: 600px) and (max-width: 1200px) {
+  .DNPFooter-info-logos a img {
+    height: 5vw;
+  }
+
+  .DNPFooter-info-logos-element {
+    height: 7vw;
+    margin-bottom: 1vw;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .DNPFooter-info-logos a img {
+    height: 12vw;
+  }
+
+  .DNPFooter-info-logos-element {
+    margin-bottom: 1vw;
+    height: 18vw;
+  }
+}
+
+.DNPFooter-info-data {
+  padding-bottom: 10px;
+}
+
+.DNPFooter-info-data-title {
   font-family: "Work Sans", sans-serif;
+  color: #004884;
   font-weight: 500;
-  color: #fff;
-  text-decoration: underline;
-}
-
-/* Iconos */
-.redes-link {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -webkit-align-items: center;
-  -ms-flex-align: center;
-  align-items: center;
-  min-width: 135px;
-  font-size: 12px;
-}
-
-.redes-icon {
-  border-radius: 10%;
-  background: #fff;
-  margin-right: 5px;
-  width: 20px;
-  height: 20px;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -webkit-align-items: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  color: #3366CC;
-}
-
-.redes-icon img {
-  max-height: 16px;
-  max-width: 16px;
-}
-
-.gov-co-link-venta:hover {
-  opacity: 0.9;
-}
-
-.fa-tiktok svg {
-  display: inherit;
-  width: 10px;
-  height: 13px;
-}
-
-#redes-linkedin {
-  margin-right: 15px;
-}
-
-.govco-icon {
-  font-family: "Govco Icon";
-  font-size: 2em;
-}
-
-/* Contacto */
-.gov-co-footer .gov-co-conta-venta {
-  -webkit-box-ordinal-group: 3;
-  -webkit-order: 2;
-  -ms-flex-order: 2;
-  order: 2;
-  -webkit-box-flex: 1;
-  -webkit-flex: 1 1 auto;
-  -ms-flex: 1 1 auto;
-  flex: 1 1 auto;
-  margin-bottom: 5px;
-}
-
-.gov-co-conta-venta .row-data {
-  margin-bottom: 25px;
-}
-
-.sub-titulo-venta {
-  font-family: "Montserrat", sans-serif !important;
-  font-weight: 600;
   font-size: 16px;
-  color: #fff;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -webkit-align-items: center;
-  -ms-flex-align: center;
-  align-items: center;
   margin-bottom: 15px;
 }
 
-.gov-detalles-venta-conta {
-  font-family: "Work Sans", sans-serif;
-  font-weight: 400;
-  color: #fff;
+@media screen and (min-width: 600px) and (max-width: 1200px) {
+  .DNPFooter-info-data-title {
+    font-size: 1.3vw;
+    margin-bottom: 1vw;
+  }
 }
 
-/* Enlaces */
-.gov-co-footer .gov-co-pilo-venta {
+@media screen and (max-width: 600px) {
+  .DNPFooter-info-data-title {
+    font-size: 4vw;
+    margin: 3vw 0;
+  }
+}
+
+.DNPFooter-info-data-text {
+  font-family: "Work Sans", sans-serif;
+  color: #535353;
+  font-weight: 400;
+  margin-bottom: inherit;
+  line-height: initial;
+  font-size: 14px;
+  padding-bottom: 5px;
+}
+
+@media screen and (min-width: 600px) and (max-width: 1200px) {
+  .DNPFooter-info-data-text {
+    font-size: 1.1vw;
+    padding-bottom: 0.5vw;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .DNPFooter-info-data-text {
+    font-size: 3vw;
+    padding-bottom: 2vw;
+  }
+}
+
+.DNPFooter-info-social {
   display: -webkit-box;
-  display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
+  -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-  -webkit-flex-flow: column wrap;
-  -ms-flex-flow: column wrap;
-  flex-flow: column wrap;
-  -webkit-box-pack: start;
-  -webkit-justify-content: flex-start;
-  -ms-flex-pack: start;
-  justify-content: flex-start;
-  -webkit-flex-direction: row;
   -ms-flex-direction: row;
   flex-direction: row;
-  row-gap: 15px;
+  -webkit-box-pack: start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 10px 0;
 }
 
-.gov-co-pilo-venta>a {
-  margin-right: 15px;
-}
-
-.goc-co-link-poli-venta {
-  font-family: "Montserrat", sans-serif;
-  font-weight: 600;
-  font-size: 12px;
-  color: #fff;
+.DNPFooter-info-social-element {
+  font-family: "Work Sans", sans-serif;
+  color: #004884;
   text-decoration: underline;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 0 20px 5px 0;
+  -webkit-transition-duration: 0.5s;
+  transition-duration: 0.5s;
 }
 
-a.goc-co-link-poli-venta {
-
+@media screen and (min-width: 600px) and (max-width: 1200px) {
+  .DNPFooter-info-social-element {
+    font-size: 1.1vw;
+    padding-bottom: 0.5vw;
+  }
 }
 
-.goc-co-link-poli-venta:hover {
-  opacity: 0.9;
+@media screen and (max-width: 600px) {
+  .DNPFooter-info-social-element {
+    font-size: 3vw;
+    padding-bottom: 2vw;
+  }
 }
 
-.sub-titulo-venta .fa-telefono {
-  font-size: 20px;
+.DNPFooter-info-social-element:visited,
+.DNPFooter-info-social-element:hover {
+  color: #3366cc;
+}
+
+.DNPFooter-info-social-element:before {
+  display: inline-block;
+  content: "";
+  background-repeat: no-repeat;
+  background-color: #004884;
+  color: #fff;
+  border-radius: 50%;
+  background-position: center;
+  vertical-align: middle;
+  background-size: 14px;
+  width: 25px;
+  height: 25px;
+  margin-right: 5px;
+}
+
+@media screen and (min-width: 600px) and (max-width: 1200px) {
+  .DNPFooter-info-social-element:before {
+    background-size: 1.2vw;
+    width: 2.5vw;
+    height: 2.5vw;
+    margin-right: 0.5vw;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .DNPFooter-info-social-element:before {
+    background-size: 2.5vw;
+    width: 5vw;
+    height: 5vw;
+    margin-right: 1vw;
+  }
+}
+
+.DNPFooter-info-social-element.tw:before {
+  background-image: url("https://dnp.gov.co/assets/tw_icon.svg");
+}
+
+.DNPFooter-info-social-element.ig:before {
+  background-image: url("https://dnp.gov.co/assets/ig_icon.svg");
+}
+
+.DNPFooter-info-social-element.fb:before {
+  background-image: url("https://dnp.gov.co/assets/fb_icon.svg");
+}
+
+.DNPFooter-info-social-element.in:before {
+  background-image: url("https://dnp.gov.co/assets/in_icon.svg");
+}
+
+.DNPFooter-info-social-element.yt:before {
+  background-image: url("https://dnp.gov.co/assets/yt_icon.svg");
+}
+
+.DNPFooter-info-social-element.tk:before {
+  background-image: url("https://dnp.gov.co/assets/tk_icon.svg");
+}
+
+.DNPFooter-info-social-link {
+  font-family: "Work Sans", sans-serif;
+  color: #535353;
+  text-decoration: underline;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 0 20px 5px 0;
+}
+
+@media screen and (min-width: 600px) and (max-width: 1200px) {
+  .DNPFooter-info-social-link {
+    font-size: 1.1vw;
+    padding-bottom: 0.5vw;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .DNPFooter-info-social-link {
+    font-size: 3vw;
+    padding-bottom: 2vw;
+  }
+}
+
+.DNPFooter-info-social-link:visited {
+  color: #535353;
+}
+
+.DNPFooter-bar {
+  width: 100vw;
+  background-color: #3366cc;
+  z-index: 50;
+  padding: 20px 0;
+}
+
+@media screen and (min-width: 600px) and (max-width: 1200px) {
+  .DNPFooter-bar {
+    padding: 2vw 0;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .DNPFooter-bar {
+    padding: 4vw 0;
+  }
+}
+
+.DNPFooter-bar-container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+@media screen and (min-width: 600px) and (max-width: 1200px) {
+  .DNPFooter-bar-container {
+    padding: 0 1vw;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .DNPFooter-bar-container {
+    padding: 0;
+    width: -webkit-max-content;
+    width: -moz-max-content;
+    width: max-content;
+  }
+}
+
+.DNPFooter-bar-logo {
+  height: 25px;
   margin-right: 10px;
+  padding-right: 10px;
 }
 
-.fa-telefono {
-  margin-right: 3px;
-}
-
-@media (min-width: 1200px) {
-  .gov-co-footer>.gov-co-footer-pie.footer-venta {
-      -webkit-box-orient: horizontal;
-      -webkit-box-direction: normal;
-      -webkit-flex-flow: row nowrap;
-      -ms-flex-flow: row nowrap;
-      flex-flow: row nowrap;
-  }
-
-  .gov-co-footer .gov-co-footer-venta {
-      -webkit-box-ordinal-group: 2;
-      -webkit-order: 1;
-      -ms-flex-order: 1;
-      order: 1;
-      -webkit-box-orient: vertical;
-      -webkit-box-direction: normal;
-      -webkit-flex-flow: column wrap;
-      -ms-flex-flow: column wrap;
-      flex-flow: column wrap;
-      -webkit-box-pack: start;
-      row-gap: 20px;
-      display: -webkit-box;
-      display: -webkit-flex;
-      display: -ms-flexbox;
-      display: flex;
-      width: 20%;
-      -webkit-align-content: space-around;
-      -ms-flex-line-pack: distribute;
-      align-content: space-around;
-  }
-
-  .gov-co-footer .gov-co-presen-venta {
-      margin: 0 20px;
-      padding: 0px 20px;
-      border-left: 1px solid #fff;
-      border-right: 1px solid #fff;
-      width: 45%;
-      display: -webkit-box;
-      display: -webkit-flex;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-orient: vertical;
-      -webkit-box-direction: normal;
-      -webkit-flex-direction: column;
-      -ms-flex-direction: column;
-      flex-direction: column;
-      -webkit-box-pack: justify;
-      -webkit-justify-content: space-between;
-      -ms-flex-pack: justify;
-      justify-content: space-between;
-  }
-
-  .gov-co-footer .gov-co-conta-venta {
-      padding: 0;
-      margin: 0;
-      border: initial;
-      width: 35%;
-      display: -webkit-box;
-      display: -webkit-flex;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-orient: vertical;
-      -webkit-box-direction: normal;
-      -webkit-flex-direction: column;
-      -ms-flex-direction: column;
-      flex-direction: column;
-      -webkit-box-pack: justify;
-      -webkit-justify-content: space-between;
-      -ms-flex-pack: justify;
-      justify-content: space-between;
-  }
-
-  .gov-co-logo-pie-mesa {
-      width: 48px;
-      height: 48px;
-      padding-left: 0px;
-      margin-left: 20px;
-  }
-
-  .gov-co-footer .gov-co-presen-venta .gov-co-social-media-venta {
-      -webkit-box-orient: horizontal;
-      -webkit-box-direction: normal;
-      -webkit-flex-direction: row;
-      -ms-flex-direction: row;
-      flex-direction: row;
-      -webkit-column-gap: 25px;
-      -moz-column-gap: 25px;
-      column-gap: 25px;
-  }
-
-  .gov-co-footer .gov-co-conta-venta .gov-co-pilo-venta {
-      row-gap: 10px;
-  }
-
-  .gov-co-footer .gov-co-footer-pie.footer-venta {
-      padding: 40px;
+@media screen and (min-width: 600px) and (max-width: 1200px) {
+  .DNPFooter-bar-logo {
+    height: 2.5vw;
+    margin-right: 1vw;
+    padding-right: 1vw;
   }
 }
 
-@media (min-width: 1400px) {
-  .gov-co-footer>.gov-co-footer-pie.footer-venta {
-      max-width: 1400px;
+@media screen and (max-width: 600px) {
+  .DNPFooter-bar-logo {
+    height: 7vw;
+    margin-right: 2vw;
+    padding-right: 2vw;
   }
+}
 
-  .gov-co-conta-venta .row-data {
-      margin-bottom: 15px;
+.DNPFooter-bar-logo.border {
+  border: none !important;
+  border-right: solid 1px #fff !important;
+}
+
+@media screen and (max-width: 600px) {
+  .DNPFooter-bar-logo {
+    border-right-width: 0.2vw;
   }
 }
