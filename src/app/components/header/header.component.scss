@@ -1,43 +1,62 @@
+// src/app/components/header/header.component.scss
+
 :host ::ng-deep .p-menubar {
   font-family: inherit;
-  //font-size: 0.75rem;
   padding: 0.15rem;
 }
 
 :host ::ng-deep .p-menubar-item {
   font-family: inherit;
-  //font-size: 0.75rem;
 }
 
-.container{
-    padding: 0;
-    margin: 0;
+// Contenedor principal del header con posición sticky
+.container {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+  padding: 0;
+  margin: 0;
 }
-.section-gov{
-    background-color: #3366CC;
-    height: 52px;
-    .logo{
-        width: 148px;
-        height: 30px;
-        margin: 12px 180px;
-    }
+
+// Efecto de sombra más pronunciado al hacer scroll
+.container.scrolled {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
-.section-icons{
-    background-color: white;
-    height: 120px;
-    margin-left: 2rem;
-    .logo{
-        width: 342px;
-        height: 90px;
-    }
+
+.section-gov {
+  background-color: #3366CC;
+  height: 52px;
+  position: relative;
+  
+  .logo {
+    width: 148px;
+    height: 30px;
+    margin: 12px 180px;
+  }
 }
-.section-menu{
-    background-color: #F6F8F9;
-    height: 40px;
-    top: 0; /* required */
-    button{
-        padding: 0px 18px 0px 18px;
-    }
+
+.section-icons {
+  background-color: white;
+  height: 120px;
+  margin-left: 2rem;
+  
+  .logo {
+    width: 342px;
+    height: 90px;
+  }
+}
+
+.section-menu {
+  background-color: #F6F8F9;
+  height: 40px;
+  top: 0;
+  
+  button {
+    padding: 0px 18px 0px 18px;
+  }
 }
 
 .barra-superior-govco {
@@ -91,14 +110,13 @@
   color: #FFFFFF;
 }
 
-
 @media (max-width: 991px) {
   .barra-superior-govco {
     justify-content: center;
     padding: 0;
   }
 
-  .barra-superior-govco .idioma-icon-barra-superior-govco  {
+  .barra-superior-govco .idioma-icon-barra-superior-govco {
     right: 1rem;
   }
 }
@@ -146,5 +164,20 @@
 
   .container-logo-header-govco .logo-header-govco {
     height: 1.188rem;
+  }
+}
+
+// Variante compacta para móviles al hacer scroll
+@media (max-width: 768px) {
+  .container.scrolled {
+    .section-icons {
+      height: 80px; // Reduce altura en móviles al hacer scroll
+      transition: height 0.3s ease;
+    }
+    
+    .container-logo-header-govco .logo-header-govco {
+      height: 4rem; // Logo más pequeño en scroll
+      transition: height 0.3s ease;
+    }
   }
 }

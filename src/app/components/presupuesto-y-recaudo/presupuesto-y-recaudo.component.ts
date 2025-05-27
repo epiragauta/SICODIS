@@ -17,6 +17,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
 
 import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
+import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 
 interface FinancialData {
   presupuesto_total_vigente: number;
@@ -42,7 +43,8 @@ interface FinancialData {
     MatSelectModule,
     FormsModule,
     Select,
-    FloatLabel
+    FloatLabel,
+    NumberFormatPipe
   ],
   templateUrl: './presupuesto-y-recaudo.component.html',
   styleUrl: './presupuesto-y-recaudo.component.scss'

@@ -247,3 +247,45 @@ p, div, span, h1, h2, h3, h4, h5, h6 {
 
 
 
+// src/styles.scss (o en tu archivo de estilos globales)
+
+// Asegurar que no haya conflictos con el sticky header
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+// Clase auxiliar para contenido principal que evita solapamiento con header fijo
+.main-content {
+  position: relative;
+  z-index: 1;
+}
+
+// Opcional: Animación suave para cuando el header cambia de tamaño
+* {
+  box-sizing: border-box;
+}
+
+// Asegurar que los dropdowns del menú tengan z-index correcto
+:host ::ng-deep .p-menubar-submenu {
+  z-index: 1001 !important;
+}
+
+:host ::ng-deep .p-menubar-overlay {
+  z-index: 1001 !important;
+}
+
+// Mejoras de rendimiento para animaciones
+.container {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+// Opcional: Efecto de blur en el fondo cuando hay scroll (para navegadores modernos)
+@supports (backdrop-filter: blur(10px)) {
+  .container.scrolled {
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.95);
+  }
+}

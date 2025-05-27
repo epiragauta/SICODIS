@@ -174,24 +174,24 @@
           <td>
             <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
             <span [ngClass]="{'font-bold': !rowNode.parent || (rowNode.parent && !rowNode.parent.parent)}">
-              {{ rowData.categoria }} - {{ rowData.concepto }}
+              {{ rowData.concepto }}
             </span>
           </td>
           
           <td class="text-right">
-            {{ rowData.presupuesto_total_vigente | currency }}
+            {{ rowData.presupuesto_total_vigente | numberFormat  }}
           </td>
           
           <td class="text-right">
-            {{ rowData.caja_total | currency }}
+            {{ rowData.caja_total | numberFormat  }}
           </td>
           
           <td class="text-right">
-            {{ rowData.presupuesto_corriente | currency }}
+            {{ rowData.presupuesto_corriente | numberFormat  }}
           </td>
           
           <td class="text-right">
-            {{ rowData.caja_corriente_informada | currency }}
+            {{ rowData.caja_corriente_informada | numberFormat  }}
           </td>
           
         </tr>
