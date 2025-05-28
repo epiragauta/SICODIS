@@ -162,7 +162,7 @@
 
       <ng-template pTemplate="header" let-columns>
         <tr>
-          <th *ngFor="let col of columns" [ngClass]="col.field === 'concepto' ? 'text-left' : 'text-right'">
+          <th *ngFor="let col of columns" class="text-center">
             {{ col.header }}
           </th>
         </tr>

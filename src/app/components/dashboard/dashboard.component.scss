@@ -133,9 +133,9 @@ mat-card-title {
 }
 
 mat-card-title .mat-icon {
-  font-size: 1.7rem;
+  font-size: 1.5rem;
   height: 1.5rem;
-  width: 1.8rem;
+  width: 1.3rem;
   vertical-align: middle;
 }
 
@@ -181,7 +181,7 @@ mat-card-title .mat-icon {
 
 .chart-value {
   position: absolute;
-  top: 87%;
+  top: 75%;
   left: 45%;
   transform: translate(-50%, -50%);
   text-align: center;
@@ -190,7 +190,7 @@ mat-card-title .mat-icon {
 
 .chart-value .value {
   display: block;
-  font-size: 0.95rem;
+  font-size: 0.7rem;
   font-weight: bold;
   line-height: 1.2;
 }
@@ -243,7 +243,7 @@ mat-card-title .mat-icon {
   .flex.items-center {
     display: flex;
     align-items: center;
-    font-size: 0.75rem;
+    font-size: 0.6rem;
   }
 }
 

@@ -13,6 +13,7 @@ import { BudgetItem, BudgetServiceStatic } from './budget.service';
 import { BudgetChartComponent } from './budget-chart.component';
 import { BudgetMapComponent } from './budget-map.component';
 import { ChartModule } from 'primeng/chart';
+import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 
 interface CardData {
   title: string;
@@ -41,7 +42,8 @@ interface CardData {
     SplitterModule,
     BudgetChartComponent,
     BudgetMapComponent,
-    ChartModule
+    ChartModule,
+    NumberFormatPipe
   ],
   providers: [
     BudgetServiceStatic
@@ -248,12 +250,11 @@ export class DashboardComponent implements OnInit {
   }
 
   formatCurrency(value: number): string {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency',
-      currency: 'COP',
+    return value.toLocaleString('es-CO', {
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(value);
+      maximumFractionDigits: 0,
+      useGrouping: true
+    })
   }
 
   getRandomColor(): string {

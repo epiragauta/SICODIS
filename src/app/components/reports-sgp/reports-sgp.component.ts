@@ -12,6 +12,7 @@ import { TableRowCollapseEvent, TableRowExpandEvent } from 'primeng/table';
 import { Dialog } from 'primeng/dialog';
 
 import Chart from 'chart.js/auto';
+import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 
 @Component({
   selector: 'app-reports-sgp',
@@ -25,7 +26,8 @@ import Chart from 'chart.js/auto';
     MatTableModule,
     TableModule,
     ButtonModule,
-    Dialog
+    Dialog,
+    NumberFormatPipe
   ],
   templateUrl: './reports-sgp.component.html',
   styleUrl: './reports-sgp.component.scss',

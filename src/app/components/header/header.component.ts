@@ -36,54 +36,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
       },
       {
         label: 'Sobre SICODIS',
-      },
-      {
-        label: 'Documentos Financiamiento Territorial',
         items: [
           {
-            label: 'Sistema General de Participaciones -SGP',
-            command: () => this.redirectDocs("sgp")
-          },
-          {
-            label: 'Sistema General de Regalías -SGR',
-            command: () => this.redirectDocs("sgr")
-          },
-          {
-            label: 'Más Información',
-            items: [
-              {
-                label: 'Información',
-              },
-              {
-                label: 'Baúl de herramientas',
-                command: () => this.redirectTools()
-              }
-            ]
-          }
-        ]
-      },
-      {
-        label: 'SGR',
-        items: [
-          {
-            label: 'Sistema General de Regalias -SGR',
-            command: () => this.redirectSGR()
-          },
-          {
-            label: 'Plan Bienal de Caja',
-            command: () => this.redirectUrl("reports-sgr-bienal")
-          },
-          {
-            label: 'Comparativo Avance vs Presupuesto',
-            command: () => this.redirectUrl("comparativo-iac-presupuesto")
-          },
-          {
-            label: 'Tablero de Control',
-            command: () => this.redirectUrl("dashboard")
-          },
-          {
-            label: 'Propuesta Resumen',
-            command: () => this.redirectUrl("propuesta-resumen-sgr")
+            label: 'Variables de distribución Sistema General de Participaciones y Sistema General de Regalias',
+            command: () => this.redirectHome()
           }
         ]
       },
@@ -91,30 +47,82 @@ export class HeaderComponent implements OnInit, OnDestroy {
         label: 'SGP',
         items: [
           {
-            label: 'Sistema General de Participaciones -SGP',
+            label: 'Distribución Doce Doceavas y Anexos'
+          },
+          {
+            label: 'Ficha SGP, información Presupuestal',
             command: () => this.redirectSGP()
           },
           {
-            label: 'Distribución de recursos',
+            label: 'Ficha comparativa de distribución SGP',
             command: () => this.redirectUrl("reports-sgp-dist")
           },
           {
-            label: 'Presupuesto',
+            label: 'Distribución SGP para los Resguardos Indígenas',
             command: () => this.redirectUrl("reports-sgp-budget")
           },
           {
-            label: 'Tablero de Control',
+            label: 'Eficiencia Fiscal y Eficiencia Administrativa de la participación para Propósito general.',
             command: () => this.redirectUrl("dashboard")
+          },
+          {
+            label: 'Ficha para la proyección de los recursos del SGP – Vigencia 2024'
           }
         ]
       },
       {
-        label: 'Servicio al Ciudadano',
+        label: 'SGR',
+        items: [
+          {
+            label: 'Comparativo Avance vs Presupuesto',
+            command: () => this.redirectUrl("comparativo-iac-presupuesto")
+          },
+          {
+            label: 'Consulta de los recursos de la Administración del SGR y el Sistema de Seguimiento Evaluación y Control',
+            command: () => this.redirectSGR()
+          },          
+          {
+            label: 'Plan Bienal de Caja',
+            command: () => this.redirectUrl("reports-sgr-bienal")
+          },          
+          {
+            label: 'Plan de recursos',
+            command: () => this.redirectUrl("dashboard")
+          },
+          {
+            label: 'Visor General de recursos AD hidrocarburos y minería',
+            command: () => this.redirectUrl("propuesta-resumen-sgr")
+          }
+        ]
       },
       {
-        label: 'Preguntas Frecuentes',
-        command: () => this.redirectFAQ()
-      }
+        label: 'Histórico',
+        items: [
+          {
+            label: 'Histórico Situado – Fiscal y  PICN 199 a 2001 (entidades y conceptos)'
+          },
+          {
+            label: 'Resumen histórico – Situación fiscal y PICN 1994 – 2001'
+          },
+          {
+            label: 'Detalle histórico SGP'
+          },
+          {
+            label: 'Detalle histórico por entidad y concepto SGP'
+          }
+        ]
+      },   
+      {
+        label: 'Ayuda',
+        items: [
+          {
+            label: 'Preguntas Frecuentes',
+            command: () => this.redirectFAQ()
+          },{
+            label: 'Guías y manuales'
+          }
+        ]
+      }      
     ];
   }
 

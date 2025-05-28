@@ -21,6 +21,7 @@ import { departamentos } from '../../data/departamentos';
 import { ComparativoIacVsPresupuesto } from '../../data/comparativo-iac-vs-presupuesto';
 import { territorialEntities } from '../../data/territorial-entities';
 import { plantillaComparacionIacVsPresupuestoDetalleEntidad } from '../../data/plantilla-comparacion-iac-vs-presupuesto-detalle-entidad';
+import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 
 
 interface DocumentInfo {
@@ -50,7 +51,8 @@ interface NodeInfo {
     SplitButtonModule,
     MatGridListModule,
     ChartModule,
-    PopoverModule],
+    PopoverModule,
+    NumberFormatPipe],
   templateUrl: './comparativo-iac-vs-presupuesto.component.html',
   styleUrl: './comparativo-iac-vs-presupuesto.component.scss'
 })

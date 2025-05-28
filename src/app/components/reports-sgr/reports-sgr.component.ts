@@ -35,6 +35,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { ChartModule } from 'primeng/chart';
 import { DividerModule } from 'primeng/divider';
 import { ReportsSgrStatsComponent } from './reports-sgr-stats.component';
+import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 
 @Component({
     selector: 'app-reports-sgr',
@@ -61,7 +62,8 @@ import { ReportsSgrStatsComponent } from './reports-sgr-stats.component';
         SelectModule,
         ChartModule,
         DividerModule,
-        ReportsSgrStatsComponent
+        ReportsSgrStatsComponent,
+        NumberFormatPipe
     ],
     templateUrl: './reports-sgr.component.html',
     styleUrl: './reports-sgr.component.scss'
@@ -312,30 +314,30 @@ export class ReportsSgrComponent implements AfterViewInit, OnInit {
           f= this.getRndm();
           rows.push({
               a: lbl.label,
-              b: {x: b, y : formatCurrency(b, this.locale, "$ ")},
-              c: {x: c, y : formatCurrency(c, this.locale, "$ ")},
-              d: {x: d, y : formatCurrency(d, this.locale, "$ ")},
-              e: {x: e, y : formatCurrency(e, this.locale, "$ ")},
-              f: {x: f, y : formatCurrency(f, this.locale, "$ ")},
+              b: {x: b, y : b},
+              c: {x: c, y : c},
+              d: {x: d, y : d},
+              e: {x: e, y : e},
+              f: {x: f, y : f},
             });
         });
         this.dataTable.push({
           a: l.label,
-          b: {x: b, y : formatCurrency(b, this.locale, "$ ")},
-          c: {x: c, y : formatCurrency(c, this.locale, "$ ")},
-          d: {x: d, y : formatCurrency(d, this.locale, "$ ")},
-          e: {x: e, y : formatCurrency(e, this.locale, "$ ")},
-          f: {x: f, y : formatCurrency(f, this.locale, "$ ")},
+          b: {x: b, y : b},
+          c: {x: c, y : c},
+          d: {x: d, y : d},
+          e: {x: e, y : e},
+          f: {x: f, y : f},
           x : rows
         });
       }else{
         this.dataTable.push({
           a: l.label,
-          b: {x: b, y : formatCurrency(b, this.locale, "$ ")},
-          c: {x: c, y : formatCurrency(c, this.locale, "$ ")},
-          d: {x: d, y : formatCurrency(d, this.locale, "$ ")},
-          e: {x: e, y : formatCurrency(e, this.locale, "$ ")},
-          f: {x: f, y : formatCurrency(f, this.locale, "$ ")},
+          b: {x: b, y : b},
+          c: {x: c, y : c},
+          d: {x: d, y : d},
+          e: {x: e, y : e},
+          f: {x: f, y : f},
           x : []
         });
       }

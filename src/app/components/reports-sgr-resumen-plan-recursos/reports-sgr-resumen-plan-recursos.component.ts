@@ -15,6 +15,7 @@ import { departamentos } from '../../data/departamentos';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { ChartModule } from 'primeng/chart';
 import { SplitterModule } from 'primeng/splitter';
+import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 
 interface DocumentInfo {
   name: string;
@@ -40,7 +41,8 @@ interface NodeInfo {
     MatGridListModule,
     ChartModule,
     PopoverModule,
-    SplitterModule ],
+    SplitterModule,
+    NumberFormatPipe ],
   templateUrl: './reports-sgr-resumen-plan-recursos.component.html',
   styleUrl: './reports-sgr-resumen-plan-recursos.component.scss'
 })

@@ -2,11 +2,12 @@ import { Component, Input, OnChanges, SimpleChanges, Inject, PLATFORM_ID } from 
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
+import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 
 @Component({
   selector: 'app-summary-panel',
   standalone: true,
-  imports: [CommonModule, CardModule, ChartModule],
+  imports: [CommonModule, CardModule, ChartModule, NumberFormatPipe],
   templateUrl: './summary-panel.component.html',
   styleUrls: ['./summary-panel.component.scss']
 })

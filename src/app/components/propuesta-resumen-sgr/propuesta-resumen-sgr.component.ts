@@ -179,7 +179,7 @@ export class PropuestaResumenSgrComponent implements OnInit{
         { field: 'presupuesto_corriente', header: 'Presupuesto Corriente', width: '14%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Monto presupuestado para ingresos corrientes' },
         { field: 'caja_corriente_informada', header: 'Caja Corriente Informada', width: '14%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Valores de caja reportados para los ingresos corrientes' },
         { field: 'porcentaje_1', header: '%', width: '5%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Porcentaje de ejecución: (Caja Corriente Informada / Presupuesto Corriente) * 100' },
-        { field: 'caja_total', header: 'Caje Total', width: '14%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Monto total de caja' },
+        { field: 'caja_total', header: 'Caja Total', width: '14%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Monto total de caja' },
         { field: 'porcentaje_2', header: '%', width: '5%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Porcentaje de ejecución: (Caja Total / Presupuesto Total Vigente) * 100' },
       ]
       this.cols = [

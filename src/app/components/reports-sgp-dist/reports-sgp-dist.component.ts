@@ -17,6 +17,7 @@ import { organizeCategoryData, processArrayData} from '../../utils/hierarchicalD
 import { sgpComparativaDistribucionPorEntidad } from '../../data/sgp-comparativa-distribucion-por-entidad';
 import { departamentos } from '../../data/departamentos';
 import { TreeTableModule } from 'primeng/treetable';
+import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 
 interface NodeEvent {
   originalEvent: Event;
@@ -36,7 +37,8 @@ interface NodeEvent {
     MatTooltipModule,
     ButtonModule,
     TreeTableModule,
-    Dialog
+    Dialog,
+    NumberFormatPipe
   ],
   templateUrl: './reports-sgp-dist.component.html',
   styleUrl: './reports-sgp-dist.component.scss',

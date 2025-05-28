@@ -46,15 +46,15 @@
           <div class="columns">
             <div class="col">
               <h3>Presupuesto SGP</h3>
-              <p>{{infoToResume.budget | currency}}</p>
+              <p>{{infoToResume.budget | numberFormat}}</p>
             </div>
             <div class="col">
               <h3>Recursos distribuidos hasta la fecha</h3>
-              <p>{{infoToResume.budgetDistributed | currency}}</p>
+              <p>{{infoToResume.budgetDistributed | numberFormat}}</p>
             </div>
             <div class="col">
               <h3>Recursos pendientes por distribuir</h3>
-              <p>{{infoToResume.pending | currency}}</p>
+              <p>{{infoToResume.pending | numberFormat}}</p>
             </div>
           </div>
         </mat-grid-tile>
@@ -67,7 +67,7 @@
               </ng-container>
               <ng-container matColumnDef="value">
                 <mat-header-cell class="value-title" *matHeaderCellDef> Total </mat-header-cell>
-                <mat-cell class="value-total" *matCellDef="let element"> {{element.value | currency}} </mat-cell>
+                <mat-cell class="value-total" *matCellDef="let element"> {{element.value | numberFormat}} </mat-cell>
               </ng-container>
               <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
               <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
@@ -91,15 +91,15 @@
         <div class="columns">
           <div class="col">
             <h3>Presupuesto SGP</h3>
-            <p>{{infoToResume.budget | currency}}</p>
+            <p>{{infoToResume.budget | numberFormat}}</p>
           </div>
           <div class="col">
             <h3>Recursos distribuidos hasta la fecha</h3>
-            <p>{{infoToResume.budgetDistributed | currency}}</p>
+            <p>{{infoToResume.budgetDistributed | numberFormat}}</p>
           </div>
           <div class="col">
             <h3>Recursos pendientes por distribuir</h3>
-            <p>{{infoToResume.pending | currency}}</p>
+            <p>{{infoToResume.pending | numberFormat}}</p>
           </div>
           <div class="col">
             <h3>Avance de distribución</h3>
@@ -124,7 +124,7 @@
                           <p-button *ngIf="data.detail.length > 0" type="button" pRipple [pRowToggler]="data" [text]="true" [rounded]="true" [plain]="true" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" />
                       </td>
                       <td>{{ data.desc }}</td>
-                      <td>{{ data.value | currency}}</td>
+                      <td>{{ data.value | numberFormat}}</td>
                     </tr>
                 </ng-template>
                 <ng-template #expandedrow let-data>
@@ -136,7 +136,7 @@
                                 <tr style="background-color: rgb(242, 245, 248);">
                                   <td style="width:10%"></td>
                                   <td style="width:52%">{{ detail.desc }}</td>
-                                  <td style="width:38%">{{ detail.value | currency}}</td>
+                                  <td style="width:38%">{{ detail.value | numberFormat}}</td>
                                 </tr>
                               </ng-template>
                             </p-table>
@@ -234,7 +234,7 @@
                       <p-button *ngIf="data.detail.length > 0" type="button" pRipple [pRowToggler]="data" [text]="true" [rounded]="true" [plain]="true" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" />
                   </td>
                   <td>{{ data.desc }}</td>
-                  <td>{{ data.value | currency}}</td>
+                  <td>{{ data.value | numberFormat}}</td>
                 </tr>
             </ng-template>
             <ng-template #expandedrow let-data>
@@ -245,7 +245,7 @@
                           <ng-template #body let-detail let-expanded="expanded">
                             <tr>
                               <td>{{ detail.desc }}</td>
-                              <td>{{ detail.value | currency}}</td>
+                              <td>{{ detail.value | numberFormat}}</td>
                             </tr>
                           </ng-template>
                         </p-table>

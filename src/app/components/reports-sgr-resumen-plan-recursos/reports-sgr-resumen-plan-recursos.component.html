@@ -81,7 +81,7 @@
                   </td>
                   <td class="text-right">
                     <div class="value-with-info">
-                      {{rowData[selectedYear] | currency}}
+                      {{rowData[selectedYear] | numberFormat}}
                       <i class="pi pi-info-circle info-icon"
                         *ngIf="hasPresupuestoInfo(rowData)"
                           (click)="showInfo($event, 'presupuesto', rowData)"></i>

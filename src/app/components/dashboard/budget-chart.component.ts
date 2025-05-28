@@ -174,12 +174,11 @@ export class BudgetChartComponent implements OnInit, OnChanges {
 
   // Función para formatear valores grandes en formato de moneda
   formatCurrency(value: number): string {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency',
-      currency: 'COP',
+    return (value * 1000000000).toLocaleString('es-CO', {
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(value * 1000000000); // Convertir de miles de millones a valor original
+      maximumFractionDigits: 0,
+      useGrouping: true
+    })
   }
 
   // Función para formatear números grandes de forma compacta (para ejes)

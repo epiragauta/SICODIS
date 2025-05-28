@@ -100,7 +100,7 @@
         </td>
         <td class="text-right">
           <div class="value-with-info">
-            {{rowData.presupuesto | currency}}
+            {{rowData.presupuesto | numberFormat}}
             <i class="pi pi-info-circle info-icon"
                *ngIf="hasPresupuestoInfo(rowData)"
                 (click)="showInfo($event, 'presupuesto', rowData)"></i>
@@ -108,7 +108,7 @@
         </td>
         <td class="text-right">
           <div class="value-with-info">
-            {{rowData.iac | currency}}
+            {{rowData.iac | numberFormat}}
             <i class="pi pi-info-circle info-icon"
                *ngIf="hasPresupuestoInfo(rowData)"
                 (click)="showInfo($event, 'presupuesto', rowData)"></i>

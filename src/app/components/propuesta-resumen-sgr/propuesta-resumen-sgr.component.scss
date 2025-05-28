@@ -85,15 +85,15 @@
 }
 
 .tree-table-container {
-  margin-bottom: 2rem;
-  padding: 5px;
+  margin-bottom: 1rem;
+  padding: 3px;
   overflow-x: auto; // Habilitar scroll horizontal para la tabla
   max-width: 100%;
-
+  font-size: 0.85vw;
   // Aplicar estilos para hacer que la tabla sea más compacta
   :host ::ng-deep {
     .p-treetable {
-      font-size: 14px;
+      font-size: 0.85vw;
       min-width: 100%;
 
       // Asegurar que las columnas tengan un ancho mínimo
@@ -206,8 +206,12 @@
           height: 2rem;
         }
       }
-    }
+    }    
   }
+}
+
+:host ::ng-deep .p-treetable.p-treetable-sm .p-treetable-tbody>tr>td {
+  padding: 0.1rem 0.2rem;
 }
 
 // Estilos para las columnas financieras
