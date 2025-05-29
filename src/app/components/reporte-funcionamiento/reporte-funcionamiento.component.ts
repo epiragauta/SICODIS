@@ -252,14 +252,14 @@ export class ReporteFuncionamientoComponent implements OnInit {
   }
 
   formatMillions(value: number): string {
-    return `$ ${new Intl.NumberFormat('es-CO', {
+    return `${new Intl.NumberFormat('es-CO', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     }).format(value)} mil M`;
   }
 
   formatBillions(value: number): string {
-    return `$ ${new Intl.NumberFormat('es-CO', {
+    return `${new Intl.NumberFormat('es-CO', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     }).format(value)} mil M`;

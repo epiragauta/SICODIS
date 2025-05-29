@@ -51,19 +51,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
           },
           {
             label: 'Ficha SGP, información Presupuestal',
-            command: () => this.redirectSGP()
+            // command: () => this.redirectSGP()
           },
           {
             label: 'Ficha comparativa de distribución SGP',
-            command: () => this.redirectUrl("reports-sgp-dist")
+            // command: () => this.redirectUrl("reports-sgp-dist")
           },
           {
             label: 'Distribución SGP para los Resguardos Indígenas',
-            command: () => this.redirectUrl("reports-sgp-budget")
+            // command: () => this.redirectUrl("reports-sgp-budget")
           },
           {
             label: 'Eficiencia Fiscal y Eficiencia Administrativa de la participación para Propósito general.',
-            command: () => this.redirectUrl("dashboard")
+            // command: () => this.redirectUrl("dashboard")
           },
           {
             label: 'Ficha para la proyección de los recursos del SGP – Vigencia 2024'
@@ -79,19 +79,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
           },
           {
             label: 'Consulta de los recursos de la Administración del SGR y el Sistema de Seguimiento Evaluación y Control',
-            command: () => this.redirectSGR()
+            // command: () => this.redirectSGR()
           },          
           {
             label: 'Plan Bienal de Caja',
-            command: () => this.redirectUrl("reports-sgr-bienal")
+            // command: () => this.redirectUrl("reports-sgr-bienal")
           },          
           {
             label: 'Plan de recursos',
-            command: () => this.redirectUrl("dashboard")
+            // command: () => this.redirectUrl("dashboard")
           },
           {
             label: 'Visor General de recursos AD hidrocarburos y minería',
-            command: () => this.redirectUrl("propuesta-resumen-sgr")
+            // command: () => this.redirectUrl("propuesta-resumen-sgr")
           }
         ]
       },
