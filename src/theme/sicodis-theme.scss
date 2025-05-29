@@ -15,7 +15,7 @@ $warn: mat.define-palette($warn-palette);
 
 // 4. Definir la configuración de tipografía (opcional, puedes personalizarla)
 $typography-config: mat.define-typography-config(
-  $font-family: '"Roboto", "Helvetica Neue", sans-serif',
+  $font-family: '"Work Sans", "Helvetica Neue", sans-serif',
   $headline-1: mat.define-typography-level(32px, 40px, 500),
   $headline-2: mat.define-typography-level(28px, 36px, 500),
   $headline-3: mat.define-typography-level(24px, 32px, 500),

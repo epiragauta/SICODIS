@@ -9,10 +9,10 @@
 }
 
 :root {
-  --md-font-family: "Montserrat", sans-serif;
+  --md-font-family: "Work Sans", sans-serif;
   --mat-sys-label-large-size: 0.75rem;
 }
 
 .p-component {
-  font-family: "Montserrat", sans-serif;
+  font-family: "Work Sans", sans-serif;
 }

@@ -192,7 +192,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
           labels: {
             usePointStyle: true,
             font: {
-              family: '"Montserrat", sans-serif',
+              family: '"Work Sans", sans-serif',
               size: 12
             }
           }
@@ -213,14 +213,14 @@ export class PresupuestoYRecaudoComponent implements OnInit {
             display: true,
             text: 'Billones de Pesos Colombianos (COP)',
             font: {
-              family: '"Montserrat", sans-serif',
+              family: '"Work Sans", sans-serif',
               size: 12,
               weight: 'bold'
             }
           },
           ticks: {
             font: {
-              family: '"Montserrat", sans-serif',
+              family: '"Work Sans", sans-serif',
               size: 11
             }
           }
@@ -229,7 +229,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
           stacked: true, // No apiladas
           ticks: {
             font: {
-              family: '"Montserrat", sans-serif',
+              family: '"Work Sans", sans-serif',
               size: 11
             }
           }

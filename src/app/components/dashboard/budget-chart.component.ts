@@ -77,7 +77,7 @@ export class BudgetChartComponent implements OnInit, OnChanges {
             usePointStyle: true,
             font: {
               size: 9,
-              family: 'Roboto, Helvetica',
+              family: 'Work Sans, Helvetica',
             }
           }
         },
