@@ -146,11 +146,11 @@
                             <p-button *ngIf="data.x.length > 0" type="button" pRipple [pRowToggler]="data" [text]="true" [rounded]="true" [plain]="true" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" />
                           </td>
                           <td>{{ data.a }}</td>
-                          <td>{{ data.b.y }}</td>
-                          <td>{{ data.c.y }}</td>
-                          <td>{{ data.d.y }}</td>
-                          <td>{{ data.e.y }}</td>
-                          <td>{{ data.f.y }}</td>
+                          <td>{{ data.b.y | numberFormat}}</td>
+                          <td>{{ data.c.y | numberFormat}}</td>
+                          <td>{{ data.d.y | numberFormat}}</td>
+                          <td>{{ data.e.y | numberFormat}}</td>
+                          <td>{{ data.f.y | numberFormat}}</td>
                       </tr>
                   </ng-template>
                   <ng-template #expandedrow let-data>
@@ -161,11 +161,11 @@
                                 <ng-template #body let-detail let-expanded="expanded">
                                   <tr style="background-color: rgb(242, 245, 248);">
                                     <td style="width:28.2%">{{ detail.a }}</td>
-                                    <td style="width:14.5%">{{ detail.b.y }}</td>
-                                    <td style="width:14.5%">{{ detail.c.y }}</td>
-                                    <td style="width:14.6%">{{ detail.d.y }}</td>
-                                    <td style="width:14.6%">{{ detail.e.y }}</td>
-                                    <td style="width:14.6%">{{ detail.f.y }}</td>
+                                    <td style="width:14.5%">{{ detail.b.y | numberFormat}}</td>
+                                    <td style="width:14.5%">{{ detail.c.y | numberFormat}}</td>
+                                    <td style="width:14.6%">{{ detail.d.y | numberFormat}}</td>
+                                    <td style="width:14.6%">{{ detail.e.y | numberFormat}}</td>
+                                    <td style="width:14.6%">{{ detail.f.y | numberFormat}}</td>
                                   </tr>
                                 </ng-template>
                               </p-table>
