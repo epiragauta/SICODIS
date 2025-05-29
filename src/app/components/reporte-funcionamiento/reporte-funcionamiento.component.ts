@@ -180,8 +180,9 @@ export class ReporteFuncionamientoComponent implements OnInit {
     this.horizontalBarOptions = {
       indexAxis: 'y',
       maintainAspectRatio: false,
-      aspectRatio: 1.25,
+      aspectRatio: 1.5,
       responsive: true,
+      barPercentage: 0.4,
       plugins: {
         legend: {
           labels: {
