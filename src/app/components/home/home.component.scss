@@ -264,6 +264,53 @@
   padding: 2px;
 }
 
+.info-section-columns {
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.info-title-columns {
+  color: #004583;
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 2rem; /* Increased margin for better separation */
+}
+
+.info-card-columns {
+  background-color: #ffffff; /* White background for cards */
+  padding: 1.5rem;
+  border-radius: 12px; /* Slightly more rounded corners */
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Softer shadow */
+  text-align: left; /* Align text to the left within cards */
+  height: 100%; /* Make cards in a row equal height */
+  display: flex;
+  flex-direction: column;
+}
+
+.info-card-columns h2 {
+  color: #0051a3;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 1rem; /* Increased margin */
+}
+
+.info-card-columns p {
+  line-height: 1.7; /* Slightly increased line height for readability */
+  color: #343a40;
+  flex-grow: 1; /* Allow p to take available space */
+}
+
+/* Responsive adjustments for the three-column layout */
+@media screen and (max-width: 959px) { /* Adjust breakpoint as needed */
+  .info-section-columns .grid-container mat-grid-list {
+    grid-template-columns: repeat(1, 1fr) !important; /* Stack columns on smaller screens */
+  }
+  .info-section-columns .mat-grid-tile {
+    margin-bottom: 16px; /* Add space between stacked cards */
+  }
+}
+
 
 // home.component.scss
 .container {

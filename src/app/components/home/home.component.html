@@ -43,7 +43,7 @@
                         <ng-template pTemplate="footer">
                             <div class="flex gap-4 mt-1 sicodis-card">
                                 <p-button severity="contrast" [rounded]="true" label="Ver todos los reportes del SGR" (click)="redirectSGR()"
-                                class="w-full" styleClass="w-full" />
+                                class="w-full custom-button" styleClass="w-full" />
                             </div>
                         </ng-template>
                     </p-card>
@@ -79,7 +79,7 @@
                       </div>
                         <ng-template pTemplate="footer">
                             <div class="flex gap-4 mt-1 sicodis-card">
-                                <p-button class="button" severity="contrast" [rounded]="true" label="Ver todos los reportes del SGP" (click)="redirectSGP()"
+                                <p-button class="button custom-button" severity="contrast" [rounded]="true" label="Ver todos los reportes del SGP" (click)="redirectSGP()"
                                 class="w-full" styleClass="w-full" />
                             </div>
                         </ng-template>
@@ -139,12 +139,38 @@
         </ul>
       </div>
       <div>
-        <p-button severity="secondary" [rounded]="true" [raised]="true">
+        <p-button severity="secondary" [rounded]="true" [raised]="true" styleClass="custom-button">
           Ir a preguntas frecuentes
         </p-button>
       </div>
     </div>
 
     <p-divider />    
+
+    <div class="info-section-columns">
+      <h1 class="info-title-columns">Información Adicional</h1>
+      <div class="grid-container">
+        <mat-grid-list cols="3" rowHeight="fit" style="height: auto" gutterSize="16px">
+          <mat-grid-tile>
+            <div class="info-card-columns">
+              <h2>SICODIS</h2>
+              <p>El Sistema de Información y Consulta de Distribuciones (SICODIS) es una plataforma en la cual los colombianos pueden consultar toda la información agregada y detallada, sobre las distribuciones de los recursos del Sistema General de Participaciones (SGP) y el Sistema General de Regalías (SGR) realizadas por el Departamento Nacional de Planeación (DNP).</p>
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile>
+            <div class="info-card-columns">
+              <h2>SGP</h2>
+              <p>El Sistema General de Participaciones es el conjunto de recursos que la Nación transfiere a las entidades territoriales (departamentos, distritos y municipios) para la financiación tanto de los servicios a su cargo, como para cumplir con las competencias asignadas por la Ley 715 de 2001, la Ley 1122 de 2007 y la Ley 1176 de 2007, en especial en educación, salud y agua potable y saneamiento básico. También, se transfiere una parte de estos recursos a los resguardos indígenas, siempre y cuando no se hayan constituido en entidad territorial indígena.</p>
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile>
+            <div class="info-card-columns">
+              <h2>SGR</h2>
+              <p>En cumplimiento de la función asignada al Departamento Nacional de Planeación, en virtud del numeral 5 del artículo 9 de la Ley 2056 de 2020, la Subdirección de Distribución de Recursos Territoriales (SDRT)-DPIP-DNP, atendiendo la competencia asignada en los numerales 4, 7 y 8 del artículo 62 del Decreto 1893 de 2021, publica en Sicodis la distribución de los recursos del Sistema General de Regalías (SGR), entre asignaciones, beneficiarios y conceptos de gasto para cada bienio desde el año 2012. Igualmente publica el presupuesto bienal, el plan de recursos, el recaudo, el plan bienal de caja y las variables utilizadas para la distribución de estos recursos.</p>
+            </div>
+          </mat-grid-tile>
+        </mat-grid-list>
+      </div>
+    </div>
 
 </div>
