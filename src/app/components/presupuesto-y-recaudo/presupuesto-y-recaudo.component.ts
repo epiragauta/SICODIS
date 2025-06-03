@@ -20,13 +20,13 @@ import { territorialEntities } from '../../data/territorial-entities';
 import { map } from 'rxjs/operators';
 import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
-import { SicodisService, FetchBasedService, ProxyAwareSicodisService } from '../../services/sicodis.service';
-import { SicodisImprovedService } from '../../services/sicodis-improved.service';
-import { SicodisApiFixedService } from '../../services/sicodis-api-fixed.service';
-import { SicodisFinalService } from '../../services/sicodis-final.service';
+// import { SicodisService, FetchBasedService, ProxyAwareSicodisService } from '../../services/sicodis.service';
+// import { SicodisImprovedService } from '../../services/sicodis-improved.service';
+// import { SicodisApiFixedService } from '../../services/sicodis-api-fixed.service';
+// import { SicodisFinalService } from '../../services/sicodis-final.service';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { TooltipModule } from 'primeng/tooltip';
-import { getRandomValues } from 'crypto';
+
 
 interface FinancialData {
   presupuesto_total_vigente: number;
@@ -155,11 +155,11 @@ export class PresupuestoYRecaudoComponent implements OnInit {
   selectedDetailEntity: any;
 
   constructor(private breakpointObserver: BreakpointObserver,
-              private sicodisFinalService: SicodisFinalService,
-              private sicodisApiFixedService: SicodisApiFixedService,
-              private sicodisImprovedService: SicodisImprovedService,
-              private sicodisService: SicodisService,
-              private fetchBasedService: FetchBasedService,
+              // private sicodisFinalService: SicodisFinalService,
+              // private sicodisApiFixedService: SicodisApiFixedService,
+              // private sicodisImprovedService: SicodisImprovedService,
+              // private sicodisService: SicodisService,
+              // private fetchBasedService: FetchBasedService,
               private http: HttpClient
   ) {
     
@@ -581,14 +581,14 @@ export class PresupuestoYRecaudoComponent implements OnInit {
       return (numValue * 100).toFixed(2) + '%';
     }
 
-  async testDiagnostic() {
-    const service = new ProxyAwareSicodisService(this.http);
-    await service.diagnosticProxy();
-  }
+  // async testDiagnostic() {
+  //   const service = new ProxyAwareSicodisService(this.http);
+  //   await service.diagnosticProxy();
+  // }
 
-  async testImproved() {
-    const service = new SicodisFinalService(this.http);
-    const result = await service.getVigenciasComplete();
-    console.log('Resultado final:', result);
-  }
+  // async testImproved() {
+  //   const service = new SicodisFinalService(this.http);
+  //   const result = await service.getVigenciasComplete();
+  //   console.log('Resultado final:', result);
+  // }
 }
