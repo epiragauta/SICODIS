@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+//import { HttpClient } from '@angular/common/http';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { CardModule } from 'primeng/card';
@@ -160,7 +160,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
               // private sicodisImprovedService: SicodisImprovedService,
               // private sicodisService: SicodisService,
               // private fetchBasedService: FetchBasedService,
-              private http: HttpClient
+              // private http: HttpClient
   ) {
     
     this.breakpointObserver.observe([
