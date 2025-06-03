@@ -1,8 +1,8 @@
 <div class="sicodis-container">
-  
+  <app-info-popup [infoText]="infoPopupContent" contentTitle="Información Detallada del Reporte"></app-info-popup>
   <!-- Sección principal con dos columnas -->
   <div class="main-content">
-    <mat-grid-list [cols]="cols" rowHeight="500px" gutterSize="16">
+    <mat-grid-list [cols]="cardCols" rowHeight="500px" gutterSize="16">
       
       <!-- Columna izquierda: Tarjetas financieras -->
       <mat-grid-tile>
@@ -24,7 +24,7 @@
             
             <mat-grid-tile>
               <div class="financial-card">
-                <h4 class="card-title">Caja Total</h4>
+                <h4 class="card-title">Recaudo Total</h4>
                 <div class="card-value">
                   {{ formatCurrency(financialData.caja_total) }}
                 </div>
@@ -43,7 +43,7 @@
             
             <mat-grid-tile>
               <div class="financial-card">
-                <h4 class="card-title">Caja Corriente Informada</h4>
+                <h4 class="card-title">Recaudo Corriente Informado</h4>
                 <div class="card-value">
                   {{ formatCurrency(financialData.caja_corriente_informada) }}
                 </div>
@@ -62,7 +62,7 @@
             
             <mat-grid-tile>
               <div class="financial-card">
-                <h4 class="card-title">Caja Total</h4>
+                <h4 class="card-title">Recaudo Total</h4>
                 <div class="card-value">
                   {{ formatCurrency(financialData.caja_total) }}
                 </div>
@@ -79,7 +79,7 @@
       <!-- Columna derecha: Gráfico de barras horizontales -->
       <mat-grid-tile>
         <div class="chart-section">
-          <h2 class="section-title">Comparativo Presupuesto vs Caja</h2>
+          <h2 class="section-title">Comparativo Presupuesto vs Recaudo</h2>
           <div class="chart-container">
             <p-chart 
               type="bar" 
@@ -99,108 +99,157 @@
 
   <!-- Sección de tabla con filtros -->
   <div class="table-section">
-    <p-treetable 
-      [value]="treeTableData"
-      [columns]="treeTableCols"
-      [paginator]="true"
-      [rows]="20"
-      [scrollable]="true"
-      scrollHeight="450px"
-      selectionMode="single"
-      [(selection)]="selectedNode"
-      styleClass="p-treetable-sm"
-      [resizableColumns]="true"
-      columnResizeMode="expand">
+    <p-treetable [value]="data"
+                        [columns]="cols"
+                        [paginator]="true"
+                        showGridlines
+                        [rows]="20"
+                        [scrollable]="true"
+                        scrollHeight="510spx"
+                        selectionMode="single"
+                        [(selection)]="selectedNode"
+                        styleClass="p-treetable-sm"
+                        [resizableColumns]="true"
+                        columnResizeMode="expand">
 
-      <ng-template pTemplate="caption">
-        <div class="table-header">
-          <h2 class="reports-title">Detalle Presupuesto y Recaudo</h2>
-          <div class="filter-section">
-            
-            <div class="p-field vigencia-select">
-              <p-floatlabel class="w-full md:w-56" variant="on">
-                <p-select 
-                  id="vigencia" 
-                  [options]="vigencia" 
-                  inputId="vigenciaSelect" 
-                  [(ngModel)]="selectedVigencia"
-                  optionLabel="label" 
-                  [showClear]="false" 
-                  placeholder="Seleccione Vigencia">
-                </p-select>
-                <label for="vigenciaSelect">Vigencia</label>
-              </p-floatlabel>
-            </div>
+            <ng-template pTemplate="caption">
+              <div class="caption-container">
+                <h2 class="reports-title">Propuesta Resumen SGR</h2>
+                <div class="options-years">
 
-            <div class="p-field">
-              <button 
-                pButton 
-                type="button"
-                icon="pi pi-refresh"
-                label="Consultar"
-                class="p-button-primary"
-                (click)="queryData()">
-              </button>
-            </div>
+                  <div class="p-field vigencia-select">
+                    <p-floatlabel class="w-full md:w-56" variant="on">
+                      <p-select id="vigencia" [options]="vigencia" inputId="vigenciaSelect" [(ngModel)]="selectedVigencia"
+                      optionLabel="label" [showClear]="false" placeholder="Seleccione Vigencia"></p-select>
+                      <label for="vigenciaSelect">Vigencia</label>
+                    </p-floatlabel>
+                  </div>
 
-            <div class="p-field">
-              <p-splitButton 
-                label="Exportar"
-                icon="pi pi-download"
-                class="p-button-primary"
-                (onClick)="exportData('excel')"
-                [model]="menuItems">
-              </p-splitButton>
-            </div>
-            
-          </div>
-        </div>
-      </ng-template>
+                  <div class="p-field search-type-select">
+                    <p-floatlabel class="w-full md:w-56" variant="on">
+                      <p-select id="searchType" inputId="searchType" [options]="searchTypes" [(ngModel)]="selectedSearchType" fluid="true"
+                      placeholder="Seleccione Por" optionLabel="label" [showClear]="false" (onChange)="updateSelectedSearchType($event)"></p-select>
+                      <label for="searchType">Buscar por</label>
+                    </p-floatlabel>
+                  </div>
 
-      <ng-template pTemplate="colgroup" let-columns>
-        <colgroup>
-          <col *ngFor="let col of columns" [style.width]="col.field === 'concepto' ? '30%' : '17.5%'">
-        </colgroup>
-      </ng-template>
+                  <div *ngIf="selectedSearchType.id == 2" class="p-field dpto-select">
+                    <p-floatlabel class="w-full md:w-56" variant="on">
+                      <p-select id="dpto" inputId="dptoSelect" [options]="dptos" [(ngModel)]="selectedDpto" optionLabel="nombre" fluid="true"
+                      placeholder="Seleccionar departamento" [showClear]="false" (onChange)="updateSelectedDpto($event)"></p-select>
+                      <label for="dptoSelect">Seleccionar departamento</label>
+                    </p-floatlabel>
+                  </div>
 
-      <ng-template pTemplate="header" let-columns>
-        <tr>
-          <th *ngFor="let col of columns" class="text-center">
-            {{ col.header }}
-          </th>
-        </tr>
-      </ng-template>
+                  <div *ngIf="selectedSearchType.id == 3 || selectedSearchType.id == -1" class="p-field entity-select">
+                    <p-floatlabel class="w-full md:w-56" variant="on">
+                      <p-select id="entity" inputId="entitySelect" [options]="entities" [(ngModel)]="selectedEntity" fluid="true"
+                      placeholder="Seleccionar entidad" optionLabel="dpto" [showClear]="false" (onChange)="updateSelectedEntity($event)"></p-select>
+                      <label for="entitySelect">Seleccionar entidad</label>
+                    </p-floatlabel>
+                  </div>
 
-      <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
-        <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode">
-          
-          <td>
-            <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-            <span [ngClass]="{'font-bold': !rowNode.parent || (rowNode.parent && !rowNode.parent.parent)}">
-              {{ rowData.concepto }}
-            </span>
-          </td>
-          
-          <td class="text-right">
-            {{ rowData.presupuesto_total_vigente | numberFormat  }}
-          </td>
-          
-          <td class="text-right">
-            {{ rowData.caja_total | numberFormat  }}
-          </td>
-          
-          <td class="text-right">
-            {{ rowData.presupuesto_corriente | numberFormat  }}
-          </td>
-          
-          <td class="text-right">
-            {{ rowData.caja_corriente_informada | numberFormat  }}
-          </td>
-          
-        </tr>
-      </ng-template>
+                  <div class="p-field detail-entity-select">
+                    <p-floatlabel class="w-full md:w-56" variant="on">
+                      <p-select id="detailEntity" inputId="detailEntitySelect" [options]="detailEntitiesFiltered" fluid="true"
+                      placeholder="Seleccione detalle" [(ngModel)]="selectedDetailEntity" optionLabel="entidad" [showClear]="false"></p-select>
+                    </p-floatlabel>
+                  </div>
 
-    </p-treetable>
+                  <div class="p-field">
+                    <button pButton type="button"
+                        label="Consultar"
+                        class="p-button-primary"
+                        (click)="queryData()">
+                    </button>
+                  </div>
+
+                  <div class="p-field">
+                    <p-splitButton label="Exportar"
+                        class="p-button-primary"
+                        (onClick)="exportData('excel')"
+                        [model]="menuItems">
+                    </p-splitButton>
+                  </div>
+
+                  <div class="p-field clear-filters">
+                    <button pButton type="button"
+                        icon="pi pi-eraser"
+                        label="Limpiar filtros"
+                        class="p-button-secondary"
+                        (click)="clearFilters()">
+                    </button>
+                  </div>
+                </div>
+                <p class="instruction-text">
+                    Haga clic en el encabezado "Presupuesto Otros" para ver el detalle de las fuentes
+                  </p>
+              </div>
+            </ng-template>
+
+            <ng-template pTemplate="colgroup" let-columns>
+              <colgroup>
+                <col *ngFor="let col of columns" [style.width]="col.width">
+              </colgroup>
+            </ng-template>
+
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th *ngFor="let col of columns"
+                    [ngStyle]="{'width': col.width, 'backgroundColor': col.color}"
+                    [ngClass]="[col.field === 'presupuesto_otros' ? 'expandable-column' : '',
+                                col.class ? col.class : '']"
+                    (click)="col.field === 'presupuesto_otros' ? toggleColumns() : null"
+                    [pTooltip]="col.tooltip" tooltipPosition="top">
+                  {{col.header}}
+                  <span *ngIf="col.field === 'presupuesto_otros'" class="toggle-icon" 
+                      style="border-radius: 3px;background-color: #566cbb;padding-left: 3px;padding-right: 3px;color: #fff;">
+                    {{isExpanded ? '(-)' : '(+)'}}
+                  </span>
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+                <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode">
+                  <td *ngFor="let col of cols">
+                    <p-treeTableToggler [rowNode]="rowNode" *ngIf="col.field === 'concepto'"></p-treeTableToggler>
+                    <ng-container [ngSwitch]="col.field">
+                      <ng-container *ngSwitchCase="'concepto'">
+                        <span [ngClass]="{'font-bold': rowNode.level <= 1,
+                                          'expandable-column': col.field === 'presupuesto_otros',
+                                          'col-style': col.field === 'presupuesto_otros' && col.class}">
+                          {{rowData.concepto}}
+                        </span>
+                      </ng-container>
+
+                      <ng-container *ngSwitchCase="'porcentaje_1'">
+                        <div [ngClass]="{'font-bold': rowNode.level <= 1}">
+                          {{formatPercentage(rowData[col.field])}}
+                        </div>
+
+                      </ng-container>
+
+                      <ng-container *ngSwitchCase="'porcentaje_2'">
+                        <div [ngClass]="{'font-bold': rowNode.level <= 1}">
+                          {{formatPercentage(rowData[col.field])}}
+                        </div>
+                      </ng-container>
+
+                      <ng-container *ngSwitchDefault>
+                        <div [ngClass]="{'font-bold': rowNode.level <= 1, 'col-style': col.field === 'presupuesto_otros' && col.class}" class="text-right"
+                            *ngIf="rowData[col.field] !== null && rowData[col.field] !== undefined">
+                          {{rowData[col.field] | numberFormat}} 
+                        </div>
+                        <div class="text-right no-data" *ngIf="rowData[col.field] === null || rowData[col.field] === undefined">
+                          -
+                        </div>
+                      </ng-container>
+                    </ng-container>
+                  </td>
+                </tr>
+              </ng-template>
+
+          </p-treetable>
   </div>
 
 </div>

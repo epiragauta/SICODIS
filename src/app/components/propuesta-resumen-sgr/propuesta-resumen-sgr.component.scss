@@ -24,7 +24,7 @@
     // Target direct children divs (which should have .p-field class)
     & > .p-field {
       flex: 0 0 auto; // Don't grow or shrink, base size on content or fixed width
-      width: 240px; // Default fixed width for most filter dropdowns
+      width: 235px; // Default fixed width for most filter dropdowns
 
       // Last two .p-field elements (buttons: Consultar, Exportar)
       // Assuming they are indeed the last two direct children with .p-field

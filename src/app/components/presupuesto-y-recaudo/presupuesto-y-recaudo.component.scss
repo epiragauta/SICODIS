@@ -168,16 +168,40 @@
         min-width: 200px;
 
         &.vigencia-select {
-          min-width: 240px;
+          min-width: 225px;
         }
       }
     }
   }
 }
 
+.expandable-column {
+    cursor: pointer !important;
+    position: relative;
+    background-color: #E6EFFD !important;
+}
+
+.col-expanded {
+  background-color: #F6F8F9 !important;
+  font-size: 11px !important;
+}
+
+clear-filters{
+    position: absolute;
+    right: 1px;
+}
+
 // Estilos para la tabla
 :host ::ng-deep {
+
+  .p-select {
+    width: 195px;
+  }
   .p-treetable {
+
+    .p-treetable-header {
+      background: #fff;
+    }
     .p-treetable-thead > tr > th {
       background-color: #f8fafc;
       color: #374151;
@@ -218,32 +242,15 @@
 
   .p-button {
     font-family: "Work Sans", sans-serif;
-    font-weight: 600;
+    font-weight: normal;
     border-radius: 8px;
-    padding: 0.5rem 1rem;
-
-    &.p-button-primary {
-      background-color: #004583;
-      border-color: #004583;
-
-      &:hover {
-        background-color: #003366;
-        border-color: #003366;
-      }
-    }
-  }
-
-  .p-splitbutton {
-    .p-button {
-      font-family: "Work Sans", sans-serif;
-    }
+    padding: 0.5rem 0.5rem;    
   }
 
   .p-select {
-    font-family: "Work Sans", sans-serif;
-    
     .p-select-label {
       font-size: 0.875rem;
+      font-weight: normal;
     }
   }
 
@@ -253,6 +260,59 @@
       font-size: 0.875rem;
       color: #6b7280;
     }
+  }
+}
+
+// Styles for the filter/options bar integrated from comparativo-iac-vs-presupuesto
+.options-years {
+  display: flex; // Start with flex display for mobile, will be overridden by media query
+  flex-direction: column; // Stack items vertically on mobile
+  gap: 9px; // Consistent gap for mobile
+  margin-bottom: 1rem; // Space below the filter bar
+  width: 100%; // Ensure it takes full width within caption-container
+
+  @media (min-width: 768px) { // Styles for medium screens and up
+    flex-direction: row; // Arrange items in a row
+    flex-wrap: wrap; // Allow wrapping
+    align-items: flex-start; // Align items to the start of the cross axis
+
+    // Target direct children divs (which should have .p-field class)
+    & > .p-field {
+      flex: 0 0 auto; // Don't grow or shrink, base size on content or fixed width
+      // width: 230px; // Default fixed width for most filter dropdowns
+
+      // Last two .p-field elements (buttons: Consultar, Exportar)
+      // Assuming they are indeed the last two direct children with .p-field
+      &:nth-last-child(-n+1):not(:first-child) { // Ensure not also the first child if few items
+        align-self: flex-end; // Align buttons to the bottom of the flex line if items wrap
+                               // or to the baseline if single line.
+        margin-top: 1px;      // Minor alignment tweak, might need adjustment
+        width: auto;          // Let buttons size to their content (label + icon)
+        position: absolute;
+        right: 1px;
+      }
+    }
+  }
+}
+
+.caption-container {
+  display: flex;
+  flex-direction: column; // Stack title, options-years, and instruction-text vertically
+  align-items: flex-start; // Align items to the left
+  padding-bottom: 10px; // Keep padding
+
+  .reports-title {
+    font-size: 1.5em; // Keep existing font size
+    font-weight: bold; // Keep existing font weight
+    margin-bottom: 1rem; // Add space after the title, before options-years
+  }
+
+  // .instruction-text styling can remain as it was if not specified here,
+  // or be ensured:
+  .instruction-text {
+      font-size: 0.9em;
+      color: #555;
+      font-weight: normal;      
   }
 }
 
