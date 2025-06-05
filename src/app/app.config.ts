@@ -18,6 +18,7 @@ import Aura from '@primeng/themes/aura';
 import Lara from '@primeng/themes/lara';
 import Material from '@primeng/themes/material';
 import { definePreset } from '@primeng/themes';
+import { provideHttpClient } from '@angular/common/http';
 
 const MyPreset = definePreset(Lara, {
   semantic: {
@@ -45,6 +46,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     importProvidersFrom(MatSlideToggleModule, BrowserAnimationsModule),
     provideAnimationsAsync(),
+    provideHttpClient(),
     providePrimeNG({
         theme: {
             preset: MyPreset,
