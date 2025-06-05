@@ -18,9 +18,11 @@ import { HighchartsDashboardComponent } from './components/highcharts-dashboard/
 import { PresupuestoYRecaudoComponent } from './components/presupuesto-y-recaudo/presupuesto-y-recaudo.component';
 import { GraphicsSgpComponent } from './components/graphics-sgp/graphics-sgp.component';
 import { ReporteFuncionamientoComponent } from './components/reporte-funcionamiento/reporte-funcionamiento.component';
+import { InicioSgpComponent } from './components/inicio-sgp/inicio-sgp.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
+    { path: 'inicio-sgp', component: InicioSgpComponent },
     { path: 'reports-sgr', component: ReportsSgrComponent },
     { path: 'reports-sgp', component: ReportsSgpComponent },
     { path: 'reports-sgp-dist', component: ReportsSgpDistComponent },
