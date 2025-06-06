@@ -40,29 +40,9 @@
     </div>
   </div>
 
-  <!-- Botones horizontales -->
-  <div class="buttons-panel">
-    <p-button 
-      label="Administración - SSEC" 
-      icon="pi pi-cog"
-      class="action-button"
-      (click)="onAdministracionClick()">
-    </p-button>
-    <p-button 
-      label="Comisión Rectora" 
-      icon="pi pi-users"
-      class="action-button"      
-      (click)="onComisionRectoraClick()">
-    </p-button>
+  <div>
+    <p class="date-update">Fecha de actualización: Mayo 30 de 2025</p>
   </div>
-
-  <!-- Párrafo con notas -->
-  <div class="notes-section">
-    <p class="note-text">* Los valores presentados corresponden al último corte disponible del sistema</p>
-    <p class="note-text">* Las cifras están expresadas en millones y billones de pesos colombianos</p>
-    <p class="note-text">* La información se actualiza de forma periódica según disponibilidad de datos</p>
-  </div>
-
   <!-- Panel principal con dos columnas -->
   <div class="main-panel">
     <!-- Columna izquierda (60%) - Tarjetas -->
@@ -183,12 +163,34 @@
     </div>
   </div>
 
+  <div class="panel-avance-recaudo">
+    <mat-card class="info-card">
+        <mat-card-header>
+          <mat-card-title class="card-title">Avance del recaudo de ingresos corrientes</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="metrics-row">
+            <div class="metric-item">
+              <div class="metric-value">{{formatMillions(presupuestoData.presupuestoAsignado)}}</div>
+              <div class="metric-label">Presupuesto corriente</div>
+            </div>
+          </div>
+          <div class="metrics-row">
+            <div class="metric-item">
+              <div class="metric-value-2">17,7%</div>
+              <div class="metric-label">Avance</div>
+            </div>            
+          </div>
+        </mat-card-content>
+      </mat-card>
+  </div>
+
   <!-- Botones de acción -->
   <div class="action-buttons">
     <p-button 
       label="Detalle Gestión Financiera" 
       icon="pi pi-chart-line"
-      class="detail-button"
+      class="detail-button"      
       (click)="onDetalleGestionClick()">
     </p-button>
     <p-button 

@@ -78,7 +78,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
             command: () => this.redirectUrl("comparativo-iac-presupuesto")
           },
           {
-            label: 'Consulta de los recursos de la Administración del SGR y el Sistema de Seguimiento Evaluación y Control',
+            label: 'Recursos de la Administración del SGR y del Sistema de Seguimiento Evaluación y Control',
             // command: () => this.redirectSGR()
           },          
           {
