@@ -13,11 +13,11 @@
  * @param {Array} data - El conjunto de datos del SGR
  * @returns {Array} - Lista de fuentes únicas
  */
-function getFuentes(data) {
+function getFuentes(data: any) {
   // Usando Set para eliminar duplicados
   const fuentesSet = new Set();
   
-  data.forEach(item => {
+  data.forEach((item: any) => {
     if (item.fuente) {
       fuentesSet.add(item.fuente);
     }
@@ -33,14 +33,14 @@ function getFuentes(data) {
  * @param {String} fuente - La fuente seleccionada
  * @returns {Array} - Lista de conceptos únicos para la fuente dada
  */
-function getConceptosByFuente(data, fuente) {
+function getConceptosByFuente(data: any, fuente: string) {
   // Filtrar los registros por la fuente seleccionada
-  const registrosFiltrados = data.filter(item => item.fuente === fuente);
+  const registrosFiltrados = data.filter((item: any) => item.fuente === fuente);
   
   // Extraer conceptos únicos usando Set
   const conceptosSet = new Set();
   
-  registrosFiltrados.forEach(item => {
+  registrosFiltrados.forEach((item: any) => {
     if (item.concepto) {
       conceptosSet.add(item.concepto);
     }
@@ -57,16 +57,16 @@ function getConceptosByFuente(data, fuente) {
  * @param {String} concepto - El concepto seleccionado
  * @returns {Array} - Lista de beneficiarios únicos para la fuente y concepto dados
  */
-function getBeneficiariosByFuenteAndConcepto(data, fuente, concepto) {
+function getBeneficiariosByFuenteAndConcepto(data : any, fuente: string, concepto: string) {
   // Filtrar los registros por la fuente y concepto seleccionados
-  const registrosFiltrados = data.filter(item => 
+  const registrosFiltrados = data.filter((item: any) => 
     item.fuente === fuente && item.concepto === concepto
   );
   
   // Extraer beneficiarios únicos usando Set
   const beneficiariosSet = new Set();
   
-  registrosFiltrados.forEach(item => {
+  registrosFiltrados.forEach((item: any) => {
     if (item.beneficiario) {
       beneficiariosSet.add(item.beneficiario);
     }
@@ -84,9 +84,9 @@ function getBeneficiariosByFuenteAndConcepto(data, fuente, concepto) {
  * @param {String} beneficiario - El beneficiario seleccionado
  * @returns {Object|null} - El registro completo o null si no se encuentra
  */
-function getRegistroByFuenteConceptoBeneficiario(data, fuente, concepto, beneficiario) {
+function getRegistroByFuenteConceptoBeneficiario(data: any, fuente: string, concepto: string, beneficiario: string) {
   // Buscar el registro que coincide con los criterios
-  return data.find(item => 
+  return data.find((item: any) => 
     item.fuente === fuente && 
     item.concepto === concepto && 
     item.beneficiario === beneficiario
@@ -94,7 +94,7 @@ function getRegistroByFuenteConceptoBeneficiario(data, fuente, concepto, benefic
 }
 
 // Función auxiliar para formatear los valores monetarios
-function formatearValorMonetario(valor) {
+function formatearValorMonetario(valor: any) {
   // Verificar si el valor es numérico o una cadena
   let numero;
   if (typeof valor === 'string') {
@@ -119,7 +119,7 @@ function formatearValorMonetario(valor) {
 }
 
 // Función para generar un resumen de ejecución presupuestal
-function getResumenEjecucion(registro) {
+function getResumenEjecucion(registro: any) {
   if (!registro) return null;
   
   // Extraer valores numéricos (eliminando puntos de miles y reemplazando comas por puntos en decimales)
