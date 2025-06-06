@@ -22,6 +22,124 @@
         min-width: 200px;
       }
     }
+
+    // Indicador de estado de selección
+    .selection-status {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #dee2e6;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+
+      .status-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+
+        .status-number {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          font-size: 0.75rem;
+          font-weight: bold;
+        }
+
+        .status-text {
+          font-weight: 500;
+        }
+
+        // Estados
+        &.completed {
+          background-color: #d4edda;
+          color: #155724;
+          border: 1px solid #c3e6cb;
+
+          .status-number {
+            background-color: #28a745;
+            color: white;
+          }
+        }
+
+        &.active {
+          background-color: #fff3cd;
+          color: #856404;
+          border: 1px solid #ffeaa7;
+
+          .status-number {
+            background-color: #ffc107;
+            color: #212529;
+          }
+        }
+
+        &.disabled {
+          background-color: #f8f9fa;
+          color: #6c757d;
+          border: 1px solid #dee2e6;
+
+          .status-number {
+            background-color: #6c757d;
+            color: white;
+          }
+        }
+      }
+
+      @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+  }
+
+  // Mensaje cuando no hay datos
+  .no-data-message {
+    margin-bottom: 2rem;
+
+    .no-data-content {
+      text-align: center;
+      padding: 2rem;
+      color: #6c757d;
+
+      .no-data-icon {
+        font-size: 3rem;
+        height: 3rem;
+        width: 3rem;
+        color: #3366cc;
+        margin-bottom: 1rem;
+      }
+
+      h3 {
+        color: #495057;
+        margin-bottom: 0.5rem;
+        font-size: 1.25rem;
+      }
+
+      p {
+        margin: 0;
+        font-size: 0.95rem;
+        line-height: 1.5;
+      }
+    }
+  }
+  .registro-info {
+    background-color: #e7f3ff;
+    border-radius: 6px;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid #3366cc;
+
+    p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: #004583;
+    }
   }
 
   .date-update {
@@ -202,6 +320,30 @@
       }
     }
 
+  // Detalle del registro seleccionado
+  .registro-detalle {
+    margin-bottom: 2rem;
+    
+    .detail-grid {
+      display: inline-flex;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      
+      .detail-item {
+        padding: 0.5rem;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        
+        strong {
+          color: #004583;
+          display: block;
+          margin-bottom: 0.25rem;
+        }
+      }
+    }
+  }
+
   // Botones de acción
   .action-buttons {
     display: flex;
@@ -263,6 +405,22 @@
     .mat-mdc-form-field-subscript-wrapper {
       display: none;
     }
+
+    // Mostrar hints para campos deshabilitados
+    &.mat-form-field-disabled {
+      .mat-mdc-text-field-wrapper {
+        background-color: #f5f5f5;
+      }
+      
+      .mat-mdc-form-field-label {
+        color: #999;
+      }
+    }
+
+    // Mostrar hints cuando hay mensajes importantes
+    &.show-hints .mat-mdc-form-field-subscript-wrapper {
+      display: block;
+    }
   }
 
   .mat-mdc-card {
@@ -282,6 +440,17 @@
     flex-grow: 1;
     display: flex;
     align-items: center;
+  }
+
+  // Estilos para select deshabilitado
+  .mat-mdc-select-disabled {
+    .mat-mdc-select-value {
+      color: #999;
+    }
+    
+    .mat-mdc-select-arrow {
+      color: #ccc;
+    }
   }
 }
 
@@ -358,6 +527,12 @@
         .metric-item {
           min-width: 100%;
         }
+      }
+    }
+
+    .registro-detalle {
+      .detail-grid {
+        grid-template-columns: 1fr;
       }
     }
     

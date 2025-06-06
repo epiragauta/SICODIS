@@ -7,6 +7,24 @@ import { MatCardModule } from '@angular/material/card';
 import { ButtonModule } from 'primeng/button';
 import { ChartModule } from 'primeng/chart';
 
+// Importar los datos y funciones
+import { funcionamientoBaseData } from '../../data/funcionamiento-base.data';
+import { 
+  getFuentes,
+  getConceptosByFuente,
+  getBeneficiariosByFuenteAndConcepto,
+  getRegistroByFuenteConceptoBeneficiario,
+  formatearValorMonetario,
+  getResumenEjecucion
+} from '../../utils/sgr-functions';
+import { NumberFormatPipe } from '../../utils/numberFormatPipe';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
+
+interface SelectOption {
+  value: string;
+  label: string;
+}
+
 @Component({
   selector: 'app-reporte-funcionamiento',
   standalone: true,
@@ -17,7 +35,9 @@ import { ChartModule } from 'primeng/chart';
     MatGridListModule,
     MatCardModule,
     ButtonModule,
-    ChartModule
+    ChartModule,
+    NumberFormatPipe,
+    MatIconModule
   ],
   templateUrl: './reporte-funcionamiento.component.html',
   styleUrl: './reporte-funcionamiento.component.scss'
@@ -25,57 +45,39 @@ import { ChartModule } from 'primeng/chart';
 export class ReporteFuncionamientoComponent implements OnInit {
   platformId = inject(PLATFORM_ID);
 
-  // Datos para los selects
-  bienios = [
-    { value: '2023-2024', label: 'Bienio 2023-2024' },
-    { value: '2025-2026', label: 'Bienio 2025-2026' },
-    { value: '2027-2028', label: 'Bienio 2027-2028' }
-  ];
+  // Datos originales cargados desde el JSON
+  private funcionamientoData: any[] = [];
 
-  fuentes = [
-    { value: 'sgr', label: 'Sistema General de Regalías' },
-    { value: 'fonpet', label: 'FONPET' },
-    { value: 'otros', label: 'Otros recursos' }
-  ];
+  // Opciones para los selects
+  fuentes: SelectOption[] = [];
+  conceptos: SelectOption[] = [];
+  beneficiarios: SelectOption[] = [];
 
-  conceptos = [
-    { value: 'funcionamiento', label: 'Funcionamiento' },
-    { value: 'inversion', label: 'Inversión' },
-    { value: 'gastos-operacion', label: 'Gastos de operación' }
-  ];
+  // Valores seleccionados - iniciar sin selección
+  selectedFuente: string = '';
+  selectedConcepto: string = '';
+  selectedBeneficiario: string = '';
 
-  beneficiarios = [
-    { value: 'todos', label: 'Todos los beneficiarios' },
-    { value: 'departamentos', label: 'Departamentos' },
-    { value: 'municipios', label: 'Municipios' }
-  ];
-
-  // Valores seleccionados
-  selectedBienio = '2025-2026';
-  selectedFuente = 'sgr';
-  selectedConcepto = 'funcionamiento';
-  selectedBeneficiario = 'todos';
-
-  // Datos para las tarjetas
+  // Datos para las tarjetas (se actualizarán según la selección)
   presupuestoData = {
-    presupuestoAsignado: 1250.5,
-    disponibilidadInicial: 980.3,
-    recursosBloquedos: 85.2,
-    presupuestoVigenteDisponible: 1.2 // en billones
+    presupuestoAsignado: 0,
+    disponibilidadInicial: 0,
+    recursosBloquedos: 0,
+    presupuestoVigenteDisponible: 0
   };
 
   ejecucionData = {
-    cdp: 756.8,
-    compromiso: 645.2,
-    pagos: 523.4,
-    recursoComprometer: 0.8 // en billones
+    cdp: 0,
+    compromiso: 0,
+    pagos: 0,
+    recursoComprometer: 0
   };
 
   situacionCajaData = {
-    presupuestoCorriente: 892.1,
-    recaudoCorriente: 734.6,
-    cajaTotal: 445.3,
-    cajaDisponible: 0.6 // en billones
+    presupuestoCorriente: 0,
+    recaudoCorriente: 0,
+    cajaTotal: 0,
+    cajaDisponible: 0
   };
 
   // Datos para los gráficos
@@ -86,12 +88,333 @@ export class ReporteFuncionamientoComponent implements OnInit {
   donutData: any;
   donutOptions: any;
 
+  // Registro actualmente seleccionado
+  registroActual: any = null;
+
   constructor() {}
 
   ngOnInit(): void {
+    this.cargarDatos();
+    this.inicializarFuentes();
+    
     if (isPlatformBrowser(this.platformId)) {
       this.initializeCharts();
     }
+  }
+
+  /**
+   * Cargar los datos desde el archivo JSON
+   */
+  private cargarDatos(): void {
+    try {
+      // Cargar datos desde el archivo de datos TypeScript
+      this.funcionamientoData = funcionamientoBaseData || [];
+      console.log('Datos de funcionamiento cargados:', this.funcionamientoData.length, 'registros');
+    } catch (error) {
+      console.error('Error cargando datos de funcionamiento:', error);
+      this.funcionamientoData = [];
+    }
+  }
+
+  /**
+   * Inicializar las opciones de fuentes sin seleccionar ninguna
+   */
+  private inicializarFuentes(): void {
+    try {
+      const fuentesUnicas = getFuentes(this.funcionamientoData);
+      this.fuentes = fuentesUnicas.map((fuente: any) => ({
+        value: fuente,
+        label: fuente
+      }));
+      
+      console.log('Fuentes disponibles:', this.fuentes);
+      
+      // Inicializar los otros selects como vacíos y deshabilitados
+      this.conceptos = [];
+      this.beneficiarios = [];
+      this.selectedFuente = '';
+      this.selectedConcepto = '';
+      this.selectedBeneficiario = '';
+      this.registroActual = null;
+      
+      // Limpiar datos iniciales
+      this.limpiarDatos();
+      
+    } catch (error) {
+      console.error('Error inicializando fuentes:', error);
+      this.fuentes = [];
+      this.limpiarTodosDatos();
+    }
+  }
+
+  /**
+   * Evento cuando cambia la fuente seleccionada
+   */
+  onFuenteChange(): void {
+    console.log('Fuente seleccionada:', this.selectedFuente);
+    
+    try {
+      // Limpiar selecciones dependientes
+      this.selectedConcepto = '';
+      this.selectedBeneficiario = '';
+      this.beneficiarios = [];
+      this.registroActual = null;
+      this.limpiarDatos();
+
+      if (!this.selectedFuente) {
+        this.conceptos = [];
+        return;
+      }
+
+      // Actualizar conceptos según la fuente seleccionada
+      const conceptosUnicos = getConceptosByFuente(this.funcionamientoData, this.selectedFuente);
+      this.conceptos = conceptosUnicos.map((concepto: any) => ({
+        value: concepto,
+        label: concepto
+      }));
+      
+      console.log('Conceptos disponibles para', this.selectedFuente + ':', this.conceptos);
+      
+      // No seleccionar automáticamente ningún concepto
+      // El usuario debe seleccionar manualmente
+      
+    } catch (error) {
+      console.error('Error al cambiar fuente:', error);
+      this.conceptos = [];
+      this.limpiarDatos();
+    }
+  }
+
+  /**
+   * Evento cuando cambia el concepto seleccionado
+   */
+  onConceptoChange(): void {
+    console.log('Concepto seleccionado:', this.selectedConcepto);
+    
+    try {
+      // Limpiar selección de beneficiario
+      this.selectedBeneficiario = '';
+      this.registroActual = null;
+      this.limpiarDatos();
+
+      if (!this.selectedFuente || !this.selectedConcepto) {
+        this.beneficiarios = [];
+        return;
+      }
+
+      // Actualizar beneficiarios según fuente y concepto seleccionados
+      const beneficiariosUnicos = getBeneficiariosByFuenteAndConcepto(
+        this.funcionamientoData, 
+        this.selectedFuente, 
+        this.selectedConcepto
+      );
+      
+      this.beneficiarios = beneficiariosUnicos.map((beneficiario: any) => ({
+        value: beneficiario,
+        label: beneficiario
+      }));
+      
+      console.log('Beneficiarios disponibles para', this.selectedFuente, '-', this.selectedConcepto + ':', this.beneficiarios);
+      
+      // No seleccionar automáticamente ningún beneficiario
+      // El usuario debe seleccionar manualmente
+      
+    } catch (error) {
+      console.error('Error al cambiar concepto:', error);
+      this.beneficiarios = [];
+      this.limpiarDatos();
+    }
+  }
+
+  /**
+   * Evento cuando cambia el beneficiario seleccionado
+   */
+  onBeneficiarioChange(): void {
+    console.log('Beneficiario seleccionado:', this.selectedBeneficiario);
+    
+    try {
+      if (!this.selectedFuente || !this.selectedConcepto || !this.selectedBeneficiario) {
+        this.registroActual = null;
+        this.limpiarDatos();
+        return;
+      }
+
+      // Obtener el registro completo
+      this.registroActual = getRegistroByFuenteConceptoBeneficiario(
+        this.funcionamientoData,
+        this.selectedFuente,
+        this.selectedConcepto,
+        this.selectedBeneficiario
+      );
+
+      console.log('Registro encontrado:', this.registroActual);
+
+      if (this.registroActual) {
+        this.actualizarDatosDelRegistro();
+      } else {
+        console.warn('No se encontró registro para la combinación seleccionada');
+        this.limpiarDatos();
+      }
+    } catch (error) {
+      console.error('Error al cambiar beneficiario:', error);
+      this.limpiarDatos();
+    }
+  }
+
+  /**
+   * Actualizar los datos de las tarjetas con el registro seleccionado
+   */
+  private actualizarDatosDelRegistro(): void {
+    if (!this.registroActual) return;
+
+    try {
+      // Convertir strings a números eliminando puntos y comas
+      const convertirANumero = (valor: any): number => {
+        if (typeof valor === 'number') return valor;
+        if (typeof valor === 'string') {
+          return parseFloat(valor.replace(/\./g, '').replace(',', '.')) || 0;
+        }
+        return 0;
+      };
+
+      // Actualizar datos de presupuesto
+      this.presupuestoData = {
+        presupuestoAsignado: convertirANumero(this.registroActual['total-asignado-bienio']) / 1000000, // En millones
+        disponibilidadInicial: convertirANumero(this.registroActual['disponibilidad-inicial']) / 1000000,
+        recursosBloquedos: convertirANumero(this.registroActual['recursos-bloqueados']) / 1000000,
+        presupuestoVigenteDisponible: convertirANumero(this.registroActual['apropiacion-vigente-disponible']) / 1000000000 // En billones
+      };
+
+      // Actualizar datos de ejecución
+      this.ejecucionData = {
+        cdp: convertirANumero(this.registroActual['cdp']) / 1000000,
+        compromiso: convertirANumero(this.registroActual['compromisos']) / 1000000,
+        pagos: convertirANumero(this.registroActual['pagos']) / 1000000,
+        recursoComprometer: convertirANumero(this.registroActual['saldo-por-comprometer']) / 1000000000 // En billones
+      };
+
+      // Actualizar datos de situación de caja
+      this.situacionCajaData = {
+        presupuestoCorriente: convertirANumero(this.registroActual['apropiacion-vigente']) / 1000000,
+        recaudoCorriente: convertirANumero(this.registroActual['iac-corriente']) / 1000000,
+        cajaTotal: convertirANumero(this.registroActual['caja-total']) / 1000000,
+        cajaDisponible: convertirANumero(this.registroActual['caja-disponible']) / 1000000000 // En billones
+      };
+
+      console.log('Datos actualizados:', {
+        presupuesto: this.presupuestoData,
+        ejecucion: this.ejecucionData,
+        caja: this.situacionCajaData
+      });
+
+      // Actualizar gráficos con datos reales
+      if (isPlatformBrowser(this.platformId)) {
+        this.actualizarGraficos();
+      }
+
+    } catch (error) {
+      console.error('Error actualizando datos del registro:', error);
+      this.limpiarDatos();
+    }
+  }
+
+  /**
+   * Limpiar los datos cuando no hay selección válida
+   */
+  private limpiarDatos(): void {
+    this.presupuestoData = {
+      presupuestoAsignado: 0,
+      disponibilidadInicial: 0,
+      recursosBloquedos: 0,
+      presupuestoVigenteDisponible: 0
+    };
+
+    this.ejecucionData = {
+      cdp: 0,
+      compromiso: 0,
+      pagos: 0,
+      recursoComprometer: 0
+    };
+
+    this.situacionCajaData = {
+      presupuestoCorriente: 0,
+      recaudoCorriente: 0,
+      cajaTotal: 0,
+      cajaDisponible: 0
+    };
+  }
+
+  /**
+   * Limpiar todos los datos y selecciones (para casos de error)
+   */
+  private limpiarTodosDatos(): void {
+    this.fuentes = [];
+    this.conceptos = [];
+    this.beneficiarios = [];
+    this.selectedFuente = '';
+    this.selectedConcepto = '';
+    this.selectedBeneficiario = '';
+    this.registroActual = null;
+    this.limpiarDatos();
+  }
+
+  /**
+   * Actualizar gráficos con datos del registro actual
+   */
+  private actualizarGraficos(): void {
+    if (!this.registroActual) {
+      this.initializeCharts(); // Usar datos por defecto
+      return;
+    }
+
+    const documentStyle = getComputedStyle(document.documentElement);
+    const textColor = documentStyle.getPropertyValue('--p-text-color') || '#000';
+    const surfaceBorder = documentStyle.getPropertyValue('--p-content-border-color') || '#dee2e6';
+
+    // Calcular porcentajes de ejecución
+    const totalApropiacion = this.situacionCajaData.presupuestoCorriente || 1;
+    const porcentajeCDP = (this.ejecucionData.cdp / totalApropiacion) * 100;
+    const porcentajeCompromisos = (this.ejecucionData.compromiso / totalApropiacion) * 100;
+    const porcentajePagos = (this.ejecucionData.pagos / totalApropiacion) * 100;
+
+    // Actualizar barra horizontal con datos reales
+    this.horizontalBarData = {
+      labels: ['Ejecución Presupuestal'],
+      datasets: [
+        {
+          label: 'CDP',
+          backgroundColor: '#dc3545',
+          data: [porcentajeCDP]
+        },
+        {
+          label: 'Compromisos',
+          backgroundColor: '#fd7e14',
+          data: [porcentajeCompromisos]
+        },
+        {
+          label: 'Pagos',
+          backgroundColor: '#28a745',
+          data: [porcentajePagos]
+        }
+      ]
+    };
+
+    // Calcular avance de recaudo
+    const recaudoTotal = this.situacionCajaData.presupuestoCorriente || 1;
+    const recaudoEjecutado = this.situacionCajaData.recaudoCorriente || 0;
+    const porcentajeRecaudo = (recaudoEjecutado / recaudoTotal) * 100;
+
+    // Actualizar gráfico de dona con datos reales
+    this.donutData = {
+      labels: ['Recaudo', 'Pendiente'],
+      datasets: [
+        {
+          data: [porcentajeRecaudo, 100 - porcentajeRecaudo],
+          backgroundColor: ['#3366CC', '#e9ecef'],
+          hoverBackgroundColor: ['#2851a3', '#dee2e6']
+        }
+      ]
+    };
   }
 
   initializeCharts(): void {
@@ -99,7 +422,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
     const textColor = documentStyle.getPropertyValue('--p-text-color') || '#000';
     const surfaceBorder = documentStyle.getPropertyValue('--p-content-border-color') || '#dee2e6';
 
-    // Gráfico de barras verticales con línea
+    // Gráfico de barras verticales con línea (datos de ejemplo)
     this.barChartData = {
       labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
       datasets: [
@@ -155,7 +478,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       }
     };
 
-    // Barra horizontal con tres valores
+    // Barra horizontal - se actualizará con datos reales
     this.horizontalBarData = {
       labels: ['Ejecución'],
       datasets: [
@@ -215,7 +538,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       }
     };
 
-    // Gráfico de dona 180 grados
+    // Gráfico de dona - se actualizará con datos reales
     this.donutData = {
       labels: ['Recaudo', 'Pendiente'],
       datasets: [
@@ -265,6 +588,22 @@ export class ReporteFuncionamientoComponent implements OnInit {
     }).format(value)} mil M`;
   }
 
+  /**
+   * Método para obtener el resumen de ejecución utilizando las funciones SGR
+   */
+  getResumenEjecucionActual(): any {
+    if (!this.registroActual) return null;
+    return getResumenEjecucion(this.registroActual);
+  }
+
+  /**
+   * Método para formatear valores monetarios
+   */
+  formatearMoneda(valor: any): string {
+    return formatearValorMonetario(valor);
+  }
+
+  // Métodos de eventos de botones (sin cambios)
   onAdministracionClick(): void {
     console.log('Administración - SSEC clicked');
   }

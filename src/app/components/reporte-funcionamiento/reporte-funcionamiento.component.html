@@ -3,17 +3,9 @@
   <div class="filters-panel">
     <div class="filters-row">
       <mat-form-field class="filter-select">
-        <mat-label>Bienio</mat-label>
-        <mat-select [(value)]="selectedBienio">
-          <mat-option *ngFor="let bienio of bienios" [value]="bienio.value">
-            {{bienio.label}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field class="filter-select">
         <mat-label>Fuente</mat-label>
-        <mat-select [(value)]="selectedFuente">
+        <mat-select [(value)]="selectedFuente" (selectionChange)="onFuenteChange()" placeholder="Seleccione una fuente">
+          <mat-option value="">-- Seleccione una fuente --</mat-option>
           <mat-option *ngFor="let fuente of fuentes" [value]="fuente.value">
             {{fuente.label}}
           </mat-option>
@@ -22,29 +14,81 @@
 
       <mat-form-field class="filter-select">
         <mat-label>Concepto</mat-label>
-        <mat-select [(value)]="selectedConcepto">
+        <mat-select 
+          [(value)]="selectedConcepto" 
+          (selectionChange)="onConceptoChange()" 
+          [disabled]="conceptos.length === 0 || !selectedFuente"
+          placeholder="Primero seleccione una fuente">
+          <mat-option value="">-- Seleccione un concepto --</mat-option>
           <mat-option *ngFor="let concepto of conceptos" [value]="concepto.value">
             {{concepto.label}}
           </mat-option>
         </mat-select>
+        <mat-hint *ngIf="!selectedFuente">Debe seleccionar una fuente primero</mat-hint>
+        <mat-hint *ngIf="selectedFuente && conceptos.length === 0">No hay conceptos disponibles</mat-hint>
       </mat-form-field>
 
       <mat-form-field class="filter-select">
         <mat-label>Beneficiario</mat-label>
-        <mat-select [(value)]="selectedBeneficiario">
+        <mat-select 
+          [(value)]="selectedBeneficiario" 
+          (selectionChange)="onBeneficiarioChange()" 
+          [disabled]="beneficiarios.length === 0 || !selectedConcepto"
+          placeholder="Primero seleccione fuente y concepto">
+          <mat-option value="">-- Seleccione un beneficiario --</mat-option>
           <mat-option *ngFor="let beneficiario of beneficiarios" [value]="beneficiario.value">
             {{beneficiario.label}}
           </mat-option>
         </mat-select>
+        <mat-hint *ngIf="!selectedConcepto">Debe seleccionar fuente y concepto primero</mat-hint>
+        <mat-hint *ngIf="selectedConcepto && beneficiarios.length === 0">No hay beneficiarios disponibles</mat-hint>
       </mat-form-field>
     </div>
+    
+    <!-- Indicador de estado de selección -->
+    <div class="selection-status" *ngIf="fuentes.length > 0">
+      <div class="status-item" [class.completed]="selectedFuente" [class.active]="!selectedFuente">
+        <span class="status-number">1</span>
+        <span class="status-text">{{selectedFuente ? 'Fuente: ' + selectedFuente : 'Seleccione una fuente'}}</span>
+      </div>
+      <div class="status-item" [class.completed]="selectedConcepto" [class.active]="selectedFuente && !selectedConcepto" [class.disabled]="!selectedFuente">
+        <span class="status-number">2</span>
+        <span class="status-text">{{selectedConcepto ? 'Concepto: ' + selectedConcepto : 'Seleccione un concepto'}}</span>
+      </div>
+      <div class="status-item" [class.completed]="selectedBeneficiario" [class.active]="selectedConcepto && !selectedBeneficiario" [class.disabled]="!selectedConcepto">
+        <span class="status-number">3</span>
+        <span class="status-text">{{selectedBeneficiario ? 'Beneficiario: ' + selectedBeneficiario : 'Seleccione un beneficiario'}}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mensaje cuando no hay datos seleccionados -->
+  <div *ngIf="!registroActual" class="no-data-message">
+    <mat-card class="info-card">
+      <mat-card-content>
+        <div class="no-data-content">
+          <mat-icon class="no-data-icon">info</mat-icon>
+          <h3>Seleccione los filtros para ver la información</h3>
+          <p>Para visualizar los datos de funcionamiento, complete la selección de Fuente, Concepto y Beneficiario en el panel superior.</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Información del registro seleccionado -->
+  <div *ngIf="registroActual" class="registro-info">
+    <p class="date-update">
+      <strong>Registro seleccionado:</strong> {{registroActual.beneficiario}} - 
+      <strong>Acto Administrativo:</strong> {{registroActual['acto-administrativo'] || 'No especificado'}}
+    </p>
   </div>
 
   <div>
     <p class="date-update">Fecha de actualización: Mayo 30 de 2025</p>
   </div>
+
   <!-- Panel principal con dos columnas -->
-  <div class="main-panel">
+  <div class="main-panel" *ngIf="registroActual">
     <!-- Columna izquierda (60%) - Tarjetas -->
     <div class="left-column">
       <!-- Tarjeta 1: Presupuesto -->
@@ -163,7 +207,7 @@
     </div>
   </div>
 
-  <div class="panel-avance-recaudo">
+  <div class="panel-avance-recaudo" *ngIf="registroActual">
     <mat-card class="info-card">
         <mat-card-header>
           <mat-card-title class="card-title">Avance del recaudo de ingresos corrientes</mat-card-title>
@@ -171,13 +215,15 @@
         <mat-card-content>
           <div class="metrics-row">
             <div class="metric-item">
-              <div class="metric-value">{{formatMillions(presupuestoData.presupuestoAsignado)}}</div>
+              <div class="metric-value">{{formatMillions(situacionCajaData.presupuestoCorriente)}}</div>
               <div class="metric-label">Presupuesto corriente</div>
             </div>
           </div>
           <div class="metrics-row">
             <div class="metric-item">
-              <div class="metric-value-2">17,7%</div>
+              <div class="metric-value-2">
+                {{registroActual?.['avance-iac-corriente'] || '0.0%'}}
+              </div>
               <div class="metric-label">Avance</div>
             </div>            
           </div>
@@ -186,7 +232,7 @@
   </div>
 
   <!-- Botones de acción -->
-  <div class="action-buttons">
+  <div class="action-buttons" *ngIf="registroActual">
     <p-button 
       label="Detalle Gestión Financiera" 
       icon="pi pi-chart-line"
@@ -207,6 +253,31 @@
     </p-button>
   </div>
 
+  <!-- Información adicional del registro seleccionado -->
+  <div *ngIf="registroActual" class="registro-detalle">
+    <mat-card class="info-card">
+      <mat-card-header>
+        <mat-card-title class="card-title">Detalle del Registro Seleccionado</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <strong>Código SGPR:</strong> {{registroActual['cod-sgpr'] || 'N/A'}}
+          </div>
+          <div class="detail-item">
+            <strong>Código SICODIS:</strong> {{registroActual['cod-sicodis'] || 'N/A'}}
+          </div>
+          <div class="detail-item">
+            <strong>% Ejecución a Compromisos:</strong> {{registroActual['percent-ejecucion-a-compromisos'] || '0%'}}
+          </div>
+          <div class="detail-item">
+            <strong>Saldo sin Afectación:</strong> {{formatearMoneda(registroActual['saldo-sin-afectacion'])}}
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
   <!-- Notas finales -->
   <div class="final-notes">
     <h4 class="notes-title">Notas:</h4>
@@ -221,6 +292,9 @@
     </p>
     <p class="final-note">
       <strong>Saldo a pagos:</strong> corresponde a los recursos disponibles para realizar pagos
+    </p>
+    <p class="final-note">
+      <strong>Datos mostrados:</strong> Los valores se actualizan automáticamente según la selección de Fuente, Concepto y Beneficiario
     </p>
   </div>
 </div>
