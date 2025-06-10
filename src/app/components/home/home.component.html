@@ -21,41 +21,6 @@
                 <div class="target">
                   <div class="flex items-center justify-center">
                     <p-card [style]="{ overflow: 'hidden' }">
-                        <div style="display: flex;">
-                          <div><img class="img-icon" src="/assets/img/icon-sgr.png" alt="SGR"></div>
-                          <h2 class="sicodis-large-title">{{titleSGR}}</h2>
-                        </div>
-                        <p>{{descriptionSGR}}</p>
-                        <div class="sicodis-item" style="display: flex;" (click)="redirectTo('reports-sgr')">
-                          <p style="width: 95%;">Plan de Recursos</p>
-                          <p><span class="pi pi-angle-right"></span></p>
-                        </div>
-                      <p-divider/>
-                      <div class="sicodis-item" style="display: flex;" (click)="redirectTo('reports-sgr-comparative')">
-                        <p style="width: 95%;">Comparativo de Avance IAC frente a Presupuesto</p>
-                        <p><span class="pi pi-angle-right"></span></p>
-                      </div>
-                      <p-divider />
-                      <div class="sicodis-item" style="display: flex;" (click)="redirectTo('reports-sgr-bienal')">
-                        <p style="width: 95%;">Plan Bienal de Caja</p>
-                        <p><span class="pi pi-angle-right"></span></p>
-                      </div>
-                        <ng-template pTemplate="footer">
-                            <div class="flex gap-4 mt-1 sicodis-card">
-                                <p-button severity="contrast" [rounded]="true" label="Ver todos los reportes del SGR" (click)="redirectSGR()"
-                                class="w-full" styleClass="w-full" />
-                            </div>
-                        </ng-template>
-                    </p-card>
-                  </div>
-                </div>
-              </mat-card>
-            </mat-grid-tile>
-            <mat-grid-tile>
-              <mat-card class="card-container">
-                <div class="target">
-                  <div class="flex items-center justify-center">
-                    <p-card [style]="{ overflow: 'hidden' }">
                         <div  style="display: flex;">
                           <div>
                             <img class="img-icon" src="/assets/img/icon-sgp.png" alt="SGR">
@@ -80,6 +45,41 @@
                         <ng-template pTemplate="footer">
                             <div class="flex gap-4 mt-1 sicodis-card">
                                 <p-button class="button" severity="contrast" [rounded]="true" label="Ver todos los reportes del SGP" (click)="redirectSGP()"
+                                class="w-full" styleClass="w-full" />
+                            </div>
+                        </ng-template>
+                    </p-card>
+                  </div>
+                </div>
+              </mat-card>
+            </mat-grid-tile>
+            <mat-grid-tile>
+              <mat-card class="card-container">
+                <div class="target">
+                  <div class="flex items-center justify-center">
+                    <p-card [style]="{ overflow: 'hidden' }">
+                        <div style="display: flex;">
+                          <div><img class="img-icon" src="/assets/img/icon-sgr.png" alt="SGR"></div>
+                          <h2 class="sicodis-large-title">{{titleSGR}}</h2>
+                        </div>
+                        <p>{{descriptionSGR}}</p>
+                        <div class="sicodis-item" style="display: flex;" (click)="redirectTo('reports-sgr')">
+                          <p style="width: 95%;">Plan de Recursos</p>
+                          <p><span class="pi pi-angle-right"></span></p>
+                        </div>
+                      <p-divider/>
+                      <div class="sicodis-item" style="display: flex;" (click)="redirectTo('reports-sgr-comparative')">
+                        <p style="width: 95%;">Comparativo de Avance IAC frente a Presupuesto</p>
+                        <p><span class="pi pi-angle-right"></span></p>
+                      </div>
+                      <p-divider />
+                      <div class="sicodis-item" style="display: flex;" (click)="redirectTo('reports-sgr-bienal')">
+                        <p style="width: 95%;">Plan Bienal de Caja</p>
+                        <p><span class="pi pi-angle-right"></span></p>
+                      </div>
+                        <ng-template pTemplate="footer">
+                            <div class="flex gap-4 mt-1 sicodis-card">
+                                <p-button severity="contrast" [rounded]="true" label="Ver todos los reportes del SGR" (click)="redirectSGR()"
                                 class="w-full" styleClass="w-full" />
                             </div>
                         </ng-template>
