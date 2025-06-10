@@ -1,8 +1,18 @@
 <div class="container">
-    <div class="banner">
-        <img src="/assets/img/banner_welcome.svg" alt="banner-welcome">
-        <!-- <button class="overlay-button">Sobre SICODIS</button> -->
+    <div class="gradient-banner">
+      <div class="gradient-overlay"></div>
+      <!-- Contenido opcional sobre el banner -->
+      <div class="banner-content">
+        <h2>Bienvenido a SICODIS</h2>
+        <p>El Sistema de información y consulta de distribuciones de recursos territoriales "SICODIS", presenta información agregada y detallada, 
+          correspondiente a las distribuciones de los recursos del Sistema General de Participaciones (SGP) y el Sistema General de Regalías (SGR) realizadas por el DNP.
+ 	 	 	 	</p>
+        <button class="banner-button">Sobre SICODIS</button>
+      </div>
     </div>
+    <!-- <div class="banner">
+        <img src="/assets/img/banner_welcome.svg" alt="banner-welcome">
+    </div> -->
     <div class="reports">
 
 
@@ -93,7 +103,7 @@
 
     <p-divider />
 
-        <h1 class="sicodis sicodis-subtitle">Consulta de asignaciones en la vigencia actual para los dos sistemas</h1>
+    <h1 class="sicodis sicodis-subtitle">Consulta de asignaciones en la vigencia actual para los dos sistemas</h1>
     
     <div class="filter-panel">
       <mat-card class="card-container">
@@ -164,6 +174,24 @@
           </mat-card>
         </mat-grid-tile>
       </mat-grid-list>
+    </div>
+
+    <div>
+      <div style="width: 40%; margin: auto;">
+        <mat-card>
+          <h2 class="sicodis-subtitle">Administración SGR</h2>
+          <div class="admin-sgr-table">
+            <div class="table-row-left header">
+              <div class="table-cell">Concepto</div>
+              <div class="table-cell ">Presupuesto Total</div>
+            </div>
+            <div class="table-row-left" *ngFor="let item of adminSgrItems">
+              <div class="table-cell">{{item.concept}}</div>
+              <div class="table-cell" [ngClass]="{'bold': item.isTotal}">{{item.amount | numberFormat}}</div>
+            </div>  
+          </div>
+        </mat-card>
+      </div>
     </div>
 
     <h1 class="reports-title">Últimos reportes</h1>

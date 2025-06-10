@@ -8,6 +8,114 @@
         width: 100%;
     }
 }
+
+.gradient-banner {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  background-image: url('/assets/img/monteria_desktop-1.jpg');
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  
+  .gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 95%; /* Cubre el 75% del ancho */
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      #404a55 0%,           /* Color sólido al inicio */
+      rgba(255, 255, 255, 0.01) 100%  /* 80% de transparencia (20% de opacidad) al final */
+    );
+    z-index: 1;
+  }
+  
+  .banner-content {
+    position: relative;
+    z-index: 2;
+    padding: 2rem;
+    max-width: 60%; /* Ajustado para contenido dentro del 75% */
+    color: white;   /* Texto blanco para mejor contraste */
+    
+    h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+  }
+  
+  .banner-button {
+    background-color: white;
+    color: #004583;
+    border: 2px solid white;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    
+    &:hover {
+      background-color: transparent;
+      color: white;
+    }
+  }
+}
+
+/* Versión responsive */
+@media (max-width: 768px) {
+  .gradient-banner {
+    height: 300px;
+    text-align: center;
+    
+    .gradient-overlay {
+      width: 100%; /* En móvil cubre toda la imagen */
+      background: linear-gradient(
+        rgba(0, 69, 131, 0.9) 0%,
+        rgba(0, 69, 131, 0.3) 100%
+      );
+    }
+    
+    .banner-content {
+      max-width: 90%;
+      margin: 0 auto;
+      
+      h2 {
+        font-size: 2rem;
+      }
+    }
+  }
+}
+
+/* Versión responsive */
+@media (max-width: 768px) {
+  .gradient-banner {
+    height: 300px;
+    
+    .gradient-overlay {
+      width: 100%; /* En móvil cubre toda la imagen */
+      background: linear-gradient(
+        rgba(255, 255, 255, 0.7) 0%,
+        rgba(0, 69, 131, 0.6) 100%
+      );
+    }
+    
+    .banner-content {
+      max-width: 100%;
+      text-align: center;
+    }
+  }
+}
+
 .reports{
     .reports-title{
         color: #004583;
@@ -290,8 +398,7 @@
 }
 
 .card-container {
-  width: 100%;
-  height: 100%;
+  width: 100%;  
   display: flex;
   flex-direction: column;
   border-style: solid;
@@ -411,8 +518,21 @@
 
     .table-row-left {
       display: flex;
-      padding: 0.55em 0;
+      padding: 0.57em 0;
       border-bottom: 1px solid #eee;
+
+      &:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+
+      &:nth-child(odd) {
+        background-color: #ffffff;
+      }
+
+      &:hover {
+        background-color: #f0f0f0;
+      }
+
 
       &.header {
         font-weight: bold;
@@ -434,8 +554,21 @@
 
     .table-row-right {
       display: flex;
-      padding: 0.67em 0;
+      padding: 0.76em 0;
       border-bottom: 1px solid #eee;
+
+      &:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+
+      &:nth-child(odd) {
+        background-color: #ffffff;
+      }
+
+      &:hover {
+        background-color: #f0f0f0;
+      }
+
 
       &.header {
         font-weight: bold;
@@ -456,3 +589,45 @@
     }
   }
 }
+
+.admin-sgr-table {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    .table-row-left {
+      display: flex;
+      padding: 0.57em 0;
+      border-bottom: 1px solid #eee;
+
+      &:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+
+      &:nth-child(odd) {
+        background-color: #ffffff;
+      }
+
+      &:hover {
+        background-color: #f0f0f0;
+      }
+
+
+      &.header {
+        font-weight: bold;
+        background-color: #004583;
+        color: #fff;
+      }
+
+      .table-cell {
+        flex: 1;
+        padding: 0 0.25rem;
+        font-size: 14px;
+        text-align: center;
+
+        &.bold {
+          font-weight: bold;
+        }
+      }
+    }
+  }
