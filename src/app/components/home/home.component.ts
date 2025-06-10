@@ -16,6 +16,7 @@ import { CarouselModule } from 'primeng/carousel';
 import { TagModule } from 'primeng/tag';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
+import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 
 @Component({
   selector: 'app-home',
@@ -31,7 +32,8 @@ import { map } from 'rxjs/operators';
     DividerModule,
     MatIconModule,
     CarouselModule,
-    TagModule
+    TagModule,
+    NumberFormatPipe
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
@@ -212,6 +214,49 @@ export class HomeComponent {
   cols: number = 4;
   cols2: number = 2;
 
+  // Add to the component class
+departments = [
+  { id: 1, name: 'Antioquia' },
+  { id: 2, name: 'Cundinamarca' },
+  { id: 3, name: 'Santander' },
+  // Add more departments as needed
+];
+
+municipalities = [
+  { id: 1, name: 'Medellín', deptId: 1 },
+  { id: 2, name: 'Bogotá', deptId: 2 },
+  { id: 3, name: 'Bucaramanga', deptId: 3 },
+  // Add more municipalities as needed
+];
+
+selectedDepartment: number | null = null;
+
+sgpItems = [
+  { concept: 'Educación', amount: 1000000000, isTotal: false },
+  { concept: 'Salud', amount: 800000000, isTotal: false },
+  { concept: 'Agua Potable', amount: 500000000, isTotal: false },
+  { concept: 'Propósito General', amount: 700000000, isTotal: false },
+  { concept: 'Alimentación Escolar', amount: 300000000, isTotal: false },
+  { concept: 'Ribereños', amount: 200000000, isTotal: false },
+  { concept: 'Resguardos Indígenas', amount: 150000000, isTotal: false },
+  { concept: 'Fonpet Asignaciones', amount: 100000000, isTotal: false },
+  { concept: 'Especiales', amount: 50000000, isTotal: false },
+  { concept: 'Primera Infancia', amount: 250000000, isTotal: false },
+  { concept: 'Total SGP', amount: 4000000000, isTotal: true }
+];
+
+sgrItems = [
+  { concept: 'Total Inversión', amount: 2000000000, isFirst: true, isTotal: false },
+  { concept: 'Asignaciones Directas', amount: 500000000, isFirst: false, isTotal: false },
+  { concept: 'Asignación para la Inversión Regional', amount: 400000000, isFirst: false, isTotal: false },
+  { concept: 'Asignación para la Inversión Local', amount: 300000000, isFirst: false, isTotal: false },
+  { concept: 'Asignación para Ciencia, Tecnología e Innovación', amount: 200000000, isFirst: false, isTotal: false },
+  { concept: 'Asignación para la Paz', amount: 150000000, isFirst: false, isTotal: false },
+  { concept: 'Asignación Ambiental', amount: 100000000, isFirst: false, isTotal: false },
+  { concept: 'Municipios Río Magdalena y Canal Dique', amount: 50000000, isFirst: false, isTotal: false },
+  { concept: 'Total Ahorro', amount: 3700000000, isFirst: false, isTotal: true }
+];
+
   constructor(private route: Router,
     private breakpointObserver: BreakpointObserver
   ) {
@@ -277,7 +322,9 @@ export class HomeComponent {
             numScroll: 1
         }
     ]
-}
+
+    
+  }
 
   redirectSGR() {
     this.route.navigate(['/reports-sgr']);

@@ -27,7 +27,7 @@
                           </div>
                           <h2 class="sicodis-large-title">{{titleSGP}}</h2>
                         </div>
-                        <p>{{descriptionSGP}}</p>
+                        <p style="height: 100px;">{{descriptionSGP}}</p>
                         <div class="sicodis-item" style="display: flex;" (click)="redirectTo('reports-sgp')">
                           <p style="width: 95%;">Distribución presupuestal, documentos y anexos</p>
                           <p><span class="pi pi-angle-right"></span></p>
@@ -62,7 +62,7 @@
                           <div><img class="img-icon" src="/assets/img/icon-sgr.png" alt="SGR"></div>
                           <h2 class="sicodis-large-title">{{titleSGR}}</h2>
                         </div>
-                        <p>{{descriptionSGR}}</p>
+                        <p style="height: 100px;">{{descriptionSGR}}</p>
                         <div class="sicodis-item" style="display: flex;" (click)="redirectTo('reports-sgr')">
                           <p style="width: 95%;">Plan de Recursos</p>
                           <p><span class="pi pi-angle-right"></span></p>
@@ -92,6 +92,79 @@
         </div>
 
     <p-divider />
+
+        <h1 class="sicodis sicodis-subtitle">Consulta de asignaciones en la vigencia actual para los dos sistemas</h1>
+    
+    <div class="filter-panel">
+      <mat-card class="card-container">
+        <h2 class="sicodis sicodis-subtitle-2">Entidad a consultar</h2>
+        <div class="filter-controls">
+          <div class="filter-item">
+            <label for="departments">Departamentos</label>
+            <select id="departments" class="form-select">
+              <option value="">Seleccione un departamento</option>
+              <option *ngFor="let dept of departments" [value]="dept.id">{{dept.name}}</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label for="municipalities">Municipios</label>
+            <select id="municipalities" class="form-select" [disabled]="!selectedDepartment">
+              <option value="">Seleccione un municipio</option>
+              <option *ngFor="let mun of municipalities" [value]="mun.id">{{mun.name}}</option>
+            </select>
+          </div>
+          <div class="filter-buttons">
+            <p-button severity="primary" label="Actualizar"></p-button>
+            <p-button severity="secondary" label="Borrar filtros" styleClass="p-button-outlined"></p-button>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+
+    <div class="assignment-cards">
+      <mat-grid-list [cols]="2" gutterSize="16">
+        <mat-grid-tile>
+          <mat-card class="card-container">
+            <h2 class="sicodis-subtitle">SGP</h2>
+            <div class="assignment-table">
+              <div class="table-row-left header">
+                <div class="table-cell">Concepto</div>
+                <div class="table-cell">Total Distribuido</div>
+              </div>
+              <div class="table-row-left" *ngFor="let item of sgpItems">
+                <div class="table-cell">{{item.concept}}</div>
+                <div class="table-cell" [ngClass]="{'bold': item.isTotal}">{{item.amount | numberFormat}}</div>
+              </div>
+            </div>
+            <div style="text-align: center; padding-top: 1rem;">              
+              <p-button severity="primary">
+                Más información
+              </p-button>              
+            </div>
+          </mat-card>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-card class="card-container">
+            <h2 class="sicodis-subtitle">SGR</h2>
+            <div class="assignment-table">
+              <div class="table-row-right header">
+                <div class="table-cell">Concepto</div>
+                <div class="table-cell">Presupuesto Total</div>
+              </div>
+              <div class="table-row-right" *ngFor="let item of sgrItems">
+                <div class="table-cell">{{item.concept}}</div>
+                <div class="table-cell" [ngClass]="{'bold': item.isTotal || item.isFirst}">{{item.amount | numberFormat}}</div>
+              </div>
+            </div>
+            <div style="text-align: center; padding-top: 1rem;">              
+              <p-button severity="primary">
+                Más información
+              </p-button>              
+            </div>
+          </mat-card>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
 
     <h1 class="reports-title">Últimos reportes</h1>
 

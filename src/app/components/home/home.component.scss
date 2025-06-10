@@ -27,6 +27,19 @@
       font-size: 24px;
       font-weight: 800;
     }
+    .sicodis-subtitle{
+      color: #004583;
+      font-size: 20px;
+      font-weight: normal;
+      text-align: center;
+      font-weight: 800;
+    }
+    .sicodis-subtitle-2{
+      color: #004583;
+      font-size: 16px;
+      font-weight: normal;   
+      font-weight: 800;   
+    }
 }
 .grid-styles{
     margin: 1rem 1rem 1rem 0.1rem;
@@ -269,7 +282,7 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: .5rem;
 }
 
 .grid-container {
@@ -349,6 +362,97 @@
   :host ::ng-deep {
     .mat-grid-tile {
       margin-bottom: 16px;
+    }
+  }
+}
+
+.filter-panel {
+  margin: 2rem 0;
+
+  .filter-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-end;
+
+    .filter-item {
+      flex: 1;
+      min-width: 200px;
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+
+      .form-select {
+        width: 100%;
+        padding: 0.5rem;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+  }
+}
+
+.assignment-cards {
+  margin: 2rem 0;
+
+  .assignment-table {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    .table-row-left {
+      display: flex;
+      padding: 0.55em 0;
+      border-bottom: 1px solid #eee;
+
+      &.header {
+        font-weight: bold;
+        background-color: #004583;
+        color: #fff;
+      }
+
+      .table-cell {
+        flex: 1;
+        padding: 0 0.25rem;
+        font-size: 14px;
+        text-align: center;
+
+        &.bold {
+          font-weight: bold;
+        }
+      }
+    }
+
+    .table-row-right {
+      display: flex;
+      padding: 0.67em 0;
+      border-bottom: 1px solid #eee;
+
+      &.header {
+        font-weight: bold;
+        background-color: #004583;
+        color: #fff;
+      }
+
+      .table-cell {
+        flex: 1;
+        padding: 0 0.25rem;
+        font-size: 14px;
+        text-align: center;
+
+        &.bold {
+          font-weight: bold;
+        }
+      }
     }
   }
 }
