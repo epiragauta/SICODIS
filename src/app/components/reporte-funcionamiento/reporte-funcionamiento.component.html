@@ -3,9 +3,9 @@
   <div class="filters-panel">
     <div class="filters-row">
       <mat-form-field class="filter-select">
-        <mat-label>Fuente</mat-label>
+        <mat-label>Asignaciones</mat-label>
         <mat-select [(value)]="selectedFuente" (selectionChange)="onFuenteChange()" placeholder="Seleccione una fuente">
-          <mat-option value="">-- Seleccione una fuente --</mat-option>
+          <mat-option value="">Todos</mat-option>
           <mat-option *ngFor="let fuente of fuentes" [value]="fuente.value">
             {{fuente.label}}
           </mat-option>
@@ -19,7 +19,7 @@
           (selectionChange)="onConceptoChange()" 
           [disabled]="conceptos.length === 0 || !selectedFuente"
           placeholder="Primero seleccione una fuente">
-          <mat-option value="">-- Seleccione un concepto --</mat-option>
+          <mat-option value="">Todos</mat-option>
           <mat-option *ngFor="let concepto of conceptos" [value]="concepto.value">
             {{concepto.label}}
           </mat-option>
@@ -35,7 +35,7 @@
           (selectionChange)="onBeneficiarioChange()" 
           [disabled]="beneficiarios.length === 0 || !selectedConcepto"
           placeholder="Primero seleccione fuente y concepto">
-          <mat-option value="">-- Seleccione un beneficiario --</mat-option>
+          <mat-option value="">Todos</mat-option>
           <mat-option *ngFor="let beneficiario of beneficiarios" [value]="beneficiario.value">
             {{beneficiario.label}}
           </mat-option>
@@ -49,7 +49,7 @@
     <div class="selection-status" *ngIf="fuentes.length > 0">
       <div class="status-item" [class.completed]="selectedFuente" [class.active]="!selectedFuente">
         <span class="status-number">1</span>
-        <span class="status-text">{{selectedFuente ? 'Fuente: ' + selectedFuente : 'Seleccione una fuente'}}</span>
+        <span class="status-text">{{selectedFuente ? 'Asignación: ' + selectedFuente : 'Seleccione una asignación'}}</span>
       </div>
       <div class="status-item" [class.completed]="selectedConcepto" [class.active]="selectedFuente && !selectedConcepto" [class.disabled]="!selectedFuente">
         <span class="status-number">2</span>
