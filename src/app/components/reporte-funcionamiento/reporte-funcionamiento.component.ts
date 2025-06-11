@@ -19,6 +19,9 @@ import {
 } from '../../utils/sgr-functions';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
+import { FloatLabel } from 'primeng/floatlabel';
+import { Select } from 'primeng/select';
+import { FormsModule } from '@angular/forms';
 
 interface SelectOption {
   value: string;
@@ -30,6 +33,7 @@ interface SelectOption {
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     MatFormFieldModule,
     MatSelectModule,
     MatGridListModule,
@@ -37,7 +41,9 @@ interface SelectOption {
     ButtonModule,
     ChartModule,
     NumberFormatPipe,
-    MatIconModule
+    MatIconModule,
+    FloatLabel,
+    Select
   ],
   templateUrl: './reporte-funcionamiento.component.html',
   styleUrl: './reporte-funcionamiento.component.scss'
@@ -54,9 +60,10 @@ export class ReporteFuncionamientoComponent implements OnInit {
   beneficiarios: SelectOption[] = [];
 
   // Valores seleccionados - iniciar sin selección
-  selectedFuente: string = '';
-  selectedConcepto: string = '';
-  selectedBeneficiario: string = '';
+  selectedVigencia: any = { id: 1, label: 'Vigencia Bienio 2025 - 2026' };
+  selectedFuente: any;
+  selectedConcepto: any;
+  selectedBeneficiario: any;
 
   // Datos para las tarjetas (se actualizarán según la selección)
   presupuestoData = {
@@ -90,6 +97,41 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
   // Registro actualmente seleccionado
   registroActual: any = null;
+
+   vigencia = [
+      {
+          "id": 1,
+          "label": "Vigencia Bienio 2025 - 2026"
+      },
+      {
+          "id": 2,
+          "label": "Vigencia Bienio 2023 - 2024"
+      },
+      {
+          "id": 3,
+          "label": "Vigencia Bienio 2021 - 2022"
+      },
+      {
+          "id": 4,
+          "label": "Vigencia Bienio 2019 - 2020"
+      },
+      {
+          "id": 5,
+          "label": "Vigencia Bienio 2017 - 2018"
+      },
+      {
+          "id": 6,
+          "label": "Vigencia Bienio 2015 - 2016"
+      },
+      {
+          "id": 7,
+          "label": "Vigencia Bienio 2013 - 2014"
+      },
+      {
+          "id": 8,
+          "label": "Vigencia 2012"
+      }
+  ];
 
   constructor() {}
 
@@ -151,7 +193,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
    * Evento cuando cambia la fuente seleccionada
    */
   onFuenteChange(): void {
-    console.log('Fuente seleccionada:', this.selectedFuente);
+    console.log('Fuente seleccionada:', this.selectedFuente.label);
     
     try {
       // Limpiar selecciones dependientes
@@ -167,13 +209,13 @@ export class ReporteFuncionamientoComponent implements OnInit {
       }
 
       // Actualizar conceptos según la fuente seleccionada
-      const conceptosUnicos = getConceptosByFuente(this.funcionamientoData, this.selectedFuente);
+      const conceptosUnicos = getConceptosByFuente(this.funcionamientoData, this.selectedFuente.label);
       this.conceptos = conceptosUnicos.map((concepto: any) => ({
         value: concepto,
         label: concepto
       }));
       
-      console.log('Conceptos disponibles para', this.selectedFuente + ':', this.conceptos);
+      console.log('Conceptos disponibles para', this.selectedFuente.label + ':', this.conceptos);
       
       // No seleccionar automáticamente ningún concepto
       // El usuario debe seleccionar manualmente
@@ -189,7 +231,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
    * Evento cuando cambia el concepto seleccionado
    */
   onConceptoChange(): void {
-    console.log('Concepto seleccionado:', this.selectedConcepto);
+    console.log('Concepto seleccionado:', this.selectedConcepto.label);
     
     try {
       // Limpiar selección de beneficiario
@@ -197,7 +239,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       this.registroActual = null;
       this.limpiarDatos();
 
-      if (!this.selectedFuente || !this.selectedConcepto) {
+      if (!this.selectedFuente || !this.selectedConcepto.label) {
         this.beneficiarios = [];
         return;
       }
@@ -205,8 +247,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
       // Actualizar beneficiarios según fuente y concepto seleccionados
       const beneficiariosUnicos = getBeneficiariosByFuenteAndConcepto(
         this.funcionamientoData, 
-        this.selectedFuente, 
-        this.selectedConcepto
+        this.selectedFuente.label, 
+        this.selectedConcepto.label
       );
       
       this.beneficiarios = beneficiariosUnicos.map((beneficiario: any) => ({
@@ -214,7 +256,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         label: beneficiario
       }));
       
-      console.log('Beneficiarios disponibles para', this.selectedFuente, '-', this.selectedConcepto + ':', this.beneficiarios);
+      console.log('Beneficiarios disponibles para', this.selectedFuente.label, '-', this.selectedConcepto.label + ':', this.beneficiarios);
       
       // No seleccionar automáticamente ningún beneficiario
       // El usuario debe seleccionar manualmente
@@ -230,10 +272,10 @@ export class ReporteFuncionamientoComponent implements OnInit {
    * Evento cuando cambia el beneficiario seleccionado
    */
   onBeneficiarioChange(): void {
-    console.log('Beneficiario seleccionado:', this.selectedBeneficiario);
+    console.log('Beneficiario seleccionado:', this.selectedBeneficiario.label);
     
     try {
-      if (!this.selectedFuente || !this.selectedConcepto || !this.selectedBeneficiario) {
+      if (!this.selectedFuente || !this.selectedConcepto || !this.selectedBeneficiario.label) {
         this.registroActual = null;
         this.limpiarDatos();
         return;
@@ -242,9 +284,9 @@ export class ReporteFuncionamientoComponent implements OnInit {
       // Obtener el registro completo
       this.registroActual = getRegistroByFuenteConceptoBeneficiario(
         this.funcionamientoData,
-        this.selectedFuente,
-        this.selectedConcepto,
-        this.selectedBeneficiario
+        this.selectedFuente.label,
+        this.selectedConcepto.label,
+        this.selectedBeneficiario.label
       );
 
       console.log('Registro encontrado:', this.registroActual);
@@ -259,6 +301,15 @@ export class ReporteFuncionamientoComponent implements OnInit {
       console.error('Error al cambiar beneficiario:', error);
       this.limpiarDatos();
     }
+  }
+
+  clearFilters(): void {
+    console.log('Limpiando filtros');
+    // Limpiar todas las selecciones
+    this.selectedFuente = '';
+    this.selectedConcepto = '';
+    this.selectedBeneficiario = '';
+    this.registroActual = null;
   }
 
   /**

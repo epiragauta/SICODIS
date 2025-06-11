@@ -2,62 +2,63 @@
   <!-- Panel superior con selects -->
   <div class="filters-panel">
     <div class="filters-row">
-      <mat-form-field class="filter-select">
-        <mat-label>Asignaciones</mat-label>
-        <mat-select [(value)]="selectedFuente" (selectionChange)="onFuenteChange()" placeholder="Seleccione una fuente">
-          <mat-option value="">Todos</mat-option>
-          <mat-option *ngFor="let fuente of fuentes" [value]="fuente.value">
-            {{fuente.label}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <div class="p-field vigencia-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="vigencia" [options]="vigencia" inputId="vigenciaSelect" [(ngModel)]="selectedVigencia"
+          optionLabel="label" [showClear]="false" placeholder="Seleccione Vigencia"></p-select>
+          <label for="vigenciaSelect">Vigencia</label>
+        </p-floatlabel>
+      </div>
 
-      <mat-form-field class="filter-select">
-        <mat-label>Concepto</mat-label>
-        <mat-select 
-          [(value)]="selectedConcepto" 
-          (selectionChange)="onConceptoChange()" 
-          [disabled]="conceptos.length === 0 || !selectedFuente"
-          placeholder="Primero seleccione una fuente">
-          <mat-option value="">Todos</mat-option>
-          <mat-option *ngFor="let concepto of conceptos" [value]="concepto.value">
-            {{concepto.label}}
-          </mat-option>
-        </mat-select>
-        <mat-hint *ngIf="!selectedFuente">Debe seleccionar una fuente primero</mat-hint>
-        <mat-hint *ngIf="selectedFuente && conceptos.length === 0">No hay conceptos disponibles</mat-hint>
-      </mat-form-field>
+      <div class="p-field asignaciones-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="asignaciones" [options]="fuentes" inputId="asignacioneselect" [(ngModel)]="selectedFuente"
+          (onChange)="onFuenteChange()" optionLabel="label" [showClear]="false" placeholder="Asignaciones"></p-select>
+          <label for="vigenciaSelect">Asignaciones</label>
+        </p-floatlabel>
+      </div>
 
-      <mat-form-field class="filter-select">
-        <mat-label>Beneficiario - Órgano</mat-label>
-        <mat-select 
-          [(value)]="selectedBeneficiario" 
-          (selectionChange)="onBeneficiarioChange()" 
-          [disabled]="beneficiarios.length === 0 || !selectedConcepto"
-          placeholder="Primero seleccione fuente y concepto">
-          <mat-option value="">Todos</mat-option>
-          <mat-option *ngFor="let beneficiario of beneficiarios" [value]="beneficiario.value">
-            {{beneficiario.label}}
-          </mat-option>
-        </mat-select>
-        <mat-hint *ngIf="!selectedConcepto">Debe seleccionar fuente y concepto primero</mat-hint>
-        <mat-hint *ngIf="selectedConcepto && beneficiarios.length === 0">No hay beneficiarios disponibles</mat-hint>
-      </mat-form-field>
+      <div class="p-field conceptos-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="conceptos" [options]="conceptos" inputId="conceptosSelect" [(ngModel)]="selectedConcepto"
+          (onChange)="onConceptoChange()" optionLabel="label" [showClear]="false" placeholder="Conceptos"></p-select>
+          <label for="conceptosSelect">Conceptos</label>
+        </p-floatlabel>
+
+      </div>
+
+      <div class="p-field beneficiarios-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="beneficiarios" [options]="beneficiarios" inputId="beneficiariosSelect" [(ngModel)]="selectedBeneficiario"
+          (onChange)="onBeneficiarioChange()" optionLabel="label" [showClear]="false" placeholder="Beneficiarios"></p-select>
+          <label for="beneficiariosSelect">Beneficiario - Órgano</label>
+        </p-floatlabel>
+
+      </div>
+
+      <div class="p-field clear-filters">
+        <button pButton type="button"
+            icon="pi pi-eraser"
+            label="Limpiar filtros"
+            class="p-button-secondary"
+            (click)="clearFilters()">
+        </button>
+      </div>
     </div>
     
     <!-- Indicador de estado de selección -->
     <div class="selection-status" *ngIf="fuentes.length > 0">
       <div class="status-item" [class.completed]="selectedFuente" [class.active]="!selectedFuente">
         <span class="status-number">1</span>
-        <span class="status-text">{{selectedFuente ? 'Asignación: ' + selectedFuente : 'Seleccione una asignación'}}</span>
+        <span class="status-text">{{selectedFuente.label ? 'Asignación: ' + selectedFuente.label : 'Seleccione una asignación'}}</span>
       </div>
       <div class="status-item" [class.completed]="selectedConcepto" [class.active]="selectedFuente && !selectedConcepto" [class.disabled]="!selectedFuente">
         <span class="status-number">2</span>
-        <span class="status-text">{{selectedConcepto ? 'Concepto: ' + selectedConcepto : 'Seleccione un concepto'}}</span>
+        <span class="status-text">{{selectedConcepto.label ? 'Concepto: ' + selectedConcepto.label : 'Seleccione un concepto'}}</span>
       </div>
       <div class="status-item" [class.completed]="selectedBeneficiario" [class.active]="selectedConcepto && !selectedBeneficiario" [class.disabled]="!selectedConcepto">
         <span class="status-number">3</span>
-        <span class="status-text">{{selectedBeneficiario ? 'Beneficiario: ' + selectedBeneficiario : 'Seleccione un beneficiario'}}</span>
+        <span class="status-text">{{selectedBeneficiario.label ? 'Beneficiario: ' + selectedBeneficiario.label : 'Seleccione un beneficiario'}}</span>
       </div>
     </div>
   </div>

@@ -21,6 +21,11 @@
         flex: 1;
         min-width: 200px;
       }
+
+      .p-select {
+        flex: 0 0 auto; // Don't grow or shrink, base size on content or fixed width
+        width: 235px;
+      }
     }
 
     // Indicador de estado de selección
@@ -469,7 +474,7 @@
     font-weight: 500;
     border-radius: 6px;
     transition: all 0.2s ease;
-    min-width: 340px;
+    min-width: 140px;
 
     &:hover {
       transform: translateY(-1px);
