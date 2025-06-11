@@ -6,7 +6,7 @@
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="vigencia" [options]="vigencia" inputId="vigenciaSelect" [(ngModel)]="selectedVigencia"
           optionLabel="label" [showClear]="false" placeholder="Seleccione Vigencia"></p-select>
-          <label for="vigenciaSelect">Vigencia</label>
+          <label for="vigenciaSelect">Bienio</label>
         </p-floatlabel>
       </div>
 
@@ -140,7 +140,7 @@
             </div>
             <div class="metric-item">
               <div class="metric-value">{{formatBillions(ejecucionData.recursoComprometer)}}</div>
-              <div class="metric-label">Recurso por Comprometer</div>
+              <div class="metric-label">Saldo sin afectación</div>
             </div>
           </div>
         </mat-card-content>
@@ -155,19 +155,19 @@
           <div class="metrics-row">
             <div class="metric-item">
               <div class="metric-value">{{formatMillions(situacionCajaData.presupuestoCorriente)}}</div>
-              <div class="metric-label">Presupuesto Corriente</div>
+              <div class="metric-label">Disponibilidad inicial</div>
             </div>
             <div class="metric-item">
               <div class="metric-value">{{formatMillions(situacionCajaData.recaudoCorriente)}}</div>
-              <div class="metric-label">Recaudo Corriente</div>
+              <div class="metric-label">Recaudo</div>
             </div>
             <div class="metric-item">
               <div class="metric-value">{{formatMillions(situacionCajaData.cajaTotal)}}</div>
-              <div class="metric-label">Recaudo Total</div>
+              <div class="metric-label">Caja Total</div>
             </div>
             <div class="metric-item">
               <div class="metric-value">{{formatBillions(situacionCajaData.cajaDisponible)}}</div>
-              <div class="metric-label">Recaudo Disponible</div>
+              <div class="metric-label">Caja Disponible</div>
             </div>
           </div>
         </mat-card-content>
@@ -283,19 +283,16 @@
   <div class="final-notes">
     <h4 class="notes-title">Notas:</h4>
     <p class="final-note">
-      <strong>Avance de ejecución:</strong> corresponde al porcentaje de ejecución de los compromisos respecto a los recursos disponibles del bienio
+      <strong>Presupuesto vigente disponible:</strong> Corresponde al los recursos que se tiene diponibles para realizar trámites presupuesto.
     </p>
     <p class="final-note">
-      <strong>Recaudo disponible:</strong> corresponde a los recursos en caja que tiene la entidad para realizar pagos
+      <strong>Saldo sin afectación:</strong> Corresponde a los recursos que no han sido objeto de CDP ni compromiso.
     </p>
     <p class="final-note">
-      <strong>Saldo a compromiso:</strong> corresponde a los recursos disponibles para comprometer en gasto
+      <strong>Caja disponible:</strong> Corresponde a los recursos con los que cuenta la entidad para realizar pagos, con corte a la fecha de actualización.
     </p>
     <p class="final-note">
-      <strong>Saldo a pagos:</strong> corresponde a los recursos disponibles para realizar pagos
-    </p>
-    <p class="final-note">
-      <strong>Datos mostrados:</strong> Los valores se actualizan automáticamente según la selección de Fuente, Concepto y Beneficiario
-    </p>
+      <strong>Avance de recaudo:</strong> Corresponde al porcentaje de los recursos recaudados respecto al presupuesto corriente asignado en la Ley bienal.
+    </p>    
   </div>
 </div>
