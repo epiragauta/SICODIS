@@ -3,11 +3,31 @@
 :host ::ng-deep .p-menubar {
   font-family: inherit;
   padding: 0.15rem;
+  display: flex;
+  justify-content: center;
+  border: none;
+  background: transparent;
+}
+
+:host ::ng-deep .p-menubar-root-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 :host ::ng-deep .p-menubar-item {
   font-family: inherit;
   font-size: 14px;
+}
+
+// Container para centrar el menú
+.menu-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  background-color: #F6F8F9;
+  padding: 0;
 }
 
 // Contenedor principal del header con posición sticky
@@ -59,6 +79,9 @@
   background-color: #F6F8F9;
   height: 40px;
   top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   
   button {
     padding: 0px 18px 0px 18px;
@@ -125,65 +148,19 @@
   .barra-superior-govco .idioma-icon-barra-superior-govco {
     right: 1rem;
   }
+
+  // Ajustes para dispositivos móviles
+  :host ::ng-deep .p-menubar-root-list {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .menu-container {
+    padding: 0.5rem;
+  }
 }
 
 .logo-aut-header-govco {
   position: relative;
   margin-bottom: 1rem;
-}
-
-.logo-aut-header-govco .link-login-header-govco {
-  color: #3366CC;
-  font-family: WorkSans-Regular;
-  font-size: 14px;
-  display: block;
-  right: 5.375rem;
-  position: absolute;
-  margin-top: 1rem;
-}
-
-.logo-aut-header-govco .link-login-header-govco:hover {
-  color: #004884;
-}
-
-.container-logo-header-govco {
-  padding: 1rem 1rem 0 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.container-logo-header-govco .logo-header-govco {
-  height: 6rem;
-  content: url(/assets/img/DNP_SICODIS.svg);
-}
-
-@media (max-width: 991px) {
-  .logo-aut-header-govco {
-    display: none;
-  }
-
-  .container-logo-header-govco {
-    padding: 0.781rem 0 0.781rem 1.125rem;
-    border-bottom: 0.188rem solid #004884;
-  }
-
-  .container-logo-header-govco .logo-header-govco {
-    height: 1.188rem;
-  }
-}
-
-// Variante compacta para móviles al hacer scroll
-@media (max-width: 768px) {
-  .container.scrolled {
-    .section-icons {
-      height: 80px; // Reduce altura en móviles al hacer scroll
-      transition: height 0.3s ease;
-    }
-    
-    .container-logo-header-govco .logo-header-govco {
-      height: 4rem; // Logo más pequeño en scroll
-      transition: height 0.3s ease;
-    }
-  }
 }

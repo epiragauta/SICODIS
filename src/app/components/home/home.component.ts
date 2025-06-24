@@ -239,8 +239,7 @@ export class HomeComponent {
     { concept: 'Alimentación Escolar', amount: 300000000, isTotal: false },
     { concept: 'Ribereños', amount: 200000000, isTotal: false },
     { concept: 'Resguardos Indígenas', amount: 150000000, isTotal: false },
-    { concept: 'Fonpet Asignaciones', amount: 100000000, isTotal: false },
-    { concept: 'Especiales', amount: 50000000, isTotal: false },
+    { concept: 'Fonpet Asignaciones Especiales', amount: 100000000, isTotal: false },
     { concept: 'Primera Infancia', amount: 250000000, isTotal: false },
     { concept: 'Total SGP', amount: 4000000000, isTotal: true }
   ];
