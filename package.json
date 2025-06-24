@@ -31,7 +31,7 @@
     "highcharts-angular": "^4.0.1",
     "leaflet": "^1.9.4",
     "ngx-cookie-service": "^18.0.0",
-    "ngx-gauge": "^11.0.0",
+    "ngx-gauge": "^10.0.0",
     "ol": "^10.3.1",
     "primeicons": "^7.0.0",
     "primeng": "^18.0.0",
