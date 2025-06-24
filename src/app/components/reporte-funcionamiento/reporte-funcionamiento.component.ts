@@ -22,6 +22,7 @@ import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { FloatLabel } from 'primeng/floatlabel';
 import { Select } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
+import { MultiSelect, MultiSelectChangeEvent  } from 'primeng/multiselect';
 
 interface SelectOption {
   value: string;
@@ -43,7 +44,8 @@ interface SelectOption {
     NumberFormatPipe,
     MatIconModule,
     FloatLabel,
-    Select
+    Select,
+    MultiSelect
   ],
   templateUrl: './reporte-funcionamiento.component.html',
   styleUrl: './reporte-funcionamiento.component.scss'
@@ -60,10 +62,10 @@ export class ReporteFuncionamientoComponent implements OnInit {
   beneficiarios: SelectOption[] = [];
 
   // Valores seleccionados - iniciar sin selección
-  selectedVigencia: any = { id: 1, label: '2025 - 2026' };
-  selectedFuente: any;
-  selectedConcepto: any;
-  selectedBeneficiario: any;
+  selectedVigencia: any[] = [];
+  selectedFuente: any[] = [];
+  selectedConcepto: any[] = [];
+  selectedBeneficiario: any[] = [];
 
   // Datos para las tarjetas (se actualizarán según la selección)
   presupuestoData = {
@@ -174,9 +176,9 @@ export class ReporteFuncionamientoComponent implements OnInit {
       // Inicializar los otros selects como vacíos y deshabilitados
       this.conceptos = [];
       this.beneficiarios = [];
-      this.selectedFuente = '';
-      this.selectedConcepto = '';
-      this.selectedBeneficiario = '';
+      this.selectedFuente = [];
+      this.selectedConcepto = [];
+      this.selectedBeneficiario = [];
       this.registroActual = null;
       
       // Limpiar datos iniciales
@@ -189,127 +191,18 @@ export class ReporteFuncionamientoComponent implements OnInit {
     }
   }
 
-  /**
-   * Evento cuando cambia la fuente seleccionada
-   */
-  onFuenteChange(): void {
-    console.log('Fuente seleccionada:', this.selectedFuente.label);
-    
-    try {
-      // Limpiar selecciones dependientes
-      this.selectedConcepto = '';
-      this.selectedBeneficiario = '';
-      this.beneficiarios = [];
-      this.registroActual = null;
-      this.limpiarDatos();
-
-      if (!this.selectedFuente) {
-        this.conceptos = [];
-        return;
-      }
-
-      // Actualizar conceptos según la fuente seleccionada
-      const conceptosUnicos = getConceptosByFuente(this.funcionamientoData, this.selectedFuente.label);
-      this.conceptos = conceptosUnicos.map((concepto: any) => ({
-        value: concepto,
-        label: concepto
-      }));
-      
-      console.log('Conceptos disponibles para', this.selectedFuente.label + ':', this.conceptos);
-      
-      // No seleccionar automáticamente ningún concepto
-      // El usuario debe seleccionar manualmente
-      
-    } catch (error) {
-      console.error('Error al cambiar fuente:', error);
-      this.conceptos = [];
-      this.limpiarDatos();
-    }
-  }
-
-  /**
-   * Evento cuando cambia el concepto seleccionado
-   */
-  onConceptoChange(): void {
-    console.log('Concepto seleccionado:', this.selectedConcepto.label);
-    
-    try {
-      // Limpiar selección de beneficiario
-      this.selectedBeneficiario = '';
-      this.registroActual = null;
-      this.limpiarDatos();
-
-      if (!this.selectedFuente || !this.selectedConcepto.label) {
-        this.beneficiarios = [];
-        return;
-      }
-
-      // Actualizar beneficiarios según fuente y concepto seleccionados
-      const beneficiariosUnicos = getBeneficiariosByFuenteAndConcepto(
-        this.funcionamientoData, 
-        this.selectedFuente.label, 
-        this.selectedConcepto.label
-      );
-      
-      this.beneficiarios = beneficiariosUnicos.map((beneficiario: any) => ({
-        value: beneficiario,
-        label: beneficiario
-      }));
-      
-      console.log('Beneficiarios disponibles para', this.selectedFuente.label, '-', this.selectedConcepto.label + ':', this.beneficiarios);
-      
-      // No seleccionar automáticamente ningún beneficiario
-      // El usuario debe seleccionar manualmente
-      
-    } catch (error) {
-      console.error('Error al cambiar concepto:', error);
-      this.beneficiarios = [];
-      this.limpiarDatos();
-    }
-  }
-
-  /**
-   * Evento cuando cambia el beneficiario seleccionado
-   */
-  onBeneficiarioChange(): void {
-    console.log('Beneficiario seleccionado:', this.selectedBeneficiario.label);
-    
-    try {
-      if (!this.selectedFuente || !this.selectedConcepto || !this.selectedBeneficiario.label) {
-        this.registroActual = null;
-        this.limpiarDatos();
-        return;
-      }
-
-      // Obtener el registro completo
-      this.registroActual = getRegistroByFuenteConceptoBeneficiario(
-        this.funcionamientoData,
-        this.selectedFuente.label,
-        this.selectedConcepto.label,
-        this.selectedBeneficiario.label
-      );
-
-      console.log('Registro encontrado:', this.registroActual);
-
-      if (this.registroActual) {
-        this.actualizarDatosDelRegistro();
-      } else {
-        console.warn('No se encontró registro para la combinación seleccionada');
-        this.limpiarDatos();
-      }
-    } catch (error) {
-      console.error('Error al cambiar beneficiario:', error);
-      this.limpiarDatos();
-    }
-  }
-
+ 
   clearFilters(): void {
     console.log('Limpiando filtros');
-    // Limpiar todas las selecciones
-    this.selectedFuente = '';
-    this.selectedConcepto = '';
-    this.selectedBeneficiario = '';
+    // Limpiar todas las selecciones como arrays vacíos
+    this.selectedVigencia = [];
+    this.selectedFuente = [];
+    this.selectedConcepto = [];
+    this.selectedBeneficiario = [];
     this.registroActual = null;
+    
+    // Limpiar datos iniciales
+    this.limpiarDatos();
   }
 
   /**
@@ -402,9 +295,9 @@ export class ReporteFuncionamientoComponent implements OnInit {
     this.fuentes = [];
     this.conceptos = [];
     this.beneficiarios = [];
-    this.selectedFuente = '';
-    this.selectedConcepto = '';
-    this.selectedBeneficiario = '';
+    this.selectedFuente = [];
+    this.selectedConcepto = [];
+    this.selectedBeneficiario = [];
     this.registroActual = null;
     this.limpiarDatos();
   }
@@ -673,5 +566,133 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
   onInformeTrimestraClick(): void {
     console.log('Informe Trimestral clicked');
+  }
+
+  // 4. Actualizar los métodos de eventos para usar MultiSelectChangeEvent
+  /**
+   * Evento cuando cambia la fuente seleccionada
+   */
+  onFuenteChange(event: MultiSelectChangeEvent): void {
+    console.log('Fuentes seleccionadas:', event.value);
+    
+    try {
+      // Limpiar selecciones dependientes
+      this.selectedConcepto = [];
+      this.selectedBeneficiario = [];
+      this.beneficiarios = [];
+      this.registroActual = null;
+      this.limpiarDatos();
+
+      if (!event.value || event.value.length === 0) {
+        this.conceptos = [];
+        return;
+      }
+
+      // Obtener conceptos para todas las fuentes seleccionadas
+      let allConceptos: any[] = [];
+      event.value.forEach((fuente: any) => {
+        const conceptosUnicos = getConceptosByFuente(this.funcionamientoData, fuente.label);
+        allConceptos = [...allConceptos, ...conceptosUnicos];
+      });
+
+      // Eliminar duplicados
+      const conceptosUnicos = [...new Set(allConceptos)];
+      this.conceptos = conceptosUnicos.map((concepto: any) => ({
+        value: concepto,
+        label: concepto
+      }));
+      
+      console.log('Conceptos disponibles:', this.conceptos);
+      
+    } catch (error) {
+      console.error('Error al cambiar fuente:', error);
+      this.conceptos = [];
+      this.limpiarDatos();
+    }
+  }
+
+  /**
+   * Evento cuando cambia el concepto seleccionado
+   */
+  onConceptoChange(event: MultiSelectChangeEvent): void {
+    console.log('Conceptos seleccionados:', event.value);
+    
+    try {
+      // Limpiar selección de beneficiario
+      this.selectedBeneficiario = [];
+      this.registroActual = null;
+      this.limpiarDatos();
+
+      if (!this.selectedFuente || this.selectedFuente.length === 0 || 
+          !event.value || event.value.length === 0) {
+        this.beneficiarios = [];
+        return;
+      }
+
+      // Obtener beneficiarios para todas las combinaciones de fuentes y conceptos seleccionados
+      let allBeneficiarios: any[] = [];
+      this.selectedFuente.forEach((fuente: any) => {
+        event.value.forEach((concepto: any) => {
+          const beneficiariosUnicos = getBeneficiariosByFuenteAndConcepto(
+            this.funcionamientoData, 
+            fuente.label, 
+            concepto.label
+          );
+          allBeneficiarios = [...allBeneficiarios, ...beneficiariosUnicos];
+        });
+      });
+
+      // Eliminar duplicados
+      const beneficiariosUnicos = [...new Set(allBeneficiarios)];
+      this.beneficiarios = beneficiariosUnicos.map((beneficiario: any) => ({
+        value: beneficiario,
+        label: beneficiario
+      }));
+      
+      console.log('Beneficiarios disponibles:', this.beneficiarios);
+      
+    } catch (error) {
+      console.error('Error al cambiar concepto:', error);
+      this.beneficiarios = [];
+      this.limpiarDatos();
+    }
+  }
+
+  /**
+   * Evento cuando cambia el beneficiario seleccionado
+   */
+  onBeneficiarioChange(event: MultiSelectChangeEvent): void {
+    console.log('Beneficiarios seleccionados:', event.value);
+    
+    try {
+      if (!this.selectedFuente || this.selectedFuente.length === 0 || 
+          !this.selectedConcepto || this.selectedConcepto.length === 0 || 
+          !event.value || event.value.length === 0) {
+        this.registroActual = null;
+        this.limpiarDatos();
+        return;
+      }
+
+      // Para múltiples selecciones, podrías manejar el primer registro encontrado
+      // o implementar lógica para combinar múltiples registros
+      this.registroActual = getRegistroByFuenteConceptoBeneficiario(
+        this.funcionamientoData,
+        this.selectedFuente[0].label,
+        this.selectedConcepto[0].label,
+        event.value[0].label
+      );
+
+      console.log('Registro encontrado:', this.registroActual);
+
+      if (this.registroActual) {
+        this.actualizarDatosDelRegistro();
+      } else {
+        console.warn('No se encontró registro para la combinación seleccionada');
+        this.limpiarDatos();
+      }
+    } catch (error) {
+      console.error('Error al cambiar beneficiario:', error);
+      this.limpiarDatos();
+    }
   }
 }

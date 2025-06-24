@@ -4,24 +4,26 @@
     <div class="filters-row">
       <div class="p-field vigencia-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-select id="vigencia" [options]="vigencia" inputId="vigenciaSelect" [(ngModel)]="selectedVigencia"
-          optionLabel="label" [showClear]="false" placeholder="Seleccione Vigencia"></p-select>
+           <p-multiselect id="vigencia" [options]="vigencia" inputId="vigenciaSelect" [(ngModel)]="selectedVigencia"
+            optionLabel="label" [showClear]="true" placeholder="Bienio" [maxSelectedLabels]="3" [showClear]="true"></p-multiselect>
           <label for="vigenciaSelect">Bienio</label>
         </p-floatlabel>
       </div>
 
       <div class="p-field asignaciones-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-select id="asignaciones" [options]="fuentes" inputId="asignacioneselect" [(ngModel)]="selectedFuente"
-          (onChange)="onFuenteChange()" optionLabel="label" [showClear]="false" placeholder="Asignaciones"></p-select>
+          <p-multiselect id="asignaciones" [options]="fuentes" inputId="asignacioneselect" [(ngModel)]="selectedFuente"
+            (onChange)="onFuenteChange($event)" optionLabel="label" [showClear]="false" placeholder="Asignaciones" [maxSelectedLabels]="3" 
+            [showClear]="true"></p-multiselect>
           <label for="vigenciaSelect">Asignaciones</label>
         </p-floatlabel>
       </div>
 
       <div class="p-field conceptos-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-select id="conceptos" [options]="conceptos" inputId="conceptosSelect" [(ngModel)]="selectedConcepto"
-          (onChange)="onConceptoChange()" optionLabel="label" [showClear]="false" placeholder="Conceptos"></p-select>
+          <p-multiselect id="conceptos" [options]="conceptos" inputId="conceptosSelect" [(ngModel)]="selectedConcepto"
+            (onChange)="onConceptoChange($event)" optionLabel="label" [showClear]="false" placeholder="Conceptos" 
+            [maxSelectedLabels]="3" [showClear]="true"></p-multiselect>
           <label for="conceptosSelect">Conceptos</label>
         </p-floatlabel>
 
@@ -29,38 +31,41 @@
 
       <div class="p-field beneficiarios-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-select id="beneficiarios" [options]="beneficiarios" inputId="beneficiariosSelect" [(ngModel)]="selectedBeneficiario"
-          (onChange)="onBeneficiarioChange()" optionLabel="label" [showClear]="false" placeholder="Beneficiarios"></p-select>
+          <p-multiselect id="beneficiarios" [options]="beneficiarios" inputId="beneficiariosSelect"
+            [(ngModel)]="selectedBeneficiario" optionLabel="label" (onChange)="onBeneficiarioChange($event)" 
+            [showClear]="false" placeholder="Beneficiarios" [maxSelectedLabels]="3" [showClear]="true"></p-multiselect>
           <label for="beneficiariosSelect">Beneficiario - Órgano</label>
         </p-floatlabel>
 
       </div>
 
       <div class="p-field clear-filters">
-        <button pButton type="button"
-            icon="pi pi-eraser"
-            label="Limpiar filtros"
-            class="p-button-secondary"
-            (click)="clearFilters()">
+        <button pButton type="button" icon="pi pi-eraser" label="Limpiar filtros" class="p-button-secondary"
+          (click)="clearFilters()">
         </button>
       </div>
     </div>
-    
+
     <!-- Indicador de estado de selección -->
-    <div class="selection-status" *ngIf="fuentes.length > 0">
+    <!-- <div class="selection-status" *ngIf="fuentes.length > 0">
       <div class="status-item" [class.completed]="selectedFuente" [class.active]="!selectedFuente">
         <span class="status-number">1</span>
-        <span class="status-text">{{selectedFuente.label ? 'Asignación: ' + selectedFuente.label : 'Seleccione una asignación'}}</span>
+        <span class="status-text">{{selectedFuente.label ? 'Asignación: ' + selectedFuente.label : 'Seleccione una
+          asignación'}}</span>
       </div>
-      <div class="status-item" [class.completed]="selectedConcepto" [class.active]="selectedFuente && !selectedConcepto" [class.disabled]="!selectedFuente">
+      <div class="status-item" [class.completed]="selectedConcepto" [class.active]="selectedFuente && !selectedConcepto"
+        [class.disabled]="!selectedFuente">
         <span class="status-number">2</span>
-        <span class="status-text">{{selectedConcepto.label ? 'Concepto: ' + selectedConcepto.label : 'Seleccione un concepto'}}</span>
+        <span class="status-text">{{selectedConcepto.label ? 'Concepto: ' + selectedConcepto.label : 'Seleccione un
+          concepto'}}</span>
       </div>
-      <div class="status-item" [class.completed]="selectedBeneficiario" [class.active]="selectedConcepto && !selectedBeneficiario" [class.disabled]="!selectedConcepto">
+      <div class="status-item" [class.completed]="selectedBeneficiario"
+        [class.active]="selectedConcepto && !selectedBeneficiario" [class.disabled]="!selectedConcepto">
         <span class="status-number">3</span>
-        <span class="status-text">{{selectedBeneficiario.label ? 'Beneficiario: ' + selectedBeneficiario.label : 'Seleccione un beneficiario'}}</span>
+        <span class="status-text">{{selectedBeneficiario.label ? 'Beneficiario: ' + selectedBeneficiario.label :
+          'Seleccione un beneficiario'}}</span>
       </div>
-    </div>
+    </div> -->
   </div>
 
   <!-- Mensaje cuando no hay datos seleccionados -->
@@ -70,7 +75,8 @@
         <div class="no-data-content">
           <mat-icon class="no-data-icon">info</mat-icon>
           <h3>Seleccione los filtros para ver la información</h3>
-          <p>Para visualizar los datos de funcionamiento, complete la selección de Fuente, Concepto y Beneficiario en el panel superior.</p>
+          <p>Para visualizar los datos de funcionamiento, complete la selección de Fuente, Concepto y Beneficiario en el
+            panel superior.</p>
         </div>
       </mat-card-content>
     </mat-card>
@@ -79,7 +85,7 @@
   <!-- Información del registro seleccionado -->
   <div *ngIf="registroActual" class="registro-info">
     <p class="date-update">
-      <strong>Registro seleccionado:</strong> {{registroActual.beneficiario}} - 
+      <strong>Registro seleccionado:</strong> {{registroActual.beneficiario}} -
       <strong>Acto Administrativo:</strong> {{registroActual['acto-administrativo'] || 'No especificado'}}
     </p>
   </div>
@@ -178,31 +184,19 @@
     <div class="right-column">
       <!-- Gráfico 1: Barras verticales con línea -->
       <div class="chart-container">
-        <p-chart 
-          type="bar" 
-          [data]="barChartData" 
-          [options]="barChartOptions"
-          class="chart">
+        <p-chart type="bar" [data]="barChartData" [options]="barChartOptions" class="chart">
         </p-chart>
       </div>
 
       <!-- Gráfico 2: Barra horizontal -->
       <div class="chart-container">
-        <p-chart 
-          type="bar" 
-          [data]="horizontalBarData" 
-          [options]="horizontalBarOptions"
-          class="chart">
+        <p-chart type="bar" [data]="horizontalBarData" [options]="horizontalBarOptions" class="chart">
         </p-chart>
       </div>
 
       <!-- Gráfico 3: Dona 180 grados -->
       <div class="chart-container">
-        <p-chart 
-          type="doughnut" 
-          [data]="donutData" 
-          [options]="donutOptions"
-          class="chart">
+        <p-chart type="doughnut" [data]="donutData" [options]="donutOptions" class="chart">
         </p-chart>
       </div>
     </div>
@@ -210,46 +204,37 @@
 
   <div class="panel-avance-recaudo" *ngIf="registroActual">
     <mat-card class="info-card">
-        <mat-card-header>
-          <mat-card-title class="card-title">Avance del recaudo de ingresos corrientes</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="metrics-row">
-            <div class="metric-item">
-              <div class="metric-value">{{formatMillions(situacionCajaData.presupuestoCorriente)}}</div>
-              <div class="metric-label">Presupuesto corriente</div>
+      <mat-card-header>
+        <mat-card-title class="card-title">Avance del recaudo de ingresos corrientes</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="metrics-row">
+          <div class="metric-item">
+            <div class="metric-value">{{formatMillions(situacionCajaData.presupuestoCorriente)}}</div>
+            <div class="metric-label">Presupuesto corriente</div>
+          </div>
+        </div>
+        <div class="metrics-row">
+          <div class="metric-item">
+            <div class="metric-value-2">
+              {{registroActual?.['avance-iac-corriente'] || '0.0%'}}
             </div>
+            <div class="metric-label">Avance</div>
           </div>
-          <div class="metrics-row">
-            <div class="metric-item">
-              <div class="metric-value-2">
-                {{registroActual?.['avance-iac-corriente'] || '0.0%'}}
-              </div>
-              <div class="metric-label">Avance</div>
-            </div>            
-          </div>
-        </mat-card-content>
-      </mat-card>
+        </div>
+      </mat-card-content>
+    </mat-card>
   </div>
 
   <!-- Botones de acción -->
   <div class="action-buttons" *ngIf="registroActual">
-    <p-button 
-      label="Detalle Gestión Financiera" 
-      icon="pi pi-chart-line"
-      class="detail-button"      
+    <p-button label="Detalle Gestión Financiera" icon="pi pi-chart-line" class="detail-button"
       (click)="onDetalleGestionClick()">
     </p-button>
-    <p-button 
-      label="Detalle de Recaudo" 
-      icon="pi pi-money-bill"
-      class="detail-button"      
+    <p-button label="Detalle de Recaudo" icon="pi pi-money-bill" class="detail-button"
       (click)="onDetalleRecaudoClick()">
     </p-button>
-    <p-button 
-      label="Informe Trimestral de Gestión Financiera" 
-      icon="pi pi-file-pdf"
-      class="detail-button"      
+    <p-button label="Informe Trimestral de Gestión Financiera" icon="pi pi-file-pdf" class="detail-button"
       (click)="onInformeTrimestraClick()">
     </p-button>
   </div>
@@ -283,16 +268,19 @@
   <div class="final-notes">
     <h4 class="notes-title">Notas:</h4>
     <p class="final-note">
-      <strong>Presupuesto vigente disponible:</strong> Corresponde al los recursos que se tiene diponibles para realizar trámites presupuesto.
+      <strong>Presupuesto vigente disponible:</strong> Corresponde al los recursos que se tiene diponibles para realizar
+      trámites presupuesto.
     </p>
     <p class="final-note">
       <strong>Saldo sin afectación:</strong> Corresponde a los recursos que no han sido objeto de CDP ni compromiso.
     </p>
     <p class="final-note">
-      <strong>Caja disponible:</strong> Corresponde a los recursos con los que cuenta la entidad para realizar pagos, con corte a la fecha de actualización.
+      <strong>Caja disponible:</strong> Corresponde a los recursos con los que cuenta la entidad para realizar pagos,
+      con corte a la fecha de actualización.
     </p>
     <p class="final-note">
-      <strong>Avance de recaudo:</strong> Corresponde al porcentaje de los recursos recaudados respecto al presupuesto corriente asignado en la Ley bienal.
-    </p>    
+      <strong>Avance de recaudo:</strong> Corresponde al porcentaje de los recursos recaudados respecto al presupuesto
+      corriente asignado en la Ley bienal.
+    </p>
   </div>
 </div>
