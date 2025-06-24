@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ReportsTargetComponent } from '../reports-target/reports-target.component';
-import { CommonModule } from '@angular/common';
+import { CommonModule  } from '@angular/common';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { Router } from '@angular/router';
 import { Card, CardModule } from 'primeng/card';
@@ -17,6 +17,7 @@ import { TagModule } from 'primeng/tag';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
+import { SafeGaugeComponent } from './safe-gauge.component';
 
 @Component({
   selector: 'app-home',
@@ -33,12 +34,14 @@ import { NumberFormatPipe } from '../../utils/numberFormatPipe';
     MatIconModule,
     CarouselModule,
     TagModule,
-    NumberFormatPipe
+    NumberFormatPipe,
+    SafeGaugeComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
 export class HomeComponent {
+
   cards: MyCard[] = [
     {
       imageUrl: '/assets/img/target2.svg',
@@ -263,6 +266,25 @@ export class HomeComponent {
     { concept: 'Total Administración', amount: 300000000, isFirst: false, isTotal: true },
   ]
 
+  isBrowser: boolean = false;
+  showGauges: boolean = false;
+
+  gaugeSize: number = 180;
+  gaugeTick: number = 10;
+  gaugeValue: number = 68.2;
+
+  markerConfig = {
+    "0": { color: '#555', size: 8, label: '0', type: 'line'},
+    "15": { color: '#555', size: 4, type: 'line'},
+    "30": { color: '#555', size: 8, label: '30', type: 'line'},
+    "40": { color: '#555', size: 4, type: 'line'},
+    "50": { color: '#555', size: 8, label: '50', type: 'line'},
+    "60": { color: '#555', size: 4, type: 'line'},
+    "70": { color: '#555', size: 8, label: '70', type: 'line'},
+    "85": { color: '#555', size: 4, type: 'line'},
+    "100": { color: '#555', size: 8, label: '100', type: 'line'},
+  }
+
   constructor(private route: Router,
     private breakpointObserver: BreakpointObserver
   ) {
@@ -305,8 +327,7 @@ export class HomeComponent {
 
   ngOnInit() {
 
-
-  this.responsiveOptions = [
+    this.responsiveOptions = [
         {
             breakpoint: '1400px',
             numVisible: 2,
@@ -327,9 +348,7 @@ export class HomeComponent {
             numVisible: 1,
             numScroll: 1
         }
-    ]
-
-    
+    ]    
   }
 
   redirectSGR() {
