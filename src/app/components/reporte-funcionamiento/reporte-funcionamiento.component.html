@@ -4,8 +4,17 @@
     <div class="filters-row">
       <div class="p-field vigencia-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
-           <p-multiselect id="vigencia" [options]="vigencia" inputId="vigenciaSelect" [(ngModel)]="selectedVigencia"
-            optionLabel="label" [showClear]="true" placeholder="Bienio" [maxSelectedLabels]="3" [showClear]="true"></p-multiselect>
+           <p-multiselect 
+            id="vigencia" 
+            [options]="vigencia" 
+            inputId="vigenciaSelect" 
+            [(ngModel)]="selectedVigencia"
+            (onChange)="onVigenciaChange($event)"
+            optionLabel="label" 
+            [showClear]="true" 
+            placeholder="Bienio" 
+            [maxSelectedLabels]="3">
+          </p-multiselect>
           <label for="vigenciaSelect">Bienio</label>
         </p-floatlabel>
       </div>
