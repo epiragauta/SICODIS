@@ -1,13 +1,14 @@
 // src/app/components/header/header.component.ts
 
-import { Component, OnInit, OnDestroy, ElementRef, Renderer2, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, Renderer2, HostListener, Inject, PLATFORM_ID } from '@angular/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { Menubar } from 'primeng/menubar';
 import { MenuItem } from 'primeng/api';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-header',
@@ -20,13 +21,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   items: MenuItem[] | undefined;
   private isScrolled = false;
-  private scrollThreshold = 50; // Píxeles de scroll antes de aplicar efectos
+  private scrollThreshold = 100; // Píxeles de scroll antes de aplicar efectos (aumentado para mejor UX)
+  private isBrowser: boolean;
 
   constructor(
     private route: Router,
     private elementRef: ElementRef,
-    private renderer: Renderer2
-  ) {}
+    private renderer: Renderer2,
+    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(DOCUMENT) private document: Document
+  ) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
 
   ngOnInit() {
     this.items = [
@@ -62,7 +68,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
             // command: () => this.redirectUrl("reports-sgp-budget")
           },
           {
-            label: 'Eficiencia Fiscal y Eficiencia Administrativa de la participación para Propósito general.',
+            label: 'Eficiencia Fiscal y Eficiencia Administrativa de la participación para Propósito general',
             // command: () => this.redirectUrl("dashboard")
           },
           {
@@ -127,19 +133,54 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // Limpieza si es necesaria
+    // Limpiar clases del body al destruir el componente (solo en el navegador)
+    if (this.isBrowser) {
+      this.renderer.removeClass(this.document.body, 'menu-is-sticky');
+    }
   }
 
   @HostListener('window:scroll', ['$event'])
   onWindowScroll(event: Event): void {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    // Solo ejecutar en el navegador
+    if (!this.isBrowser) {
+      return;
+    }
+
+    const scrollTop = window.pageYOffset || this.document.documentElement.scrollTop || this.document.body.scrollTop || 0;
     
     if (scrollTop > this.scrollThreshold && !this.isScrolled) {
       this.isScrolled = true;
-      this.renderer.addClass(this.elementRef.nativeElement.querySelector('.container'), 'scrolled');
+      // Agregar clase al contenedor principal para activar el estado scrolled
+      const headerContainer = this.elementRef.nativeElement.querySelector('.header-container');
+      if (headerContainer) {
+        this.renderer.addClass(headerContainer, 'scrolled');
+      }
+      
+      // Agregar clase específica al menú para hacerlo sticky
+      const menuContainer = this.elementRef.nativeElement.querySelector('.menu-container');
+      if (menuContainer) {
+        this.renderer.addClass(menuContainer, 'menu-sticky');
+      }
+      
+      // Agregar clase al body para ajustar el padding del contenido principal
+      this.renderer.addClass(this.document.body, 'menu-is-sticky');
+      
     } else if (scrollTop <= this.scrollThreshold && this.isScrolled) {
       this.isScrolled = false;
-      this.renderer.removeClass(this.elementRef.nativeElement.querySelector('.container'), 'scrolled');
+      
+      // Remover clases cuando se vuelve al top
+      const headerContainer = this.elementRef.nativeElement.querySelector('.header-container');
+      if (headerContainer) {
+        this.renderer.removeClass(headerContainer, 'scrolled');
+      }
+      
+      const menuContainer = this.elementRef.nativeElement.querySelector('.menu-container');
+      if (menuContainer) {
+        this.renderer.removeClass(menuContainer, 'menu-sticky');
+      }
+      
+      // Remover clase del body
+      this.renderer.removeClass(this.document.body, 'menu-is-sticky');
     }
   }
 

@@ -1,24 +1,31 @@
-<div class="container">
+<!-- src/app/components/header/header.component.html -->
+<div class="header-container">
+  <!-- Barra superior del gobierno -->
   <nav class="navbar navbar-expand-lg barra-superior-govco" aria-label="Barra superior">
     <a href="https://www.gov.co/" target="_blank" aria-label="Portal del Estado Colombiano - GOV.CO"></a>
   </nav>
-  <div class="header-logos-container">
+  
+  <!-- Sección de logos - esta NO se queda sticky -->
+  <div class="logos-section">
     <table width="100%" border="0" cellspacing="0" cellpadding="0">
       <tbody>
         <tr>
           <td style="width:100%">
-            <div class="col" id="header-logos-container" style="padding:10px 10px; display:flex;align-items:center">
-              <div id="dnp-logo-container" style="width: 90px;padding-right: 15px; border-right:2px solid #666666">
+            <div class="col" id="header-logos-container" style="padding:15px 30px; display:flex;align-items:center">
+              <div id="dnp-logo-container" style="width: 96px;padding-right: 40px; border-right:2px solid #666666">
                 <a href="https://www.dnp.gov.co">
-                  <img id="ctl00_Image1" src="/assets/img/logo-dnp-2024.png" alt="Logo del Departamento Nacional de Planeación" 
-                       title="Logo del Departamento Nacional de Planeación" 
-                       class="img-fluid"
-                    style="width:100%;border-width:0px;">
+                  <img id="ctl00_Image1" src="https://sicodis.dnp.gov.co/app_images/Logo-dnp-version-corta.png"
+                    style="width:80%;border-width:0px;"
+                    alt="Logo del Departamento Nacional de Planeación"
+                    title="Logo del Departamento Nacional de Planeación">
                 </a>
               </div>
               <div id="site-logo-container" style="padding-left: 30px">
                 <a href="/">
-                  <img id="ctl00_Image2" src="https://sicodis.dnp.gov.co/app_images/NuevoLogoSICODIS.png" style="width:17%;border-width:0px;">
+                  <img id="ctl00_Image2" src="https://sicodis.dnp.gov.co/app_images/NuevoLogoSICODIS.png" 
+                    style="width:20%;border-width:0px;"
+                    alt="Logo SICODIS"
+                    title="Sistema de Consulta de Distribuciones - SICODIS">
                 </a>
               </div>
             </div>
@@ -27,7 +34,11 @@
       </tbody>
     </table>
   </div>
+  
+  <!-- Sección del menú - esta SÍ se queda sticky -->
   <div class="menu-container">
-    <p-menubar [model]="items" />
+    <div class="menu-inner">
+      <p-menubar [model]="items" />
+    </div>
   </div>
 </div>

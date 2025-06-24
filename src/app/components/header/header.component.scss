@@ -1,5 +1,6 @@
 // src/app/components/header/header.component.scss
 
+// Configuración del menú PrimeNG
 :host ::ng-deep .p-menubar {
   font-family: inherit;
   padding: 0.15rem;
@@ -7,6 +8,7 @@
   justify-content: center;
   border: none;
   background: transparent;
+  border-radius: 0;
 }
 
 :host ::ng-deep .p-menubar-root-list {
@@ -21,78 +23,29 @@
   font-size: 14px;
 }
 
-// Container para centrar el menú
-.menu-container {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  background-color: #F6F8F9;
-  padding: 0;
+// Asegurar que los dropdowns tengan el z-index correcto
+:host ::ng-deep .p-menubar-submenu {
+  z-index: 1001 !important;
 }
 
-// Contenedor principal del header con posición sticky
-.container {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background-color: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s ease;
-  padding: 0;
-  margin: 0;
+:host ::ng-deep .p-menubar-overlay {
+  z-index: 1001 !important;
 }
 
-.header-logos-container {
-  max-width: 1200px;
-  margin: 0 auto;  
-}
-
-// Efecto de sombra más pronunciado al hacer scroll
-.container.scrolled {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.section-gov {
-  background-color: #3366CC;
-  height: 52px;
+// Contenedor principal del header
+.header-container {
   position: relative;
-  
-  .logo {
-    width: 148px;
-    height: 30px;
-    margin: 12px 180px;
-  }
-}
-
-.section-icons {
   background-color: white;
-  height: 120px;
-  margin-left: 2rem;
-  
-  .logo {
-    width: 342px;
-    height: 90px;
-  }
 }
 
-.section-menu {
-  background-color: #F6F8F9;
-  height: 40px;
-  top: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  
-  button {
-    padding: 0px 18px 0px 18px;
-  }
-}
-
+// Barra superior del gobierno (siempre visible)
 .barra-superior-govco {
   background-color: #3366cc;
   width: 100%;
   height: 2.3rem;
   padding-left: 4.375rem;
+  position: relative;
+  z-index: 999;
 }
 
 .barra-superior-govco a {
@@ -139,6 +92,79 @@
   color: #FFFFFF;
 }
 
+// Sección de logos (NO sticky)
+.logos-section {
+  background-color: white;
+  position: relative;
+  z-index: 998;
+  transition: all 0.3s ease;
+}
+
+// Contenedor del menú (SÍ sticky)
+.menu-container {
+  background-color: #F6F8F9;
+  position: relative;
+  z-index: 1000;
+  transition: all 0.3s ease-in-out;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.menu-inner {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+// Estado sticky del menú
+.menu-container.menu-sticky {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: rgba(246, 248, 249, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  height: 55px;
+  
+  // Animación suave al volverse sticky
+  animation: slideDown 0.3s ease-out;
+}
+
+// Animación para cuando el menú se vuelve sticky
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// Estados de scroll para efectos adicionales
+.header-container.scrolled {
+  .logos-section {
+    // Opcional: puedes agregar efectos a los logos cuando hay scroll
+    // Por ejemplo, reducir el padding
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+// Mejoras de rendimiento
+.menu-container {
+  will-change: position, transform;
+  backface-visibility: hidden;
+}
+
+// Responsividad
 @media (max-width: 991px) {
   .barra-superior-govco {
     justify-content: center;
@@ -149,18 +175,54 @@
     right: 1rem;
   }
 
-  // Ajustes para dispositivos móviles
   :host ::ng-deep .p-menubar-root-list {
     flex-direction: column;
     align-items: center;
   }
 
   .menu-container {
-    padding: 0.5rem;
+    height: auto;
+    min-height: 50px;
+    padding: 0.5rem 0;
+  }
+
+  .menu-container.menu-sticky {
+    height: auto;
+    min-height: 55px;
   }
 }
 
-.logo-aut-header-govco {
-  position: relative;
-  margin-bottom: 1rem;
+@media (max-width: 768px) {
+  .menu-inner {
+    padding: 0 10px;
+  }
+  
+  :host ::ng-deep .p-menubar {
+    padding: 0.25rem;
+  }
+  
+  :host ::ng-deep .p-menubar-item {
+    font-size: 13px;
+  }
+}
+
+// Espaciado para el contenido principal cuando el menú es sticky
+// Esto evita que el contenido se oculte bajo el menú fijo
+body {
+  &.menu-is-sticky {
+    padding-top: 55px;
+  }
+}
+
+// Opcional: efecto hover mejorado para items del menú
+:host ::ng-deep .p-menubar-item-link:hover {
+  background-color: rgba(51, 102, 204, 0.1);
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+:host ::ng-deep .p-menubar-item-link:focus {
+  outline: 2px solid #3366CC;
+  outline-offset: 2px;
+  border-radius: 4px;
 }
