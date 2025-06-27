@@ -832,7 +832,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
     };
 
     this.donutData2 = {
-      labels: ['Presupuesto Corriente($ 84.241 m)', 'Recaudo Corriente ($ 12.345 m)'],
+      labels: ['Recaudo Corriente($ 84.241 m)', 'Presupuesto Corriente ($ 12.345 m)'],
       datasets: [
         {
           data: [70, 30],
