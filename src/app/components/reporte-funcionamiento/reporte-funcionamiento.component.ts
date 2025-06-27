@@ -96,6 +96,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
   horizontalBarOptions: any;
   donutData: any;
   donutOptions: any;
+  donutData2: any;
+  donutOptions2: any;
 
   // Registro actualmente seleccionado
   registroActual: any = null;
@@ -540,12 +542,12 @@ export class ReporteFuncionamientoComponent implements OnInit {
   // Métodos de formato (mantener los existentes)
   formatMillions(value: number): string {
     if (value === 0) return '$0';
-    return new Intl.NumberFormat('es-CO', {
+    return `${new Intl.NumberFormat('es-CO', {
       style: 'currency',
       currency: 'COP',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
-    }).format(value);
+    }).format(value)} m`;
   }
 
   formatPercentage(value: string): string {
@@ -735,7 +737,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         }
       }
     };
-
+    
     // Barra horizontal
     this.horizontalBarData = {
       labels: ['Ejecución Presupuestal'],
@@ -754,6 +756,11 @@ export class ReporteFuncionamientoComponent implements OnInit {
           label: 'Pagos',
           backgroundColor: '#28a745',
           data: [25]
+        },
+        {
+          label: 'Saldo sin afectacion',
+          backgroundColor: '#a569bd',
+          data: [12]
         }
       ]
     };
@@ -791,11 +798,11 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
     // Gráfico de dona
     this.donutData = {
-      labels: ['Recaudo', 'Pendiente'],
+      labels: ['Compromisos ($ 21.493 m)', 'Presupuesto Disponible($ 77.345)'],
       datasets: [
         {
-          data: [60, 40],
-          backgroundColor: ['#3366CC', '#e9ecef'],
+          data: [21, 56],
+          backgroundColor: ['#28a745', '#e9ecef'],
           hoverBackgroundColor: ['#2851a3', '#dee2e6']
         }
       ]
@@ -817,7 +824,41 @@ export class ReporteFuncionamientoComponent implements OnInit {
         },
         title: {
           display: true,
-          text: 'Recaudo vs Presupuesto',
+          text: 'Avance de ejecución',
+          color: textColor,
+          font: { size: 10, weight: 'bold' }
+        }
+      }
+    };
+
+    this.donutData2 = {
+      labels: ['Presupuesto Corriente($ 84.241 m)', 'Recaudo Corriente ($ 12.345 m)'],
+      datasets: [
+        {
+          data: [70, 30],
+          backgroundColor: ['#3366cc', '#e9ecef'],
+          hoverBackgroundColor: ['#2851a3', '#dee2e6']
+        }
+      ]
+    };
+
+    this.donutOptions2 = {
+      cutout: '60%',
+      rotation: -90,
+      circumference: 180,
+      maintainAspectRatio: false,
+      aspectRatio: 1.5,
+      responsive: true,
+      plugins: {
+        legend: {
+          labels: {
+            color: textColor,
+            font: { size: 9 }
+          }
+        },
+        title: {
+          display: true,
+          text: 'Avance de recaudo',
           color: textColor,
           font: { size: 10, weight: 'bold' }
         }

@@ -42,8 +42,8 @@
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-multiselect id="beneficiarios" [options]="beneficiarios" inputId="beneficiariosSelect"
             [(ngModel)]="selectedBeneficiario" optionLabel="label" (onChange)="onBeneficiarioChange($event)" 
-            [showClear]="false" placeholder="Beneficiarios" [maxSelectedLabels]="3" [showClear]="true"></p-multiselect>
-          <label for="beneficiariosSelect">Beneficiario - Órgano</label>
+            [showClear]="false" placeholder="Beneficiario" [maxSelectedLabels]="3" [showClear]="true"></p-multiselect>
+          <label for="beneficiariosSelect">Beneficiario</label>
         </p-floatlabel>
 
       </div>
@@ -91,13 +91,7 @@
     </mat-card>
   </div>
 
-  <!-- Información del registro seleccionado -->
-  <div *ngIf="registroActual" class="registro-info">
-    <p class="date-update">
-      <strong>Registro seleccionado:</strong> {{registroActual.beneficiario}} -
-      <strong>Acto Administrativo:</strong> {{registroActual['acto-administrativo'] || 'No especificado'}}
-    </p>
-  </div>
+  
 
   <div>
     <p class="date-update">Fecha de actualización: Mayo 30 de 2025</p>
@@ -127,8 +121,8 @@
               <div class="metric-label">Recursos Bloqueados</div>
             </div>
             <div class="metric-item">
-              <div class="metric-value">{{formatBillions(presupuestoData.presupuestoVigenteDisponible)}}</div>
-              <div class="metric-label">Presupuesto Vigente Disponible</div>
+              <div class="metric-value">{{formatMillions(presupuestoData.presupuestoVigenteDisponible)}}</div>
+              <div class="metric-label">Presupuesto Disponible</div>
             </div>
           </div>
         </mat-card-content>
@@ -154,7 +148,7 @@
               <div class="metric-label">Pagos</div>
             </div>
             <div class="metric-item">
-              <div class="metric-value">{{formatBillions(ejecucionData.recursoComprometer)}}</div>
+              <div class="metric-value">{{formatMillions(ejecucionData.recursoComprometer)}}</div>
               <div class="metric-label">Saldo sin afectación</div>
             </div>
           </div>
@@ -174,14 +168,14 @@
             </div>
             <div class="metric-item">
               <div class="metric-value">{{formatMillions(situacionCajaData.recaudoCorriente)}}</div>
-              <div class="metric-label">Recaudo</div>
+              <div class="metric-label">Recaudo Total</div>
             </div>
             <div class="metric-item">
               <div class="metric-value">{{formatMillions(situacionCajaData.cajaTotal)}}</div>
               <div class="metric-label">Caja Total</div>
             </div>
             <div class="metric-item">
-              <div class="metric-value">{{formatBillions(situacionCajaData.cajaDisponible)}}</div>
+              <div class="metric-value">{{formatMillions(situacionCajaData.cajaDisponible)}}</div>
               <div class="metric-label">Caja Disponible</div>
             </div>
           </div>
@@ -193,8 +187,7 @@
     <div class="right-column">
       <!-- Gráfico 1: Barras verticales con línea -->
       <div class="chart-container">
-        <p-chart type="bar" [data]="barChartData" [options]="barChartOptions" class="chart">
-        </p-chart>
+        <p-chart type="doughnut" [data]="donutData" [options]="donutOptions" class="chart"></p-chart>
       </div>
 
       <!-- Gráfico 2: Barra horizontal -->
@@ -205,7 +198,7 @@
 
       <!-- Gráfico 3: Dona 180 grados -->
       <div class="chart-container">
-        <p-chart type="doughnut" [data]="donutData" [options]="donutOptions" class="chart">
+        <p-chart type="doughnut" [data]="donutData2" [options]="donutOptions2" class="chart">
         </p-chart>
       </div>
     </div>
@@ -214,7 +207,7 @@
   <div class="panel-avance-recaudo" *ngIf="registroActual">
     <mat-card class="info-card">
       <mat-card-header>
-        <mat-card-title class="card-title">Avance del recaudo de ingresos corrientes</mat-card-title>
+        <mat-card-title class="card-title card-main" card-main>Avance del recaudo de ingresos corrientes</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <div class="metrics-row">
@@ -252,7 +245,7 @@
   <div *ngIf="registroActual" class="registro-detalle">
     <mat-card class="info-card">
       <mat-card-header>
-        <mat-card-title class="card-title">Detalle del Registro Seleccionado</mat-card-title>
+        <mat-card-title class="card-title card-main">Detalle del Registro Seleccionado</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <div class="detail-grid">
@@ -277,7 +270,7 @@
   <div class="final-notes">
     <h4 class="notes-title">Notas:</h4>
     <p class="final-note">
-      <strong>Presupuesto vigente disponible:</strong> Corresponde al los recursos que se tiene diponibles para realizar
+      <strong>Presupuesto disponible:</strong> Corresponde al los recursos que se tiene diponibles para realizar
       trámites presupuesto.
     </p>
     <p class="final-note">
@@ -290,6 +283,9 @@
     <p class="final-note">
       <strong>Avance de recaudo:</strong> Corresponde al porcentaje de los recursos recaudados respecto al presupuesto
       corriente asignado en la Ley bienal.
+    </p>
+    <p class="final-note">
+      <strong>m:</strong> Corresponde a cifras en millones de pesos.
     </p>
   </div>
 </div>

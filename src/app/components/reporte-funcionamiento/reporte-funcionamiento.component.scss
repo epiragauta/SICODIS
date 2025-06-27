@@ -178,6 +178,7 @@
 
       .info-card {
         border-radius: 12px;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         border: 1px solid #e0e0e0;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -264,6 +265,11 @@
     }
   }
 
+  .info-card{
+      border: 1px solid #e0e0e0;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    }
+
   .panel-avance-recaudo{
     display: flex;    
     padding-bottom: 20px;
@@ -274,6 +280,11 @@
       width: 40%;
     }
     
+    .info-card{
+      border: 1px solid #e0e0e0;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);      
+    }    
+
     .info-card .metrics-row {
       display: flex;
       justify-content: space-between;
@@ -333,6 +344,11 @@
       }
     }
 
+  .card-main{
+    color: #28a745;
+    font-weight: bold;
+  }
+
   // Detalle del registro seleccionado
   .registro-detalle {
     margin-bottom: 2rem;
@@ -365,14 +381,14 @@
     flex-wrap: wrap;
     justify-content: center;
 
-    .detail-button {
-      min-width: 250px;
+    .detail-button {      
+      width: 400px;
       font-size: 0.9rem;
     }
 
     @media (max-width: 768px) {
       .detail-button {
-        min-width: 100%;
+        width: 400px;        
       }
     }
   }
@@ -474,7 +490,7 @@
     font-weight: 500;
     border-radius: 6px;
     transition: all 0.2s ease;
-    min-width: 140px;
+    min-width: 340px;
 
     &:hover {
       transform: translateY(-1px);
