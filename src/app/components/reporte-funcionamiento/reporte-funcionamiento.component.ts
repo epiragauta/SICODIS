@@ -62,7 +62,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
   beneficiarios: SelectOption[] = [];
 
   // Valores seleccionados - iniciar sin selección
-  selectedVigencia: any[] = [];
+  selectedVigencia: any = "2025 - 2026"; // Seleccionar el primer elemento por defecto
   selectedFuente: any[] = [];
   selectedConcepto: any[] = [];
   selectedBeneficiario: any[] = [];
@@ -83,11 +83,16 @@ export class ReporteFuncionamientoComponent implements OnInit {
   };
 
   situacionCajaData = {
-    presupuestoCorriente: 0,
-    recaudoCorriente: 0,
+    disponibilidadInicial: 0,
+    recaudo: 0,
     cajaTotal: 0,
     cajaDisponible: 0
   };
+
+  avanceRecaudoData = {
+    presupuestoCorriente: 0,
+    avance: 0
+  }
 
   // Datos para los gráficos
   barChartData: any;
@@ -234,7 +239,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       }];
 
       // 5. Inicializar vigencia con el primer valor "2025 - 2026"
-      this.selectedVigencia = [this.vigencia[0]]; // Seleccionar el primer elemento que es "2025 - 2026"
+      this.selectedVigencia = this.vigencia[0]; // Seleccionar el primer elemento que es "2025 - 2026"
 
       // 6. Establecer el registro actual y actualizar los datos
       this.registroActual = registroId1;
@@ -427,7 +432,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
   clearFilters(): void {
     console.log('Limpiando filtros');
     // Limpiar todas las selecciones como arrays vacíos
-    this.selectedVigencia = [];
+    this.selectedVigencia = "";
     this.selectedFuente = [];
     this.selectedConcepto = [];
     this.selectedBeneficiario = [];
@@ -471,15 +476,20 @@ export class ReporteFuncionamientoComponent implements OnInit {
         cdp: convertirANumero(this.registroActual['cdp']) / 1000000,
         compromiso: convertirANumero(this.registroActual['compromisos']) / 1000000,
         pagos: convertirANumero(this.registroActual['pagos']) / 1000000,
-        recursoComprometer: convertirANumero(this.registroActual['saldo-por-comprometer']) / 1000000000 // En billones
+        recursoComprometer: convertirANumero(this.registroActual['saldo-sin-afectacion']) / 1000000000 // En billones
       };
 
       // Actualizar datos de situación de caja
       this.situacionCajaData = {
-        presupuestoCorriente: convertirANumero(this.registroActual['apropiacion-vigente']) / 1000000,
-        recaudoCorriente: convertirANumero(this.registroActual['iac-corriente']) / 1000000,
+        disponibilidadInicial: convertirANumero(this.registroActual['disponibilidad-inicial']) / 1000000,
+        recaudo: convertirANumero(this.registroActual['iac-informadas']) / 1000000,
         cajaTotal: convertirANumero(this.registroActual['caja-total']) / 1000000,
         cajaDisponible: convertirANumero(this.registroActual['caja-disponible']) / 1000000000 // En billones
+      };
+
+      this.avanceRecaudoData = {
+        presupuestoCorriente: this.registroActual['distribucion-presupuesto-corriente'] / 1000000,
+        avance: this.registroActual['avance-iac-corriente'] 
       };
 
       console.log('Datos actualizados:', {
@@ -517,8 +527,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
     };
 
     this.situacionCajaData = {
-      presupuestoCorriente: 0,
-      recaudoCorriente: 0,
+      disponibilidadInicial: 0,
+      recaudo: 0,
       cajaTotal: 0,
       cajaDisponible: 0
     };
@@ -531,7 +541,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
     this.fuentes = [];
     this.conceptos = [];
     this.beneficiarios = [];
-    this.selectedVigencia = [];
+    this.selectedVigencia = "";
     this.selectedFuente = [];
     this.selectedConcepto = [];
     this.selectedBeneficiario = [];
@@ -614,7 +624,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
     const surfaceBorder = documentStyle.getPropertyValue('--p-content-border-color') || '#dee2e6';
 
     // Calcular porcentajes de ejecución
-    const totalApropiacion = this.situacionCajaData.presupuestoCorriente || 1;
+    const totalApropiacion = this.situacionCajaData.disponibilidadInicial || 1;
     const porcentajeCDP = (this.ejecucionData.cdp / totalApropiacion) * 100;
     const porcentajeCompromisos = (this.ejecucionData.compromiso / totalApropiacion) * 100;
     const porcentajePagos = (this.ejecucionData.pagos / totalApropiacion) * 100;
@@ -642,8 +652,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
     };
 
     // Calcular avance de recaudo
-    const recaudoTotal = this.situacionCajaData.presupuestoCorriente || 1;
-    const recaudoEjecutado = this.situacionCajaData.recaudoCorriente || 0;
+    const recaudoTotal = this.situacionCajaData.disponibilidadInicial || 1;
+    const recaudoEjecutado = this.situacionCajaData.recaudo || 0;
     const porcentajeRecaudo = (recaudoEjecutado / recaudoTotal) * 100;
 
     // Actualizar gráfico de dona con datos reales
@@ -723,17 +733,19 @@ export class ReporteFuncionamientoComponent implements OnInit {
           display: true,
           text: 'Tendencia Mensual',
           color: textColor,
-          font: { size: 10, weight: 'bold' }
+          font: { size: 12, weight: 'bold' }
         }
       },
       scales: {
         x: {
           ticks: { color: textColor, font: { size: 8 } },
-          grid: { color: surfaceBorder }
+          grid: { color: surfaceBorder },
+          stacked: true
         },
         y: {
           ticks: { color: textColor, font: { size: 8 } },
-          grid: { color: surfaceBorder }
+          grid: { color: surfaceBorder },
+          stacked: true
         }
       }
     };
@@ -768,7 +780,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
     this.horizontalBarOptions = {
       indexAxis: 'y',
       maintainAspectRatio: false,
-      aspectRatio: 1.5,
+      aspectRatio: 2.5,
       responsive: true,
       plugins: {
         legend: {
@@ -781,17 +793,19 @@ export class ReporteFuncionamientoComponent implements OnInit {
           display: true,
           text: 'Ejecución por Tipo',
           color: textColor,
-          font: { size: 10, weight: 'bold' }
+          font: { size: 12, weight: 'bold' }
         }
       },
       scales: {
         x: {
           ticks: { color: textColor, font: { size: 8 } },
-          grid: { color: surfaceBorder }
+          grid: { color: surfaceBorder },
+          stacked: true
         },
         y: {
           ticks: { color: textColor, font: { size: 8 } },
-          grid: { color: surfaceBorder }
+          grid: { color: surfaceBorder },
+          stacked: true
         }
       }
     };
@@ -826,7 +840,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
           display: true,
           text: 'Avance de ejecución',
           color: textColor,
-          font: { size: 10, weight: 'bold' }
+          font: { size: 12, weight: 'bold' }
         }
       }
     };
@@ -860,7 +874,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
           display: true,
           text: 'Avance de recaudo',
           color: textColor,
-          font: { size: 10, weight: 'bold' }
+          font: { size: 12, weight: 'bold' }
         }
       }
     };

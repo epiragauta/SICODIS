@@ -4,17 +4,15 @@
     <div class="filters-row">
       <div class="p-field vigencia-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
-           <p-multiselect 
+           <p-select 
             id="vigencia" 
             [options]="vigencia" 
             inputId="vigenciaSelect" 
             [(ngModel)]="selectedVigencia"
             (onChange)="onVigenciaChange($event)"
             optionLabel="label" 
-            [showClear]="true" 
-            placeholder="Bienio" 
-            [maxSelectedLabels]="3">
-          </p-multiselect>
+            placeholder="Bienio" >
+          </p-select>
           <label for="vigenciaSelect">Bienio</label>
         </p-floatlabel>
       </div>
@@ -163,11 +161,11 @@
         <mat-card-content>
           <div class="metrics-row">
             <div class="metric-item">
-              <div class="metric-value">{{formatMillions(situacionCajaData.presupuestoCorriente)}}</div>
+              <div class="metric-value">{{formatMillions(situacionCajaData.disponibilidadInicial)}}</div>
               <div class="metric-label">Disponibilidad inicial</div>
             </div>
             <div class="metric-item">
-              <div class="metric-value">{{formatMillions(situacionCajaData.recaudoCorriente)}}</div>
+              <div class="metric-value">{{formatMillions(situacionCajaData.recaudo)}}</div>
               <div class="metric-label">Recaudo Total</div>
             </div>
             <div class="metric-item">
@@ -212,14 +210,14 @@
       <mat-card-content>
         <div class="metrics-row">
           <div class="metric-item">
-            <div class="metric-value">{{formatMillions(situacionCajaData.presupuestoCorriente)}}</div>
+            <div class="metric-value">{{formatMillions(avanceRecaudoData.presupuestoCorriente)}}</div>
             <div class="metric-label">Presupuesto corriente</div>
           </div>
         </div>
         <div class="metrics-row">
           <div class="metric-item">
             <div class="metric-value-2">
-              {{registroActual?.['avance-iac-corriente'] || '0.0%'}}
+              {{avanceRecaudoData.avance | percent:'1.0-2'}}
             </div>
             <div class="metric-label">Avance</div>
           </div>
