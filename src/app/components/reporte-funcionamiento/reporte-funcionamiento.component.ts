@@ -647,7 +647,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
       // Actualizar datos de presupuesto
       this.presupuestoData = {
-        presupuestoAsignado: convertirANumero(this.registroActual['total-asignado-bienio']) / 1000000, // En millones
+        presupuestoAsignado: this.registroActual['total-asignado-bienio'] / 1000000, // En millones
         disponibilidadInicial: convertirANumero(this.registroActual['disponibilidad-inicial']) / 1000000,
         recursosBloquedos: convertirANumero(this.registroActual['recursos-bloqueados']) / 1000000,
         presupuestoVigenteDisponible: convertirANumero(this.registroActual['apropiacion-vigente-disponible']) / 1000000 // En billones
@@ -752,7 +752,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
     
     
     // Convert to miles of millons 
-    const valueInMilesOfMillions = num / 1000000;
+    const valueInMilesOfMillions = num;
     
     // Format the number
     const formattedValue = valueInMilesOfMillions.toLocaleString('en-US', {
@@ -828,22 +828,22 @@ export class ReporteFuncionamientoComponent implements OnInit {
           {
             label: 'Pagos',
             backgroundColor: '#4BC0C0',
-            data: [pagos / 1000000]
+            data: [pagos]
           },
           {
             label: 'Compromiso sin afect.',
             backgroundColor: '#cdcfd1',
-            data: [compromisoSinAfectacion / 1000000]
+            data: [compromisoSinAfectacion]
           },
           {
             label: 'CDP sin afect.',
             backgroundColor: '#3366CC',
-            data: [cdpSinAfectacion / 1000000]
+            data: [cdpSinAfectacion]
           },
           {
             label: 'Saldo sin afect.',
             backgroundColor: '#28a745',
-            data: [saldoSinAfectacion / 1000000]
+            data: [saldoSinAfectacion]
           }
           
         ]
@@ -963,6 +963,14 @@ export class ReporteFuncionamientoComponent implements OnInit {
           text: 'Ejecución por Tipo',
           color: textColor,
           font: { size: 12, weight: 'bold' }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(tooltipItem: any) {
+              console.log('Tooltip data:', tooltipItem);
+              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')} m`;
+            }
+          }
         }
       },
       scales: {
@@ -976,14 +984,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
           grid: { color: surfaceBorder },
           stacked: true
         }
-      },
-      tooltips: {
-        callbacks: {
-          label: function(tooltipItem: any) {
-            return `${tooltipItem.dataset.label}.replaceAll(',', '.')} m`;
-          }
-        }
-      }
+      }      
     };
 
     // Opciones para gráficos de dona
@@ -1007,6 +1008,14 @@ export class ReporteFuncionamientoComponent implements OnInit {
           text: 'Avance de Ejecución',
           color: textColor,
           font: { size: 12, weight: 'bold' }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(tooltipItem: any) {
+              console.log('Tooltip data:', tooltipItem);
+              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')} m`;
+            }
+          }
         }
       }
     };
@@ -1031,6 +1040,14 @@ export class ReporteFuncionamientoComponent implements OnInit {
           text: 'Situación de Caja',
           color: textColor,
           font: { size: 12, weight: 'bold' }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(tooltipItem: any) {
+              console.log('Tooltip data:', tooltipItem);
+              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')} m`;
+            }
+          }
         }
       }
     };

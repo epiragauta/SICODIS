@@ -107,19 +107,19 @@
         <mat-card-content>
           <div class="metrics-row">
             <div class="metric-item">
-              <div class="metric-value">{{formatMillions(presupuestoData.presupuestoAsignado)}}</div>
+              <div class="metric-value">{{formatMillions2(presupuestoData.presupuestoAsignado)}}</div>
               <div class="metric-label">Presupuesto Asignado</div>
             </div>
             <div class="metric-item">
-              <div class="metric-value">{{formatMillions(presupuestoData.disponibilidadInicial)}}</div>
+              <div class="metric-value">{{formatMillions2(presupuestoData.disponibilidadInicial)}}</div>
               <div class="metric-label">Disponibilidad Inicial</div>
             </div>
             <div class="metric-item">
-              <div class="metric-value">{{formatMillions(presupuestoData.recursosBloquedos)}}</div>
+              <div class="metric-value">{{formatMillions2(presupuestoData.recursosBloquedos)}}</div>
               <div class="metric-label">Recursos Bloqueados</div>
             </div>
             <div class="metric-item">
-              <div class="metric-value">{{formatMillions(presupuestoData.presupuestoVigenteDisponible)}}</div>
+              <div class="metric-value">{{formatMillions2(presupuestoData.presupuestoVigenteDisponible)}}</div>
               <div class="metric-label">Presupuesto Disponible</div>
             </div>
           </div>
@@ -134,19 +134,19 @@
         <mat-card-content>
           <div class="metrics-row">
             <div class="metric-item">
-              <div class="metric-value">{{formatMillions(ejecucionData.cdp)}}</div>
+              <div class="metric-value">{{formatMillions2(ejecucionData.cdp)}}</div>
               <div class="metric-label">CDP</div>
             </div>
             <div class="metric-item">
-              <div class="metric-value">{{formatMillions(ejecucionData.compromiso)}}</div>
+              <div class="metric-value">{{formatMillions2(ejecucionData.compromiso)}}</div>
               <div class="metric-label">Compromiso</div>
             </div>
             <div class="metric-item">
-              <div class="metric-value">{{formatMillions(ejecucionData.pagos)}}</div>
+              <div class="metric-value">{{formatMillions2(ejecucionData.pagos)}}</div>
               <div class="metric-label">Pagos</div>
             </div>
             <div class="metric-item">
-              <div class="metric-value">{{formatMillions(ejecucionData.recursoComprometer)}}</div>
+              <div class="metric-value">{{formatMillions2(ejecucionData.recursoComprometer)}}</div>
               <div class="metric-label">Saldo sin afectación</div>
             </div>
           </div>
@@ -161,19 +161,19 @@
         <mat-card-content>
           <div class="metrics-row">
             <div class="metric-item">
-              <div class="metric-value">{{formatMillions(situacionCajaData.disponibilidadInicial)}}</div>
+              <div class="metric-value">{{formatMillions2(situacionCajaData.disponibilidadInicial)}}</div>
               <div class="metric-label">Disponibilidad inicial</div>
             </div>
             <div class="metric-item">
-              <div class="metric-value">{{formatMillions(situacionCajaData.recaudo)}}</div>
+              <div class="metric-value">{{formatMillions2(situacionCajaData.recaudo)}}</div>
               <div class="metric-label">Recaudo Total</div>
             </div>
             <div class="metric-item">
-              <div class="metric-value">{{formatMillions(situacionCajaData.cajaTotal)}}</div>
+              <div class="metric-value">{{formatMillions2(situacionCajaData.cajaTotal)}}</div>
               <div class="metric-label">Caja Total</div>
             </div>
             <div class="metric-item">
-              <div class="metric-value">{{formatMillions(situacionCajaData.cajaDisponible)}}</div>
+              <div class="metric-value">{{formatMillions2(situacionCajaData.cajaDisponible)}}</div>
               <div class="metric-label">Caja Disponible</div>
             </div>
           </div>
@@ -210,7 +210,7 @@
       <mat-card-content>
         <div class="metrics-row">
           <div class="metric-item">
-            <div class="metric-value">{{formatMillions(avanceRecaudoData.presupuestoCorriente)}}</div>
+            <div class="metric-value">{{formatMillions2(avanceRecaudoData.presupuestoCorriente)}}</div>
             <div class="metric-label">Presupuesto corriente</div>
           </div>
         </div>
@@ -254,13 +254,13 @@
             <strong>Beneficiario:</strong> {{registroActual['beneficiario'] || 'N/A'}}
           </div>
           <div class="detail-item">
-            <strong>Apropiación Vigente Disponible:</strong> {{registroActual['apropiacion-vigente-disponible'] || 'N/A'}}
+            <strong>Apropiación Vigente Disponible:</strong> {{formatMillions2(registroActual['apropiacion-vigente-disponible']) || 'N/A'}}
           </div>
           <div class="detail-item">
             <strong>Compromisos:</strong> {{formatMillions2(registroActual['compromisos']) || 'N/A'}}
           </div>
           <div class="detail-item">
-            <strong>Saldo sin afectación:</strong> {{registroActual['saldo-sin-afectacion'] || 'N/A'}}
+            <strong>Saldo sin afectación:</strong> {{formatMillions2(registroActual['saldo-sin-afectacion']) || 'N/A'}}
           </div>
         </div>
       </mat-card-content>
