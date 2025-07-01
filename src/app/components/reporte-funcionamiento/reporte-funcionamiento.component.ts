@@ -12,8 +12,7 @@ import { funcionamientoBaseData } from '../../data/funcionamiento-base.data';
 import { 
   getFuentes,
   getConceptosByFuente,
-  getBeneficiariosByFuenteAndConcepto,
-  getRegistroByFuenteConceptoBeneficiario
+  getBeneficiariosByFuenteAndConcepto
 } from '../../utils/sgr-functions';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { MatIconModule } from '@angular/material/icon';
@@ -104,6 +103,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
   donutOptions: any;
   donutData2: any;
   donutOptions2: any;
+  compromisoPorcentaje: string = '0.0';
+  pagosEjecucionPorcentaje: string = '0.0';
 
   // Registro actualmente seleccionado
   registroActual: any = null;
@@ -395,26 +396,38 @@ export class ReporteFuncionamientoComponent implements OnInit {
         return;
       }
 
-      // NUEVA LÓGICA: Si se selecciona TOTAL, hacer que sea excluyente
+      // NUEVA LÓGICA: Manejar la exclusión mutua con TOTAL
       const totalSeleccionado = event.value.some((fuente: any) => fuente.label === "TOTAL");
-      
-      if (totalSeleccionado) {
-        // Si TOTAL está seleccionado, mantener solo TOTAL
+      const otrasOpcionesSeleccionadas = event.value.some((fuente: any) => fuente.label !== "TOTAL");
+
+      if (totalSeleccionado && otrasOpcionesSeleccionadas) {
+        // Si TOTAL está seleccionado junto con otras opciones, remover TOTAL
+        this.selectedFuente = event.value.filter((fuente: any) => fuente.label !== "TOTAL");
+        console.log('TOTAL removido automáticamente. Fuentes finales:', this.selectedFuente);
+      } else if (totalSeleccionado && !otrasOpcionesSeleccionadas) {
+        // Si solo TOTAL está seleccionado, mantenerlo y configurar opciones dependientes
         this.selectedFuente = [{ value: "TOTAL", label: "TOTAL" }];
         this.conceptos = [{ value: "TOTAL", label: "TOTAL" }];
         this.beneficiarios = [{ value: "TOTAL", label: "TOTAL" }];
-        this.recalcularTotales();
+        
+        // Usar el registro de totales general y actualizar componentes visuales
+        this.registroActual = this.funcionamientoDataConTotales.find(item => item.id === "TOTAL");
+        if (this.registroActual) {
+          this.actualizarDatosDelRegistro();
+        }
         return;
+      } else {
+        // Si no hay TOTAL seleccionado, usar la selección tal como viene
+        this.selectedFuente = event.value;
       }
-
-      // Si no hay TOTAL seleccionado, filtrar TOTAL de la selección actual
-      this.selectedFuente = event.value.filter((fuente: any) => fuente.label !== "TOTAL");
 
       // Obtener conceptos para todas las fuentes seleccionadas (excluyendo TOTAL)
       let allConceptos: any[] = [];
       this.selectedFuente.forEach((fuente: any) => {
-        const conceptosUnicos = getConceptosByFuente(this.funcionamientoDataConTotales, fuente.label);
-        allConceptos = [...allConceptos, ...conceptosUnicos];
+        if (fuente.label !== "TOTAL") {
+          const conceptosUnicos = getConceptosByFuente(this.funcionamientoDataConTotales, fuente.label);
+          allConceptos = [...allConceptos, ...conceptosUnicos];
+        }
       });
 
       // Eliminar duplicados y agregar TOTAL
@@ -425,8 +438,10 @@ export class ReporteFuncionamientoComponent implements OnInit {
         label: concepto
       }));
       
-      // Recalcular totales cuando cambian las selecciones
-      this.recalcularTotales();
+      // CORREGIDO: Calcular totales para múltiples fuentes seleccionadas
+      if (this.selectedFuente.length > 0) {
+        this.calcularYActualizarTotales();
+      }
       
       console.log('Conceptos disponibles:', this.conceptos);
       
@@ -455,19 +470,29 @@ export class ReporteFuncionamientoComponent implements OnInit {
         return;
       }
 
-      // NUEVA LÓGICA: Si se selecciona TOTAL, hacer que sea excluyente
+      // NUEVA LÓGICA: Manejar la exclusión mutua con TOTAL
       const totalSeleccionado = event.value.some((concepto: any) => concepto.label === "TOTAL");
-      
-      if (totalSeleccionado) {
-        // Si TOTAL está seleccionado, mantener solo TOTAL
+      const otrasOpcionesSeleccionadas = event.value.some((concepto: any) => concepto.label !== "TOTAL");
+
+      if (totalSeleccionado && otrasOpcionesSeleccionadas) {
+        // Si TOTAL está seleccionado junto con otras opciones, remover TOTAL
+        this.selectedConcepto = event.value.filter((concepto: any) => concepto.label !== "TOTAL");
+        console.log('TOTAL removido automáticamente. Conceptos finales:', this.selectedConcepto);
+      } else if (totalSeleccionado && !otrasOpcionesSeleccionadas) {
+        // Si solo TOTAL está seleccionado, mantenerlo y configurar opciones dependientes
         this.selectedConcepto = [{ value: "TOTAL", label: "TOTAL" }];
         this.beneficiarios = [{ value: "TOTAL", label: "TOTAL" }];
-        this.recalcularTotales();
+        
+        // Usar el registro de totales general y actualizar componentes visuales
+        this.registroActual = this.funcionamientoDataConTotales.find(item => item.id === "TOTAL");
+        if (this.registroActual) {
+          this.actualizarDatosDelRegistro();
+        }
         return;
+      } else {
+        // Si no hay TOTAL seleccionado, usar la selección tal como viene
+        this.selectedConcepto = event.value;
       }
-
-      // Si no hay TOTAL seleccionado, filtrar TOTAL de la selección actual
-      this.selectedConcepto = event.value.filter((concepto: any) => concepto.label !== "TOTAL");
 
       // Obtener beneficiarios para todas las combinaciones de fuentes y conceptos seleccionados
       let allBeneficiarios: any[] = [];
@@ -492,8 +517,10 @@ export class ReporteFuncionamientoComponent implements OnInit {
         label: beneficiario
       }));
       
-      // Recalcular totales cuando cambian las selecciones
-      this.recalcularTotales();
+      // NUEVO: Calcular y actualizar totales automáticamente cuando cambian conceptos
+      if (this.selectedFuente.length > 0 && this.selectedConcepto.length > 0) {
+        this.calcularYActualizarTotales();
+      }
       
       console.log('Beneficiarios disponibles:', this.beneficiarios);
       
@@ -511,38 +538,177 @@ export class ReporteFuncionamientoComponent implements OnInit {
     console.log('Beneficiarios seleccionados:', event.value);
     
     try {
+      // Si no hay asignaciones o conceptos seleccionados, no hacer nada
       if (!this.selectedFuente || this.selectedFuente.length === 0 || 
-          !this.selectedConcepto || this.selectedConcepto.length === 0 || 
-          !event.value || event.value.length === 0) {
+          !this.selectedConcepto || this.selectedConcepto.length === 0) {
         this.registroActual = null;
         this.limpiarDatos();
         return;
       }
 
-      // Si se selecciona TOTAL, usar el registro de totales
-      if (event.value.some((beneficiario: any) => beneficiario.label === "TOTAL")) {
-        this.registroActual = this.funcionamientoDataConTotales.find(item => item.id === "TOTAL");
-        console.log('Registro de totales seleccionado:', this.registroActual);
-      } else {
-        // Para múltiples selecciones, usar el primer registro encontrado
-        this.registroActual = getRegistroByFuenteConceptoBeneficiario(
-          this.funcionamientoDataConTotales,
-          this.selectedFuente[0].label,
-          this.selectedConcepto[0].label,
-          event.value[0].label
-        );
-        console.log('Registro específico encontrado:', this.registroActual);
+      // CASO 1: No hay beneficiarios seleccionados
+      // Calcular totales basado solo en asignaciones y conceptos
+      if (!event.value || event.value.length === 0) {
+        console.log('Sin beneficiarios seleccionados, calculando totales por asignaciones y conceptos');
+        this.selectedBeneficiario = [];
+        this.calcularYActualizarTotales();
+        return;
       }
 
-      if (this.registroActual) {
-        this.actualizarDatosDelRegistro();
+      // CASO 2: Manejo de exclusión mutua con TOTAL
+      const totalSeleccionado = event.value.some((beneficiario: any) => beneficiario.label === "TOTAL");
+      const otrosBeneficiariosSeleccionados = event.value.some((beneficiario: any) => beneficiario.label !== "TOTAL");
+
+      if (totalSeleccionado && otrosBeneficiariosSeleccionados) {
+        // Si TOTAL está seleccionado junto con otros beneficiarios, remover TOTAL
+        this.selectedBeneficiario = event.value.filter((beneficiario: any) => beneficiario.label !== "TOTAL");
+        console.log('TOTAL removido automáticamente. Beneficiarios finales:', this.selectedBeneficiario);
+      } else if (totalSeleccionado && !otrosBeneficiariosSeleccionados) {
+        // Si solo TOTAL está seleccionado
+        this.selectedBeneficiario = [{ value: "TOTAL", label: "TOTAL" }];
+        this.registroActual = this.funcionamientoDataConTotales.find(item => item.id === "TOTAL");
+        if (this.registroActual) {
+          this.actualizarDatosDelRegistro();
+        }
+        return;
       } else {
-        console.warn('No se encontró registro para la combinación seleccionada');
-        this.limpiarDatos();
+        // Si no hay TOTAL seleccionado, usar la selección tal como viene
+        this.selectedBeneficiario = event.value;
       }
+
+      // CASO 3: Múltiples beneficiarios seleccionados (sin TOTAL)
+      // Calcular totales para los registros que coincidan con todas las selecciones
+      this.calcularTotalesConBeneficiarios();
+
     } catch (error) {
       console.error('Error al cambiar beneficiario:', error);
       this.limpiarDatos();
+    }
+  }
+
+ /** 
+ * Filtra por asignaciones, conceptos Y beneficiarios seleccionados
+ */
+  private calcularTotalesConBeneficiarios(): void {
+    try {
+      console.log('Calculando totales con beneficiarios específicos...');
+      
+      // Si no hay selecciones válidas, no hacer nada
+      if (!this.selectedFuente || this.selectedFuente.length === 0 ||
+          !this.selectedConcepto || this.selectedConcepto.length === 0 ||
+          !this.selectedBeneficiario || this.selectedBeneficiario.length === 0) {
+        return;
+      }
+
+      // Filtrar registros que coincidan con todas las selecciones
+      const registrosFiltrados = this.funcionamientoData.filter(registro => {
+        const coincideFuente = this.selectedFuente.some(f => f.label === registro.fuente);
+        const coincideConcepto = this.selectedConcepto.some(c => c.label === registro.concepto);
+        const coincideBeneficiario = this.selectedBeneficiario.some(b => b.label === registro.beneficiario);
+        
+        return coincideFuente && coincideConcepto && coincideBeneficiario;
+      });
+
+      if (registrosFiltrados.length === 0) {
+        console.warn('No se encontraron registros para las selecciones específicas de beneficiarios');
+        // Si no hay registros específicos, calcular solo por asignaciones y conceptos
+        this.calcularYActualizarTotales();
+        return;
+      }
+
+      console.log(`Calculando totales para ${registrosFiltrados.length} registros con beneficiarios específicos`);
+
+      // Función para convertir string a número
+      const convertirANumero = (valor: any): number => {
+        if (typeof valor === 'number') return valor;
+        if (typeof valor === 'string') {
+          const numeroLimpio = valor.replace(/\./g, '').replace(',', '.');
+          const numero = parseFloat(numeroLimpio);
+          return isNaN(numero) ? 0 : numero;
+        }
+        return 0;
+      };
+
+      // Función para convertir porcentaje string a número
+      const convertirPorcentajeANumero = (valor: any): number => {
+        if (typeof valor === 'number') return valor;
+        if (typeof valor === 'string') {
+          const numeroLimpio = valor.replace('%', '').replace(',', '.');
+          const numero = parseFloat(numeroLimpio);
+          return isNaN(numero) ? 0 : numero;
+        }
+        return 0;
+      };
+
+      // Crear un registro de totales calculado para beneficiarios
+      const registroTotalesCalculado: any = {
+        id: "TOTAL_BENEFICIARIOS",
+        fuente: this.selectedFuente.map(f => f.label).join(', '),
+        concepto: this.selectedConcepto.map(c => c.label).join(', '),
+        beneficiario: this.selectedBeneficiario.map(b => b.label).join(', ')
+      };
+
+      // Campos que se deben sumar
+      const camposSuma = [
+        'distribucion-presupuesto-corriente',
+        'distribucion-otros',
+        'total-asignado-bienio',
+        'disponibilidad-inicial',
+        'apropiacion-vigente',
+        'recursos-bloqueados',
+        'apropiacion-vigente-disponible',
+        'iac-mayor-recaudo-saldos-y-reintegros',
+        'iac-corriente',
+        'iac-informadas',
+        'caja-total',
+        'cdp',
+        'compromisos',
+        'pagos',
+        'saldo-por-comprometer',
+        'caja-disponible',
+        'saldo-disponible-a-pagos',
+        'saldo-sin-afectacion'
+      ];
+
+      // Campos que se deben promediar (porcentajes)
+      const camposPromedio = [
+        'avance-iac-corriente',
+        'ejecucion-a-compromisos'
+      ];
+
+      // Calcular la suma para cada campo numérico
+      camposSuma.forEach(campo => {
+        const valores = registrosFiltrados
+          .map(registro => convertirANumero(registro[campo]))
+          .filter(valor => !isNaN(valor));
+        
+        const suma = valores.reduce((total, valor) => total + valor, 0);
+        registroTotalesCalculado[campo] = suma;
+      });
+
+      // Calcular el promedio para campos de porcentaje
+      camposPromedio.forEach(campo => {
+        const valoresValidos = registrosFiltrados
+          .map(registro => convertirPorcentajeANumero(registro[campo]))
+          .filter(valor => !isNaN(valor) && valor > 0);
+        
+        const promedio = valoresValidos.length > 0 
+          ? valoresValidos.reduce((sum, val) => sum + val, 0) / valoresValidos.length 
+          : 0;
+        
+        registroTotalesCalculado[campo] = promedio;
+      });
+
+      // Establecer el registro calculado como registro actual
+      this.registroActual = registroTotalesCalculado;
+      
+      // Actualizar todos los componentes visuales con los nuevos datos
+      this.actualizarDatosDelRegistro();
+      
+      console.log('Totales calculados con beneficiarios específicos:', this.registroActual);
+
+    } catch (error) {
+      console.error('Error calculando totales con beneficiarios:', error);
     }
   }
 
@@ -555,9 +721,242 @@ export class ReporteFuncionamientoComponent implements OnInit {
     // Por ahora solo registramos el cambio
   }
 
+  private calcularYActualizarTotales(): void {
+    try {
+      console.log('Calculando totales para selecciones actuales...');
+      
+      // Si no hay asignaciones seleccionadas, no hacer nada
+      if (!this.selectedFuente || this.selectedFuente.length === 0) {
+        return;
+      }
+
+      // Filtrar registros que coincidan con las selecciones actuales
+      let registrosFiltrados = this.funcionamientoData.filter(registro => {
+        const coincideFuente = this.selectedFuente.some(f => f.label === registro.fuente);
+        
+        // Si hay conceptos seleccionados, también filtrar por concepto
+        if (this.selectedConcepto && this.selectedConcepto.length > 0) {
+          const coincideConcepto = this.selectedConcepto.some(c => c.label === registro.concepto);
+          return coincideFuente && coincideConcepto;
+        }
+        
+        return coincideFuente;
+      });
+
+      if (registrosFiltrados.length === 0) {
+        console.warn('No se encontraron registros para las selecciones actuales');
+        return;
+      }
+
+      console.log(`Calculando totales para ${registrosFiltrados.length} registros filtrados`);
+
+      // Función para convertir string a número
+      const convertirANumero = (valor: any): number => {
+        if (typeof valor === 'number') return valor;
+        if (typeof valor === 'string') {
+          const numeroLimpio = valor.replace(/\./g, '').replace(',', '.');
+          const numero = parseFloat(numeroLimpio);
+          return isNaN(numero) ? 0 : numero;
+        }
+        return 0;
+      };
+
+      // Función para convertir porcentaje string a número
+      const convertirPorcentajeANumero = (valor: any): number => {
+        if (typeof valor === 'number') return valor;
+        if (typeof valor === 'string') {
+          const numeroLimpio = valor.replace('%', '').replace(',', '.');
+          const numero = parseFloat(numeroLimpio);
+          return isNaN(numero) ? 0 : numero;
+        }
+        return 0;
+      };
+
+      // Crear un registro de totales calculado
+      const registroTotalesCalculado: any = {
+        id: "TOTAL_CALCULADO",
+        fuente: "TOTAL",
+        concepto: "TOTAL", 
+        beneficiario: "TOTAL"
+      };
+
+      // Campos que se deben sumar
+      const camposSuma = [
+        'distribucion-presupuesto-corriente',
+        'distribucion-otros',
+        'total-asignado-bienio',
+        'disponibilidad-inicial',
+        'apropiacion-vigente',
+        'recursos-bloqueados',
+        'apropiacion-vigente-disponible',
+        'iac-mayor-recaudo-saldos-y-reintegros',
+        'iac-corriente',
+        'iac-informadas',
+        'caja-total',
+        'cdp',
+        'compromisos',
+        'pagos',
+        'saldo-por-comprometer',
+        'caja-disponible',
+        'saldo-disponible-a-pagos',
+        'saldo-sin-afectacion'
+      ];
+
+      // Campos que se deben promediar (porcentajes)
+      const camposPromedio = [
+        'avance-iac-corriente',
+        'ejecucion-a-compromisos'
+      ];
+
+      // Calcular la suma para cada campo numérico
+      camposSuma.forEach(campo => {
+        const valores = registrosFiltrados
+          .map(registro => convertirANumero(registro[campo]))
+          .filter(valor => !isNaN(valor));
+        
+        const suma = valores.reduce((total, valor) => total + valor, 0);
+        registroTotalesCalculado[campo] = suma;
+      });
+
+      // Calcular el promedio para campos de porcentaje
+      camposPromedio.forEach(campo => {
+        const valoresValidos = registrosFiltrados
+          .map(registro => convertirPorcentajeANumero(registro[campo]))
+          .filter(valor => !isNaN(valor) && valor > 0);
+        
+        const promedio = valoresValidos.length > 0 
+          ? valoresValidos.reduce((sum, val) => sum + val, 0) / valoresValidos.length 
+          : 0;
+        
+        registroTotalesCalculado[campo] = promedio;
+      });
+
+      // Establecer el registro calculado como registro actual
+      this.registroActual = registroTotalesCalculado;
+      
+      // Actualizar todos los componentes visuales con los nuevos datos
+      this.actualizarDatosDelRegistro();
+      
+      console.log('Totales calculados y componentes actualizados:', this.registroActual);
+
+    } catch (error) {
+      console.error('Error calculando y actualizando totales:', error);
+    }
+  }
+
+  /**
+   * 
+   * Calcula la sumatoria de todos los registros con las asignaciones seleccionadas
+   */
+  private recalcularTotalesParaSeleccionesMultiples(): void {
+    try {
+      console.log('Recalculando totales para selecciones múltiples...');
+      
+      // Si no hay asignaciones seleccionadas, no hacer nada
+      if (!this.selectedFuente || this.selectedFuente.length === 0) {
+        return;
+      }
+
+      // Si TOTAL está seleccionado en asignaciones, usar el registro de totales general
+      const totalEnAsignaciones = this.selectedFuente.some(f => f.label === "TOTAL");
+      
+      if (totalEnAsignaciones) {
+        console.log('TOTAL está seleccionado en asignaciones, usando registro de totales general');
+        this.registroActual = this.funcionamientoDataConTotales.find(item => item.id === "TOTAL");
+        if (this.registroActual) {
+          this.actualizarDatosDelRegistro();
+        }
+        return;
+      }
+
+      // Calcular totales para las asignaciones seleccionadas
+      const asignacionesSeleccionadas = this.selectedFuente.map(f => f.label);
+      console.log('Calculando totales para asignaciones:', asignacionesSeleccionadas);
+
+      // Filtrar registros que coincidan con las asignaciones seleccionadas
+      const registrosFiltrados = this.funcionamientoDataConTotales.filter(registro => 
+        registro.id !== "TOTAL" && asignacionesSeleccionadas.includes(registro.fuente)
+      );
+
+      console.log('Registros filtrados para cálculo:', registrosFiltrados.length);
+
+      if (registrosFiltrados.length === 0) {
+        console.warn('No se encontraron registros para las asignaciones seleccionadas');
+        return;
+      }
+
+      // Crear un registro de totales calculado
+      let  registroTotalesCalculado: any = {
+        id: "TOTAL_CALCULADO",
+        fuente: "TOTAL",
+        concepto: "TOTAL", 
+        beneficiario: "TOTAL"
+      };
+
+      // Campos numéricos a sumar
+      const camposNumericos = [
+        'apropiacion-inicial',
+        'apropiacion-vigente',
+        'apropiacion-vigente-disponible',
+        'compromisos',
+        'obligaciones',
+        'pagos',
+        'saldo-sin-afectacion',
+        'saldo-por-programar',
+        'avance-compromisos',
+        'avance-obligaciones',
+        'avance-pagos'
+      ];
+
+      // Calcular la suma para cada campo numérico
+      camposNumericos.forEach(campo => {
+        const valores = registrosFiltrados
+          .map(registro => {
+            const valor = registro[campo];
+            return (typeof valor === 'number' && !isNaN(valor)) ? valor : 0;
+          });
+        
+        const suma = valores.reduce((total, valor) => total + valor, 0);
+        registroTotalesCalculado[campo] = suma;
+      });
+
+      // Campos de porcentaje (calcular promedio ponderado o promedio simple)
+      const camposPorcentaje = ['avance-compromisos', 'avance-obligaciones', 'avance-pagos'];
+      camposPorcentaje.forEach(campo => {
+        const valoresValidos = registrosFiltrados
+          .map(registro => registro[campo])
+          .filter(valor => typeof valor === 'number' && !isNaN(valor));
+        
+        const promedio = valoresValidos.length > 0 
+          ? valoresValidos.reduce((sum, val) => sum + val, 0) / valoresValidos.length 
+          : 0;
+        
+        registroTotalesCalculado[campo] = promedio;
+      });
+
+      // Actualizar el registro TOTAL en los datos con los valores calculados
+      const indiceTotal = this.funcionamientoDataConTotales.findIndex(item => item.id === "TOTAL");
+      if (indiceTotal !== -1) {
+        // Mantener la estructura original pero actualizar los valores calculados
+        this.funcionamientoDataConTotales[indiceTotal] = {
+          ...this.funcionamientoDataConTotales[indiceTotal],
+          ...registroTotalesCalculado
+        };
+        
+        this.registroActual = this.funcionamientoDataConTotales[indiceTotal];
+        this.actualizarDatosDelRegistro();
+        
+        console.log('Registro TOTAL actualizado con cálculos:', this.registroActual);
+      }
+
+    } catch (error) {
+      console.error('Error recalculando totales para selecciones múltiples:', error);
+    }
+  }
+
   private recalcularTotales(): void {
     try {
-      console.log('Recalculando totales para las selecciones actuales...');
+      console.log('Recalculando totales...');
       
       // Si TOTAL está seleccionado en asignaciones o conceptos, usar el registro de totales general
       const totalEnAsignaciones = this.selectedFuente.some(f => f.label === "TOTAL");
@@ -573,13 +972,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       }
 
       // Si no hay TOTAL seleccionado, calcular totales para las selecciones específicas
-      if (this.selectedFuente.length > 0 && this.selectedConcepto.length > 0) {
-        const registroCalculado = this.calcularTotalesPorSeleccion();
-        if (registroCalculado) {
-          this.registroActual = registroCalculado;
-          this.actualizarDatosDelRegistro();
-        }
-      }
+      this.calcularYActualizarTotales();
       
     } catch (error) {
       console.error('Error recalculando totales:', error);
@@ -940,13 +1333,13 @@ export class ReporteFuncionamientoComponent implements OnInit {
       };
 
       // Actualizar gráfico de dona (Avance de Recaudo)
-      const presupuestoCorriente = convertirANumero(this.registroActual['distribucion-presupuesto-corriente']);
-      const iacCorriente = convertirANumero(this.registroActual['iac-corriente']);
-      const porcentajeRecaudo = presupuestoCorriente > 0 ? (iacCorriente / presupuestoCorriente) * 100 : 0;
-      const porcentajePendiente = Math.max(0, 100 - porcentajeRecaudo);
-
-      console.log("Compromiso: ", this.registroActual['compromisos']);
-      console.log("Presupuesto disponible: ", this.registroActual['apropiacion-vigente-disponible']);
+      let compromiso = convertirANumero(this.registroActual['compromisos']);
+      let presupuestoDisponible = convertirANumero(this.registroActual['apropiacion-vigente-disponible']);
+            
+      let compromisoPorcentaje = compromiso > 0 ? (compromiso / (presupuestoDisponible)) * 100 : 0;
+      this.compromisoPorcentaje = compromisoPorcentaje.toFixed(1);
+      console.log("Compromiso: ", compromiso);
+      console.log("Presupuesto disponible: ", presupuestoDisponible);
       this.donutData = {
         labels: ['Compromiso', 'Presupuesto disponible'],
         datasets: [
@@ -958,15 +1351,14 @@ export class ReporteFuncionamientoComponent implements OnInit {
         ]
       };
 
-      // Segundo gráfico de dona (Ejecución de Compromisos vs Pagos)
-      const porcentajePagosVsCompromisos = compromisosEjecutados > 0 ? (pagosEjecutados / compromisosEjecutados) * 100 : 0;
-      const porcentajePendientePagos = Math.max(0, 100 - porcentajePagosVsCompromisos);
-
+      let cajaTotal = convertirANumero(this.registroActual['caja-total']);
+      let pagosPorcentaje = pagos > 0 ? (pagos / cajaTotal) * 100 : 0;
+      this.pagosEjecucionPorcentaje = pagosPorcentaje.toFixed(1);
       this.donutData2 = {
         labels: ['Pagos Ejecutados', 'Caja Total'],
         datasets: [
           {
-            data: [this.registroActual['pagos'], this.registroActual['caja-total']],
+            data: [pagos, cajaTotal],
             backgroundColor: ['#28a745', '#cdcfd1'],
             hoverBackgroundColor: ['#218838', '#cdcfd1']
           }
@@ -1057,7 +1449,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
         tooltip: {
           callbacks: {
             label: function(tooltipItem: any) {
-              console.log('Tooltip data:', tooltipItem);
               return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')} m`;
             }
           }
@@ -1102,7 +1493,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
         tooltip: {
           callbacks: {
             label: function(tooltipItem: any) {
-              console.log('Tooltip data:', tooltipItem);
               return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')} m`;
             }
           }
@@ -1134,7 +1524,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
         tooltip: {
           callbacks: {
             label: function(tooltipItem: any) {
-              console.log('Tooltip data:', tooltipItem);
               return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')} m`;
             }
           }

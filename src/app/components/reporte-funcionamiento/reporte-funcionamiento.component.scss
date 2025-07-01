@@ -262,6 +262,13 @@
           max-height: 180px;
           overflow: hidden;
         }
+
+        .chart-value {
+          position: absolute;          
+          font-size: 24px;
+          margin-top: 10rem;
+          color: rgb(71, 69, 69);
+        }
       }
     }
   }
