@@ -20,8 +20,8 @@
       <div class="p-field asignaciones-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-multiselect id="asignaciones" [options]="fuentes" inputId="asignacioneselect" [(ngModel)]="selectedFuente"
-            (onChange)="onFuenteChange($event)" optionLabel="label" [showClear]="false" placeholder="Asignaciones" [maxSelectedLabels]="3" 
-            [showClear]="true"></p-multiselect>
+            (onChange)="onFuenteChange($event)" optionLabel="label" placeholder="Asignaciones" [maxSelectedLabels]="3">
+          </p-multiselect>
           <label for="vigenciaSelect">Asignaciones</label>
         </p-floatlabel>
       </div>
@@ -29,8 +29,8 @@
       <div class="p-field conceptos-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-multiselect id="conceptos" [options]="conceptos" inputId="conceptosSelect" [(ngModel)]="selectedConcepto"
-            (onChange)="onConceptoChange($event)" optionLabel="label" [showClear]="false" placeholder="Conceptos" 
-            [maxSelectedLabels]="3" [showClear]="true"></p-multiselect>
+            (onChange)="onConceptoChange($event)" optionLabel="label" placeholder="Conceptos" 
+            [maxSelectedLabels]="3"></p-multiselect>
           <label for="conceptosSelect">Conceptos</label>
         </p-floatlabel>
 
@@ -40,7 +40,7 @@
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-multiselect id="beneficiarios" [options]="beneficiarios" inputId="beneficiariosSelect"
             [(ngModel)]="selectedBeneficiario" optionLabel="label" (onChange)="onBeneficiarioChange($event)" 
-            [showClear]="false" placeholder="Beneficiario" [maxSelectedLabels]="3" [showClear]="true"></p-multiselect>
+            placeholder="Beneficiario" [maxSelectedLabels]="3"></p-multiselect>
           <label for="beneficiariosSelect">Beneficiario</label>
         </p-floatlabel>
 
