@@ -878,7 +878,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
           {
             data: [this.registroActual['pagos'], this.registroActual['caja-total']],
             backgroundColor: ['#28a745', '#cdcfd1'],
-            hoverBackgroundColor: ['#218838', '#e0a800']
+            hoverBackgroundColor: ['#218838', '#cdcfd1']
           }
         ]
       };
@@ -987,8 +987,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
     };
 
     // Opciones para gráficos de dona
-    this.donutOptions = {
-      cutout: '50%',
+    this.donutOptions = {  
+      cutout: '60%',    
       rotation: -90,
       circumference: 180,
       maintainAspectRatio: false,
