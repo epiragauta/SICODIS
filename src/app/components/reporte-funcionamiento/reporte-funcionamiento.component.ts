@@ -992,7 +992,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       rotation: -90,
       circumference: 180,
       maintainAspectRatio: false,
-      aspectRatio: 1.75,
+      aspectRatio: 1.5,
       responsive: true,
       plugins: {
         legend: {
@@ -1016,7 +1016,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       rotation: -90,
       circumference: 180,
       maintainAspectRatio: false,
-      aspectRatio: 1.75,
+      aspectRatio: 1.5,
       responsive: true,
       plugins: {
         legend: {
