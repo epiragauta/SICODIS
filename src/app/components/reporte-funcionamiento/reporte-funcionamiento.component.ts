@@ -650,7 +650,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         presupuestoAsignado: convertirANumero(this.registroActual['total-asignado-bienio']) / 1000000, // En millones
         disponibilidadInicial: convertirANumero(this.registroActual['disponibilidad-inicial']) / 1000000,
         recursosBloquedos: convertirANumero(this.registroActual['recursos-bloqueados']) / 1000000,
-        presupuestoVigenteDisponible: convertirANumero(this.registroActual['apropiacion-vigente-disponible']) / 1000000000 // En billones
+        presupuestoVigenteDisponible: convertirANumero(this.registroActual['apropiacion-vigente-disponible']) / 1000000 // En billones
       };
 
       // Actualizar datos de ejecución
@@ -658,7 +658,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         cdp: convertirANumero(this.registroActual['cdp']) / 1000000,
         compromiso: convertirANumero(this.registroActual['compromisos']) / 1000000,
         pagos: convertirANumero(this.registroActual['pagos']) / 1000000,
-        recursoComprometer: convertirANumero(this.registroActual['saldo-sin-afectacion']) / 1000000000 // En billones
+        recursoComprometer: convertirANumero(this.registroActual['saldo-sin-afectacion']) / 1000000 // En billones
       };
 
       // Actualizar datos de situación de caja
@@ -731,7 +731,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
   formatMillions(value: number): string {
     if (value === 0) return '$0';
     
-    return `$${value.toFixed(1)} m`;
+    return `$ ${value.toFixed(0)} m`;
   }
 
   /**
@@ -743,11 +743,11 @@ export class ReporteFuncionamientoComponent implements OnInit {
  * @param {boolean} [options.includeBillionSuffix=true] - Add "bn" suffix
  * @returns {string} Formatted number string
  */
-  formatMillions2(num: any, options = {}) {
+  formatMillions2(num: number, options = {}) {
     // Default options
     
     let includeSymbol: boolean = true;
-    let decimalPlaces: number = 1;
+    let decimalPlaces: number = 0;
     let includeBillionSuffix: boolean = true;
     
     
@@ -817,28 +817,35 @@ export class ReporteFuncionamientoComponent implements OnInit {
       };
 
       // Actualizar gráfico de barras horizontales (Disponibilidad vs Ejecutado)
-      const disponibilidadInicial = convertirANumero(this.registroActual['disponibilidad-inicial']);
-      const cajaTotal = convertirANumero(this.registroActual['caja-total']);
-      const cajaDisponible = convertirANumero(this.registroActual['caja-disponible']);
+      const disponibilidadInicial = convertirANumero(this.registroActual['cdp']);
+      const compromisos = convertirANumero(this.registroActual['compromisos']);
+      const cajaDisponible = convertirANumero(this.registroActual['pagos']);
+      const saldoSinAfectacion = convertirANumero(this.registroActual['saldo-sin-afectacion']);
 
       this.horizontalBarData = {
         labels: ['Situación de Caja'],
         datasets: [
           {
-            label: 'Disponibilidad Inicial (M)',
+            label: 'CDP',
             backgroundColor: '#36A2EB',
             data: [disponibilidadInicial / 1000000]
           },
           {
-            label: 'Caja Total (M)',
+            label: 'Compromiso',
             backgroundColor: '#FFCE56',
-            data: [cajaTotal / 1000000]
+            data: [compromisos / 1000000]
           },
           {
-            label: 'Caja Disponible (M)',
+            label: 'Pagos',
             backgroundColor: '#4BC0C0',
             data: [cajaDisponible / 1000000]
+          },
+          {
+            label: 'Saldo sin Afectación',
+            backgroundColor: '#218838',
+            data: [saldoSinAfectacion / 1000000]
           }
+          
         ]
       };
 
@@ -848,11 +855,13 @@ export class ReporteFuncionamientoComponent implements OnInit {
       const porcentajeRecaudo = presupuestoCorriente > 0 ? (iacCorriente / presupuestoCorriente) * 100 : 0;
       const porcentajePendiente = Math.max(0, 100 - porcentajeRecaudo);
 
+      console.log("Compromiso: ", this.registroActual['compromisos']);
+      console.log("Presupuesto disponible: ", this.registroActual['apropiacion-vigente-disponible']);
       this.donutData = {
-        labels: ['Recaudo', 'Pendiente'],
+        labels: ['Compromiso', 'Presupuesto disponible'],
         datasets: [
           {
-            data: [Math.min(100, porcentajeRecaudo), porcentajePendiente],
+            data: [this.registroActual['compromisos'], this.registroActual['apropiacion-vigente-disponible']],
             backgroundColor: ['#3366CC', '#e9ecef'],
             hoverBackgroundColor: ['#2851a3', '#dee2e6']
           }
@@ -864,10 +873,10 @@ export class ReporteFuncionamientoComponent implements OnInit {
       const porcentajePendientePagos = Math.max(0, 100 - porcentajePagosVsCompromisos);
 
       this.donutData2 = {
-        labels: ['Pagos Ejecutados', 'Compromisos Pendientes'],
+        labels: ['Pagos Ejecutados', 'Caja Total'],
         datasets: [
           {
-            data: [Math.min(100, porcentajePagosVsCompromisos), porcentajePendientePagos],
+            data: [this.registroActual['pagos'], this.registroActual['caja-total']],
             backgroundColor: ['#28a745', '#ffc107'],
             hoverBackgroundColor: ['#218838', '#e0a800']
           }
@@ -988,7 +997,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         },
         title: {
           display: true,
-          text: 'Avance de Ejecución (%)',
+          text: 'Avance de Ejecución',
           color: textColor,
           font: { size: 12, weight: 'bold' }
         }
@@ -1012,7 +1021,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         },
         title: {
           display: true,
-          text: 'Avance de recaudo (%)',
+          text: 'Situación de Caja',
           color: textColor,
           font: { size: 12, weight: 'bold' }
         }
