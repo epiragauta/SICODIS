@@ -817,32 +817,32 @@ export class ReporteFuncionamientoComponent implements OnInit {
       };
 
       // Actualizar gráfico de barras horizontales (Disponibilidad vs Ejecutado)
-      const disponibilidadInicial = convertirANumero(this.registroActual['cdp']);
-      const compromisos = convertirANumero(this.registroActual['compromisos']);
-      const cajaDisponible = convertirANumero(this.registroActual['pagos']);
+      const cdp = convertirANumero(this.registroActual['cdp']);
+      const pagos = convertirANumero(this.registroActual['pagos']);
+      const compromisoSinAfectacion = convertirANumero(this.registroActual['compromisos']) - pagos;
       const saldoSinAfectacion = convertirANumero(this.registroActual['saldo-sin-afectacion']);
-
+      const cdpSinAfectacion = (cdp-compromisoSinAfectacion-pagos) < 0 ? cdp - compromisoSinAfectacion : cdp - compromisoSinAfectacion - pagos;
       this.horizontalBarData = {
-        labels: ['Situación de Caja'],
+        labels: [''],
         datasets: [
-          {
-            label: 'CDP',
-            backgroundColor: '#36A2EB',
-            data: [disponibilidadInicial / 1000000]
-          },
-          {
-            label: 'Compromiso',
-            backgroundColor: '#FFCE56',
-            data: [compromisos / 1000000]
-          },
           {
             label: 'Pagos',
             backgroundColor: '#4BC0C0',
-            data: [cajaDisponible / 1000000]
+            data: [pagos / 1000000]
           },
           {
-            label: 'Saldo sin Afectación',
-            backgroundColor: '#218838',
+            label: 'Compromiso sin afect.',
+            backgroundColor: '#cdcfd1',
+            data: [compromisoSinAfectacion / 1000000]
+          },
+          {
+            label: 'CDP sin afect.',
+            backgroundColor: '#3366CC',
+            data: [cdpSinAfectacion / 1000000]
+          },
+          {
+            label: 'Saldo sin afect.',
+            backgroundColor: '#28a745',
             data: [saldoSinAfectacion / 1000000]
           }
           
@@ -862,7 +862,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         datasets: [
           {
             data: [this.registroActual['compromisos'], this.registroActual['apropiacion-vigente-disponible']],
-            backgroundColor: ['#3366CC', '#e9ecef'],
+            backgroundColor: ['#3366CC', '#cdcfd1'],
             hoverBackgroundColor: ['#2851a3', '#dee2e6']
           }
         ]
@@ -877,7 +877,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         datasets: [
           {
             data: [this.registroActual['pagos'], this.registroActual['caja-total']],
-            backgroundColor: ['#28a745', '#ffc107'],
+            backgroundColor: ['#28a745', '#cdcfd1'],
             hoverBackgroundColor: ['#218838', '#e0a800']
           }
         ]
@@ -949,7 +949,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
-      aspectRatio: 2.5,
+      aspectRatio: 2,
       plugins: {
         legend: {
           position: 'bottom',
@@ -975,6 +975,13 @@ export class ReporteFuncionamientoComponent implements OnInit {
           ticks: { color: textColor, font: { size: 8 } },
           grid: { color: surfaceBorder },
           stacked: true
+        }
+      },
+      tooltips: {
+        callbacks: {
+          label: function(tooltipItem: any) {
+            return `${tooltipItem.dataset.label}.replaceAll(',', '.')} m`;
+          }
         }
       }
     };

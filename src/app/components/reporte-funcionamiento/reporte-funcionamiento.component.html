@@ -254,10 +254,13 @@
             <strong>Beneficiario:</strong> {{registroActual['beneficiario'] || 'N/A'}}
           </div>
           <div class="detail-item">
-            <strong>Apropiación Vigente Disponible:</strong> {{formatMillions2(registroActual['apropiacion-vigente-disponible']) || 'N/A'}}
+            <strong>Apropiación Vigente Disponible:</strong> {{registroActual['apropiacion-vigente-disponible'] || 'N/A'}}
           </div>
           <div class="detail-item">
             <strong>Compromisos:</strong> {{formatMillions2(registroActual['compromisos']) || 'N/A'}}
+          </div>
+          <div class="detail-item">
+            <strong>Saldo sin afectación:</strong> {{registroActual['saldo-sin-afectacion'] || 'N/A'}}
           </div>
         </div>
       </mat-card-content>
