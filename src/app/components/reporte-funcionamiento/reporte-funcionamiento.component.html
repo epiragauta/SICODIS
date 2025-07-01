@@ -248,16 +248,16 @@
       <mat-card-content>
         <div class="detail-grid">
           <div class="detail-item">
-            <strong>Código SGPR:</strong> {{registroActual['cod-sgpr'] || 'N/A'}}
+            <strong>Fuente:</strong> {{registroActual['fuente'] || 'N/A'}}
           </div>
           <div class="detail-item">
-            <strong>Código SICODIS:</strong> {{registroActual['cod-sicodis'] || 'N/A'}}
+            <strong>Beneficiario:</strong> {{registroActual['beneficiario'] || 'N/A'}}
           </div>
           <div class="detail-item">
-            <strong>% Ejecución a Compromisos:</strong> {{registroActual['percent-ejecucion-a-compromisos'] || '0%'}}
+            <strong>Apropiación Vigente Disponible:</strong> {{formatMillions2(registroActual['apropiacion-vigente-disponible']) || 'N/A'}}
           </div>
           <div class="detail-item">
-            <strong>Saldo sin Afectación:</strong> {{formatearMoneda(registroActual['saldo-sin-afectacion'])}}
+            <strong>Compromisos:</strong> {{formatMillions2(registroActual['compromisos']) || 'N/A'}}
           </div>
         </div>
       </mat-card-content>
