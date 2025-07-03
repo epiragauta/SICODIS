@@ -150,9 +150,9 @@
   .date-update {
     font-size: 0.8rem;
     font-weight: bold;
-    color: #6c757d;
+    color: #3366cc;
     text-align: left;
-    margin-bottom: 1rem;
+    margin-bottom: 0.125rem;
   } 
 
   // Panel principal
@@ -191,7 +191,15 @@
         .card-title {
           color: #000;
           font-weight: bold;
-          font-size: 1.25rem;
+          font-size: 1.45rem;
+          margin: 0;
+          text-align: left;
+        }
+
+        .card-title-2 {
+          color: #000;
+          font-weight: bold;
+          font-size: 1.45rem;
           margin: 0;
           text-align: center;
         }
@@ -285,7 +293,7 @@
 
     .mat-mdc-card {
       height: 130px;
-      width: 40%;
+      width: 60%;
     }
     
     .info-card{
@@ -307,7 +315,15 @@
     .card-title {
         color: #000;
         font-weight: bold;
-        font-size: 1.25rem;
+        font-size: 1.45rem;
+        margin: 0;
+        text-align: center;
+      }
+
+    .card-title-2 {
+        color: #000;
+        font-weight: bold;
+        font-size: 1.45rem;
         margin: 0;
         text-align: center;
       }

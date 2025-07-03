@@ -19,10 +19,10 @@
 
       <div class="p-field asignaciones-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-multiselect id="asignaciones" [options]="fuentes" inputId="asignacioneselect" [(ngModel)]="selectedFuente"
+          <p-multiselect id="asignaciones" [options]="fuentes" inputId="asignacioneSelect" [(ngModel)]="selectedFuente"
             (onChange)="onFuenteChange($event)" optionLabel="label" placeholder="Asignaciones" [maxSelectedLabels]="3">
           </p-multiselect>
-          <label for="vigenciaSelect">Asignaciones</label>
+          <label for="asignacioneSelect">Asignaciones</label>
         </p-floatlabel>
       </div>
 
@@ -92,7 +92,8 @@
   
 
   <div>
-    <p class="date-update">Fecha de actualización: Junio 30 de 2025</p>
+    <p class="date-update">Fecha de actualización: junio 30 de 2025</p>
+    <p class="date-update">Fecha de corte de recaudo: mayo 30 de 2025</p>
   </div>
 
   <!-- Panel principal con dos columnas -->
@@ -210,13 +211,19 @@
   <div class="panel-avance-recaudo" *ngIf="registroActual">
     <mat-card class="info-card">
       <mat-card-header class="card-header-avance-recaudo">
-        <mat-card-title class="card-title card-main" card-main>Avance del recaudo de ingresos corrientes</mat-card-title>
+        <mat-card-title class="card-title-2 card-main" card-main>Avance del recaudo de ingresos corrientes</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <div class="metrics-row">
           <div class="metric-item">
             <div class="metric-value">{{formatMillions2(avanceRecaudoData.presupuestoCorriente)}}</div>
             <div class="metric-label">Presupuesto corriente</div>
+          </div>
+        </div>
+        <div class="metrics-row">
+          <div class="metric-item">
+            <div class="metric-value">{{formatMillions2(avanceRecaudoData.iacCorriente)}}</div>
+            <div class="metric-label">Recaudo</div>
           </div>
         </div>
         <div class="metrics-row">
@@ -259,13 +266,22 @@
             <strong>Beneficiario:</strong> {{registroActual['beneficiario'] || 'N/A'}}
           </div>
           <div class="detail-item">
-            <strong>Presupuesto disponible:</strong> {{formatMillions2(registroActual['apropiacion-vigente-disponible'], {includeMillionSuffix: false}) || 'N/A'}}
+            <strong>Presupuesto disponible:</strong> 
+            <div style="text-align: right;">
+              {{formatMillions2(registroActual['apropiacion-vigente-disponible'], {includeMillionSuffix: false}) || 'N/A'}}
+            </div>            
           </div>
           <div class="detail-item">
-            <strong>Compromisos:</strong> {{formatMillions2(registroActual['compromisos'], {includeMillionSuffix: false}) || 'N/A'}}
+            <strong>Compromisos:</strong> 
+            <div style="text-align:right;">
+              {{formatMillions2(registroActual['compromisos'], {includeMillionSuffix: false}) || 'N/A'}}
+            </div>            
           </div>
           <div class="detail-item">
-            <strong>Saldo sin afectación:</strong> {{formatMillions2(registroActual['saldo-sin-afectacion'], {includeMillionSuffix: false}) || 'N/A'}}
+            <strong>Saldo sin afectación:</strong> 
+            <div style="text-align:right;">
+              {{formatMillions2(registroActual['saldo-sin-afectacion'], {includeMillionSuffix: false}) || 'N/A'}}
+            </div>            
           </div>
         </div>
       </mat-card-content>

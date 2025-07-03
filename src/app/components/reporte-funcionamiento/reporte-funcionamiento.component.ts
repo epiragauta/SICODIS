@@ -20,7 +20,6 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { Select } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { MultiSelect, MultiSelectChangeEvent  } from 'primeng/multiselect';
-import { reverse } from 'node:dns';
 
 interface SelectOption {
   value: string;
@@ -92,6 +91,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
   avanceRecaudoData = {
     presupuestoCorriente: 0,
+    iacCorriente: 0,
     avance: 0
   }
 
@@ -1129,6 +1129,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       // Actualizar datos de avance de recaudo
       this.avanceRecaudoData = {
         presupuestoCorriente: convertirANumero(this.registroActual['distribucion-presupuesto-corriente']) / 1000000,
+        iacCorriente: convertirANumero(this.registroActual['iac-corriente']) / 1000000,
         avance: convertirANumero(this.registroActual['avance-iac-corriente'])
       };
 
@@ -1173,6 +1174,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
     this.avanceRecaudoData = {
       presupuestoCorriente: 0,
+      iacCorriente: 0,
       avance: 0
     };
   }
@@ -1305,7 +1307,7 @@ formatMillions2(
           },
           {
             label: 'Saldo sin afect.',
-            backgroundColor: '#cdcfd1',
+            backgroundColor: '#aeb6bf',
             data: [saldoSinAfectacion]
           }
           
@@ -1313,8 +1315,8 @@ formatMillions2(
       };
 
       // Actualizar gráfico de dona (Avance de Recaudo)
-      let compromiso = convertirANumero(this.registroActual['compromisos']);
-      let presupuestoDisponible = convertirANumero(this.registroActual['apropiacion-vigente-disponible']);
+      let compromiso = convertirANumero(this.registroActual['compromisos']) / 1000000; // En millones
+      let presupuestoDisponible = convertirANumero(this.registroActual['apropiacion-vigente-disponible']) / 1000000; // En millones
             
       let compromisoPorcentaje = compromiso > 0 ? (compromiso / (presupuestoDisponible)) * 100 : 0;
       this.compromisoPorcentaje = compromisoPorcentaje.toFixed(1);
@@ -1324,15 +1326,14 @@ formatMillions2(
         labels: ['Compromiso', 'Presupuesto disponible'],
         datasets: [
           {
-            data: [this.registroActual['compromisos'], this.registroActual['apropiacion-vigente-disponible']],
-            backgroundColor: ['#3366CC', '#cdcfd1'],
+            data: [compromiso, presupuestoDisponible],
+            backgroundColor: ['#3366CC', '#808b96'],
             hoverBackgroundColor: ['#2851a3', '#dee2e6']
           }
         ]
       };
 
-      pagos = convertirANumero(this.registroActual['pagos']);
-      let cajaTotal = convertirANumero(this.registroActual['caja-total']);
+      let cajaTotal = convertirANumero(this.registroActual['caja-total']) / 1000000; // En millones
       let pagosPorcentaje = pagos > 0 ? ((pagos) / cajaTotal) * 100 : 0;
       this.pagosEjecucionPorcentaje = pagosPorcentaje.toFixed(1);
       this.donutData2 = {
@@ -1341,12 +1342,12 @@ formatMillions2(
           {
             label: 'Pagos Ejecutados',
             data: [pagos],
-            backgroundColor: '#28a745',
+            backgroundColor: '#4BC0C0',
           },
           {
             label: 'Caja Total',
             data: [cajaTotal],
-            backgroundColor: '#dee2e6'            
+            backgroundColor: '#e5e8e8'            
           }
         ]
       };
@@ -1438,7 +1439,7 @@ formatMillions2(
         tooltip: {
           callbacks: {
             label: function(tooltipItem: any) {
-              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')}`;
+              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')} m`;
             }
           }
         }
@@ -1482,7 +1483,7 @@ formatMillions2(
         tooltip: {
           callbacks: {
             label: function(tooltipItem: any) {
-              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')}`;
+              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')} m`;
             }
           },
           xAlign: 'left',
@@ -1496,7 +1497,7 @@ formatMillions2(
       rotation: -90,
       circumference: 180,
       maintainAspectRatio: false,
-      aspectRatio: 1.5,
+      aspectRatio: 2,
       responsive: true,
       plugins: {
         legend: {
@@ -1515,7 +1516,7 @@ formatMillions2(
         tooltip: {
           callbacks: {
             label: function(tooltipItem: any) {
-              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')}`;
+              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')} m`;
             }
           },
           xAlign: 'left',
