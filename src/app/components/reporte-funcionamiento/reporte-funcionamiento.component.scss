@@ -220,18 +220,38 @@
             text-align: center;
             min-width: 165px;
             max-width: 180px;
+            color: #3366cc;
 
             .metric-value {
               font-size: 1.5rem;
               font-weight: bold;
-              color: #3366cc;
               line-height: 1.2;
               margin-bottom: 0.3rem;
             }
 
             .metric-label {
               font-size: 0.75rem;
-              color: #3366cc;
+              line-height: 1.2;
+              word-wrap: break-word;
+            }
+          }
+
+          .metric-item-2 {
+            flex: 1;
+            text-align: center;
+            min-width: 245px;
+            max-width: 262px;
+            color: #3366cc;
+
+            .metric-value {
+              font-size: 1.5rem;
+              font-weight: bold;
+              line-height: 1.2;
+              margin-bottom: 0.3rem;
+            }
+
+            .metric-label {
+              font-size: 0.75rem;
               line-height: 1.2;
               word-wrap: break-word;
             }
@@ -284,88 +304,6 @@
   .info-card{
       border: 1px solid #e0e0e0;
       background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-    }
-
-  .panel-avance-recaudo{
-    display: flex;    
-    padding-bottom: 20px;
-    justify-content: center;
-
-    .mat-mdc-card {
-      height: 130px;
-      width: 60%;
-    }
-    
-    .info-card{
-      border: 1px solid #e0e0e0;
-      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);      
-    }    
-
-    .info-card .metrics-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-
-      .metric-item {
-        min-width: 100%;
-      }
-    }
-
-    .card-title {
-        color: #000;
-        font-weight: bold;
-        font-size: 1.45rem;
-        margin: 0;
-        text-align: center;
-      }
-
-    .card-title-2 {
-        color: #000;
-        font-weight: bold;
-        font-size: 1.45rem;
-        margin: 0;
-        text-align: center;
-      }
-
-      .card-main{
-        color: #28a745;
-      }
-
-      .metrics-row {
-        display: flex;
-        justify-content: space-between;
-        gap: 1rem;
-        flex-wrap: wrap;
-        width: 100%;
-
-        .metric-item {
-          flex: 1;
-          text-align: center;
-          .metric-value {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #3366cc;
-            line-height: 1.2;
-            margin-bottom: 0.3rem;
-          }
-
-          .metric-value-2 {
-            font-size: 1.9rem;
-            font-weight: bold;
-            color: #3366cc;
-            line-height: 1.2;
-            margin-bottom: 0.3rem;
-          }
-
-          .metric-label {
-            font-size: 0.75rem;
-            color: #3366cc;
-            line-height: 1.2;
-            word-wrap: break-word;
-          }
-        }
-      }
     }
 
   .card-main{
