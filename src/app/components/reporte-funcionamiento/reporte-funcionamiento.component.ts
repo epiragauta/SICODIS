@@ -97,15 +97,19 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
   // Datos para los gráficos
   barChartData: any;
-  horizontalBarData: any;
-  horizontalBarOptions: any;
-  horizontalBarOptions2: any;
-  donutData: any;
-  donutOptions: any;
-  donutData2: any;
+  horizontalBarAfectacionData: any;
+  horizontalBarAfectacionOptions: any;
+  donutSituacionCajaOpts: any;
+  donutAvanceEjecucionData: any;
+  donutAvanceEjecucionOptions: any;
+  donutSituacionCajaData: any;
   donutOptions2: any;
+  donutAvanceRecaudoData: any;
+  donutAvanceRecaudoOptions: any;
+
   compromisoPorcentaje: string = '0.0';
   pagosEjecucionPorcentaje: string = '0.0';
+  
 
   // Registro actualmente seleccionado
   registroActual: any = null;
@@ -1287,7 +1291,7 @@ formatMillions2(
       const compromisoSinAfectacion = (convertirANumero(this.registroActual['compromisos']) / 1000000) - pagos;
       const saldoSinAfectacion = convertirANumero(this.registroActual['saldo-sin-afectacion']) / 1000000; // En millones
       const cdpSinAfectacion = (cdp-compromisoSinAfectacion-pagos) < 0 ? cdp - compromisoSinAfectacion : cdp - compromisoSinAfectacion - pagos;
-      this.horizontalBarData = {
+      this.horizontalBarAfectacionData = {
         labels: [''],
         datasets: [
           {
@@ -1314,7 +1318,7 @@ formatMillions2(
         ]
       };
 
-      // Actualizar gráfico de dona (Avance de Recaudo)
+      // Actualizar gráfico de dona (Avance de ejecución)
       let compromiso = convertirANumero(this.registroActual['compromisos']) / 1000000; // En millones
       let presupuestoDisponible = convertirANumero(this.registroActual['apropiacion-vigente-disponible']) / 1000000; // En millones
             
@@ -1322,7 +1326,7 @@ formatMillions2(
       this.compromisoPorcentaje = compromisoPorcentaje.toFixed(1);
       console.log("Compromiso: ", compromiso);
       console.log("Presupuesto disponible: ", presupuestoDisponible);
-      this.donutData = {
+      this.donutAvanceEjecucionData = {
         labels: ['Compromiso', 'Presupuesto disponible'],
         datasets: [
           {
@@ -1336,7 +1340,7 @@ formatMillions2(
       let cajaDisponible = convertirANumero(this.registroActual['caja-disponible']) / 1000000; // En millones
       let pagosPorcentaje = pagos > 0 ? ((pagos) / cajaDisponible) * 100 : 0;
       this.pagosEjecucionPorcentaje = pagosPorcentaje.toFixed(1);
-      this.donutData2 = {
+      this.donutSituacionCajaData = {
         labels: [''],
         datasets: [
           {
@@ -1352,11 +1356,24 @@ formatMillions2(
         ]
       };
 
+      this.donutAvanceRecaudoData = {
+        labels: ['Recaudo'],
+        datasets: [
+          {
+            data: [
+              this.avanceRecaudoData.iacCorriente, this.avanceRecaudoData.presupuestoCorriente
+            ],
+            backgroundColor: ['#3366CC', '#808b96'],
+            hoverBackgroundColor: ['#2851a3', '#dee2e6']
+          }
+        ]
+      };
+
       console.log('Gráficos actualizados con datos:', {
         barChart: this.barChartData,
-        horizontalBar: this.horizontalBarData,
-        donut1: this.donutData,
-        donut2: this.donutData2
+        horizontalBar: this.horizontalBarAfectacionData,
+        donut1: this.donutAvanceEjecucionData,
+        donut2: this.donutSituacionCajaData
       });
 
     } catch (error) {
@@ -1370,7 +1387,7 @@ formatMillions2(
     const surfaceBorder = documentStyle.getPropertyValue('--p-content-border-color') || '#dee2e6';
 
     // Opciones para gráfico de barras horizontales
-    this.horizontalBarOptions = {
+    this.horizontalBarAfectacionOptions = {
       indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
@@ -1414,7 +1431,7 @@ formatMillions2(
       }      
     };
 
-    this.horizontalBarOptions2 = {
+    this.donutSituacionCajaOpts = {
       indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
@@ -1459,7 +1476,7 @@ formatMillions2(
     };
 
     // Opciones para gráficos de dona
-    this.donutOptions = {  
+    this.donutAvanceEjecucionOptions = {  
       cutout: '60%',    
       rotation: -90,
       circumference: 180,
@@ -1492,12 +1509,12 @@ formatMillions2(
       }
     };
 
-    this.donutOptions2 = {
-      cutout: '60%',
+    this.donutAvanceRecaudoOptions = {  
+      cutout: '60%',    
       rotation: -90,
       circumference: 180,
       maintainAspectRatio: false,
-      aspectRatio: 2,
+      aspectRatio: 1.5,
       responsive: true,
       plugins: {
         legend: {
@@ -1509,14 +1526,14 @@ formatMillions2(
         },
         title: {
           display: true,
-          text: 'Situación de Caja',
+          text: 'Avance de Recaudo',
           color: textColor,
           font: { size: 12, weight: 'bold' }
         },
         tooltip: {
           callbacks: {
             label: function(tooltipItem: any) {
-              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')} m`;
+              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')} m`;            
             }
           },
           xAlign: 'left',
@@ -1524,6 +1541,8 @@ formatMillions2(
         }
       }
     };
+
+    
 
     // Inicializar gráficos con datos por defecto si hay registro actual
     if (this.registroActual) {
