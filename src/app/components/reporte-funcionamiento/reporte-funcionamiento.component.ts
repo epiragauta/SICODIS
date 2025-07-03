@@ -1333,20 +1333,20 @@ formatMillions2(
         ]
       };
 
-      let cajaTotal = convertirANumero(this.registroActual['caja-total']) / 1000000; // En millones
-      let pagosPorcentaje = pagos > 0 ? ((pagos) / cajaTotal) * 100 : 0;
+      let cajaDisponible = convertirANumero(this.registroActual['caja-disponible']) / 1000000; // En millones
+      let pagosPorcentaje = pagos > 0 ? ((pagos) / cajaDisponible) * 100 : 0;
       this.pagosEjecucionPorcentaje = pagosPorcentaje.toFixed(1);
       this.donutData2 = {
         labels: [''],
         datasets: [
           {
-            label: 'Pagos Ejecutados',
+            label: 'Pagos',
             data: [pagos],
             backgroundColor: '#4BC0C0',
           },
           {
-            label: 'Caja Total',
-            data: [cajaTotal],
+            label: 'Caja Disponible',
+            data: [cajaDisponible],
             backgroundColor: '#e5e8e8'            
           }
         ]
