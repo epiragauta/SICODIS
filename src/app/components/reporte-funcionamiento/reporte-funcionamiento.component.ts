@@ -114,39 +114,12 @@ export class ReporteFuncionamientoComponent implements OnInit {
     {
         "id": 1,
         "label": "2025 - 2026"
-    },
-    {
-        "id": 2,
-        "label": "2023 - 2024"
-    },
-    {
-        "id": 3,
-        "label": "2021 - 2022"
-    },
-    {
-        "id": 4,
-        "label": "2019 - 2020"
-    },
-    {
-        "id": 5,
-        "label": "2017 - 2018"
-    },
-    {
-        "id": 6,
-        "label": "2015 - 2016"
-    },
-    {
-        "id": 7,
-        "label": "2013 - 2014"
-    },
-    {
-        "id": 8,
-        "label": "Vigencia 2012"
     }
   ];
 
   urlTrimestralReport: string = "https://www.dnp.gov.co/LaEntidad_/subdireccion-general-inversiones-seguimiento-evaluacion/direccion-programacion-inversiones-publicas/Paginas/sistema-general-de-regalias.aspx#funveinticincoseis"
-  detailXlsFile = "detalle-recaudo-funcionamiento-2025.xlsx"
+  detailReportXlsFile = "reporte-detalle-recaudo-2025.xlsx"
+  managementReportXlsFile = "reporte-gestion-financiera-2025.xlsx"
 
   constructor() {}
 
@@ -1682,11 +1655,12 @@ formatMillions2(
 
   onDetalleGestionClick(): void {
     console.log('Detalle Gestión Financiera clicked');
+    this.downloadAssetFile(this.managementReportXlsFile);
   }
 
   onDetalleRecaudoClick(): void {
     console.log('Detalle de Recaudo clicked');
-    this.downloadAssetFile(this.detailXlsFile);
+    this.downloadAssetFile(this.detailReportXlsFile);
   }
 
   onInformeTrimestraClick(): void {
