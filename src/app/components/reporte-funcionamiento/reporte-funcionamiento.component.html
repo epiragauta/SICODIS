@@ -92,7 +92,7 @@
   
 
   <div>
-    <p class="date-update">Fecha de actualización: Mayo 30 de 2025</p>
+    <p class="date-update">Fecha de actualización: Junio 30 de 2025</p>
   </div>
 
   <!-- Panel principal con dos columnas -->
@@ -199,8 +199,8 @@
 
       <!-- Gráfico 3: Dona 180 grados -->
       <div class="chart-container">
-        <p-chart type="doughnut" [data]="donutData2" [options]="donutOptions2" class="chart"></p-chart>
-        <div class="chart-value">
+        <p-chart type="bar" [data]="donutData2" [options]="horizontalBarOptions2" class="chart"></p-chart>
+        <div class="chart-value" style="display: none;">
           <span class="percentage">{{ pagosEjecucionPorcentaje}}%</span>          
         </div>
       </div>
@@ -209,7 +209,7 @@
 
   <div class="panel-avance-recaudo" *ngIf="registroActual">
     <mat-card class="info-card">
-      <mat-card-header>
+      <mat-card-header class="card-header-avance-recaudo">
         <mat-card-title class="card-title card-main" card-main>Avance del recaudo de ingresos corrientes</mat-card-title>
       </mat-card-header>
       <mat-card-content>
@@ -259,13 +259,13 @@
             <strong>Beneficiario:</strong> {{registroActual['beneficiario'] || 'N/A'}}
           </div>
           <div class="detail-item">
-            <strong>Apropiación Vigente Disponible:</strong> {{formatMillions2(registroActual['apropiacion-vigente-disponible']) || 'N/A'}}
+            <strong>Presupuesto disponible:</strong> {{formatMillions2(registroActual['apropiacion-vigente-disponible'], {includeMillionSuffix: false}) || 'N/A'}}
           </div>
           <div class="detail-item">
-            <strong>Compromisos:</strong> {{formatMillions2(registroActual['compromisos']) || 'N/A'}}
+            <strong>Compromisos:</strong> {{formatMillions2(registroActual['compromisos'], {includeMillionSuffix: false}) || 'N/A'}}
           </div>
           <div class="detail-item">
-            <strong>Saldo sin afectación:</strong> {{formatMillions2(registroActual['saldo-sin-afectacion']) || 'N/A'}}
+            <strong>Saldo sin afectación:</strong> {{formatMillions2(registroActual['saldo-sin-afectacion'], {includeMillionSuffix: false}) || 'N/A'}}
           </div>
         </div>
       </mat-card-content>

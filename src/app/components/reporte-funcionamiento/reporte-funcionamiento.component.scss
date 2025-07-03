@@ -210,7 +210,7 @@
           .metric-item {
             flex: 1;
             text-align: center;
-            min-width: 170px;
+            min-width: 165px;
             max-width: 180px;
 
             .metric-value {
@@ -489,6 +489,11 @@
       color: #ccc;
     }
   }
+
+  .mat-mdc-card-header-text{
+    width: 100% !important;
+  }
+  
 }
 
 // Sobrescribir estilos de PrimeNG
@@ -539,6 +544,11 @@
       object-fit: contain !important;
     }
   }
+}
+
+.card-header-avance-recaudo{
+  width: 100%;
+  text-align: center;
 }
 
 // Responsive adjustments

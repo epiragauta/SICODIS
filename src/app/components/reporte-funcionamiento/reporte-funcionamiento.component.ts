@@ -20,6 +20,7 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { Select } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { MultiSelect, MultiSelectChangeEvent  } from 'primeng/multiselect';
+import { reverse } from 'node:dns';
 
 interface SelectOption {
   value: string;
@@ -96,9 +97,9 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
   // Datos para los gráficos
   barChartData: any;
-  barChartOptions: any;
   horizontalBarData: any;
   horizontalBarOptions: any;
+  horizontalBarOptions2: any;
   donutData: any;
   donutOptions: any;
   donutData2: any;
@@ -1226,30 +1227,37 @@ export class ReporteFuncionamientoComponent implements OnInit {
  * @param {boolean} [options.includeBillionSuffix=true] - Add "bn" suffix
  * @returns {string} Formatted number string
  */
-  formatMillions2(num: number, options = {}) {
-    // Default options
-    
-    let includeSymbol: boolean = true;
-    let decimalPlaces: number = 0;
-    let includeBillionSuffix: boolean = true;
-    
-    
-    // Convert to miles of millons 
-    const valueInMilesOfMillions = num;
-    
-    // Format the number
-    const formattedValue = valueInMilesOfMillions.toLocaleString('en-US', {
-        minimumFractionDigits: decimalPlaces,
-        maximumFractionDigits: decimalPlaces
-    }).replaceAll(',', 'temp').replaceAll('.', ',').replaceAll('temp', '.');
-    
-    // Build the result string
-    let result = '';
-    if (includeSymbol) result += '$ ';
-    result += formattedValue;
-    if (includeBillionSuffix) result += ' m';
-    
-    return result;
+formatMillions2(
+  num: number,
+  options: {
+    includeSymbol?: boolean;
+    decimalPlaces?: number;
+    includeMillionSuffix?: boolean;
+  } = {}
+) {
+  // Default options
+  const {
+    includeSymbol = false,
+    decimalPlaces = 0,
+    includeMillionSuffix = true
+  } = options;
+
+  // Convert to miles of millions
+  const valueInMilesOfMillions = num;
+
+  // Format the number
+  const formattedValue = valueInMilesOfMillions.toLocaleString('en-US', {
+    minimumFractionDigits: decimalPlaces,
+    maximumFractionDigits: decimalPlaces
+  }).replaceAll(',', 'temp').replaceAll('.', ',').replaceAll('temp', '.');
+
+  // Build the result string
+  let result = '';
+  if (includeSymbol) result += '$ ';
+  result += formattedValue;
+  if (includeMillionSuffix) result += ' m';
+
+  return result;
 }
 
   // Resto de métodos para gráficos y eventos de botones...
@@ -1279,8 +1287,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
       // Actualizar gráfico de barras verticales
       this.barChartData = {
-        labels: ['Ejecución Presupuestal'],
-        datasets: [
+          datasets: [
           {
             label: 'CDP',
             backgroundColor: '#3366CC',
@@ -1300,10 +1307,10 @@ export class ReporteFuncionamientoComponent implements OnInit {
       };
 
       // Actualizar gráfico de barras horizontales (Disponibilidad vs Ejecutado)
-      const cdp = convertirANumero(this.registroActual['cdp']);
-      const pagos = convertirANumero(this.registroActual['pagos']);
-      const compromisoSinAfectacion = convertirANumero(this.registroActual['compromisos']) - pagos;
-      const saldoSinAfectacion = convertirANumero(this.registroActual['saldo-sin-afectacion']);
+      const cdp = convertirANumero(this.registroActual['cdp']) / 1000000; // En millones
+      let pagos = convertirANumero(this.registroActual['pagos']) / 1000000; // En millones
+      const compromisoSinAfectacion = (convertirANumero(this.registroActual['compromisos']) / 1000000) - pagos;
+      const saldoSinAfectacion = convertirANumero(this.registroActual['saldo-sin-afectacion']) / 1000000; // En millones
       const cdpSinAfectacion = (cdp-compromisoSinAfectacion-pagos) < 0 ? cdp - compromisoSinAfectacion : cdp - compromisoSinAfectacion - pagos;
       this.horizontalBarData = {
         labels: [''],
@@ -1314,18 +1321,18 @@ export class ReporteFuncionamientoComponent implements OnInit {
             data: [pagos]
           },
           {
-            label: 'Compromiso sin afect.',
-            backgroundColor: '#cdcfd1',
+            label: 'Compromisos por pagar',
+            backgroundColor: '#3366CC',
             data: [compromisoSinAfectacion]
           },
           {
-            label: 'CDP sin afect.',
-            backgroundColor: '#3366CC',
+            label: 'CDP por comprometer',
+            backgroundColor: '#28a745',
             data: [cdpSinAfectacion]
           },
           {
             label: 'Saldo sin afect.',
-            backgroundColor: '#28a745',
+            backgroundColor: '#cdcfd1',
             data: [saldoSinAfectacion]
           }
           
@@ -1351,16 +1358,22 @@ export class ReporteFuncionamientoComponent implements OnInit {
         ]
       };
 
+      pagos = convertirANumero(this.registroActual['pagos']);
       let cajaTotal = convertirANumero(this.registroActual['caja-total']);
-      let pagosPorcentaje = pagos > 0 ? (pagos / cajaTotal) * 100 : 0;
+      let pagosPorcentaje = pagos > 0 ? ((pagos) / cajaTotal) * 100 : 0;
       this.pagosEjecucionPorcentaje = pagosPorcentaje.toFixed(1);
       this.donutData2 = {
-        labels: ['Pagos Ejecutados', 'Caja Total'],
+        labels: [''],
         datasets: [
           {
-            data: [pagos, cajaTotal],
-            backgroundColor: ['#28a745', '#cdcfd1'],
-            hoverBackgroundColor: ['#218838', '#cdcfd1']
+            label: 'Pagos Ejecutados',
+            data: [pagos],
+            backgroundColor: '#28a745',
+          },
+          {
+            label: 'Caja Total',
+            data: [cajaTotal],
+            backgroundColor: '#dee2e6'            
           }
         ]
       };
@@ -1382,50 +1395,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
     const textColor = documentStyle.getPropertyValue('--p-text-color') || '#000';
     const surfaceBorder = documentStyle.getPropertyValue('--p-content-border-color') || '#dee2e6';
 
-    // Opciones para gráfico de barras verticales
-    this.barChartOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'top',
-          labels: {
-            color: textColor
-          }
-        },
-        title: {
-          display: true,
-          text: 'Ejecución Presupuestal (%)',
-          color: textColor
-        }
-      },
-      scales: {
-        x: {
-          ticks: {
-            color: textColor
-          },
-          grid: {
-            color: surfaceBorder
-          },
-          stacked: true
-        },
-        y: {
-          beginAtZero: true,
-          max: 100,
-          ticks: {
-            color: textColor,
-            callback: function(value: any) {
-              return value + '%';
-            }
-          },
-          grid: {
-            color: surfaceBorder
-          },
-          stacked: true
-        }
-      }
-    };
-
     // Opciones para gráfico de barras horizontales
     this.horizontalBarOptions = {
       indexAxis: 'y',
@@ -1437,12 +1406,15 @@ export class ReporteFuncionamientoComponent implements OnInit {
           position: 'bottom',
           labels: {
             color: textColor,
-            font: { size: 11 }
-          }
+            font: { size: 10 },
+            boxWidth: 20,
+          },
+          maxWidth: 100,
+          
         },
         title: {
           display: true,
-          text: 'Ejecución por Tipo',
+          text: 'Afectación presupuestal',
           color: textColor,
           font: { size: 12, weight: 'bold' }
         },
@@ -1450,6 +1422,50 @@ export class ReporteFuncionamientoComponent implements OnInit {
           callbacks: {
             label: function(tooltipItem: any) {
               return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')} m`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: textColor, font: { size: 8 } },
+          grid: { color: surfaceBorder },
+          stacked: true
+        },
+        y: {
+          ticks: { color: textColor, font: { size: 8 } },
+          grid: { color: surfaceBorder },
+          stacked: true
+        }
+      }      
+    };
+
+    this.horizontalBarOptions2 = {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      aspectRatio: 2,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            color: textColor,
+            font: { size: 10 },
+            boxWidth: 20,
+          },
+          maxWidth: 100,
+          
+        },
+        title: {
+          display: true,
+          text: 'Situación de Caja',
+          color: textColor,
+          font: { size: 12, weight: 'bold' }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(tooltipItem: any) {
+              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')}`;
             }
           }
         }
@@ -1493,9 +1509,11 @@ export class ReporteFuncionamientoComponent implements OnInit {
         tooltip: {
           callbacks: {
             label: function(tooltipItem: any) {
-              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')} m`;
+              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')}`;
             }
-          }
+          },
+          xAlign: 'left',
+          yAlign: 'bottom'
         }
       }
     };
@@ -1524,9 +1542,11 @@ export class ReporteFuncionamientoComponent implements OnInit {
         tooltip: {
           callbacks: {
             label: function(tooltipItem: any) {
-              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')} m`;
+              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')}`;
             }
-          }
+          },
+          xAlign: 'left',
+          yAlign: 'bottom'
         }
       }
     };
