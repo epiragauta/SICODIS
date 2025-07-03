@@ -84,8 +84,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
             command: () => this.redirectUrl("comparativo-iac-presupuesto")
           },
           {
-            label: 'Recursos de la Administración del SGR y del SSEC',
-            // command: () => this.redirectSGR()
+            label: 'Administración del SGR y del SSEC',
+             command: () => this.redirectUrl("reporte-funcionamiento")
           },          
           {
             label: 'Plan Bienal de Caja',
