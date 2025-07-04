@@ -1515,7 +1515,7 @@ formatMillions2(
       circumference: 180,
       maintainAspectRatio: false,
       aspectRatio: 1.5,
-      responsive: true,
+      responsive: true,      
       plugins: {
         legend: {
           position: 'top',

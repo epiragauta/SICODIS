@@ -1,1 +1,117 @@
-  <div id="ol-map" class="map-container"></div>
+<div class="reports-map-container">
+  <!-- Panel lateral izquierdo -->
+  <div class="sidebar-panel">
+    <p-card header="Filtros de Consulta" class="filter-card">
+      <div class="filter-section">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select 
+            id="region-select"
+            [options]="regions"
+            [(ngModel)]="selectedRegion"
+            (onChange)="onRegionChange()"
+            placeholder="Seleccione una región"
+            styleClass="w-full filter-select">
+          </p-select>
+          <label for="region-select" class="filter-label">Región</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="filter-section">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select 
+            id="department-select"
+            inputId="department-select"
+            [options]="departments"
+            [(ngModel)]="selectedDepartment"
+            (onChange)="onDepartmentChange()"
+            placeholder="Seleccione un departamento"
+            styleClass="w-full filter-select">
+          </p-select>
+          <label for="department-select" class="filter-label">Departamento</label>
+        </p-floatlabel> 
+      </div>
+
+      <div class="filter-section">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select 
+            id="system-select"
+            [options]="systems"
+            [(ngModel)]="selectedSystem"
+            (onChange)="onSystemChange()"
+            placeholder="Seleccione un sistema"
+            styleClass="w-full filter-select">
+          </p-select>
+          <label for="system-select" class="filter-label">Sistema</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="filter-section">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select 
+            id="municipality-select"
+            [options]="municipalities"
+            [(ngModel)]="selectedMunicipality"
+            (onChange)="onMunicipalityChange()"
+            placeholder="Seleccione un municipio"
+            styleClass="w-full filter-select">
+          </p-select>
+          <label for="municipality-select" class="filter-label">Municipio</label>
+        </p-floatlabel>
+      </div>     
+
+      <div class="button-section">
+        <p-button 
+          label="Aplicar Filtros" 
+          icon="pi pi-search" 
+          (onClick)="applyFilters()"
+          styleClass="w-full apply-button">
+        </p-button>
+        <p-button 
+          label="Limpiar Filtros" 
+          icon="pi pi-times" 
+          (onClick)="clearFilters()"
+          severity="secondary"
+          styleClass="w-full clear-button">
+        </p-button>
+      </div>
+
+      <p-divider></p-divider>
+
+      <div class="description-section">
+        <h3 class="description-title">Información</h3>
+        <p class="description-text">{{ descriptiveText }}</p>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Contenedor del mapa -->
+  <div class="map-container">
+    <div class="map-header">
+      <h2 class="map-title">Mapa de Distribución de Recursos Territoriales</h2>
+      <p class="map-subtitle">Visualización geográfica de la distribución del SGP y SGR en Colombia</p>
+    </div>
+    
+    <div class="map-wrapper">
+      <div #mapContainer class="ol-map"></div>
+    </div>
+
+    <!-- Leyenda del mapa -->
+    <div class="map-legend">
+      <h4 class="legend-title">Leyenda</h4>
+      <div class="legend-items">
+        <div class="legend-item">
+          <div class="legend-icon department-icon"></div>
+          <span class="legend-text">Departamentos</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-icon municipality-icon"></div>
+          <span class="legend-text">Municipios</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-icon resource-icon"></div>
+          <span class="legend-text">Recursos SGP/SGR</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
