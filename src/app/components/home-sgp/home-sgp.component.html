@@ -67,7 +67,7 @@
       <!-- Top-Right Cell: Distribución Sectores -->
       <h2>Distribución por Sectores</h2>
       <div class="pie-chart-container">
-        <canvas #pieChart></canvas>
+        <p-chart type="pie" [data]="pieChartData" [options]="pieChartOptions" class="chart"></p-chart>
       </div>
     </div>
     

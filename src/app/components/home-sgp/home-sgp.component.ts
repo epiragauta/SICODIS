@@ -1,11 +1,11 @@
-import { Component, ViewChild, ElementRef, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { Select } from 'primeng/select';
 import { FloatLabel } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
-import Chart from 'chart.js/auto';
+import { ChartModule } from 'primeng/chart';
 
 interface SelectOption {
   value: string;
@@ -21,16 +21,18 @@ interface SelectOption {
     MatCardModule,
     Select,
     FloatLabel,
-    FormsModule
+    FormsModule,
+    ChartModule,
   ],
   templateUrl: './home-sgp.component.html',
   styleUrl: './home-sgp.component.scss'
 })
 export class HomeSgpComponent implements OnInit {
-  @ViewChild('pieChart') pieChart!: ElementRef<HTMLCanvasElement>;
   
   private platformId = inject(PLATFORM_ID);
-  private chart?: Chart;
+  
+  pieChartOptions: any;
+  pieChartData: any;
 
   departamentos: SelectOption[] = [
     { value: 'amazonas', label: 'Amazonas' },
@@ -69,17 +71,7 @@ export class HomeSgpComponent implements OnInit {
     }
   }
 
-  ngOnDestroy(): void {
-    if (this.chart) {
-      this.chart.destroy();
-    }
-  }
-
   private initializePieChart(): void {
-    if (!this.pieChart) return;
-
-    const ctx = this.pieChart.nativeElement.getContext('2d');
-    if (!ctx) return;
 
     // Colores basados en los utilizados en reporte-funcionamiento
     const chartColors = [
@@ -88,23 +80,7 @@ export class HomeSgpComponent implements OnInit {
       '#4F81BD'  // Azul acero - Agua potable
     ];
 
-    this.chart = new Chart(ctx, {
-      type: 'pie',
-      data: {
-        labels: ['Educación', 'Salud', 'Agua Potable'],
-        datasets: [{
-          data: [35, 35, 30],
-          backgroundColor: chartColors,
-          hoverBackgroundColor: [
-            '#4B0082', // Azul índigo para hover
-            '#40E0D0', // Azul turquesa para hover
-            '#ADDFFF'  // Azul pálido para hover
-          ],
-          borderWidth: 2,
-          borderColor: '#ffffff'
-        }]
-      },
-      options: {
+    this.pieChartOptions = {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
@@ -122,7 +98,7 @@ export class HomeSgpComponent implements OnInit {
           },
           tooltip: {
             callbacks: {
-              label: (context) => {
+              label: (context: any) => {
                 const label = context.label || '';
                 const value = context.parsed;
                 return `${label}: ${value}%`;
@@ -138,7 +114,22 @@ export class HomeSgpComponent implements OnInit {
             right: 10
           }
         }
-      }
-    });
+      };
+
+    this.pieChartData =  {
+        labels: ['Educación', 'Salud', 'Agua Potable'],
+        datasets: [{
+          data: [35, 35, 30],
+          backgroundColor: chartColors,
+          hoverBackgroundColor: [
+            '#4B0082', // Azul índigo para hover
+            '#40E0D0', // Azul turquesa para hover
+            '#ADDFFF'  // Azul pálido para hover
+          ],
+          borderWidth: 2,
+          borderColor: '#ffffff'
+        }]
+      };
+
   }
 }
