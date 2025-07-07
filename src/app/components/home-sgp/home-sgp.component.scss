@@ -1,42 +1,45 @@
+// Container para el banner
 .banner-container {
-  // This outer container will just center the banner-content on large screens
-  // and allow the gradient to span full width if needed, or be applied to banner-content directly.
+  width: 100%;
 }
 
 .banner-content {
   height: 300px;
   width: 100%;
-  margin: 0 auto; // Center content when max-width is applied
+  margin: 0 auto;
+  position: relative;
   background: linear-gradient(to right,
-    rgba(0, 56, 119, 0.42) 0%,    /* Transparent at the very edge */
-    #003877 25%,               /* Full blue at 25% from edge */
-    #003877 75%,               /* Full blue until 75% from edge */
-    rgba(0, 56, 119, 0.42) 100%   /* Transparent at the other edge */
+    rgba(0, 56, 119, 0.42) 0%,
+    #003877 25%,
+    #003877 75%,
+    rgba(0, 56, 119, 0.42) 100%
   );
 
-  .banner-info{
+  .banner-info {
     position: absolute;
     top: 50%;
     left: 30%;
     transform: translate(-50%, -50%);
     text-align: left;
     color: white;
-  }
-  h1{
-    font-size: 2.5em;
-    font-weight: bold;
-    margin: 0;
-    padding-bottom: 10px; // Space below the title
-  }
-  p{
-    width: 60%; // Limit width for better readability
-    font-size: 1em;
-    margin: 0;
-    padding-bottom: 20px; // Space below the description
-  }
-  button {
+
+    h1 {
+      font-size: 2.5em;
+      font-weight: bold;
+      margin: 0;
+      padding-bottom: 10px;
+    }
+
+    p {
+      width: 60%;
+      font-size: 1em;
+      margin: 0;
+      padding-bottom: 20px;
+    }
+
+    button {
       padding: 10px 20px;
-      background-color: #007bff; // Example button color
+      background-color: #007bff;
       color: white;
       border: none;
       border-radius: 4px;
@@ -46,271 +49,411 @@
         background-color: #0056b3;
       }
     }
-}
-
-// Media query for screens >= 1450px
-@media (min-width: 1450px) {
-  .banner-content {
-    max-width: 1200px;
-    // The gradient defined above will apply to this 1200px box.
-    // The edges of this 1200px box will have the transparent-to-blue gradient.
   }
 }
 
-// Styling for Herramientas y Recursos Section
-.herramientas-recursos-section {
+// Área de contenido principal
+.main-content-area {
+  width: 100%;
   padding: 20px;
-  margin-top: 20px;
-
-  h2 {
-    text-align: center;
-    font-size: 1.8em;
-    margin-bottom: 20px;
-    color: #333;
-  }
-
-  .herramientas-cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); // Responsive grid for cards
-    gap: 20px;
-    align-items: start; // Align items to the start of their grid area
-  }
-
-  .herramienta-card {
-    background-color: #0051a3; // Blue background
-    color: white;
-    border-radius: 8px;
-    padding: 20px;
-    display: -ms-inline-grid;
-    align-items: center; // Align items vertically
-    gap: 15px; // Space between icon, content, and button
-    min-height: 120px; // Example minimum height
-    text-align: center;
-
-    .card-icon-placeholder {
-      font-size: 2em; // Larger icon placeholder
-      flex-shrink: 0; // Prevent icon from shrinking
-      .sgp-icon {
-        width: 86px; 
-        height: 86px;
-        font-size: 86px; // Adjust size as needed
-      }
-    }
-
-    .card-content {
-      flex-grow: 1; // Allow content to take available space
-      h3 {
-        margin-top: 0;
-        margin-bottom: 5px;
-        font-size: 1.5vw;
-        padding-top: 10px; // Add some space above the title
-        padding-bottom: 10px; // Add some space below the title
-      }
-      p {
-        margin: 0;
-        font-size: 1.2vw;
-        opacity: 0.9;
-        padding-bottom: 10px; // Add some space below the description
-      }      
-      
-    }
-
-    button {
-      padding: 8px 15px;
-      background-color: #ffffff; // White button
-      color: #0051a3; // Blue text
-      border: 1px solid #0051a3;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-      flex-shrink: 0; // Prevent button from shrinking
-
-      &:hover {
-        background-color: #f0f0f0;
-      }
-    }
-  }
 }
 
-// Styling for Bottom-Right Cell: Sector Cards
-.grid-cell:nth-child(4) { // Target the fourth cell in the grid (Bottom-Right)
-  // The cell itself does not have the blue background, the cards do.
-  // background-color: #0051a3; // This was for the top-right, not here.
-  // color: white;
-
-  .sector-cards-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); // Three cards per row
-    gap: 10px; // Space between cards
-  }
-
-  .sector-card {
-    background-color: #0051a3; // Blue background for cards
-    color: white; // White text for contrast
-    border-radius: 5px;
-    padding: 15px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100px; // Ensure cards have some height
-
-    .icon-placeholder {
-      font-size: 1.5em; // Make icon placeholder noticeable
-      margin-bottom: 8px;
-    }
-
-    .sgp-icon{
-      width: 86px; 
-      height: 86px;
-      font-size: 86px; // Adjust size as needed
-    }
-
-    p {
-      margin: 0;
-      font-size: 0.9em;
-    }
-  }
-}
-
-// Styling for Bottom-Left Cell: Budget Cards
-.grid-cell:nth-child(3) { // Target the third cell in the grid (Bottom-Left)
-  display: flex;
-  flex-direction: column;
-  gap: 15px; // Space between cards
-
-  .budget-cards-container {
-    display: flex;
-    flex-direction: column;
-    gap: 15px; // Space between cards
-  }
-
-  .budget-card {
-    background-color: #f9f9f9; // Light background for cards
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 15px;
-    text-align: center;
-
-    h3 {
-      margin-top: 0;
-      margin-bottom: 8px;
-      font-size: 1.1em;
-      color: #333;
-    }
-
-    .value {
-      font-size: 1.4em;
-      font-weight: bold;
-      color: #0051a3; // Blue color for value text
-      margin: 0;
-    }
-  }
-}
-
-// Styling for Top-Right Cell: Distribución Sectores
-.grid-cell:nth-child(2) { // Target the second cell in the grid (Top-Right)
-  background-color: #0051a3; // Blue background
-  color: white; // Text color for better contrast on blue background
-  border-radius: 12px;
-  h2 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 1.5em;
-    text-align: center;
-  }
-
-  .pie-chart-placeholder {
-    width: 150px; // Adjust size as needed
-    height: 150px;
-    border-radius: 50%;
-    background-image: conic-gradient(
-      #007bff 0% 33%,       // Educación - Lighter Blue
-      #0056b3 33% 66%,      // Salud - Medium Blue
-      #003f80 66% 100%     // Agua Potable - Darker Blue
-    );
-    margin: 20px auto; // Center the placeholder
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative; // For positioning text if needed
-
-    // Simple text labels (optional, can be improved)
-    .pie-slice {
-      position: absolute;
-      font-size: 0.8em;
-      padding: 5px;
-      border-radius: 3px;
-      // The text would ideally be placed around the chart, this is very basic
-      span {
-        background-color: rgba(0,0,0,0.5);
-        padding: 2px 4px;
-        border-radius: 2px;
-      }
-    }
-    .education { top: 10px; left: 50%; transform: translateX(-50%); color: #ccdaff;}
-    .health { left: 10px; top: 50%; transform: translateY(-50%); color: #99b5ff;}
-    .water { right: 10px; top: 50%; transform: translateY(-50%); color: #6690ff;}
-  }
-}
-
-// Basic grid for the main content area (2x2)
+// Grid container básico (2x2)
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); // Two equal columns
-  grid-template-rows: auto auto; // Two rows, height based on content
-  gap: 20px; // Space between cells
-  padding: 20px; // Padding around the grid
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: auto auto;
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .grid-cell {
-  // Basic styling for cells, can be expanded
-  border: 1px solid #eee; // Light border for visualization
+  border: 1px solid #eee;
+  border-radius: 8px;
   padding: 15px;
-}
+  background-color: #f9f9f9;
 
-.consultas-interactivas {
   h2 {
     margin-top: 0;
     margin-bottom: 15px;
     font-size: 1.5em;
     text-align: center;
+    color: #333;
   }
+}
 
+// Estilos para consultas interactivas (top-left)
+.consultas-interactivas {
   .form-row {
     display: flex;
-    gap: 10px; // Space between elements in a row
+    gap: 10px;
     margin-bottom: 15px;
 
-    select {
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      flex-grow: 1; // Allows selects in the same row to share space
+    .select-field {
+      flex: 1;
     }
 
-    select.full-width {
+    .full-width {
       width: 100%;
     }
   }
 
   .button-container {
     display: flex;
-    justify-content: center; // Center the button
+    justify-content: center;
     margin-top: 20px;
 
     button {
       padding: 10px 20px;
-      background-color: #007bff; // Example button color
+      background-color: #0051a3;
       color: white;
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      font-weight: bold;
 
       &:hover {
-        background-color: #0056b3;
+        background-color: #003d7a;
       }
     }
+  }
+}
+
+// Estilos para gráfico de torta (top-right)
+.grid-cell:nth-child(2) {
+  background-color: #d3e9fe;
+  color: white;
+
+  .pie-chart-container {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+
+    canvas {
+      max-width: 100%;
+      max-height: 100%;
+    }
+  }
+}
+
+// Estilos para budget cards (bottom-left)
+.budget-cards-cell {
+  .budget-cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 100%;
+  }
+
+  .budget-card {
+    flex: 1;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    transition: box-shadow 0.3s ease;
+    min-height: 120px;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(0, 81, 163, 0.15);
+    }
+
+    mat-card-header {
+      padding-bottom: 8px;
+      
+      mat-card-title {
+        font-size: 1em;
+        color: #333;
+        font-weight: 600;
+        margin: 0;
+        line-height: 1.2;
+      }
+    }
+
+    mat-card-content {
+      padding-top: 0;
+      text-align: center;
+
+      .value {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #0051a3;
+        margin: 0;
+      }
+    }
+  }
+}
+
+// Estilos para sector cards (bottom-right)
+.grid-cell:nth-child(4) {
+  .sector-cards-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    height: 100%;
+  }
+
+  .sector-card {
+    background-color: #0051a3;
+    color: white;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #003d7a;
+    }
+
+    .icon-placeholder {
+      font-size: 1.5em;
+      margin-bottom: 8px;
+    }
+
+    .sgp-icon {
+      width: 48px;
+      height: 48px;
+      font-size: 48px;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.9em;
+      font-weight: 500;
+    }
+  }
+}
+
+@media screen and (min-width: 1199px) and (max-width: 1649px) {
+  // Styling para Herramientas y Recursos Section
+  .herramientas-recursos-section {
+    padding: 20px;
+    margin-top: 20px;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+
+    h2 {
+      text-align: center;
+      font-size: 1.8em;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .herramientas-cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      align-items: start;
+    }
+
+    .herramienta-card {
+      background-color: #0051a3;
+      color: white;
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      min-height: 120px;
+      text-align: center;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: #003d7a;
+      }
+
+      .card-icon-placeholder {
+        font-size: 2em;
+        flex-shrink: 0;
+        
+        .sgp-icon {
+          width: 64px;
+          height: 64px;
+          font-size: 64px;
+        }
+      }
+
+      .card-content {
+        flex-grow: 1;
+        
+        h3 {
+          margin-top: 0;
+          margin-bottom: 5px;
+          font-size: 1.3em;
+          padding-top: 10px;
+          padding-bottom: 10px;
+        }
+        
+        p {
+          margin: 0;
+          font-size: 1em;
+          opacity: 0.9;
+          padding-bottom: 10px;
+        }
+      }
+
+      button {
+        padding: 8px 15px;
+        background-color: #ffffff;
+        color: #0051a3;
+        border: 1px solid #0051a3;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        flex-shrink: 0;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: #f0f0f0;
+        }
+      }
+    }
+  }
+  
+}
+
+// Media query para banner en pantallas >= 1450px
+@media (min-width: 1450px) {
+  .banner-content {
+    max-width: 1200px;
+  }
+}
+
+@media (max-width: 1199px) {
+    .herramientas-recursos-section {
+    padding: 20px;
+    margin-top: 20px;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+
+    h2 {
+      text-align: center;
+      font-size: 1.8em;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .herramientas-cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      align-items: start;
+    }
+
+    .herramienta-card {
+      background-color: #0051a3;
+      color: white;
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      min-height: 120px;
+      text-align: center;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: #003d7a;
+      }
+
+      .card-icon-placeholder {
+        font-size: 2em;
+        flex-shrink: 0;
+        
+        .sgp-icon {
+          width: 64px;
+          height: 64px;
+          font-size: 64px;
+        }
+      }
+
+      .card-content {
+        flex-grow: 1;
+        
+        h3 {
+          margin-top: 0;
+          margin-bottom: 5px;
+          font-size: 1.1em;
+          padding-top: 10px;
+          padding-bottom: 10px;
+        }
+        
+        p {
+          margin: 0;
+          font-size: .9em;
+          opacity: 0.9;
+          padding-bottom: 10px;
+        }
+      }
+
+      button {
+        padding: 8px 15px;
+        background-color: #ffffff;
+        color: #0051a3;
+        border: 1px solid #0051a3;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        flex-shrink: 0;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: #f0f0f0;
+        }
+      }
+    }
+  }
+  
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .consultas-interactivas .form-row {
+    flex-direction: column;
+  }
+
+  .grid-cell:nth-child(4) .sector-cards-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .herramientas-recursos-section .herramientas-cards-container {
+    grid-template-columns: 1fr;
+  }
+
+  .budget-cards-cell .budget-card mat-card-title {
+    font-size: 0.9em;
+  }
+
+  .budget-cards-cell .budget-card .value {
+    font-size: 1.1em;
+  }
+}
+
+@media (max-width: 480px) {
+  .grid-cell:nth-child(4) .sector-cards-container {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-cell:nth-child(4) .sector-card .sgp-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 36px;
   }
 }
