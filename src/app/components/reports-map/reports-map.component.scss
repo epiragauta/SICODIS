@@ -1,6 +1,6 @@
 .reports-map-container {
   position: relative;
-  height: 100vh;
+  height: 83vh;
   width: 100%;
   overflow: hidden;
   background-color: #f8f9fa;
@@ -9,10 +9,10 @@
 /* === PANEL IZQUIERDO === */
 .left-panel {
   position: fixed;
-  top: 13.5rem; /* Posicionado debajo del menu-container (50px height + margen) */
+  top: 11.5rem; /* Posicionado debajo del menu-container (50px height + margen) */
   left: 0;
-  width: 350px;
-  height: calc(100vh - 13.5rem); /* Altura ajustada para compensar el top */
+  width: 330px;
+  height: calc(95vh - 11.5rem); /* Altura ajustada para compensar el top */
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
@@ -55,7 +55,7 @@
 
   .panel-content {
     padding: 1rem;
-    height: calc(100vh - 175px); /* Ajustado para la nueva altura del panel */
+    height: calc(87vh - 11.5rem); /* Ajustado para la nueva altura del panel */
     overflow-y: auto;
     
     /* Scrollbar personalizado */
@@ -216,11 +216,11 @@
 .map-container {
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 83vh;
   transition: margin-left 0.3s ease-in-out;
   
   &.panel-open {
-    margin-left: 350px;
+    margin-left: 330px;
   }
 }
 
@@ -282,10 +282,10 @@
 /* === PANEL DERECHO === */
 .right-panel {
   position: fixed;
-  top: 13.5rem; /* Posicionado debajo del menu-container */
+  top: 11.5rem; /* Posicionado debajo del menu-container */
   right: 0;
-  width: 400px;
-  height: calc(100vh - 13.5rem); /* Altura ajustada para compensar el top */
+  width: 310px;
+  height: calc(83vh - 11.5rem); /* Altura ajustada para compensar el top */
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   box-shadow: -2px 0 15px rgba(0, 0, 0, 0.1);
@@ -324,7 +324,7 @@
 
   .panel-content {
     padding: 1rem;
-    height: calc(100vh - 175px); /* Ajustado para la nueva altura del panel */
+    height: calc(83vh - 175px); /* Ajustado para la nueva altura del panel */
     overflow-y: auto;
   }
 }
@@ -423,8 +423,8 @@
 @media (max-width: 1024px) {
   .left-panel {
     width: 300px;
-    top: 13.5rem;
-    height: calc(100vh - 13.5rem);
+    top: 11.5rem;
+    height: calc(83vh - 11.5rem);
   }
   
   .map-container.panel-open {
@@ -432,9 +432,9 @@
   }
   
   .right-panel {
-    width: 350px;
-    top: 13.5rem;
-    height: calc(100vh - 13.5rem);
+    width: 310px;
+    top: 11.5rem;
+    height: calc(83vh - 11.5rem);
   }
 }
 
@@ -442,7 +442,7 @@
   .left-panel {
     width: 280px;
     top: 80px; /* Reducido para móviles considerando header más pequeño */
-    height: calc(100vh - 80px);
+    height: calc(83vh - 80px);
   }
   
   .map-container {
@@ -454,7 +454,7 @@
   .right-panel {
     width: 100%;
     top: 80px;
-    height: calc(100vh - 80px);
+    height: calc(83vh - 80px);
   }
   
   .show-panel-btn {
