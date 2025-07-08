@@ -1,325 +1,370 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Map, View } from 'ol';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild, PLATFORM_ID, Inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { DividerModule } from 'primeng/divider';
+import { PanelModule } from 'primeng/panel';
+import { SidebarModule } from 'primeng/sidebar';
+
+// Importar OpenLayers
+import Map from 'ol/Map';
+import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import { fromLonLat } from 'ol/proj';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
-import { Feature } from 'ol';
-import { Point } from 'ol/geom';
-import { Style, Circle, Fill, Stroke, Text } from 'ol/style';
-import { SelectModule } from 'primeng/select';
-import { CardModule } from 'primeng/card';
-import { ButtonModule } from 'primeng/button';
-import { DividerModule } from 'primeng/divider';
-import { FloatLabel } from 'primeng/floatlabel';
-
-interface SelectOption {
-  label: string;
-  value: string;
-}
+import Feature from 'ol/Feature';
+import Point from 'ol/geom/Point';
+import { Style, Circle, Fill, Stroke } from 'ol/style';
 
 @Component({
   selector: 'app-reports-map',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
-    SelectModule,
-    CardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
     ButtonModule,
+    CardModule,
     DividerModule,
-    FloatLabel,
+    PanelModule,
+    SidebarModule
   ],
   templateUrl: './reports-map.component.html',
-  styleUrls: ['./reports-map.component.scss']
+  styleUrl: './reports-map.component.scss'
 })
-export class ReportsMapComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('mapContainer', { static: true }) mapContainer!: ElementRef;
-
+export class ReportsMapComponent implements OnInit, OnDestroy {
+  
+  @ViewChild('mapElement', { static: false }) mapElement!: ElementRef;
+  
+  // Propiedades del mapa
   private map!: Map;
-  private vectorSource!: VectorSource;
   private vectorLayer!: VectorLayer<VectorSource>;
-
-  // Opciones para los selectores
-  regions: SelectOption[] = [
-    { label: 'Región Andina', value: 'andina' },
-    { label: 'Región Caribe', value: 'caribe' },
-    { label: 'Región Pacífica', value: 'pacifica' },
-    { label: 'Región Orinoquía', value: 'orinoquia' },
-    { label: 'Región Amazonía', value: 'amazonia' },
-    { label: 'Región Insular', value: 'insular' }
+  private isBrowser: boolean = false;
+  
+  // Estado del panel izquierdo
+  leftPanelVisible: boolean = true;
+  leftPanelCollapsed: boolean = false;
+  
+  // Estado del panel derecho
+  rightPanelVisible: boolean = false;
+  
+  // Filtros activos
+  activeFilters: string[] = [];
+  selectedQuery: string = '';
+  
+  // Opciones de consulta con sus colores (basados en el componente reporte-funcionamiento)
+  queryOptions = [
+    {
+      id: 'regiones',
+      label: 'Regiones',
+      color: '#3B82F6', // Azul
+      active: false
+    },
+    {
+      id: 'municipios',
+      label: 'Municipios',
+      color: '#10B981', // Verde
+      active: false
+    },
+    {
+      id: 'gobernaciones',
+      label: 'Gobernaciones',
+      color: '#F59E0B', // Amarillo/Naranja
+      active: false
+    }
   ];
+  
+  // Estado SGR-SGP
+  sgrSgpActive: boolean = false;
+  sgrSgpColor: string = '#86EFAC'; // Verde claro
+  
+  // Resultados simulados
+  filterResults: any[] = [];
+  
+  // Información descriptiva
+  descriptiveInfo: string = `
+    Utilice los filtros disponibles para consultar información específica sobre la distribución 
+    de recursos del Sistema General de Regalías (SGR) y Sistema General de Participaciones (SGP). 
+    Seleccione el tipo de consulta que desea realizar y aplique los filtros correspondientes 
+    para visualizar los datos en el mapa y en el panel de resultados.
+  `;
 
-  departments: SelectOption[] = [
-    { label: 'Antioquia', value: 'antioquia' },
-    { label: 'Bogotá D.C.', value: 'bogota' },
-    { label: 'Cundinamarca', value: 'cundinamarca' },
-    { label: 'Valle del Cauca', value: 'valle' },
-    { label: 'Santander', value: 'santander' },
-    { label: 'Atlántico', value: 'atlantico' },
-    { label: 'Bolívar', value: 'bolivar' },
-    { label: 'Córdoba', value: 'cordoba' },
-    { label: 'Magdalena', value: 'magdalena' },
-    { label: 'Meta', value: 'meta' },
-    { label: 'Norte de Santander', value: 'norte_santander' },
-    { label: 'Nariño', value: 'narino' },
-    { label: 'Cesar', value: 'cesar' },
-    { label: 'Tolima', value: 'tolima' },
-    { label: 'Huila', value: 'huila' },
-    { label: 'Boyacá', value: 'boyaca' },
-    { label: 'Caldas', value: 'caldas' },
-    { label: 'Risaralda', value: 'risaralda' },
-    { label: 'Quindío', value: 'quindio' },
-    { label: 'Sucre', value: 'sucre' },
-    { label: 'La Guajira', value: 'la_guajira' },
-    { label: 'Cauca', value: 'cauca' },
-    { label: 'Caquetá', value: 'caqueta' },
-    { label: 'Casanare', value: 'casanare' },
-    { label: 'Putumayo', value: 'putumayo' },
-    { label: 'Arauca', value: 'arauca' },
-    { label: 'Chocó', value: 'choco' },
-    { label: 'Amazonas', value: 'amazonas' },
-    { label: 'Guainía', value: 'guainia' },
-    { label: 'Guaviare', value: 'guaviare' },
-    { label: 'Vaupés', value: 'vaupes' },
-    { label: 'Vichada', value: 'vichada' },
-    { label: 'San Andrés y Providencia', value: 'san_andres' }
-  ];
-
-  systems: SelectOption[] = [
-    { label: 'Sistema General de Participaciones (SGP)', value: 'sgp' },
-    { label: 'Sistema General de Regalías (SGR)', value: 'sgr' }
-  ];
-
-  municipalities: SelectOption[] = [
-    { label: 'Medellín', value: 'medellin' },
-    { label: 'Bogotá', value: 'bogota' },
-    { label: 'Cali', value: 'cali' },
-    { label: 'Barranquilla', value: 'barranquilla' },
-    { label: 'Cartagena', value: 'cartagena' },
-    { label: 'Cúcuta', value: 'cucuta' },
-    { label: 'Bucaramanga', value: 'bucaramanga' },
-    { label: 'Pereira', value: 'pereira' },
-    { label: 'Santa Marta', value: 'santa_marta' },
-    { label: 'Ibagué', value: 'ibague' },
-    { label: 'Manizales', value: 'manizales' },
-    { label: 'Villavicencio', value: 'villavicencio' },
-    { label: 'Valledupar', value: 'valledupar' },
-    { label: 'Montería', value: 'monteria' },
-    { label: 'Pasto', value: 'pasto' },
-    { label: 'Neiva', value: 'neiva' },
-    { label: 'Soledad', value: 'soledad' },
-    { label: 'Armenia', value: 'armenia' },
-    { label: 'Sincelejo', value: 'sincelejo' },
-    { label: 'Floridablanca', value: 'floridablanca' }
-  ];
-
-  // Valores seleccionados
-  selectedRegion: string = '';
-  selectedDepartment: string = '';
-  selectedSystem: string = '';
-  selectedMunicipality: string = '';
-
-  // Texto descriptivo
-  descriptiveText: string = 'Seleccione los filtros para visualizar la distribución de recursos del SGP y SGR en el territorio colombiano. El mapa mostrará información detallada según su selección.';
-
-  // Coordenadas de muestra para departamentos principales
-  private departmentCoordinates: { [key: string]: [number, number] } = {
-    'antioquia': [-75.5636, 6.2518],
-    'bogota': [-74.0721, 4.7110],
-    'cundinamarca': [-74.2973, 5.0269],
-    'valle': [-76.5225, 3.4516],
-    'santander': [-73.1198, 7.1193],
-    'atlantico': [-74.7813, 10.7964],
-    'bolivar': [-75.5812, 10.3910],
-    'cordoba': [-75.8819, 8.7480],
-    'magdalena': [-74.2973, 10.4314],
-    'meta': [-73.6350, 4.1420]
-  };
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private el: ElementRef) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
 
   ngOnInit(): void {
     // Inicialización del componente
-  }
-
-  ngAfterViewInit(): void {
-    this.initializeMap();
+    if (this.isBrowser) {
+      // Inicializar el mapa después de que la vista se haya renderizado
+      setTimeout(() => {
+        this.initializeMap();
+      }, 100);
+    }
   }
 
   ngOnDestroy(): void {
     if (this.map) {
-      this.map.dispose();
+      this.map.setTarget(undefined);
     }
   }
 
+  // Inicializar el mapa de OpenLayers
   private initializeMap(): void {
-    // Crear la fuente de vectores
-    this.vectorSource = new VectorSource();
-
-    // Crear la capa de vectores
-    this.vectorLayer = new VectorLayer({
-      source: this.vectorSource,
-      style: this.createPointStyle()
+    // Crear capa de mapa base
+    const tileLayer = new TileLayer({
+      source: new OSM()
     });
 
-    // Crear el mapa
+    // Crear capa vectorial para los marcadores
+    this.vectorLayer = new VectorLayer({
+      source: new VectorSource()
+    });
+
+    // Crear el mapa centrado en Colombia
     this.map = new Map({
-      target: this.mapContainer.nativeElement,
-      layers: [
-        new TileLayer({
-          source: new OSM()
-        }),
-        this.vectorLayer
-      ],
+      target: 'map',
+      layers: [tileLayer, this.vectorLayer],
       view: new View({
-        center: fromLonLat([-74.0721, 4.7110]), // Coordenadas de Colombia (Bogotá)
+        center: fromLonLat([-74.0721, 4.7110]), // Coordenadas de Bogotá
         zoom: 6
       })
     });
 
-    // Agregar puntos de muestra
-    this.addSamplePoints();
+    // Agregar algunos marcadores de ejemplo
+    this.addSampleMarkers();
   }
 
-  private createPointStyle(): Style {
-    return new Style({
-      image: new Circle({
-        radius: 8,
-        fill: new Fill({
-          color: '#004583'
-        }),
-        stroke: new Stroke({
-          color: '#ffffff',
-          width: 2
-        })
-      }),
-      text: new Text({
-        font: '12px Arial',
-        fill: new Fill({
-          color: '#000000'
-        }),
-        stroke: new Stroke({
-          color: '#ffffff',
-          width: 2
-        }),
-        offsetY: -20
-      })
-    });
-  }
+  // Agregar marcadores de ejemplo
+  private addSampleMarkers(): void {
+    const sampleLocations = [
+      { name: 'Bogotá', coords: [-74.0721, 4.7110], value: 2100000000 },
+      { name: 'Medellín', coords: [-75.5636, 6.2442], value: 890000000 },
+      { name: 'Cali', coords: [-76.5225, 3.3890], value: 720000000 },
+      { name: 'Barranquilla', coords: [-74.7813, 10.9685], value: 650000000 },
+      { name: 'Cartagena', coords: [-75.5144, 10.3932], value: 540000000 }
+    ];
 
-  private addSamplePoints(): void {
-    // Agregar puntos de muestra para algunos departamentos
-    Object.entries(this.departmentCoordinates).forEach(([dept, coords]) => {
+    sampleLocations.forEach(location => {
       const feature = new Feature({
-        geometry: new Point(fromLonLat(coords)),
-        name: dept,
-        type: 'department'
+        geometry: new Point(fromLonLat(location.coords)),
+        name: location.name,
+        value: location.value
       });
 
-      feature.setStyle(this.createPointStyle());
-      this.vectorSource.addFeature(feature);
+      // Estilo del marcador basado en el valor
+      const style = new Style({
+        image: new Circle({
+          radius: Math.log(location.value / 1000000) * 2,
+          fill: new Fill({ color: 'rgba(59, 130, 246, 0.7)' }),
+          stroke: new Stroke({ color: '#3B82F6', width: 2 })
+        })
+      });
+
+      feature.setStyle(style);
+      this.vectorLayer.getSource()?.addFeature(feature);
     });
   }
 
-  onRegionChange(): void {
-    this.updateDescriptiveText();
-    this.filterMapData();
+  // Actualizar marcadores según filtros
+  private updateMapMarkers(): void {
+    if (!this.vectorLayer) return;
+
+    // Limpiar marcadores existentes
+    this.vectorLayer.getSource()?.clear();
+
+    // Agregar nuevos marcadores según la consulta seleccionada
+    let locations: any[] = [];
+
+    switch(this.selectedQuery) {
+      case 'regiones':
+        locations = [
+          { name: 'Región Caribe', coords: [-74.7813, 10.9685], value: 1250000000 },
+          { name: 'Región Pacífica', coords: [-76.5225, 3.3890], value: 980000000 },
+          { name: 'Región Andina', coords: [-74.0721, 4.7110], value: 1450000000 },
+          { name: 'Región Orinoquía', coords: [-70.2366, 5.3350], value: 750000000 },
+          { name: 'Región Amazonía', coords: [-70.2366, -1.2136], value: 320000000 }
+        ];
+        break;
+      case 'municipios':
+        locations = [
+          { name: 'Bogotá D.C.', coords: [-74.0721, 4.7110], value: 2100000000 },
+          { name: 'Medellín', coords: [-75.5636, 6.2442], value: 890000000 },
+          { name: 'Cali', coords: [-76.5225, 3.3890], value: 720000000 },
+          { name: 'Barranquilla', coords: [-74.7813, 10.9685], value: 650000000 },
+          { name: 'Cartagena', coords: [-75.5144, 10.3932], value: 540000000 }
+        ];
+        break;
+      case 'gobernaciones':
+        locations = [
+          { name: 'Antioquia', coords: [-75.5636, 6.2442], value: 1800000000 },
+          { name: 'Cundinamarca', coords: [-74.0721, 4.7110], value: 1200000000 },
+          { name: 'Valle del Cauca', coords: [-76.5225, 3.3890], value: 980000000 },
+          { name: 'Santander', coords: [-73.1198, 7.1193], value: 870000000 },
+          { name: 'Atlántico', coords: [-74.7813, 10.9685], value: 650000000 }
+        ];
+        break;
+      default:
+        // Mostrar marcadores por defecto
+        this.addSampleMarkers();
+        return;
+    }
+
+    // Obtener el color activo para los marcadores
+    const activeColor = this.getActiveQueryColor();
+
+    locations.forEach(location => {
+      const feature = new Feature({
+        geometry: new Point(fromLonLat(location.coords)),
+        name: location.name,
+        value: location.value
+      });
+
+      const style = new Style({
+        image: new Circle({
+          radius: Math.log(location.value / 1000000) * 2,
+          fill: new Fill({ color: activeColor + '70' }), // Agregar transparencia
+          stroke: new Stroke({ color: activeColor, width: 2 })
+        })
+      });
+
+      feature.setStyle(style);
+      this.vectorLayer.getSource()?.addFeature(feature);
+    });
   }
 
-  onDepartmentChange(): void {
-    this.updateDescriptiveText();
-    this.filterMapData();
-    this.centerMapOnDepartment();
+  // Métodos para manejo del panel izquierdo
+  toggleLeftPanel(): void {
+    this.leftPanelVisible = !this.leftPanelVisible;
   }
 
-  onSystemChange(): void {
-    this.updateDescriptiveText();
-    this.filterMapData();
+  toggleLeftPanelCollapse(): void {
+    this.leftPanelCollapsed = !this.leftPanelCollapsed;
+    const elements = this.el.nativeElement.querySelectorAll('.ol-zoom');
+    elements[0].style.left = '.5rem';
+    if (this.leftPanelCollapsed){      
+      elements[0].style.left = '4.9rem';
+    }
   }
 
-  onMunicipalityChange(): void {
-    this.updateDescriptiveText();
-    this.filterMapData();
+  // Métodos para manejo de consultas
+  selectQuery(queryId: string): void {
+    // Resetear todas las opciones
+    this.queryOptions.forEach(option => option.active = false);
+    
+    // Activar la opción seleccionada
+    const selectedOption = this.queryOptions.find(option => option.id === queryId);
+    if (selectedOption) {
+      selectedOption.active = true;
+      this.selectedQuery = queryId;
+      
+      // Simular carga de datos específicos para la consulta
+      this.loadQueryData(queryId);
+    }
   }
 
-  private updateDescriptiveText(): void {
-    const parts = [];
+  // Método para activar/desactivar SGR-SGP
+  toggleSgrSgp(): void {
+    this.sgrSgpActive = !this.sgrSgpActive;
     
-    if (this.selectedRegion) {
-      const region = this.regions.find(r => r.value === this.selectedRegion);
-      parts.push(`Región: ${region?.label}`);
-    }
-    
-    if (this.selectedDepartment) {
-      const dept = this.departments.find(d => d.value === this.selectedDepartment);
-      parts.push(`Departamento: ${dept?.label}`);
-    }
-    
-    if (this.selectedSystem) {
-      const system = this.systems.find(s => s.value === this.selectedSystem);
-      parts.push(`Sistema: ${system?.label}`);
-    }
-    
-    if (this.selectedMunicipality) {
-      const mun = this.municipalities.find(m => m.value === this.selectedMunicipality);
-      parts.push(`Municipio: ${mun?.label}`);
-    }
-
-    if (parts.length > 0) {
-      this.descriptiveText = `Visualizando datos para: ${parts.join(', ')}. La información mostrada corresponde a la distribución de recursos territoriales.`;
+    if (this.sgrSgpActive) {
+      this.activeFilters.push('SGR-SGP');
     } else {
-      this.descriptiveText = 'Seleccione los filtros para visualizar la distribución de recursos del SGP y SGR en el territorio colombiano. El mapa mostrará información detallada según su selección.';
+      this.activeFilters = this.activeFilters.filter(filter => filter !== 'SGR-SGP');
     }
+    
+    this.updateResults();
   }
 
-  private filterMapData(): void {
-    // Limpiar los puntos existentes
-    this.vectorSource.clear();
-
-    // Agregar puntos filtrados según la selección
-    if (this.selectedDepartment) {
-      const coords = this.departmentCoordinates[this.selectedDepartment];
-      if (coords) {
-        const feature = new Feature({
-          geometry: new Point(fromLonLat(coords)),
-          name: this.selectedDepartment,
-          type: 'department'
-        });
-
-        feature.setStyle(this.createPointStyle());
-        this.vectorSource.addFeature(feature);
-      }
-    } else {
-      // Si no hay departamento seleccionado, mostrar todos
-      this.addSamplePoints();
-    }
-  }
-
-  private centerMapOnDepartment(): void {
-    if (this.selectedDepartment && this.departmentCoordinates[this.selectedDepartment]) {
-      const coords = this.departmentCoordinates[this.selectedDepartment];
-      this.map.getView().setCenter(fromLonLat(coords));
-      this.map.getView().setZoom(8);
-    }
-  }
-
+  // Método para borrar filtros
   clearFilters(): void {
-    this.selectedRegion = '';
-    this.selectedDepartment = '';
-    this.selectedSystem = '';
-    this.selectedMunicipality = '';
-    this.updateDescriptiveText();
-    this.filterMapData();
+    this.queryOptions.forEach(option => option.active = false);
+    this.sgrSgpActive = false;
+    this.selectedQuery = '';
+    this.activeFilters = [];
+    this.filterResults = [];
+    this.rightPanelVisible = false;
     
-    // Regresar a la vista inicial
-    this.map.getView().setCenter(fromLonLat([-74.0721, 4.7110]));
-    this.map.getView().setZoom(6);
+    // Restaurar marcadores por defecto en el mapa
+    if (this.isBrowser && this.map) {
+      this.addSampleMarkers();
+    }
   }
 
-  applyFilters(): void {
-    this.filterMapData();
-    this.centerMapOnDepartment();
+  // Método para cargar datos de consulta
+  loadQueryData(queryType: string): void {
+    // Simular datos según el tipo de consulta
+    switch(queryType) {
+      case 'regiones':
+        this.filterResults = [
+          { name: 'Región Caribe', value: 1250000000, type: 'región' },
+          { name: 'Región Pacífica', value: 980000000, type: 'región' },
+          { name: 'Región Andina', value: 1450000000, type: 'región' },
+          { name: 'Región Orinoquía', value: 750000000, type: 'región' },
+          { name: 'Región Amazonía', value: 320000000, type: 'región' }
+        ];
+        break;
+      case 'municipios':
+        this.filterResults = [
+          { name: 'Bogotá D.C.', value: 2100000000, type: 'municipio' },
+          { name: 'Medellín', value: 890000000, type: 'municipio' },
+          { name: 'Cali', value: 720000000, type: 'municipio' },
+          { name: 'Barranquilla', value: 650000000, type: 'municipio' },
+          { name: 'Cartagena', value: 540000000, type: 'municipio' }
+        ];
+        break;
+      case 'gobernaciones':
+        this.filterResults = [
+          { name: 'Antioquia', value: 1800000000, type: 'gobernación' },
+          { name: 'Cundinamarca', value: 1200000000, type: 'gobernación' },
+          { name: 'Valle del Cauca', value: 980000000, type: 'gobernación' },
+          { name: 'Santander', value: 870000000, type: 'gobernación' },
+          { name: 'Atlántico', value: 650000000, type: 'gobernación' }
+        ];
+        break;
+    }
+    
+    this.rightPanelVisible = true;
+    this.updateResults();
+    
+    // Actualizar marcadores en el mapa
+    if (this.isBrowser && this.map) {
+      this.updateMapMarkers();
+    }
+  }
+
+  // Método para actualizar resultados
+  updateResults(): void {
+    // Aquí se aplicarían los filtros adicionales como SGR-SGP
+    // Por ahora solo mostramos los resultados cargados
+    console.log('Filtros activos:', this.activeFilters);
+    console.log('Resultados:', this.filterResults);
+  }
+
+  // Método para mostrar/ocultar panel derecho
+  toggleRightPanel(): void {
+    this.rightPanelVisible = !this.rightPanelVisible;
+  }
+
+  // Método para obtener el color de la opción activa
+  getActiveQueryColor(): string {
+    const activeOption = this.queryOptions.find(option => option.active);
+    return activeOption ? activeOption.color : '#6B7280';
+  }
+
+  // Método para formatear números
+  formatNumber(value: number): string {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(value);
   }
 }

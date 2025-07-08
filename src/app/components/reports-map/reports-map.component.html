@@ -1,117 +1,160 @@
 <div class="reports-map-container">
-  <!-- Panel lateral izquierdo -->
-  <div class="sidebar-panel">
-    <p-card header="Filtros de Consulta" class="filter-card">
+  
+  <!-- Panel Izquierdo Flotante -->
+  <div class="left-panel" [class.collapsed]="leftPanelCollapsed" [class.hidden]="!leftPanelVisible">
+    
+    <!-- Header del Panel con botón de colapso -->
+    <div class="panel-header">
+      <h3 *ngIf="!leftPanelCollapsed">Filtros de Consulta</h3>
+      <button 
+        mat-icon-button 
+        class="collapse-btn"
+        (click)="toggleLeftPanelCollapse()"
+        [attr.aria-label]="leftPanelCollapsed ? 'Expandir panel' : 'Colapsar panel'">
+        <mat-icon>{{ leftPanelCollapsed ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+      </button>
+    </div>
+
+    <!-- Contenido del Panel -->
+    <div class="panel-content" *ngIf="!leftPanelCollapsed">
+      
+      <!-- Área 1: Consultas -->
       <div class="filter-section">
-        <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-select 
-            id="region-select"
-            [options]="regions"
-            [(ngModel)]="selectedRegion"
-            (onChange)="onRegionChange()"
-            placeholder="Seleccione una región"
-            styleClass="w-full filter-select">
-          </p-select>
-          <label for="region-select" class="filter-label">Región</label>
-        </p-floatlabel>
+        <h4 class="section-title">Consultas</h4>
+        <div class="query-options">
+          <button 
+            *ngFor="let option of queryOptions"
+            class="query-btn"
+            [class.active]="option.active"
+            (click)="selectQuery(option.id)"
+            p-button
+            [style.border-left-color]="option.color">
+            {{ option.label }}
+            <span class="color-indicator" [style.background-color]="option.color"></span>
+          </button>
+        </div>
       </div>
 
-      <div class="filter-section">
-        <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-select 
-            id="department-select"
-            inputId="department-select"
-            [options]="departments"
-            [(ngModel)]="selectedDepartment"
-            (onChange)="onDepartmentChange()"
-            placeholder="Seleccione un departamento"
-            styleClass="w-full filter-select">
-          </p-select>
-          <label for="department-select" class="filter-label">Departamento</label>
-        </p-floatlabel> 
-      </div>
+      <p-divider></p-divider>
 
+      <!-- Área 2: SGR-SGP y Borrar Filtros -->
       <div class="filter-section">
-        <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-select 
-            id="system-select"
-            [options]="systems"
-            [(ngModel)]="selectedSystem"
-            (onChange)="onSystemChange()"
-            placeholder="Seleccione un sistema"
-            styleClass="w-full filter-select">
-          </p-select>
-          <label for="system-select" class="filter-label">Sistema</label>
-        </p-floatlabel>
-      </div>
-
-      <div class="filter-section">
-        <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-select 
-            id="municipality-select"
-            [options]="municipalities"
-            [(ngModel)]="selectedMunicipality"
-            (onChange)="onMunicipalityChange()"
-            placeholder="Seleccione un municipio"
-            styleClass="w-full filter-select">
-          </p-select>
-          <label for="municipality-select" class="filter-label">Municipio</label>
-        </p-floatlabel>
-      </div>     
-
-      <div class="button-section">
-        <p-button 
-          label="Aplicar Filtros" 
-          icon="pi pi-search" 
-          (onClick)="applyFilters()"
-          styleClass="w-full apply-button">
-        </p-button>
-        <p-button 
-          label="Limpiar Filtros" 
-          icon="pi pi-times" 
-          (onClick)="clearFilters()"
+        <h4 class="section-title">Comparativo Regional</h4>
+        <button 
+          class="sgr-sgp-btn"
+          [class.active]="sgrSgpActive"
+          (click)="toggleSgrSgp()"
+          p-button
           severity="secondary"
-          styleClass="w-full clear-button">
+          [style.border-left-color]="sgrSgpColor">
+          SGR - SGP
+          <span class="color-indicator" [style.background-color]="sgrSgpColor"></span>
+        </button>
+        
+        <p-button 
+          class="clear-filters-btn"
+          (click)="clearFilters()"
+          severity="danger"
+          [outlined]="true">
+          Borrar Filtros
         </p-button>
       </div>
 
       <p-divider></p-divider>
 
-      <div class="description-section">
-        <h3 class="description-title">Información</h3>
-        <p class="description-text">{{ descriptiveText }}</p>
+      <!-- Área 3: Información Descriptiva -->
+      <div class="filter-section">
+        <h4 class="section-title">Información</h4>
+        <div class="info-box">
+          <p>{{ descriptiveInfo }}</p>
+        </div>
       </div>
-    </p-card>
+
+    </div>
   </div>
 
-  <!-- Contenedor del mapa -->
-  <div class="map-container">
-    <div class="map-header">
-      <h2 class="map-title">Mapa de Distribución de Recursos Territoriales</h2>
-      <p class="map-subtitle">Visualización geográfica de la distribución del SGP y SGR en Colombia</p>
-    </div>
+  <!-- Botón para mostrar/ocultar panel izquierdo cuando está oculto -->
+  <button 
+    *ngIf="!leftPanelVisible"
+    class="show-panel-btn"
+    mat-fab
+    color="primary"
+    (click)="toggleLeftPanel()"
+    aria-label="Mostrar panel de filtros">
+    <mat-icon>filter_list</mat-icon>
+  </button>
+
+  <!-- Área Principal del Mapa -->
+  <div class="map-container" [class.panel-open]="leftPanelVisible && !leftPanelCollapsed">
     
-    <div class="map-wrapper">
-      <div #mapContainer class="ol-map"></div>
+    <!-- Indicadores de filtros activos -->
+    <div class="active-filters" *ngIf="activeFilters.length > 0">
+      <h4>Filtros Activos:</h4>
+      <div class="filter-tags">
+        <span 
+          *ngFor="let filter of activeFilters" 
+          class="filter-tag"
+          [style.background-color]="getActiveQueryColor()">
+          {{ filter }}
+        </span>
+      </div>
     </div>
 
-    <!-- Leyenda del mapa -->
-    <div class="map-legend">
-      <h4 class="legend-title">Leyenda</h4>
-      <div class="legend-items">
-        <div class="legend-item">
-          <div class="legend-icon department-icon"></div>
-          <span class="legend-text">Departamentos</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-icon municipality-icon"></div>
-          <span class="legend-text">Municipios</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-icon resource-icon"></div>
-          <span class="legend-text">Recursos SGP/SGR</span>
-        </div>
+    <!-- Contenedor del Mapa Real -->
+    <div id="map" class="map-element" #mapElement></div>
+
+    <!-- Controles del mapa -->
+    <div class="map-controls">
+      <button 
+        mat-mini-fab 
+        color="primary"
+        (click)="toggleRightPanel()"
+        [attr.aria-label]="rightPanelVisible ? 'Ocultar resultados' : 'Mostrar resultados'">
+        <mat-icon>{{ rightPanelVisible ? 'close' : 'assessment' }}</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Panel Derecho de Resultados -->
+  <div class="right-panel" [class.visible]="rightPanelVisible">
+    <div class="panel-header">
+      <h3>Resultados</h3>
+      <button 
+        mat-icon-button 
+        (click)="toggleRightPanel()"
+        aria-label="Cerrar panel de resultados">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div class="panel-content">
+      <div class="results-summary" *ngIf="filterResults.length > 0">
+        <h4>{{ selectedQuery | titlecase }}</h4>
+        <p>{{ filterResults.length }} resultado(s) encontrado(s)</p>
+      </div>
+
+      <div class="results-list">
+        <mat-card 
+          *ngFor="let result of filterResults" 
+          class="result-card">
+          <mat-card-content>
+            <div class="result-header">
+              <h5>{{ result.name }}</h5>
+              <span class="result-type">{{ result.type }}</span>
+            </div>
+            <div class="result-value">
+              <span class="value">{{ formatNumber(result.value) }}</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="no-results" *ngIf="filterResults.length === 0">
+        <mat-icon>search_off</mat-icon>
+        <p>No hay resultados para mostrar</p>
+        <p class="hint">Seleccione una consulta para ver los datos</p>
       </div>
     </div>
   </div>
+
 </div>
