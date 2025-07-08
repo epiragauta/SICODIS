@@ -8,12 +8,20 @@
   width: 100%;
   margin: 0 auto;
   position: relative;
-  background: linear-gradient(to right,
-    rgba(0, 56, 119, 0.42) 0%,
-    #003877 25%,
-    #003877 75%,
-    rgba(0, 56, 119, 0.42) 100%
-  );
+  background-image: url('/assets/img/level-curves-background.jpg');
+  background-size: cover;
+  background-position: center;
+
+  .gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; 
+    height: 100%;
+    background: linear-gradient(90deg, #2062aa 0%, rgb(53 95 147 / 31%) 100%);
+    
+  } 
+  
 
   .banner-info {
     position: absolute;
@@ -232,7 +240,7 @@
   }
 }
 
-@media screen and (min-width: 1199px) and (max-width: 1649px) {
+@media screen and (min-width: 1199px) and (max-width: 2149px) {
   // Styling para Herramientas y Recursos Section
   .herramientas-recursos-section {
     padding: 20px;
@@ -325,7 +333,7 @@
 // Media query para banner en pantallas >= 1450px
 @media (min-width: 1450px) {
   .banner-content {
-    max-width: 1200px;
+    max-width: 1400px;
   }
 }
 
