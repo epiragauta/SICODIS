@@ -24,7 +24,7 @@
 
       .p-multiselect {
         flex: 0 0 auto; // Don't grow or shrink, base size on content or fixed width
-        width: 235px;
+        width: 210px;
       }
     }
 
@@ -159,7 +159,7 @@
   .main-panel {
     display: flex;
     gap: 1rem;
-    margin-bottom: 2rem;
+    margin-bottom: .5rem;
     
     @media (max-width: 1024px) {
       flex-direction: column;

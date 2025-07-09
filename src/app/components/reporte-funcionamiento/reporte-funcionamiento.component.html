@@ -43,7 +43,24 @@
             placeholder="Beneficiario" [maxSelectedLabels]="3"></p-multiselect>
           <label for="beneficiariosSelect">Beneficiario</label>
         </p-floatlabel>
+      </div>
 
+      <div class="p-field dpto-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="departamento" [options]="departamentos" inputId="departamentoSelect"
+            [(ngModel)]="selectedDepartamento" optionLabel="label" (onChange)="onDepartamentoChange($event)" 
+            placeholder="Departamento" ></p-select>
+          <label for="departamentoSelect">Departamento</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field mpio-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="municipio" [options]="departamentos" inputId="municipioSelect"
+            [(ngModel)]="selectedDepartamento" optionLabel="label" (onChange)="onMunicipioChange($event)" 
+            placeholder="Municipio" ></p-select>
+          <label for="municipioSelect">Municipio</label>
+        </p-floatlabel>
       </div>
 
       <div class="p-field clear-filters">
@@ -243,6 +260,15 @@
       </div> 
     </div>
   </div>
+  
+  
+  <p class="final-note" style="font-size: 0.75rem;">
+    <strong>m:</strong> Corresponde a cifras en millones de pesos.
+  </p>
+  <p class="final-note" style="padding-bottom: 1em; font-size: 0.75rem;">
+    <strong>Fuente:</strong> Subdirección de Distribución de Recursos Territoriales - DPIP a partir de las resoluciones de Distribución de la Comisión Rectora del SGR y los reportes de información del Sistema de Presupuesto y Giro de Regalías (SPGR)
+  </p>
+  
 
   <!-- Botones de acción -->
   <div class="action-buttons" *ngIf="registroActual">
@@ -313,9 +339,6 @@
     <p class="final-note">
       <strong>Avance de recaudo:</strong> Corresponde al porcentaje de los recursos recaudados respecto al presupuesto
       corriente asignado en la Ley bienal.
-    </p>
-    <p class="final-note">
-      <strong>m:</strong> Corresponde a cifras en millones de pesos.
-    </p>
+    </p>    
   </div>
 </div>

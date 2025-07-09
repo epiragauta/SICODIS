@@ -60,12 +60,17 @@ export class ReporteFuncionamientoComponent implements OnInit {
   fuentes: SelectOption[] = [];
   conceptos: SelectOption[] = [];
   beneficiarios: SelectOption[] = [];
+  departamentos: SelectOption[] = [];
+  municipios: SelectOption[] = [];
+
 
   // Valores seleccionados - iniciar sin selección
   selectedVigencia: any; // Seleccionar el primer elemento por defecto
   selectedFuente: any[] = [];
   selectedConcepto: any[] = [];
   selectedBeneficiario: any[] = [];
+  selectedDepartamento: any[] = [];
+  selectedMunicipio: any[] = [];
 
   // Datos para las tarjetas (se actualizarán según la selección)
   presupuestoData = {
@@ -507,6 +512,14 @@ export class ReporteFuncionamientoComponent implements OnInit {
       this.beneficiarios = [];
       this.limpiarDatos();
     }
+  }
+  
+  onDepartamentoChange(event: MultiSelectChangeEvent): void {
+    console.log('Departamentos seleccionados:', event.value);
+  }
+
+  onMunicipioChange(event: MultiSelectChangeEvent): void {
+    console.log('Municipio seleccionados:', event.value);
   }
 
   /**
@@ -1296,22 +1309,22 @@ formatMillions2(
         datasets: [
           {
             label: 'Pagos',
-            backgroundColor: '#4BC0C0',
+            backgroundColor: '#e8a58c',
             data: [pagos]
           },
           {
             label: 'Compromisos por pagar',
-            backgroundColor: '#3366CC',
+            backgroundColor: '#ee825a',
             data: [compromisoSinAfectacion]
           },
           {
             label: 'CDP por comprometer',
-            backgroundColor: '#28a745',
+            backgroundColor: '#F74E11',
             data: [cdpSinAfectacion]
           },
           {
             label: 'Saldo sin afect.',
-            backgroundColor: '#aeb6bf',
+            backgroundColor: '#eceae9',
             data: [saldoSinAfectacion]
           }
           
@@ -1331,8 +1344,8 @@ formatMillions2(
         datasets: [
           {
             data: [compromiso, presupuestoDisponible],
-            backgroundColor: ['#3366CC', '#808b96'],
-            hoverBackgroundColor: ['#2851a3', '#dee2e6']
+            backgroundColor: ['#ee825a', '#eceae9'],
+            hoverBackgroundColor: ['#e85c16', '#dee2e6']
           }
         ]
       };
@@ -1346,24 +1359,24 @@ formatMillions2(
           {
             label: 'Pagos',
             data: [pagos],
-            backgroundColor: '#4BC0C0',
+            backgroundColor: '#e8a58c',
           },
           {
             label: 'Caja Disponible',
             data: [cajaDisponible],
-            backgroundColor: '#e5e8e8'            
+            backgroundColor: '#eceae9'            
           }
         ]
       };
 
       this.donutAvanceRecaudoData = {
-        labels: ['Recaudo'],
+        labels: ['Recaudo corriente', 'Presupuesto corriente'],
         datasets: [
           {
             data: [
               this.avanceRecaudoData.iacCorriente, this.avanceRecaudoData.presupuestoCorriente
             ],
-            backgroundColor: ['#3366CC', '#808b96'],
+            backgroundColor: ['#FF8D00', '#eceae9'],
             hoverBackgroundColor: ['#2851a3', '#dee2e6']
           }
         ]
