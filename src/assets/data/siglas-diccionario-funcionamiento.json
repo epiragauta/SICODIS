@@ -1,0 +1,183 @@
+{
+  "diccionario": {
+    "original_sheet_name": "Diccionario",
+    "column_mapping": {
+      "Concepto": "concepto",
+      "Descripción": "descripci_n"
+    },
+    "total_rows": 20,
+    "columns": [
+      "concepto",
+      "descripci_n"
+    ],
+    "data": [
+      {
+        "concepto": "Presupuesto Corriente",
+        "descripci_n": "Recursos asignados del presupuesto corriente del bienio"
+      },
+      {
+        "concepto": "Presupuesto Otros",
+        "descripci_n": "Recursos asignados del presupuesto por otros ingresos (multas, sanciones, reintegros, saldos, etc)"
+      },
+      {
+        "concepto": "Presupuesto Asignado",
+        "descripci_n": "Presupuesto total asignado por la Comisión Rectora del SGR para el bienio"
+      },
+      {
+        "concepto": "Disponibilidad Inicial",
+        "descripci_n": "Recursos del bienio anterior libres de afectación y compromisos pendientes de pago, incorporados por la entidad"
+      },
+      {
+        "concepto": "Presupuesto Vigente",
+        "descripci_n": "Presupuesto total del bienio"
+      },
+      {
+        "concepto": "Recursos Bloqueados",
+        "descripci_n": "Recursos bloqueados como medida preventiva del recaudo de conformidad con el Artículo 2.1.1.5.2. Decreto 1821 de 2020"
+      },
+      {
+        "concepto": "Presupuesto Disponible",
+        "descripci_n": "Presupuesto disponible del bienio ejecución"
+      },
+      {
+        "concepto": "Recaudo Otros",
+        "descripci_n": "Recursos recaudados por otros ingresos (multas, sanciones, reintegros, saldos, etc)"
+      },
+      {
+        "concepto": "Recaudo Corriente",
+        "descripci_n": "Recursos recaudados del presupuesto corriente informados mensualmente por la ANH y la ANM y comunicados al MHCP"
+      },
+      {
+        "concepto": "Recaudo Total",
+        "descripci_n": "Total de recursos recaudados disponibles para efectuar pagos"
+      },
+      {
+        "concepto": "Avance Recaudo Corriente",
+        "descripci_n": "Porcentaje del recaudo acumulado obtenido respecto al presupuesto corriente del bienio"
+      },
+      {
+        "concepto": "Caja Total",
+        "descripci_n": "Recursos efectivos sobre los cuales la entidad realiza sus pagos"
+      },
+      {
+        "concepto": "CDP",
+        "descripci_n": "Recursos del presupuesto disponible que han sido afectados con certificado de disponibilidad presupuestal"
+      },
+      {
+        "concepto": "Compromisos",
+        "descripci_n": "Recursos destinados para la adquisición de bienes o servicios amparados bajo regisro presupuestal"
+      },
+      {
+        "concepto": "Pagos",
+        "descripci_n": "Recursos que han sido objeto de pago de los bienes o servicios adquiridos"
+      },
+      {
+        "concepto": "Saldo por Comprometer",
+        "descripci_n": "Recursos disponibles para la adquisición de bienes o servicios"
+      },
+      {
+        "concepto": "% Ejecución a Compromisos",
+        "descripci_n": "Porcentaje de ejecución respecto al presupuesto disponible del bienio"
+      },
+      {
+        "concepto": "Caja Disponible",
+        "descripci_n": "Recursos en caja disponibles para efectuar pagos de bienes o servicios adquiridos"
+      },
+      {
+        "concepto": "Saldo Disponible a Pagos",
+        "descripci_n": "Recursos que pasaran al siguiente bienio como disponibilidad inicial"
+      },
+      {
+        "concepto": "Saldo sin afectación",
+        "descripci_n": "Recursos del presupuesto disponible que no han sido objeto de afectación presupuestal"
+      }
+    ]
+  },
+  "siglas": {
+    "original_sheet_name": "Siglas",
+    "column_mapping": {
+      "Siglas": "siglas",
+      "Descripción": "descripci_n"
+    },
+    "total_rows": 15,
+    "columns": [
+      "siglas",
+      "descripci_n"
+    ],
+    "data": [
+      {
+        "siglas": "ANH",
+        "descripci_n": "Agencia Nacional de Minería"
+      },
+      {
+        "siglas": "ANM",
+        "descripci_n": "Agencia Nacional de Hidrocarburos"
+      },
+      {
+        "siglas": "CNARP",
+        "descripci_n": "Comunidades Negras, Afrocolombianas, Raizales y Palenqueras"
+      },
+      {
+        "siglas": "CTUS",
+        "descripci_n": "Conceptos Técnicos Únicos Sectoriales"
+      },
+      {
+        "siglas": "Dep.",
+        "descripci_n": "Departamento"
+      },
+      {
+        "siglas": "IP",
+        "descripci_n": "Incentivo a la Producción"
+      },
+      {
+        "siglas": "m",
+        "descripci_n": "Cifras en millones de pesos"
+      },
+      {
+        "siglas": "MHCP",
+        "descripci_n": "Ministerio de Hacienda y Credito Público"
+      },
+      {
+        "siglas": "Min",
+        "descripci_n": "Ministerio"
+      },
+      {
+        "siglas": "OCAD",
+        "descripci_n": "Órgano Colegiad de Administración y Decisión"
+      },
+      {
+        "siglas": "PCI",
+        "descripci_n": "Pueblo o Comunidades Indígenas"
+      },
+      {
+        "siglas": "PRG",
+        "descripci_n": "Pueblo Rrom o Gitano"
+      },
+      {
+        "siglas": "SIEC",
+        "descripci_n": "Sistema de Información y Estrategia de Capacitación"
+      },
+      {
+        "siglas": "SSEC",
+        "descripci_n": "Sistema de Seguimiento Evaluación y Control"
+      },
+      {
+        "siglas": "ST",
+        "descripci_n": "Secretaria Técnica"
+      }
+    ]
+  },
+  "_metadata": {
+    "source_file": "Siglas-Diccionario.xlsx",
+    "total_sheets": 2,
+    "processed_sheets": 2,
+    "sheet_names": [
+      "Diccionario",
+      "Siglas"
+    ],
+    "cleaning_applied": {
+      "clean_text": true,
+      "advanced_cleaning": true
+    }
+  }
+}
