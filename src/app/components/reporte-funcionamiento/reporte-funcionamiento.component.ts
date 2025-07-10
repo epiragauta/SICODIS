@@ -167,6 +167,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
   diccionarioContent: string = '';
   siglasContent: string = '';
 
+  registrosFiltrados: any[] = [];
+
   constructor() {}
 
   ngOnInit(): void {
@@ -795,7 +797,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       }
 
       // Filtrar registros que coincidan con todas las selecciones
-      const registrosFiltrados = this.funcionamientoData.filter(registro => {
+      this.registrosFiltrados = this.funcionamientoData.filter(registro => {
         const coincideFuente = this.selectedFuente.some(f => f.label === registro.fuente);
         const coincideConcepto = this.selectedConcepto.some(c => c.label === registro.concepto);
         const coincideBeneficiario = this.selectedBeneficiario.some(b => b.label === registro.beneficiario);
@@ -803,14 +805,14 @@ export class ReporteFuncionamientoComponent implements OnInit {
         return coincideFuente && coincideConcepto && coincideBeneficiario;
       });
 
-      if (registrosFiltrados.length === 0) {
+      if (this.registrosFiltrados.length === 0) {
         console.warn('No se encontraron registros para las selecciones específicas de beneficiarios');
         // Si no hay registros específicos, calcular solo por asignaciones y conceptos
         this.calcularYActualizarTotales();
         return;
       }
 
-      console.log(`Calculando totales para ${registrosFiltrados.length} registros con beneficiarios específicos`);
+      console.log(`Calculando totales para ${this.registrosFiltrados.length} registros con beneficiarios específicos`);
 
       // Función para convertir string a número
       const convertirANumero = (valor: any): number => {
@@ -872,7 +874,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
       // Calcular la suma para cada campo numérico
       camposSuma.forEach(campo => {
-        const valores = registrosFiltrados
+        const valores = this.registrosFiltrados
           .map(registro => convertirANumero(registro[campo]))
           .filter(valor => !isNaN(valor));
         
@@ -882,7 +884,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
       // Calcular el promedio para campos de porcentaje
       camposPromedio.forEach(campo => {
-        const valoresValidos = registrosFiltrados
+        const valoresValidos = this.registrosFiltrados
           .map(registro => convertirPorcentajeANumero(registro[campo]))
           .filter(valor => !isNaN(valor) && valor > 0);
         
@@ -1082,6 +1084,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
     this.showMpios = false;
     this.municipios = [];
     this.registroActual = null;
+    this.registrosFiltrados = [];
     
     // Limpiar datos iniciales
     this.limpiarDatos();
@@ -1191,6 +1194,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
     this.fuentes = [];
     this.conceptos = [];
     this.beneficiarios = [];
+    
   }
 
   // Método para formatear números en millones
