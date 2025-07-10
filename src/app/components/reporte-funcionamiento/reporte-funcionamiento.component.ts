@@ -252,7 +252,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
     this.siglasDiccionarioData.diccionario.data.forEach((item: DiccionarioItem) => {
       contenido += `<tr>
-        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top; font-weight: 500;">${item.concepto}</td>
+        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top; font-weight: 500;"><strong>${item.concepto}</strong></td>
         <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top;">${item.descripci_n}</td>
       </tr>`;
     });
@@ -275,7 +275,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
     this.siglasDiccionarioData.siglas.data.forEach((item: SiglasItem) => {
       contenido += `<tr>
-        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top; font-weight: 500;">${item.siglas}</td>
+        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top; font-weight: 500;"><strong>${item.siglas}</strong></td>
         <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top;">${item.descripci_n}</td>
       </tr>`;
     });
@@ -1066,251 +1066,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
   }
 
   /**
-   * 
-   * Calcula la sumatoria de todos los registros con las asignaciones seleccionadas
-   */
-  private recalcularTotalesParaSeleccionesMultiples(): void {
-    try {
-      console.log('Recalculando totales para selecciones múltiples...');
-      
-      // Si no hay asignaciones seleccionadas, no hacer nada
-      if (!this.selectedFuente || this.selectedFuente.length === 0) {
-        return;
-      }
-
-      // Si TOTAL está seleccionado en asignaciones, usar el registro de totales general
-      const totalEnAsignaciones = this.selectedFuente.some(f => f.label === "TOTAL");
-      
-      if (totalEnAsignaciones) {
-        console.log('TOTAL está seleccionado en asignaciones, usando registro de totales general');
-        this.registroActual = this.funcionamientoDataConTotales.find(item => item.id === "TOTAL");
-        if (this.registroActual) {
-          this.actualizarDatosDelRegistro();
-        }
-        return;
-      }
-
-      // Calcular totales para las asignaciones seleccionadas
-      const asignacionesSeleccionadas = this.selectedFuente.map(f => f.label);
-      console.log('Calculando totales para asignaciones:', asignacionesSeleccionadas);
-
-      // Filtrar registros que coincidan con las asignaciones seleccionadas
-      const registrosFiltrados = this.funcionamientoDataConTotales.filter(registro => 
-        registro.id !== "TOTAL" && asignacionesSeleccionadas.includes(registro.fuente)
-      );
-
-      console.log('Registros filtrados para cálculo:', registrosFiltrados.length);
-
-      if (registrosFiltrados.length === 0) {
-        console.warn('No se encontraron registros para las asignaciones seleccionadas');
-        return;
-      }
-
-      // Crear un registro de totales calculado
-      let  registroTotalesCalculado: any = {
-        id: "TOTAL_CALCULADO",
-        fuente: "TOTAL",
-        concepto: "TOTAL", 
-        beneficiario: "TOTAL"
-      };
-
-      // Campos numéricos a sumar
-      const camposNumericos = [
-        'apropiacion-inicial',
-        'apropiacion-vigente',
-        'apropiacion-vigente-disponible',
-        'compromisos',
-        'obligaciones',
-        'pagos',
-        'saldo-sin-afectacion',
-        'saldo-por-programar',
-        'avance-compromisos',
-        'avance-obligaciones',
-        'avance-pagos'
-      ];
-
-      // Calcular la suma para cada campo numérico
-      camposNumericos.forEach(campo => {
-        const valores = registrosFiltrados
-          .map(registro => {
-            const valor = registro[campo];
-            return (typeof valor === 'number' && !isNaN(valor)) ? valor : 0;
-          });
-        
-        const suma = valores.reduce((total, valor) => total + valor, 0);
-        registroTotalesCalculado[campo] = suma;
-      });
-
-      // Campos de porcentaje (calcular promedio ponderado o promedio simple)
-      const camposPorcentaje = ['avance-compromisos', 'avance-obligaciones', 'avance-pagos'];
-      camposPorcentaje.forEach(campo => {
-        const valoresValidos = registrosFiltrados
-          .map(registro => registro[campo])
-          .filter(valor => typeof valor === 'number' && !isNaN(valor));
-        
-        const promedio = valoresValidos.length > 0 
-          ? valoresValidos.reduce((sum, val) => sum + val, 0) / valoresValidos.length 
-          : 0;
-        
-        registroTotalesCalculado[campo] = promedio;
-      });
-
-      // Actualizar el registro TOTAL en los datos con los valores calculados
-      const indiceTotal = this.funcionamientoDataConTotales.findIndex(item => item.id === "TOTAL");
-      if (indiceTotal !== -1) {
-        // Mantener la estructura original pero actualizar los valores calculados
-        this.funcionamientoDataConTotales[indiceTotal] = {
-          ...this.funcionamientoDataConTotales[indiceTotal],
-          ...registroTotalesCalculado
-        };
-        
-        this.registroActual = this.funcionamientoDataConTotales[indiceTotal];
-        this.actualizarDatosDelRegistro();
-        
-        console.log('Registro TOTAL actualizado con cálculos:', this.registroActual);
-      }
-
-    } catch (error) {
-      console.error('Error recalculando totales para selecciones múltiples:', error);
-    }
-  }
-
-  private recalcularTotales(): void {
-    try {
-      console.log('Recalculando totales...');
-      
-      // Si TOTAL está seleccionado en asignaciones o conceptos, usar el registro de totales general
-      const totalEnAsignaciones = this.selectedFuente.some(f => f.label === "TOTAL");
-      const totalEnConceptos = this.selectedConcepto.some(c => c.label === "TOTAL");
-      
-      if (totalEnAsignaciones || totalEnConceptos) {
-        console.log('TOTAL está seleccionado, usando registro de totales general');
-        this.registroActual = this.funcionamientoDataConTotales.find(item => item.id === "TOTAL");
-        if (this.registroActual) {
-          this.actualizarDatosDelRegistro();
-        }
-        return;
-      }
-
-      // Si no hay TOTAL seleccionado, calcular totales para las selecciones específicas
-      this.calcularYActualizarTotales();
-      
-    } catch (error) {
-      console.error('Error recalculando totales:', error);
-    }
-  }
-
-  /**
-   * NUEVO MÉTODO: Calcular totales basado en las selecciones actuales de asignaciones y conceptos
-   */
-  private calcularTotalesPorSeleccion(): any {
-    try {
-      // Filtrar registros que coincidan con las selecciones actuales
-      const registrosFiltrados = this.funcionamientoData.filter(registro => {
-        const coincideFuente = this.selectedFuente.some(f => f.label === registro.fuente);
-        const coincideConcepto = this.selectedConcepto.some(c => c.label === registro.concepto);
-        return coincideFuente && coincideConcepto;
-      });
-
-      if (registrosFiltrados.length === 0) {
-        console.warn('No se encontraron registros para las selecciones actuales');
-        return null;
-      }
-
-      console.log(`Calculando totales para ${registrosFiltrados.length} registros filtrados`);
-
-      // Campos que se deben sumar
-      const camposSuma = [
-        'distribucion-presupuesto-corriente',
-        'distribucion-otros',
-        'total-asignado-bienio',
-        'disponibilidad-inicial',
-        'apropiacion-vigente',
-        'recursos-bloqueados',
-        'apropiacion-vigente-disponible',
-        'iac-mayor-recaudo-saldos-y-reintegros',
-        'iac-corriente',
-        'iac-informadas',
-        'caja-total',
-        'cdp',
-        'compromisos',
-        'pagos',
-        'saldo-por-comprometer',
-        'caja-disponible',
-        'saldo-disponible-a-pagos',
-        'saldo-sin-afectacion'
-      ];
-
-      // Campos que se deben promediar (porcentajes)
-      const camposPromedio = [
-        'avance-iac-corriente',
-        'ejecucion-a-compromisos'
-      ];
-
-      // Función para convertir string a número
-      const convertirANumero = (valor: any): number => {
-        if (typeof valor === 'number') return valor;
-        if (typeof valor === 'string') {
-          const numeroLimpio = valor.replace(/\./g, '').replace(',', '.');
-          const numero = parseFloat(numeroLimpio);
-          return isNaN(numero) ? 0 : numero;
-        }
-        return 0;
-      };
-
-      // Función para convertir porcentaje string a número
-      const convertirPorcentajeANumero = (valor: any): number => {
-        if (typeof valor === 'number') return valor;
-        if (typeof valor === 'string') {
-          const numeroLimpio = valor.replace('%', '').replace(',', '.');
-          const numero = parseFloat(numeroLimpio);
-          return isNaN(numero) ? 0 : numero;
-        }
-        return 0;
-      };
-
-      // Crear registro de totales calculado
-      const registroCalculado: any = {
-        "cod-sgpr": "CALC",
-        "cod-sicodis": "CALC",
-        "id": "CALCULADO",
-        "fuente": `${this.selectedFuente.map(f => f.label).join(', ')}`,
-        "concepto": `${this.selectedConcepto.map(c => c.label).join(', ')}`,
-        "beneficiario": "CALCULADO",
-        "acto-administrativo": "Totales Calculados"
-      };
-
-      // Calcular sumas
-      camposSuma.forEach(campo => {
-        const suma = registrosFiltrados.reduce((total, registro) => {
-          return total + convertirANumero(registro[campo]);
-        }, 0);
-        registroCalculado[campo] = suma;
-      });
-
-      // Calcular promedios para porcentajes
-      camposPromedio.forEach(campo => {
-        const valoresValidos = registrosFiltrados
-          .map(registro => convertirPorcentajeANumero(registro[campo]))
-          .filter(valor => !isNaN(valor) && valor !== 0);
-        
-        const promedio = valoresValidos.length > 0 
-          ? valoresValidos.reduce((sum, val) => sum + val, 0) / valoresValidos.length 
-          : 0;
-        
-        registroCalculado[campo] = promedio;
-      });
-
-      console.log('Registro calculado generado:', registroCalculado);
-      return registroCalculado;
-
-    } catch (error) {
-      console.error('Error calculando totales por selección:', error);
-      return null;
-    }
-  }
-
-  /**
    * Limpiar filtros
    */
   clearFilters(): void {
@@ -1454,38 +1209,38 @@ export class ReporteFuncionamientoComponent implements OnInit {
  * @param {boolean} [options.includeBillionSuffix=true] - Add "bn" suffix
  * @returns {string} Formatted number string
  */
-formatMillions2(
-  num: number,
-  options: {
-    includeSymbol?: boolean;
-    decimalPlaces?: number;
-    includeMillionSuffix?: boolean;
-  } = {}
-) {
-  // Default options
-  const {
-    includeSymbol = false,
-    decimalPlaces = 0,
-    includeMillionSuffix = true
-  } = options;
+  formatMillions2(
+    num: number,
+    options: {
+      includeSymbol?: boolean;
+      decimalPlaces?: number;
+      includeMillionSuffix?: boolean;
+    } = {}
+  ) {
+    // Default options
+    const {
+      includeSymbol = false,
+      decimalPlaces = 0,
+      includeMillionSuffix = true
+    } = options;
 
-  // Convert to miles of millions
-  const valueInMilesOfMillions = num;
+    // Convert to miles of millions
+    const valueInMilesOfMillions = num;
 
-  // Format the number
-  const formattedValue = valueInMilesOfMillions.toLocaleString('en-US', {
-    minimumFractionDigits: decimalPlaces,
-    maximumFractionDigits: decimalPlaces
-  }).replaceAll(',', 'temp').replaceAll('.', ',').replaceAll('temp', '.');
+    // Format the number
+    const formattedValue = valueInMilesOfMillions.toLocaleString('en-US', {
+      minimumFractionDigits: decimalPlaces,
+      maximumFractionDigits: decimalPlaces
+    }).replaceAll(',', 'temp').replaceAll('.', ',').replaceAll('temp', '.');
 
-  // Build the result string
-  let result = '';
-  if (includeSymbol) result += '$ ';
-  result += formattedValue;
-  if (includeMillionSuffix) result += ' m';
+    // Build the result string
+    let result = '';
+    if (includeSymbol) result += '$ ';
+    result += formattedValue;
+    if (includeMillionSuffix) result += ' m';
 
-  return result;
-}
+    return result;
+  }
 
   // Resto de métodos para gráficos y eventos de botones...
   private actualizarGraficos(): void {

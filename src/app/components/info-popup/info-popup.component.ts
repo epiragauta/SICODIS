@@ -21,7 +21,7 @@ export class InfoPopupComponent implements OnInit {
 
   displayPopup: boolean = false;
   cookieName: string = 'sgrInfoPopupCount';
-  maxDisplays: number = 15;
+  maxDisplays: number = 30;
 
   constructor(
     private cookieService: CookieService,
@@ -34,7 +34,9 @@ export class InfoPopupComponent implements OnInit {
       if (isPlatformBrowser(this.platformId)) {
         let count = Number(this.cookieService.get(this.cookieName) || 0);
         if (count < this.maxDisplays) {
-          this.displayPopup = true;
+          setTimeout(() => {
+            this.displayPopup = true;
+          }, 750);
           count++;
           this.cookieService.set(this.cookieName, count.toString(), 365, '/');
         }
