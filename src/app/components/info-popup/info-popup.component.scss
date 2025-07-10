@@ -1,16 +1,92 @@
-// Add any specific styles for the info-popup component here.
-// For example, you might want to style the dialog content or footer.
+:host ::ng-deep {
+  .p-dialog {
+    .p-dialog-content {
+      padding: 1rem;
+      
+      // Estilos para las tablas en los popups
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+        font-size: 11px;
+        
+        th, td {
+          border: 1px solid #dee2e6;
+          padding: 8px;
+          text-align: left;
+          vertical-align: top;
+        }
+        
+        th {
+          background-color: #f8f9fa;
+          font-weight: bold;
+          color: #495057;
+        }
+        
+        tr:nth-child(even) {
+          background-color: #f8f9fa;
+        }
+        
+        tr:hover {
+          background-color: #e9ecef;
+        }
+      }
+    }
+    
+    .p-dialog-header {
+      background: linear-gradient(135deg, #3366cc 0%, #2851a3 100%);
+      color: white;
+      border-bottom: none;
+      
+      .p-dialog-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+      }
+      
+      .p-dialog-header-icon {
+        color: white;
+        
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.1);
+        }
+      }
+    }
+    
+    .p-dialog-footer {
+      border-top: 1px solid #dee2e6;
+      padding: 1rem;
+      
+      .p-button {
+        background-color: #3366cc;
+        border-color: #3366cc;
+        
+        &:hover {
+          background-color: #2851a3;
+          border-color: #2851a3;
+        }
+      }
+    }
+  }
+}
 
-// Example:
-// :host ::ng-deep .p-dialog .p-dialog-content {
-//   padding: 1.5rem;
-// }
-
-// :host ::ng-deep .p-dialog .p-dialog-footer {
-//   padding: 1rem;
-//   border-top: 1px solid #dee2e6;
-// }
-
-// :host ::ng-deep .p-button {
-//   margin-left: .5rem;
-// }
+// Responsive adjustments
+@media (max-width: 768px) {
+  :host ::ng-deep {
+    .p-dialog {
+      width: 95vw !important;
+      max-width: 95vw !important;
+      
+      .p-dialog-content {
+        padding: 0.5rem;
+        
+        table {
+          font-size: 10px;
+          
+          th, td {
+            padding: 6px;
+          }
+        }
+      }
+    }
+  }
+}

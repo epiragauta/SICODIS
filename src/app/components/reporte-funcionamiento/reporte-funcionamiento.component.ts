@@ -18,12 +18,31 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { Select, SelectChangeEvent } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { MultiSelect, MultiSelectChangeEvent  } from 'primeng/multiselect';
-
+import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { departamentos } from '../../data/departamentos';
 
 interface SelectOption {
   value: string;
   label: string;
+}
+
+interface DiccionarioItem {
+  concepto: string;
+  descripci_n: string;
+}
+
+interface SiglasItem {
+  siglas: string;
+  descripci_n: string;
+}
+
+interface SiglasDiccionarioData {
+  diccionario: {
+    data: DiccionarioItem[];
+  };
+  siglas: {
+    data: SiglasItem[];
+  };
 }
 
 @Component({
@@ -42,7 +61,8 @@ interface SelectOption {
     MatIconModule,
     FloatLabel,
     Select,
-    MultiSelect
+    MultiSelect,
+    InfoPopupComponent,
   ],
   templateUrl: './reporte-funcionamiento.component.html',
   styleUrl: './reporte-funcionamiento.component.scss'
@@ -57,13 +77,15 @@ export class ReporteFuncionamientoComponent implements OnInit {
   // Datos con el registro de totales incluido
   private funcionamientoDataConTotales: any[] = [];
 
+  // Datos para diccionario y siglas
+  private siglasDiccionarioData: SiglasDiccionarioData | null = null;
+
   // Opciones para los selects
   fuentes: SelectOption[] = [];
   conceptos: SelectOption[] = [];
   beneficiarios: SelectOption[] = [];
   departamentos: SelectOption[] = [];
   municipios: SelectOption[] = [];
-
 
   // Valores seleccionados - iniciar sin selección
   selectedVigencia: any; // Seleccionar el primer elemento por defecto
@@ -135,6 +157,15 @@ export class ReporteFuncionamientoComponent implements OnInit {
   managementReportXlsFile = "reporte-gestion-financiera-2025.xlsx"
   funcionamientoDataUrl = "/assets/data/funcionamiento-base.json";
   funcionamientoDataEntitiesUrl = "/assets/data/funcionamiento-base-entities.json"
+  siglasDiccionarioUrl = "/assets/data/siglas-diccionario-funcionamiento.json";
+
+  infoPopupContent: string = '';
+
+  // Variables para controlar los popups de diccionario y siglas
+  showDiccionarioPopup: boolean = false;
+  showSiglasPopup: boolean = false;
+  diccionarioContent: string = '';
+  siglasContent: string = '';
 
   constructor() {}
 
@@ -165,8 +196,124 @@ export class ReporteFuncionamientoComponent implements OnInit {
       this.funcionamientoDataConTotales = [];
       this.inicializarFuentesVacio();
     });
+
+    // Cargar datos de diccionario y siglas
+    this.cargarSiglasDiccionario();
     
-    
+    this.infoPopupContent = `
+      <div style="font-size: 10px;">
+        <p>Información detallada sobre presupuestos, recaudos y distribución de recursos del Sistema General de Regalías de Colombia, organizada jerárquicamente por diferentes conceptos presupuestales.</p>
+        <br>
+        <ul>
+          <li><strong>Concepto</strong>: Descripción de la categoría presupuestal</li>
+          <li><strong>Presupuesto corriente</strong>: Monto presupuestado para ingresos corrientes</li>
+          <li><strong>Presupuesto otros</strong>: Montos presupuestados para otras fuentes de ingreso</li>
+          <li><strong>Presupuesto total vigente</strong>: Suma total del presupuesto vigente (corriente + otros)</li>
+          <li><strong>Recaudo corriente informada</strong>: Valores de recaudo reportados para los ingresos corrientes</li>
+          <li><strong>Recaudo total</strong>: Monto total de recaudo</li>
+          <li><strong>Disponibilidad inicial</strong>: Recursos disponibles al inicio del periodo</li>
+          <li><strong>Excedentes faep fonpet</strong>: Excedentes provenientes del Fondo de Ahorro y Estabilización (FAE) y del Fondo de Pensiones Territoriales (FONPET)</li>
+          <li><strong>Mineral sin identificacion de origen</strong>: Ingresos provenientes de minerales cuyo origen no está identificado</li>
+          <li><strong>MR</strong>: Categoría específica de ingresos</li>
+          <li><strong>Multas</strong>: Ingresos provenientes de sanciones o penalidades</li>
+          <li><strong>Reintegros</strong>: Devoluciones o retornos de recursos</li>
+          <li><strong>Rendimientos financieros</strong>: Ingresos generados por rendimientos de inversiones</li>
+          <li><strong>Porcentaje 1</strong> y <strong>Porcentaje 2</strong>: Indicadores porcentuales que miden proporciones entre valores</li>
+        </ul>          
+      </div>
+      `;
+  }
+
+  /**
+   * Cargar los datos de diccionario y siglas desde el archivo JSON
+   */
+  async cargarSiglasDiccionario(): Promise<void> {
+    try {
+      const response = await fetch(this.siglasDiccionarioUrl);
+      this.siglasDiccionarioData = await response.json();
+      console.log('Datos de diccionario y siglas cargados:', this.siglasDiccionarioData);
+    } catch (error) {
+      console.error('Error cargando datos de diccionario y siglas:', error);
+      this.siglasDiccionarioData = null;
+    }
+  }
+
+  /**
+   * Generar contenido HTML para el diccionario
+   */
+  private generarContenidoDiccionario(): string {
+    if (!this.siglasDiccionarioData?.diccionario?.data) {
+      return '<p>No se pudieron cargar los datos del diccionario.</p>';
+    }
+
+    let contenido = '<div style="font-size: 11px;"><table style="width: 100%; border-collapse: collapse;">';
+    contenido += '<thead><tr style="background-color: #f8f9fa;"><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Concepto</th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Descripción</th></tr></thead>';
+    contenido += '<tbody>';
+
+    this.siglasDiccionarioData.diccionario.data.forEach((item: DiccionarioItem) => {
+      contenido += `<tr>
+        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top; font-weight: 500;">${item.concepto}</td>
+        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top;">${item.descripci_n}</td>
+      </tr>`;
+    });
+
+    contenido += '</tbody></table></div>';
+    return contenido;
+  }
+
+  /**
+   * Generar contenido HTML para las siglas
+   */
+  private generarContenidoSiglas(): string {
+    if (!this.siglasDiccionarioData?.siglas?.data) {
+      return '<p>No se pudieron cargar los datos de las siglas.</p>';
+    }
+
+    let contenido = '<div style="font-size: 11px;"><table style="width: 100%; border-collapse: collapse;">';
+    contenido += '<thead><tr style="background-color: #f8f9fa;"><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Sigla</th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Descripción</th></tr></thead>';
+    contenido += '<tbody>';
+
+    this.siglasDiccionarioData.siglas.data.forEach((item: SiglasItem) => {
+      contenido += `<tr>
+        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top; font-weight: 500;">${item.siglas}</td>
+        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top;">${item.descripci_n}</td>
+      </tr>`;
+    });
+
+    contenido += '</tbody></table></div>';
+    return contenido;
+  }
+
+  /**
+   * Mostrar popup del diccionario
+   */
+  showPopupDiccionario(): void {
+    console.log('Mostrando diccionario de datos');
+    this.diccionarioContent = this.generarContenidoDiccionario();
+    this.showDiccionarioPopup = true;
+  }
+
+  /**
+   * Mostrar popup de siglas
+   */
+  showPopupSiglas(): void {
+    console.log('Mostrando siglas');
+    this.siglasContent = this.generarContenidoSiglas();
+    this.showSiglasPopup = true;
+  }
+
+  /**
+   * Cerrar popup del diccionario
+   */
+  closeDiccionarioPopup(): void {
+    this.showDiccionarioPopup = false;
+  }
+
+  /**
+   * Cerrar popup de siglas
+   */
+  closeSiglasPopup(): void {
+    this.showSiglasPopup = false;
   }
 
   /**
@@ -240,6 +387,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       console.error('Error cargando datos totales iniciales:', error);
     }
   }
+
   private generarRegistroTotales(): void {
     if (!this.funcionamientoData || this.funcionamientoData.length === 0) {
       console.warn('No hay datos para generar totales');
@@ -1219,7 +1367,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         cdp: convertirANumero(this.registroActual['cdp']) / 1000000,
         compromiso: convertirANumero(this.registroActual['compromisos']) / 1000000,
         pagos: convertirANumero(this.registroActual['pagos']) / 1000000,
-        recursoComprometer: convertirANumero(this.registroActual['saldo-sin-afectacion']) / 1000000 // En billones
+        recursoComprometer: convertirANumero(this.registroActual['saldo-sin-afectacion']) / 1000000
       };
 
       // Actualizar datos de situación de caja

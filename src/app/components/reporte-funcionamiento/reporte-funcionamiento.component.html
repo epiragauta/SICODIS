@@ -1,4 +1,21 @@
 <div class="reporte-funcionamiento-container">
+  <app-info-popup [infoText]="infoPopupContent" contentTitle="Información Detallada del Reporte"></app-info-popup>
+  
+  <!-- Popups para Diccionario y Siglas -->
+  <app-info-popup 
+    [infoText]="diccionarioContent" 
+    contentTitle="Diccionario de Conceptos"
+    [showPopup]="showDiccionarioPopup"
+    (onClose)="closeDiccionarioPopup()">
+  </app-info-popup>
+  
+  <app-info-popup 
+    [infoText]="siglasContent" 
+    contentTitle="Siglas y Abreviaciones"
+    [showPopup]="showSiglasPopup"
+    (onClose)="closeSiglasPopup()">
+  </app-info-popup>
+
   <!-- Panel superior con selects -->
   <div class="filters-panel">
     <div class="filters-row">
@@ -69,27 +86,6 @@
         </button>
       </div>
     </div>
-
-    <!-- Indicador de estado de selección -->
-    <!-- <div class="selection-status" *ngIf="fuentes.length > 0">
-      <div class="status-item" [class.completed]="selectedFuente" [class.active]="!selectedFuente">
-        <span class="status-number">1</span>
-        <span class="status-text">{{selectedFuente.label ? 'Asignación: ' + selectedFuente.label : 'Seleccione una
-          asignación'}}</span>
-      </div>
-      <div class="status-item" [class.completed]="selectedConcepto" [class.active]="selectedFuente && !selectedConcepto"
-        [class.disabled]="!selectedFuente">
-        <span class="status-number">2</span>
-        <span class="status-text">{{selectedConcepto.label ? 'Concepto: ' + selectedConcepto.label : 'Seleccione un
-          concepto'}}</span>
-      </div>
-      <div class="status-item" [class.completed]="selectedBeneficiario"
-        [class.active]="selectedConcepto && !selectedBeneficiario" [class.disabled]="!selectedConcepto">
-        <span class="status-number">3</span>
-        <span class="status-text">{{selectedBeneficiario.label ? 'Beneficiario: ' + selectedBeneficiario.label :
-          'Seleccione un beneficiario'}}</span>
-      </div>
-    </div> -->
   </div>
 
   <!-- Mensaje cuando no hay datos seleccionados -->
@@ -113,10 +109,10 @@
     </div>
     <div style="position: relative; right:1rem;">
       <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 1rem;"
-          (click)="clearFilters()">
+          (click)="showPopupDiccionario()">
       </button>
       <button pButton type="button" label="Siglas" class="p-button-secondary"
-          (click)="clearFilters()">
+          (click)="showPopupSiglas()">
       </button>
     </div>
   </div>
