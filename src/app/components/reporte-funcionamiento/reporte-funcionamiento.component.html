@@ -20,7 +20,7 @@
       <div class="p-field asignaciones-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-multiselect id="asignaciones" [options]="fuentes" inputId="asignacioneSelect" [(ngModel)]="selectedFuente"
-            (onChange)="onFuenteChange($event)" optionLabel="label" placeholder="Asignaciones" [maxSelectedLabels]="3">
+            (onChange)="onFuenteChange($event)" optionLabel="label" [maxSelectedLabels]="3">
           </p-multiselect>
           <label for="asignacioneSelect">Asignaciones</label>
         </p-floatlabel>
@@ -29,7 +29,7 @@
       <div class="p-field conceptos-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-multiselect id="conceptos" [options]="conceptos" inputId="conceptosSelect" [(ngModel)]="selectedConcepto"
-            (onChange)="onConceptoChange($event)" optionLabel="label" placeholder="Conceptos" 
+            (onChange)="onConceptoChange($event)" optionLabel="label" 
             [maxSelectedLabels]="3"></p-multiselect>
           <label for="conceptosSelect">Conceptos</label>
         </p-floatlabel>
@@ -40,12 +40,12 @@
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-multiselect id="beneficiarios" [options]="beneficiarios" inputId="beneficiariosSelect"
             [(ngModel)]="selectedBeneficiario" optionLabel="label" (onChange)="onBeneficiarioChange($event)" 
-            placeholder="Beneficiario" [maxSelectedLabels]="3"></p-multiselect>
+            [maxSelectedLabels]="3"></p-multiselect>
           <label for="beneficiariosSelect">Beneficiario</label>
         </p-floatlabel>
       </div>
 
-      <div class="p-field dpto-select">
+      <div class="p-field dpto-select" *ngIf="showDptos">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="departamento" [options]="departamentos" inputId="departamentoSelect"
             [(ngModel)]="selectedDepartamento" optionLabel="label" (onChange)="onDepartamentoChange($event)" 
@@ -54,10 +54,10 @@
         </p-floatlabel>
       </div>
 
-      <div class="p-field mpio-select">
+      <div class="p-field mpio-select" *ngIf="showMpios">
         <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-select id="municipio" [options]="departamentos" inputId="municipioSelect"
-            [(ngModel)]="selectedDepartamento" optionLabel="label" (onChange)="onMunicipioChange($event)" 
+          <p-select id="municipio" [options]="municipios" inputId="municipioSelect"
+            [(ngModel)]="selectedMunicipio" optionLabel="beneficiario" (onChange)="onMunicipioChange($event)" 
             placeholder="Municipio" ></p-select>
           <label for="municipioSelect">Municipio</label>
         </p-floatlabel>
@@ -106,12 +106,22 @@
     </mat-card>
   </div>
 
-  
-
-  <div>
-    <p class="date-update">Fecha de actualización: junio 30 de 2025</p>
-    <p class="date-update">Fecha de corte de recaudo: mayo 30 de 2025</p>
+  <div style="display: flex;">
+    <div style="width: 80%;">
+      <p class="date-update">Fecha de actualización: junio 30 de 2025</p>
+      <p class="date-update">Fecha de corte de recaudo: mayo 30 de 2025</p>
+    </div>
+    <div style="position: relative; right:1rem;">
+      <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 1rem;"
+          (click)="clearFilters()">
+      </button>
+      <button pButton type="button" label="Siglas" class="p-button-secondary"
+          (click)="clearFilters()">
+      </button>
+    </div>
   </div>
+
+  
 
   <!-- Panel principal con dos columnas -->
   <div class="main-panel" *ngIf="registroActual">

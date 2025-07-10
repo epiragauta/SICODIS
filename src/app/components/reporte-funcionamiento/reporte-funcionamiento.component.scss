@@ -14,9 +14,9 @@
 
     .filters-row {
       display: flex;
-      gap: 1rem;
+      gap: .5rem;
       flex-wrap: wrap;
-
+      font-size: 12px;
       .filter-select {
         flex: 1;
         min-width: 200px;
@@ -25,7 +25,7 @@
       .p-multiselect {
         flex: 0 0 auto; // Don't grow or shrink, base size on content or fixed width
         width: 210px;
-      }
+      }      
     }
 
     // Indicador de estado de selección
@@ -460,11 +460,18 @@
 
 // Sobrescribir estilos de PrimeNG
 :host ::ng-deep {
+
+  .p-multiselect-label {
+    padding: .425rem !important;
+  }
+  .p-select-label {
+    padding: .425rem !important;
+  }
   .p-button {
     font-weight: 500;
     border-radius: 6px;
     transition: all 0.2s ease;
-    font-size: 0.95rem;
+    font-size: 0.75rem;
 
     &:hover {
       transform: translateY(-1px);

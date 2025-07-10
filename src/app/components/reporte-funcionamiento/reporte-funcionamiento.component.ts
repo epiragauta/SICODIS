@@ -7,8 +7,6 @@ import { MatCardModule } from '@angular/material/card';
 import { ButtonModule } from 'primeng/button';
 import { ChartModule } from 'primeng/chart';
 
-// Importar los datos y funciones
-import { funcionamientoBaseData } from '../../data/funcionamiento-base.data';
 import { 
   getFuentes,
   getConceptosByFuente,
@@ -17,9 +15,11 @@ import {
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { MatIconModule } from '@angular/material/icon';
 import { FloatLabel } from 'primeng/floatlabel';
-import { Select } from 'primeng/select';
+import { Select, SelectChangeEvent } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { MultiSelect, MultiSelectChangeEvent  } from 'primeng/multiselect';
+
+import { departamentos } from '../../data/departamentos';
 
 interface SelectOption {
   value: string;
@@ -52,6 +52,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
   // Datos originales cargados desde el JSON
   private funcionamientoData: any[] = [];
+  private funcionamientoDataEntities: any[] = [];
   
   // Datos con el registro de totales incluido
   private funcionamientoDataConTotales: any[] = [];
@@ -126,37 +127,55 @@ export class ReporteFuncionamientoComponent implements OnInit {
     }
   ];
 
+  showDptos: boolean = false;
+  showMpios: boolean = false;
+
   urlTrimestralReport: string = "https://www.dnp.gov.co/LaEntidad_/subdireccion-general-inversiones-seguimiento-evaluacion/direccion-programacion-inversiones-publicas/Paginas/sistema-general-de-regalias.aspx#funveinticincoseis"
   detailReportXlsFile = "reporte-detalle-recaudo-2025.xlsx"
   managementReportXlsFile = "reporte-gestion-financiera-2025.xlsx"
+  funcionamientoDataUrl = "/assets/data/funcionamiento-base.json";
+  funcionamientoDataEntitiesUrl = "/assets/data/funcionamiento-base-entities.json"
 
   constructor() {}
 
   ngOnInit(): void {
-    this.cargarDatos();
-    this.generarRegistroTotales();    
-    this.cargarDatosTotalesInicial();
-    
-    if (isPlatformBrowser(this.platformId)) {
-      this.initializeCharts();
-    }
+    this.cargarDatos().then(() => {
+      this.generarRegistroTotales();    
+      this.cargarDatosTotalesInicial();
+      
+      if (isPlatformBrowser(this.platformId)) {
+        this.initializeCharts();
+      }
 
-    this.selectedVigencia = this.vigencia[0];
+      this.selectedVigencia = this.vigencia[0];
+      
+      // Reinicializar las listas con TOTAL como opción
+      this.inicializarFuentesVacio();
+      
+      // Cargar datos totales por defecto
+      this.cargarDatosTotalesInicial();
+
+      this.departamentos = departamentos.map(dpto => ({
+        value: dpto.codigo,
+        label: dpto.nombre
+      }));
+    }).catch(error => {
+      console.error('Error al cargar los datos iniciales:', error);
+      // Inicializar con datos vacíos si falla la carga
+      this.funcionamientoDataConTotales = [];
+      this.inicializarFuentesVacio();
+    });
     
-    // Reinicializar las listas con TOTAL como opción
-    this.inicializarFuentesVacio();
     
-    // Cargar datos totales por defecto
-    this.cargarDatosTotalesInicial();
   }
 
   /**
    * Cargar los datos desde el archivo JSON
    */
-  private cargarDatos(): void {
+  async cargarDatos(): Promise<void> {
     try {
-      // Cargar datos desde el archivo de datos TypeScript
-      this.funcionamientoData = funcionamientoBaseData || [];
+      const response = await fetch(this.funcionamientoDataUrl);
+      this.funcionamientoData = await response.json();
       console.log('Datos de funcionamiento cargados:', this.funcionamientoData.length, 'registros');
     } catch (error) {
       console.error('Error cargando datos de funcionamiento:', error);
@@ -514,12 +533,29 @@ export class ReporteFuncionamientoComponent implements OnInit {
     }
   }
   
-  onDepartamentoChange(event: MultiSelectChangeEvent): void {
-    console.log('Departamentos seleccionados:', event.value);
+  onDepartamentoChange(event: SelectChangeEvent): void {
+    console.log('Departamento seleccionado:', event.value, this.selectedDepartamento);
+    let codDpto = event.value.value + "000";
+    // filtrar departamento seleccionado en funcionamientoDataEntities
+    let selectedDptoEntity = this.funcionamientoDataEntities.filter((entity: any) => entity["cod-sicodis"] === codDpto);
+    console.log('Departamento seleccionado:', selectedDptoEntity);
+    this.calcularTotalesConEntidad(selectedDptoEntity);
+
+    this.municipios = this.funcionamientoDataEntities
+      .filter((entity: any) => entity["cod-sicodis"].startsWith(event.value.value) && entity["cod-sicodis"] !== codDpto)
+    
+    if (this.municipios.length > 0) {
+      this.showMpios = true;      
+    } 
+
   }
 
   onMunicipioChange(event: MultiSelectChangeEvent): void {
-    console.log('Municipio seleccionados:', event.value);
+    console.log('Municipio seleccionado:', event.value);
+
+    let selectedMpioEntity = this.funcionamientoDataEntities.filter((entity: any) => entity["cod-sicodis"] === event.value["cod-sicodis"]);
+    console.log('Municipio seleccionado:', selectedMpioEntity);
+    this.calcularTotalesConEntidad(selectedMpioEntity);
   }
 
   /**
@@ -565,6 +601,25 @@ export class ReporteFuncionamientoComponent implements OnInit {
       } else {
         // Si no hay TOTAL seleccionado, usar la selección tal como viene
         this.selectedBeneficiario = event.value;
+        if (this.selectedBeneficiario.length === 1 && this.selectedBeneficiario[0].label.trim() === "Departamentos") {
+          this.showDptos = true;
+          this.showMpios = false;
+          if (this.funcionamientoDataEntities.length == 0){
+            // Cargar entidades si aún no se han cargado
+            fetch(this.funcionamientoDataEntitiesUrl)
+              .then(response => response.json())
+              .then(data => {
+                this.funcionamientoDataEntities = data;                
+              })
+              .catch(error => {
+                console.error('Error cargando entidades:', error);
+                this.municipios = [];
+              });
+          }
+        }else{
+          this.showDptos = false;
+          this.showMpios = false;
+        }
       }
 
       // CASO 3: Múltiples beneficiarios seleccionados (sin TOTAL)
@@ -692,6 +747,33 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
       // Establecer el registro calculado como registro actual
       this.registroActual = registroTotalesCalculado;
+      
+      // Actualizar todos los componentes visuales con los nuevos datos
+      this.actualizarDatosDelRegistro();
+      
+      console.log('Totales calculados con beneficiarios específicos:', this.registroActual);
+
+    } catch (error) {
+      console.error('Error calculando totales con beneficiarios:', error);
+    }
+  }
+  
+
+  private calcularTotalesConEntidad(registrosFiltrados: any): void {
+    try {
+      console.log('Calculando totales con departamento específico...');
+      
+      if (registrosFiltrados.length === 0) {
+        console.warn('No se encontraron registros para las selecciones específicas de departamento');
+        // Si no hay registros específicos, calcular solo por asignaciones y conceptos
+        this.calcularYActualizarTotales();
+        return;
+      }
+
+      console.log(`Calculando totales para ${registrosFiltrados.length} registros con departamento específico`);
+      
+      // Establecer el registro calculado como registro actual
+      this.registroActual = registrosFiltrados[0];
       
       // Actualizar todos los componentes visuales con los nuevos datos
       this.actualizarDatosDelRegistro();
@@ -1091,6 +1173,11 @@ export class ReporteFuncionamientoComponent implements OnInit {
     this.selectedFuente = [];
     this.selectedConcepto = [];
     this.selectedBeneficiario = [];
+    this.selectedDepartamento = [];
+    this.selectedMunicipio = [];
+    this.showDptos = false;
+    this.showMpios = false;
+    this.municipios = [];
     this.registroActual = null;
     
     // Limpiar datos iniciales
