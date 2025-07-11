@@ -24,7 +24,6 @@ import { MatTooltip, MatTooltipModule } from '@angular/material/tooltip';
 
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { TableRowCollapseEvent, TableRowExpandEvent } from 'primeng/table';
 import { Dialog } from 'primeng/dialog';
 import { TabsModule } from 'primeng/tabs';
 import { IconFieldModule } from 'primeng/iconfield';
