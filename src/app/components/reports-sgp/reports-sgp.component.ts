@@ -8,11 +8,13 @@ import { MatTableModule } from '@angular/material/table';
 
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { TableRowCollapseEvent, TableRowExpandEvent } from 'primeng/table';
+
 import { Dialog } from 'primeng/dialog';
 
 import Chart from 'chart.js/auto';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
+
+import { departamentos } from '../../data/departamentos';
 
 @Component({
   selector: 'app-reports-sgp',
@@ -41,8 +43,6 @@ export class ReportsSgpComponent {
 
   visibleDlgDetail: boolean = false;
   visibleDlgFiles: boolean = false;
-
-
 
   expandedRows = {};
 
@@ -124,14 +124,7 @@ export class ReportsSgpComponent {
     { desc: 'Total SGP', value: 70540879911189, detail: [] },
   ];
 
-  departments: any = [
-    { name: 'Amazonas' },
-    { name: 'Bolivar' },
-    { name: 'Boyacá' },
-    { name: 'Casanare' },
-    { name: 'Cesar' },
-    { name: 'Cundinamarca' },
-  ];
+  departments: any = departamentos;
   towns: any = [
     { name: 'Municipio1' },
     { name: 'Municipio2' },
@@ -267,6 +260,9 @@ export class ReportsSgpComponent {
   distributionDate = "";
   distributionFiles: any = [];
 
+  entidadTerritorialUrl = '/assets/data/entidad_territorial.json';
+  entidadTerritorialData: any[] = [];
+
 
   constructor(private renderer: Renderer2) {}
 
@@ -275,6 +271,14 @@ export class ReportsSgpComponent {
       (item: any) => item.year === this.selected
     )[0];
     this.createGraph();
+
+    fetch(this.entidadTerritorialUrl)
+      .then((response: any) => response.json())
+      .then((data: any) => {
+        this.entidadTerritorialData = data;        
+        console.log('Entidad Territorial Data:', this.entidadTerritorialData);
+      })
+      .catch((error: any) => console.error('Error loading data:', error)); 
   }
 
   optionChange(evt: any) {
