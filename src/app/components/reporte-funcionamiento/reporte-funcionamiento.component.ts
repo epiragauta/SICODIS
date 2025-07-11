@@ -686,17 +686,16 @@ export class ReporteFuncionamientoComponent implements OnInit {
   onDepartamentoChange(event: SelectChangeEvent): void {
     console.log('Departamento seleccionado:', event.value, this.selectedDepartamento);
     let codDpto = event.value.value + "000";
-    // filtrar departamento seleccionado en funcionamientoDataEntities
-    let selectedDptoEntity = this.funcionamientoDataEntities.filter((entity: any) => entity["cod-sicodis"] === codDpto);
-    console.log('Departamento seleccionado:', selectedDptoEntity);
-    this.calcularTotalesConEntidad(selectedDptoEntity);
 
-    this.municipios = this.funcionamientoDataEntities
-      .filter((entity: any) => entity["cod-sicodis"].startsWith(event.value.value) && entity["cod-sicodis"] !== codDpto)
-    
-    if (this.municipios.length > 0) {
-      this.showMpios = true;      
-    } 
+    if (this.selectedBeneficiario.length === 1 && this.selectedBeneficiario[0].label.trim() === "Municipios") {
+      this.municipios = this.funcionamientoDataEntities
+        .filter((entity: any) => entity["cod-sicodis"].startsWith(event.value.value) && entity["cod-sicodis"] !== codDpto)
+    }else{
+      // filtrar departamento seleccionado en funcionamientoDataEntities
+      let selectedDptoEntity = this.funcionamientoDataEntities.filter((entity: any) => entity["cod-sicodis"] === codDpto);
+      console.log('Departamento seleccionado:', selectedDptoEntity);
+      this.calcularTotalesConEntidad(selectedDptoEntity);      
+    }
 
   }
 
@@ -754,6 +753,21 @@ export class ReporteFuncionamientoComponent implements OnInit {
         if (this.selectedBeneficiario.length === 1 && this.selectedBeneficiario[0].label.trim() === "Departamentos") {
           this.showDptos = true;
           this.showMpios = false;
+          if (this.funcionamientoDataEntities.length == 0){
+            // Cargar entidades si aún no se han cargado
+            fetch(this.funcionamientoDataEntitiesUrl)
+              .then(response => response.json())
+              .then(data => {
+                this.funcionamientoDataEntities = data;                
+              })
+              .catch(error => {
+                console.error('Error cargando entidades:', error);
+                this.municipios = [];
+              });
+          }
+        }else if (this.selectedBeneficiario.length === 1 && this.selectedBeneficiario[0].label.trim() === "Municipios") {
+          this.showDptos = true;
+          this.showMpios = true;
           if (this.funcionamientoDataEntities.length == 0){
             // Cargar entidades si aún no se han cargado
             fetch(this.funcionamientoDataEntitiesUrl)

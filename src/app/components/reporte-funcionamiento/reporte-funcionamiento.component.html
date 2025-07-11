@@ -1,5 +1,6 @@
 <div class="reporte-funcionamiento-container">
-  <app-info-popup [infoText]="infoPopupContent" contentTitle="Información Detallada del Reporte"></app-info-popup>
+  
+  <!-- <app-info-popup [infoText]="infoPopupContent" contentTitle="Información Detallada del Reporte"></app-info-popup> -->
   
   <!-- Popups para Diccionario y Siglas -->
   <app-info-popup 
@@ -14,7 +15,17 @@
     contentTitle="Siglas y Abreviaciones"
     [showPopup]="showSiglasPopup"
     (onClose)="closeSiglasPopup()">
-  </app-info-popup>
+  </app-info-popup> 
+
+  <div class="gradient-banner">    
+    <div class="banner-content">
+      <h2>Administración y Sistema de Seguimiento (SSEC)</h2>
+        <p>Consulte información completa sobre la distribución, ejecución, recaudo y 
+          saldos indicativos de cada una de las entidades beneficiarias de la Administración
+          y el Sistema de Seguimiento Evaluación y Control del SGR. 
+ 	 	 	 	</p>
+    </div>
+  </div>
 
   <!-- Panel superior con selects -->
   <div class="filters-panel">
@@ -102,19 +113,19 @@
     </mat-card>
   </div>
 
-  <div style="display: flex;">
-    <div style="width: 80%;">
+  <div style="display: flex;width: 102%;">
+    <div style="width: 84%;">
       <p class="date-update">Fecha de actualización: junio 30 de 2025</p>
       <p class="date-update">Fecha de corte de recaudo: mayo 30 de 2025</p>
     </div>
     <div style="position: relative; right:1rem;">
-      <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 1rem;"
+      <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 2rem; width: 90px;"
           (click)="showPopupDiccionario()">
       </button>
-      <button pButton type="button" label="Siglas" class="p-button-secondary"
+      <button pButton type="button" label="Siglas" class="p-button-secondary" style="width: 90px;"
           (click)="showPopupSiglas()">
       </button>
-    </div>
+    </div> 
   </div>
 
   
@@ -237,31 +248,52 @@
     <!-- Columna derecha (40%) - Gráficos -->
     <div class="right-column">
       <!-- Gráfico 1: Donut Avance Ejecución-->
-      <div class="chart-container">
+      <div class="chart-container">        
         <p-chart type="doughnut" [data]="donutAvanceEjecucionData" [options]="donutAvanceEjecucionOptions" class="chart"></p-chart>
         <div class="chart-value">
-          <span class="percentage">{{ compromisoPorcentaje}}%</span>          
+          <div style="display: flex; flex-direction: column; align-items: center;">
+            <span class="percentage">{{ compromisoPorcentaje}}%</span>          
+          </div>          
+        </div>
+        <div class="chart-icon">
+          <span class="percentage">
+            <img src="/assets/img/avance-ejecucion.png" alt="Avance Ejecución" style="width: 36px; height: 36px;">
+          </span>
         </div>
       </div>
 
       <!-- Gráfico 2: Barra horizontal -->
       <div class="chart-container">
+        <div class="chart-icon">
+          <span class="percentage">
+            <img src="/assets/img/afectacion-presupuestal.png" alt="Afectación Presupuestal" style="width: 32px; height: 32px;">
+          </span>
+        </div>
         <p-chart type="bar" [data]="horizontalBarAfectacionData" [options]="horizontalBarAfectacionOptions" class="chart">
         </p-chart>        
       </div>
 
       <!-- Gráfico 3: Dona 180 grados -->
       <div class="chart-container">
-        <p-chart type="bar" [data]="donutSituacionCajaData" [options]="donutSituacionCajaOpts" class="chart"></p-chart>
-        <div class="chart-value" style="display: none;">
-          <span class="percentage">{{ pagosEjecucionPorcentaje}}%</span>          
+        <div class="chart-icon">
+          <span class="percentage">
+            <img src="/assets/img/situacion-caja.png" alt="Afectación Presupuestal" style="width: 32px; height: 32px;">
+          </span>
         </div>
+        <p-chart type="bar" [data]="donutSituacionCajaData" [options]="donutSituacionCajaOpts" class="chart"></p-chart>        
       </div>
       <!-- Gráfico 4: Dona 180 grados -->
       <div class="chart-container">
+        <div class="chart-icon">
+          <span class="percentage">
+            <img src="/assets/img/avance-recaudo.png" alt="Afectación Presupuestal" style="width: 36px; height: 36px;">
+          </span>
+        </div>
         <p-chart type="doughnut" [data]="donutAvanceRecaudoData" [options]="donutAvanceRecaudoOptions" class="chart"></p-chart>
         <div class="chart-value">
-          <span class="percentage"> {{avanceRecaudoData.avance | percent:'1.0-2'}}</span>          
+          <div style="display: flex; flex-direction: column; align-items: center;">
+            <span class="percentage"> {{avanceRecaudoData.avance | percent:'1.0-2'}}</span>          
+          </div>          
         </div>
       </div> 
     </div>
@@ -333,23 +365,5 @@
       </p>
     </mat-card>    
   </div>
-
-  <!-- Notas finales -->
-  <div class="final-notes">
-    <h4 class="notes-title">Notas:</h4>
-    <p class="final-note">
-      <strong>Presupuesto disponible:</strong> Corresponde a los recursos que se tienen disponibles para su ejecución.
-    </p>
-    <p class="final-note">
-      <strong>Saldo sin afectación:</strong> Corresponde a los recursos que no han sido objeto de CDP ni compromiso.
-    </p>
-    <p class="final-note">
-      <strong>Caja disponible:</strong> Corresponde a los recursos con los que cuenta la entidad para realizar pagos,
-      con corte a la fecha de actualización.
-    </p>
-    <p class="final-note">
-      <strong>Avance de recaudo:</strong> Corresponde al porcentaje de los recursos recaudados respecto al presupuesto
-      corriente asignado en la Ley bienal.
-    </p>    
-  </div>
+  
 </div>

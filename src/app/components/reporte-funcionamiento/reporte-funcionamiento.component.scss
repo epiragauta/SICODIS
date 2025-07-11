@@ -4,6 +4,45 @@
   margin: 0 auto;
   font-family: 'Work Sans', sans-serif;
 
+  .gradient-banner {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    background-image: url('/assets/img/banner-funcionamiento.jpg');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    display: flex;
+    margin-bottom: .5rem;
+    border-radius: 8px;
+         
+    
+    .banner-content {
+      position: relative;
+      margin-top: 1rem;
+      z-index: 2;
+      padding: 1rem;
+      max-width: 60%; /* Ajustado para contenido dentro del 75% */
+      color: white;   /* Texto blanco para mejor contraste */
+      
+      h2 {
+        font-size: 1.5rem;
+        margin-top: 3.75rem;
+        margin-bottom: 2.5rem;
+        color: #1a408c;
+        font-weight: bold;
+      }
+      
+      p {
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
+        color: #000;        
+        width: 80%;
+        font-weight: 500;
+      }
+    }
+  }
+
   // Panel de filtros
   .filters-panel {
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
@@ -281,7 +320,7 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        align-items: center;
+        /*align-items: center;*/
         overflow: hidden;
 
         .chart {
@@ -295,6 +334,14 @@
           position: absolute;          
           font-size: 24px;
           margin-top: 10rem;
+          color: rgb(71, 69, 69);
+          width: 33%;
+        }
+
+        .chart-icon {
+          position: absolute;          
+          font-size: 24px;
+          margin-top: -9rem;
           color: rgb(71, 69, 69);
         }
       }
