@@ -1,19 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { Component, Renderer2 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 
+// PrimeNG imports
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-
+import { Select, SelectChangeEvent } from 'primeng/select';
+import { FloatLabel } from 'primeng/floatlabel';
 import { Dialog } from 'primeng/dialog';
 
 import Chart from 'chart.js/auto';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
-
 import { departamentos } from '../../data/departamentos';
 
 @Component({
@@ -21,13 +21,14 @@ import { departamentos } from '../../data/departamentos';
   standalone: true,
   imports: [
     CommonModule,
-    MatSelectModule,
-    MatFormFieldModule,
+    FormsModule,
     MatGridListModule,
     MatCardModule,
     MatTableModule,
     TableModule,
     ButtonModule,
+    Select,
+    FloatLabel,
     Dialog,
     NumberFormatPipe
   ],
@@ -38,7 +39,9 @@ export class ReportsSgpComponent {
   color1 = 'lightblue';
   color2 = 'lightgreen';
   color3 = 'lightpink';
-  selected: string = '2024';
+  selected: string = '2025';
+  departmentSelected: string = '';
+  townSelected: string = '';
   tableClass = "p-datatable-sm";
 
   visibleDlgDetail: boolean = false;
@@ -46,7 +49,18 @@ export class ReportsSgpComponent {
 
   expandedRows = {};
 
+  infoToResume: any = {};
+  entidadTerritorialUrl = '/assets/data/entidad_territorial.json';
+  entidadTerritorialData: any = {};
+
   infoResume: any = [
+    {
+      year: '2025',
+      budget: '70540879911189',
+      budgetDistributed: '70540879911189',
+      pending: 0,
+      percent: 1,
+    },
     {
       year: '2024',
       budget: '70540879911189',
@@ -82,49 +96,10 @@ export class ReportsSgpComponent {
       pending: 0,
       percent: 1,
     },
-    {
-      year: '2019',
-      budget: '41257264108126',
-      budgetDistributed: '41257264108126',
-      pending: 0,
-      percent: 1,
-    },
-  ];
-  dataSource: any = [
-    { desc: 'Educación', value: 39685898906154 },
-    { desc: 'Salud', value: 16394199837551 },
-    { desc: 'Agua Potable', value: 3624435882562 },
-    { desc: 'Propósito General', value: 7785825229209 },
-    { desc: 'Alimentación Escolar', value: 349579078179 },
-    { desc: 'Ribereños', value: 55932652509 },
-    { desc: 'Resguardos Indígenas', value: 363562241306 },
-    { desc: 'Fonpet Asignaciones Especiales', value: 0 },
-    { desc: 'Total SGP', value: 70540879911189 },
   ];
 
-  dataSource2: any = [
-    { desc: 'Educación', value: 23740455119716 , detail : [
-      {desc: 'Prestación Servicios', value: 22605127495868},
-      {desc: 'Calidad', value: 1135237623848}]
-    },
-    { desc: 'Salud', value: 10361244440826, detail : [
-      {desc: 'Régimen Subsidiado', value: 8428995552662},
-      {desc: 'Salud Pública', value: 966124444082},
-      {desc: 'Subsidio a la oferta', value: 966124444082}]
-    },
-    { desc: 'Agua Potable', value: 3624435882562, detail: [] },
-    { desc: 'Propósito General', value: 7785825229209, detail : [
-      {desc: 'Libre destinación', value: 8428995552662},
-      {desc: 'Deporte', value: 966124444082},
-      {desc: 'Cultura', value: 966124444082}] },
-    { desc: 'Alimentación Escolar', value: 349579078179, detail: [] },
-    { desc: 'Ribereños', value: 55932652509, detail: [] },
-    { desc: 'Resguardos Indígenas', value: 363562241306, detail: [] },
-    { desc: 'Fonpet Asignaciones Especiales', value: 2281446083719, detail: [] },
-    { desc: 'Total SGP', value: 70540879911189, detail: [] },
-  ];
+  departments = departamentos;
 
-  departments: any = departamentos;
   towns: any = [
     { name: 'Municipio1' },
     { name: 'Municipio2' },
@@ -139,130 +114,49 @@ export class ReportsSgpComponent {
     { name: 'Municipio11' },
     { name: 'Municipio12' },
   ];
-  displayedColumns: string[] = ['desc', 'value'];
-  infoYear: any;
-  infoToResume: any;
-  departmentSelected: string = '';
-  townSelected: string = '';
 
-  distributionData = [
+  dataSource2: any = [
     {
-        "a": "1285",
-        "b": "28/10/2024",
-        "c": "Documento de Distribución SGP-94-2024",
-        "d": "Distribución final de las doce doceavas de la participación para educación por el criterio de población atendida (complemento) y ajuste al componente calidad - gratuidad educativa y calidad - matrícula oficial, en condiciones de equidad y eficiencia, vige",
-        "e": "Distribuciones Parciales de la Vigencia                                                                                                                                                                 ",
-        "f": "2024",
-        "g": "3.210.317.896.216"
+      desc: '1.1 - Educación',
+      value: '28216351964476',
+      detail: [
+        { desc: 'Alimentación Escolar', value: '2500000000000' },
+        { desc: 'Infraestructura Educativa', value: '1800000000000' },
+        { desc: 'Calidad Educativa', value: '23916351964476' },
+      ]
     },
     {
-        "a": "1284",
-        "b": "11/09/2024",
-        "c": "Documento de Distribución SGP-93-2024",
-        "d": "Distribución de las once doceavas de la asignación especial con destino al Fondo Nacional de Pensiones de las Entidades Territoriales (FONPET), vigencia 2024.",
-        "e": "Distribuciones Parciales de la Vigencia                                                                                                                                                                 ",
-        "f": "2024",
-        "g": "2.054.209.279.003"
+      desc: '1.2 - Salud',
+      value: '28216351964476',
+      detail: [
+        { desc: 'Régimen Subsidiado', value: '20000000000000' },
+        { desc: 'Salud Pública', value: '5216351964476' },
+        { desc: 'Prestación de Servicios', value: '3000000000000' },
+      ]
     },
     {
-        "a": "1283",
-        "b": "21/06/2024",
-        "c": "Documento de Distribución SGP-92-2024",
-        "d": "Distribución parcial de las doce doceavas de la participación para educación por el criterio de población atendida (complemento, cancelaciones) y ajuste al porcentaje autorizado para gastos administrativos, vigencia 2024",
-        "e": "Distribuciones Parciales de la Vigencia                                                                                                                                                                 ",
-        "f": "2024",
-        "g": "10.122.804.765.599"
+      desc: '2.1 - Agua Potable y Saneamiento Básico',
+      value: '7054087991119',
+      detail: [
+        { desc: 'Acueducto', value: '3527043995559' },
+        { desc: 'Alcantarillado', value: '2116226397336' },
+        { desc: 'Aseo', value: '1410739598224' },
+      ]
     },
     {
-        "a": "1282",
-        "b": "07/05/2024",
-        "c": "Documento de Distribución SGP-91-2024",
-        "d": "Distribución de las once doceavas para el municipio Nuevo Belén de Bajirá, y de cinco de las once doceavas para el resto de las entidades beneficiarias, de las participaciones para salud, agua potable y saneamiento básico, propósito general y de las asign",
-        "e": "Distribuciones Parciales de la Vigencia                                                                                                                                                                 ",
-        "f": "2024",
-        "g": "11.507.233.658.066"
+      desc: '2.2 - Propósito General',
+      value: '7054087991118',
+      detail: [
+        { desc: 'Libre Inversión', value: '4932461593783' },
+        { desc: 'Funcionamiento', value: '2121626397335' },
+      ]
     },
     {
-        "a": "1281",
-        "b": "12/04/2024",
-        "c": "Documento de Distribución SGP-90-2024",
-        "d": "Ajuste a la distribución parcial de las doce doceavas de la participación para educación por el criterio de población atendida (prestación del servicio educativo), vigencia 2024",
-        "e": "Distribuciones Parciales de la Vigencia                                                                                                                                                                 ",
-        "f": "2024",
-        "g": "2.914.027.154.988"
-    },
-    {
-        "a": "1279",
-        "b": "22/03/2024",
-        "c": "Documento de Distribución SGP-89-2024",
-        "d": "Distribución parcial de la participación para educación, componentes de calidad – gratuidad educativa y calidad - matrícula oficial en condiciones de equidad y eficiencia, vigencia 2024.",
-        "e": "Distribuciones Parciales de la Vigencia                                                                                                                                                                 ",
-        "f": "2024",
-        "g": "1.417.621.619.503"
-    },
-    {
-        "a": "1278",
-        "b": "27/02/2024",
-        "c": "Documento de Distribución SGP-88-2024",
-        "d": "Distribución de seis de las once doceavas de los recursos de la participación sectorial para propósito general, vigencia 2024.",
-        "e": "Distribuciones Parciales de la Vigencia                                                                                                                                                                 ",
-        "f": "2024",
-        "g": "3.770.855.944.960"
-    },
-    {
-        "a": "1277",
-        "b": "13/02/2024",
-        "c": "Documento de Distribución SGP-87-2024",
-        "d": "Distribución de seis de las once doceavas de los recursos de la participación para salud (componente salud pública y subsidio a la oferta), y de las asignaciones especiales para alimentación escolar y resguardos indígenas; y de las once doceavas de la asi",
-        "e": "Distribuciones Parciales de la Vigencia                                                                                                                                                                 ",
-        "f": "2024",
-        "g": "1.430.414.967.135"
-    },
-    {
-        "a": "1276",
-        "b": "12/02/2024",
-        "c": "Documento de Distribución SGP-86-2024",
-        "d": "Distribución de seis de las once doceavas de los recursos de la participación para agua potable y saneamiento básico, vigencia 2024.",
-        "e": "Distribuciones Parciales de la Vigencia                                                                                                                                                                 ",
-        "f": "2024",
-        "g": "1.755.398.457.123"
-    },
-    {
-        "a": "1275",
-        "b": "31/01/2024",
-        "c": "Documento de Distribución SGP-85-2024",
-        "d": "Distribución de seis de las once doceavas de los recursos del sistema general de participaciones para salud, componente de aseguramiento en salud de los afiliados al régimen subsidiado, vigencia 2024.",
-        "e": "Distribuciones Parciales de la Vigencia                                                                                                                                                                 ",
-        "f": "2024",
-        "g": "6.901.675.071.594"
-    },
-    {
-        "a": "1274",
-        "b": "02/01/2024",
-        "c": "Documento de Distribución SGP-84-2024",
-        "d": "Distribución parcial de las doce doceavas de la participación para educación por el criterio de población atendida (prestación del servicio educativo, conectividad, cancelaciones), ajuste prestación del servicio educativo vigencia 2023, y autorización de ",
-        "e": "Distribuciones Parciales de la Vigencia                                                                                                                                                                 ",
-        "f": "2024",
-        "g": "22.021.127.469.848"
-    },
-    {
-        "a": "1273",
-        "b": "28/12/2023",
-        "c": "Documento de Distribución SGP-83-2023",
-        "d": "Distribución de la última doceava y mayor valor de la participación para salud, agua potable y saneamiento básico, propósito general y de las asignaciones especiales (alimentación escolar, municipios ribereños del río magdalena, resguardos indígenas y Fon",
-        "e": "Ultima Doceava                                                                                                                                                                                          ",
-        "f": "2023",
-        "g": "3.435.193.627.154"
+      desc: '99 - Total SGP',
+      value: '70540879911189',
+      detail: []
     }
-  ]
-
-  distributionName = "";
-  distributionDate = "";
-  distributionFiles: any = [];
-
-  entidadTerritorialUrl = '/assets/data/entidad_territorial.json';
-  entidadTerritorialData: any[] = [];
-
+  ];
 
   constructor(private renderer: Renderer2) {}
 
@@ -279,13 +173,6 @@ export class ReportsSgpComponent {
         console.log('Entidad Territorial Data:', this.entidadTerritorialData);
       })
       .catch((error: any) => console.error('Error loading data:', error)); 
-  }
-
-  optionChange(evt: any) {
-    this.infoToResume = this.infoResume.filter(
-      (item: any) => item.year === evt.value
-    )[0];
-    this.selected = evt.value;
   }
 
   createGraph() {
@@ -342,34 +229,106 @@ export class ReportsSgpComponent {
     });
   }
 
-  showDetails(data: any){
-    console.log("show Details", data);
-    this.showDialogDetail();
+  /**
+   * Evento cuando cambia la vigencia seleccionada
+   */
+  onVigenciaChange(event: SelectChangeEvent): void {
+    console.log('Vigencia seleccionada:', event.value);
+    this.selected = event.value;
+    this.loadDataForYear();
   }
 
-  showFiles(data: any){
-    console.log("show Files", data);
-    this.showDialogFiles(data);
+  /**
+   * Evento cuando cambia el departamento seleccionado
+   */
+  onDepartmentChange(event: SelectChangeEvent): void {
+    console.log('Departamento seleccionado:', event.value);
+    this.departmentSelected = event.value;
+    this.loadTownsForDepartment();
   }
 
-  showDialogDetail() {
+  /**
+   * Evento cuando cambia el municipio seleccionado
+   */
+  onTownChange(event: SelectChangeEvent): void {
+    console.log('Municipio seleccionado:', event.value);
+    this.townSelected = event.value;
+    this.filterDataByLocation();
+  }
+
+  /**
+   * Actualiza los datos cuando se presiona el botón Actualizar
+   */
+  updateData(): void {
+    console.log('Actualizando datos...');
+    console.log('Vigencia:', this.selected);
+    console.log('Departamento:', this.departmentSelected);
+    console.log('Municipio:', this.townSelected);
+    
+    // Aquí iría la lógica para actualizar los datos según los filtros seleccionados
+    this.loadFilteredData();
+  }
+
+  /**
+   * Carga los datos para el año seleccionado
+   */
+  private loadDataForYear(): void {
+    console.log('Cargando datos para el año:', this.selected);
+    // Lógica para cargar datos específicos del año
+  }
+
+  /**
+   * Carga los municipios para el departamento seleccionado
+   */
+  private loadTownsForDepartment(): void {
+    if (!this.departmentSelected) {
+      this.towns = [];
+      this.townSelected = '';
+      return;
+    }
+
+    console.log('Cargando municipios para departamento:', this.departmentSelected);
+    // Aquí iría la lógica para cargar municipios del departamento seleccionado
+    // Por ahora mantenemos la lista de ejemplo
+  }
+
+  /**
+   * Filtra los datos por ubicación (departamento/municipio)
+   */
+  private filterDataByLocation(): void {
+    console.log('Filtrando datos por ubicación');
+    // Lógica para filtrar datos según departamento y municipio
+  }
+
+  /**
+   * Carga los datos filtrados según todos los criterios seleccionados
+   */
+  private loadFilteredData(): void {
+    console.log('Cargando datos filtrados');
+    // Aquí iría la lógica principal para cargar y filtrar todos los datos
+    // según vigencia, departamento y municipio seleccionados
+  }
+
+  /**
+   * Método legacy para compatibilidad (puede ser removido)
+   */
+  optionChange(evt: any): void {
+    console.log('Option change (legacy):', evt);
+    // Mantener por compatibilidad si es necesario
+  }
+
+  /**
+   * Abre el diálogo de detalles
+   */
+  showDetailDialog(): void {
     this.visibleDlgDetail = true;
   }
 
-  showDialogFiles(data: any) {
+  /**
+   * Abre el diálogo de archivos
+   */
+  showFilesDialog(): void {
     this.visibleDlgFiles = true;
-    this.distributionFiles = [];
-    this.distributionName = data.c;
-    this.distributionDate = data.b;
-    this.distributionFiles.push({
-      desc: data.d,
-      value: data.c
-    });
-    this.distributionFiles.push({
-      desc: "Anexos 1 al 3 DD SGP-94-2024",
-      value: "Anexos"
-    })
-
   }
 
   downloadFiles(data: any){
