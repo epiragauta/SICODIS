@@ -1447,7 +1447,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
           const centerY = (chart.chartArea.top + chart.chartArea.bottom) / 1.42;
           
           ctx.save();
-          ctx.font = 'bold 34px Arial';
+          ctx.font = 'bold 22px Arial';
           ctx.fillStyle = '#47454';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
