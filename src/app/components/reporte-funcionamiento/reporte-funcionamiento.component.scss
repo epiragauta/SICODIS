@@ -332,18 +332,13 @@
 
         .chart-value {
           position: absolute;          
-          font-size: 24px;
-          margin-top: 10rem;
+          font-size: 34px;
+          font-weight: bold;
+          margin-top: 9rem;
           color: rgb(71, 69, 69);
-          width: 38%;
+          width: 23%;
         }
-
-        .chart-icon {
-          position: absolute;          
-          font-size: 24px;
-          margin-top: -9rem;
-          color: rgb(71, 69, 69);
-        }
+        
       }
     }
   }
@@ -511,6 +506,10 @@
 // Sobrescribir estilos de PrimeNG
 :host ::ng-deep {
 
+  .p-dialog-header{
+    padding: .5rem;
+  }
+
   .p-multiselect-label {
     padding: .425rem !important;
   }
@@ -529,8 +528,12 @@
   }
 
   .action-buttons{
-    .p-button {
+    .p-splitbutton-button {
       min-width: 350px;
+    }
+
+    .p-splitbutton-dropdown{
+      width: 50px;
     }
   }
 

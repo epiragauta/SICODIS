@@ -20,6 +20,8 @@ import { FormsModule } from '@angular/forms';
 import { MultiSelect, MultiSelectChangeEvent  } from 'primeng/multiselect';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { departamentos } from '../../data/departamentos';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { MenuItem } from 'primeng/api';
 
 interface SelectOption {
   value: string;
@@ -63,6 +65,7 @@ interface SiglasDiccionarioData {
     Select,
     MultiSelect,
     InfoPopupComponent,
+    SplitButtonModule
   ],
   templateUrl: './reporte-funcionamiento.component.html',
   styleUrl: './reporte-funcionamiento.component.scss'
@@ -136,8 +139,9 @@ export class ReporteFuncionamientoComponent implements OnInit {
   donutAvanceRecaudoOptions: any;
 
   compromisoPorcentaje: string = '0.0';
-  pagosEjecucionPorcentaje: string = '0.0';
+  avanceRecaudoPorcentaje: string = '0.0';
   
+
 
   // Registro actualmente seleccionado
   registroActual: any = null;
@@ -153,6 +157,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
   showMpios: boolean = false;
 
   urlTrimestralReport: string = "https://www.dnp.gov.co/LaEntidad_/subdireccion-general-inversiones-seguimiento-evaluacion/direccion-programacion-inversiones-publicas/Paginas/sistema-general-de-regalias.aspx#funveinticincoseis"
+  urlCurrentReport: string = "https://colaboracion.dnp.gov.co/CDT/Inversiones%20y%20finanzas%20pblicas/Documentos%20GFT/Informe%20Trimestral%20de%20funcionamiento%20del%20SGR%20Primer%20trimestre%20bienio%202025-2026.pdf";
   detailReportXlsFile = "reporte-detalle-recaudo-2025.xlsx"
   managementReportXlsFile = "reporte-gestion-financiera-2025.xlsx"
   funcionamientoDataUrl = "/assets/data/funcionamiento-base.json";
@@ -224,6 +229,33 @@ export class ReporteFuncionamientoComponent implements OnInit {
         </ul>          
       </div>
       `;
+
+    this.initializeMenuItems();
+  }
+
+  menuItems: MenuItem[] = [];
+
+  private initializeMenuItems() {
+    this.menuItems = [
+      {
+        label: 'Históricos',
+        command: () => this.clickMenuItem('historico')
+      },
+      {
+        label: 'Últmo Informe',
+        
+        command: () => this.clickMenuItem('ultimoInforme')
+      }
+    ];
+  }
+
+  clickMenuItem(option: string): void {
+    console.log('Opción del menú seleccionada:', option);
+    if (option === 'historico') {
+      window.open(this.urlTrimestralReport, '_blank');
+    }else{
+      window.open(this.urlCurrentReport, '_blank');
+    }
   }
 
   /**
@@ -1157,6 +1189,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         avance: convertirANumero(this.registroActual['avance-iac-corriente'])
       };
 
+      
       // Actualizar gráficos con datos reales
       this.actualizarGraficos();
 
@@ -1344,7 +1377,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       let presupuestoDisponible = convertirANumero(this.registroActual['apropiacion-vigente-disponible']) / 1000000; // En millones
             
       let compromisoPorcentaje = compromiso > 0 ? (compromiso / (presupuestoDisponible)) * 100 : 0;
-      this.compromisoPorcentaje = compromisoPorcentaje.toFixed(1);
+      this.compromisoPorcentaje = compromisoPorcentaje.toFixed(1).replace('.', ',');
       console.log("Compromiso: ", compromiso);
       console.log("Presupuesto disponible: ", presupuestoDisponible);
       this.donutAvanceEjecucionData = {
@@ -1360,7 +1393,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
       let cajaDisponible = convertirANumero(this.registroActual['caja-disponible']) / 1000000; // En millones
       let pagosPorcentaje = pagos > 0 ? ((pagos) / cajaDisponible) * 100 : 0;
-      this.pagosEjecucionPorcentaje = pagosPorcentaje.toFixed(1);
+      this.avanceRecaudoPorcentaje = pagosPorcentaje.toFixed(1).replace(".", ",");
       this.donutSituacionCajaData = {
         labels: [''],
         datasets: [
@@ -1506,7 +1539,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       responsive: true,
       plugins: {
         legend: {
-          position: 'top',
+          position: 'right',
           labels: {
             color: textColor,
             font: { size: 10 }
@@ -1539,7 +1572,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       responsive: true,      
       plugins: {
         legend: {
-          position: 'top',
+          position: 'right',
           labels: {
             color: textColor,
             font: { size: 10 }

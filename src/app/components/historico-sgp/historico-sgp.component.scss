@@ -1,0 +1,493 @@
+// Estilos del componente historico-sgp con PrimeNG
+:host ::ng-deep {
+  // Estilos para los componentes de PrimeNG
+  .p-select-label {
+    padding: .425rem !important;
+    font-size: 0.875rem;
+  }
+
+  .p-button {
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
+
+  // Estilos para la tabla de PrimeNG
+  .p-datatable {
+    font-size: 0.8rem;
+    
+    .p-datatable-header {
+      background: var(--p-surface-50);
+      border: 1px solid var(--p-content-border-color);
+      padding: 0.5rem;
+    }
+
+    .p-datatable-thead > tr > th {
+      background: var(--p-surface-100);
+      color: var(--p-text-color);
+      font-weight: 600;
+      border-bottom: 2px solid var(--p-primary-color);
+      padding: 0.5rem 0.75rem !important;
+      font-size: 0.8rem;
+    }
+
+    .p-datatable-tbody > tr > td {
+      padding: 0.5rem 0.75rem !important;
+      font-size: 0.8rem;
+      vertical-align: middle;
+    }
+
+    .p-datatable-tbody > tr {
+      &:nth-child(even) {
+        background: var(--p-surface-50);
+      }
+
+      &:hover {
+        background: var(--p-highlight-bg);
+        color: var(--p-highlight-text-color);
+      }
+    }
+
+    .total-row {
+      background: var(--p-primary-50) !important;
+      color: var(--p-primary-900) !important;
+      font-weight: 600;
+      
+      td {
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.8rem !important;
+      }
+      
+      &:hover {
+        background: var(--p-primary-100) !important;
+      }
+    }
+
+    // Hacer la tabla más compacta
+    &.p-datatable-sm {
+      .p-datatable-thead > tr > th {
+        padding: 0.375rem 0.5rem !important;
+      }
+      
+      .p-datatable-tbody > tr > td {
+        padding: 0.375rem 0.5rem !important;
+      }
+    }
+  }
+
+  .p-multiselect {
+    width: 100% !important;
+    min-width: 140px;
+    height: 42px !important;
+    font-size: 0.875rem !important;
+    
+    .p-multiselect-label {
+      padding: .425rem !important;
+      font-size: 0.875rem !important;
+      line-height: 1.5;
+    }
+    
+    .p-multiselect-item {
+      font-size: 0.875rem !important;
+    }
+    
+    .p-multiselect-token {
+      font-size: 0.875rem !important;
+    }
+  }
+
+  .p-select {
+    width: 100% !important;
+    height: 42px !important;
+  }
+
+  // Estilos para gr�ficos
+  .mat-grid-tile {
+    .mat-grid-tile-content {
+      padding: 0.5rem;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .p-card {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+    }
+  }
+
+  // Estilos espec�ficos para PrimeNG Cards
+  .p-card {
+    width: 100% !important;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .p-card-header {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      padding: .25rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .p-card-body {
+      flex: 1;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .p-card-content {
+      flex: 1;
+      padding: 0;
+    }
+  }
+
+  // Ajustes para los gr�ficos de Chart.js
+  .p-chart {
+    width: 100% !important;
+    height: 100% !important;
+
+    canvas {
+      max-width: 100% !important;
+      max-height: 100% !important;
+    }
+  }
+}
+
+.container {
+  padding: 1rem;
+  background: var(--p-surface-0);
+  min-height: 100vh;
+}
+
+.gradient-banner {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    background-image: url('/assets/img/banner-sgp.jpg');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    display: flex;
+    margin-bottom: .5rem;
+    border-radius: 8px;
+
+    .gradient-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 95%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        #404a55 0%,
+        rgba(255, 255, 255, 0.01) 100%
+      );
+      z-index: 1;
+    }
+         
+    .banner-content {
+      position: relative;
+      margin-top: 1rem;
+      z-index: 2;
+      padding: 1rem;
+      max-width: 80%;
+      color: white;
+      
+      h2 {
+        font-size: 1.5rem;
+        margin-top: 3.75rem;
+        margin-bottom: 2.5rem;
+        color: #e4e6eb;
+        font-weight: bold;
+        text-shadow: 1px 1px 3px rgba(9, 8, 78, 0.92);
+      }
+      
+      p {
+        font-size: 1.15rem;
+        margin-bottom: 2rem;
+        color: #f4f1f1;        
+        width: 80%;
+        font-weight: 500;
+      }
+    }
+  }
+
+// Secci�n principal con filtros y tabla
+.main-content-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: .75rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Secci�n de filtros (lado izquierdo)
+.filters-section {
+  background: var(--p-surface-card);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  .filters-panel {
+    margin-bottom: 1.5rem;
+
+    .filters-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: flex-end;
+
+      .p-field {
+        flex: 1;
+        min-width: 140px;
+        max-width: 190px;
+        margin-bottom: 0;
+
+        &.vigencia-select,
+        &.department-select,
+        &.town-select {
+          min-width: 140px;
+          max-width: 190px;
+        }
+
+        .p-floatlabel {
+          width: 100%;
+          
+          &.w-full.md\:w-56 {
+            width: 100% !important;
+            max-width: 100% !important;
+          }
+          
+          .p-select,
+          .p-multiselect {
+            width: 100% !important;
+          }
+        }
+      }
+    }
+  }
+
+  // Grid de botones 2x2
+  .buttons-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+
+    .p-button {
+      height: 42px;
+      padding: 0 1rem;
+      font-size: 0.875rem;
+    }
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+// Secci�n de tabla (lado derecho)
+.table-section {
+  background: var(--p-surface-card);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  .card {
+    .historico-table {
+      font-size: 0.8rem;
+      
+      .p-datatable-wrapper {
+        border-radius: 6px;
+        overflow: hidden;
+      }
+    }
+  }
+}
+
+// Secci�n de gr�ficos
+.graphics-section {
+  background: var(--p-surface-card);
+  border-radius: 8px;
+  padding: .25rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+  // Forzar ancho completo en todas las tarjetas
+  p-card,
+  .p-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  // Estilos para t�tulos de gr�ficos
+  .chart-title-small {
+    color: #004583;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+    text-align: center;
+  }
+
+  // Estilos para subt�tulos
+  .chart-subtitle-small {
+    color: #666;
+    font-size: 0.8rem;
+    margin: 0 0 0.5rem 0;
+    text-align: center;
+    font-style: italic;
+  }
+
+  // Contenedores de gr�ficos
+  .chart-container-small {
+    width: 100%;
+    height: 300px;
+    padding: 0.5rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // Grid responsivo para gr�ficos
+  :host ::ng-deep {
+    .mat-grid-list {
+      margin-top: 1rem;
+    }
+    
+    .mat-grid-tile {
+      width: 100% !important;
+      
+      .mat-grid-tile-content {
+        width: 100% !important;
+        height: 100% !important;
+        padding: 0.5rem !important;
+      }
+      
+      .p-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        flex: 1 !important;
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .filters-section {
+    .filters-panel .filters-row {
+      flex-direction: column;
+      
+      .p-field {
+        min-width: 100%;
+        
+        &.vigencia-select,
+        &.department-select,
+        &.town-select {
+          min-width: 100%;
+        }
+      }
+    }
+  }
+
+  .graphics-section {
+    .chart-title-small {
+      font-size: 0.9rem;
+    }
+
+    .chart-subtitle-small {
+      font-size: 0.7rem;
+    }
+
+    .chart-container-small {
+      height: 250px;
+      padding: 0.25rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0.5rem;
+  }
+
+  .main-content-section {
+    gap: 1rem;
+  }
+
+  .filters-section,
+  .table-section,
+  .graphics-section {
+    padding: 1rem;
+  }
+
+  .graphics-section {
+    .chart-title-small {
+      font-size: 0.8rem;
+    }
+
+    .chart-subtitle-small {
+      font-size: 0.65rem;
+    }
+
+    .chart-container-small {
+      height: 200px;
+    }
+  }
+}
+
+// Utilidades
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.font-bold {
+  font-weight: 600;
+}
+
+// Animaciones
+.p-button,
+.p-select,
+.p-multiselect {
+  transition: all 0.2s ease;
+}
+
+// Estados de carga
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+// Efectos hover para gr�ficos
+.graphics-section {
+  .chart-card {
+    &:hover {
+      .chart-title-small {
+        color: #003366;
+        transition: color 0.2s ease;
+      }
+    }
+  }
+}

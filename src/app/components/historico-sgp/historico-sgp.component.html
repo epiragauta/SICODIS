@@ -1,1 +1,322 @@
-<p>historico-sgp works!</p>
+<div class="container">
+  <!-- Header section from reports-sgp lines 2-13 -->
+  <div class="gradient-banner">    
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h2>Histórico Sistema General de Participaciones</h2>
+        <p>Este módulo presenta la información histórica de los recursos del Sistema General de Participaciones, 
+          permitiendo el análisis comparativo entre diferentes vigencias y la visualización de tendencias 
+          en la distribución de recursos a las entidades territoriales a través del tiempo.
+ 	 	 	 	</p>
+    </div>
+  </div>
+  
+  <!-- Responsive 50/50 horizontal section -->
+  <div class="main-content-section">
+    <!-- Left side: Filters -->
+    <div class="filters-section">
+      <!-- Panel de filtros usando PrimeNG -->
+      <div class="filters-panel">
+        <div class="filters-row">
+          <!-- Vigencia a consultar (multi-select) -->
+          <div class="p-field vigencia-select">
+            <p-floatlabel class="w-full md:w-56" variant="on">
+              <p-multiselect 
+                id="vigencia" 
+                [options]="infoResume" 
+                inputId="vigenciaSelect" 
+                [(ngModel)]="selectedYears"
+                (onChange)="onVigenciaChange($event)"
+                optionValue="year"
+                optionLabel="year" 
+                [maxSelectedLabels]="2"
+                selectedItemsLabel="{0} vigencias seleccionadas">
+              </p-multiselect>
+              <label for="vigenciaSelect">Vigencia</label>
+            </p-floatlabel>
+          </div>
+
+          <!-- Departamento -->
+          <div class="p-field department-select">
+            <p-floatlabel class="w-full md:w-56" variant="on">
+              <p-select 
+                id="departamento" 
+                [options]="departments" 
+                inputId="departamentoSelect"
+                [(ngModel)]="departmentSelected"
+                (onChange)="onDepartmentChange($event)"
+                optionValue="codigo"
+                optionLabel="nombre" 
+                placeholder="Departamento">
+              </p-select>
+              <label for="departamentoSelect">Departamento</label>
+            </p-floatlabel>
+          </div>
+
+          <!-- Municipio -->
+          <div class="p-field town-select">
+            <p-floatlabel class="w-full md:w-56" variant="on">
+              <p-select 
+                id="municipio" 
+                [options]="towns" 
+                inputId="municipioSelect"
+                [(ngModel)]="townSelected"
+                (onChange)="onTownChange($event)"
+                optionValue="name"
+                optionLabel="name" 
+                placeholder="Municipio">
+              </p-select>
+              <label for="municipioSelect">Municipio</label>
+            </p-floatlabel>
+          </div>
+        </div>
+      </div>
+
+      <!-- Buttons grid 2x2 -->
+      <div class="buttons-grid">
+        <button pButton type="button" 
+                icon="pi pi-filter" 
+                label="Aplicar Filtros" 
+                class="p-button-primary"
+                (click)="applyFilters()">
+        </button>
+        <button pButton type="button" 
+                icon="pi pi-times" 
+                label="Limpiar" 
+                class="p-button-secondary"
+                (click)="clearFilters()">
+        </button>
+        <button pButton type="button" 
+                icon="pi pi-file-excel" 
+                label="Exportar a Excel" 
+                class="p-button-success"
+                (click)="exportToExcel()">
+        </button>
+        <button pButton type="button" 
+                icon="pi pi-file-pdf" 
+                label="Exportar a PDF" 
+                class="p-button-danger"
+                (click)="exportToPDF()">
+        </button>
+      </div>
+    </div>
+
+    <!-- Right side: Table -->
+    <div class="table-section">
+      <div class="card">
+        <p-table [value]="tableData" 
+                 dataKey="year" 
+                 stripedRows 
+                 [tableStyle]="{ 'min-width': '20rem' }"
+                 [scrollable]="true"
+                 [scrollHeight]="tableData && tableData.length > 4 ? '200px' : 'auto'"
+                 [styleClass]="'historico-table'">
+          <ng-template #header>
+            <tr>
+              <th pSortableColumn="year" class="table-header">Año<p-sortIcon field="year" /></th>
+              <th pSortableColumn="source" class="table-header">Fuente<p-sortIcon field="source" /></th>
+              <th pSortableColumn="value" class="table-header">Valor($)<p-sortIcon field="value" /></th>
+            </tr>
+          </ng-template>
+          <ng-template #body let-data>
+            <tr>
+              <td>{{ data.year }}</td>
+              <td>{{ data.source }}</td>
+              <td>{{ data.value | numberFormat }}</td>
+            </tr>
+          </ng-template>
+          <ng-template #footer>
+            <tr class="total-row">
+              <td><strong>Total</strong></td>
+              <td></td>
+              <td><strong>{{ totalValue | numberFormat }}</strong></td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Graphics section from graphics-sgp component (line 92+) -->
+  <div class="graphics-section">
+    <!-- Filas de gráficos de dos columnas -->
+    <mat-grid-list [cols]="cols" rowHeight="400px" gutterSize="16" >
+      
+      <!-- Fila 1: Evolución Educación SGP -->
+      <mat-grid-tile>
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <h3 class="chart-title-small">Evolución Educación SGP</h3>
+            <p class="chart-subtitle-small">Precios Corrientes</p>
+          </ng-template>
+          <div class="chart-container-small">
+            <p-chart 
+              type="bar" 
+              [data]="chartData5Left" 
+              [options]="smallMixedChartOptions"
+              height="300px">
+            </p-chart>
+          </div>
+        </p-card>
+      </mat-grid-tile>
+
+      <mat-grid-tile>
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <h3 class="chart-title-small">Evolución Educación SGP</h3>
+            <p class="chart-subtitle-small">Precios Constantes - 2025</p>
+          </ng-template>
+          <div class="chart-container-small">
+            <p-chart 
+              type="bar" 
+              [data]="chartData5Right" 
+              [options]="smallMixedChartOptions"
+              height="300px">
+            </p-chart>
+          </div>
+        </p-card>
+      </mat-grid-tile>
+
+      <!-- Fila 2: Evolución Salud SGP -->
+      <mat-grid-tile>
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <h3 class="chart-title-small">Evolución Salud SGP</h3>
+            <p class="chart-subtitle-small">Precios Corrientes</p>
+          </ng-template>
+          <div class="chart-container-small">
+            <p-chart 
+              type="bar" 
+              [data]="chartData6Left" 
+              [options]="smallMixedChartOptions"
+              height="300px">
+            </p-chart>
+          </div>
+        </p-card>
+      </mat-grid-tile>
+
+      <mat-grid-tile>
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <h3 class="chart-title-small">Evolución Salud SGP</h3>
+            <p class="chart-subtitle-small">Precios Constantes - 2025</p>
+          </ng-template>
+          <div class="chart-container-small">
+            <p-chart 
+              type="bar" 
+              [data]="chartData6Right" 
+              [options]="smallMixedChartOptions"
+              height="300px">
+            </p-chart>
+          </div>
+        </p-card>
+      </mat-grid-tile>
+
+      <!-- Fila 3: Evolución Agua Potable SGP -->
+      <mat-grid-tile>
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <h3 class="chart-title-small">Evolución Agua Potable - SGP</h3>
+            <p class="chart-subtitle-small">Precios Corrientes</p>
+          </ng-template>
+          <div class="chart-container-small">
+            <p-chart 
+              type="bar" 
+              [data]="chartData7Left" 
+              [options]="smallMixedChartOptions"
+              height="300px">
+            </p-chart>
+          </div>
+        </p-card>
+      </mat-grid-tile>
+
+      <mat-grid-tile>
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <h3 class="chart-title-small">Evolución Agua Potable - SGP</h3>
+            <p class="chart-subtitle-small">Precios Constantes - 2025</p>
+          </ng-template>
+          <div class="chart-container-small">
+            <p-chart 
+              type="bar" 
+              [data]="chartData7Right" 
+              [options]="smallMixedChartOptions"
+              height="300px">
+            </p-chart>
+          </div>
+        </p-card>
+      </mat-grid-tile>
+
+      <!-- Fila 4: Evolución Propósito General SGP -->
+      <mat-grid-tile>
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <h3 class="chart-title-small">Evolución Propósito General - SGP</h3>
+            <p class="chart-subtitle-small">Precios Corrientes</p>
+          </ng-template>
+          <div class="chart-container-small">
+            <p-chart 
+              type="bar" 
+              [data]="chartData8Left" 
+              [options]="smallMixedChartOptions"
+              height="300px">
+            </p-chart>
+          </div>
+        </p-card>
+      </mat-grid-tile>
+
+      <mat-grid-tile>
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <h3 class="chart-title-small">Evolución Propósito General - SGP</h3>
+            <p class="chart-subtitle-small">Precios Constantes - 2025</p>
+          </ng-template>
+          <div class="chart-container-small">
+            <p-chart 
+              type="bar" 
+              [data]="chartData8Right" 
+              [options]="smallMixedChartOptions"
+              height="300px">
+            </p-chart>
+          </div>
+        </p-card>
+      </mat-grid-tile>
+
+      <!-- Fila 5: Evolución Asignaciones Especiales SGP -->
+      <mat-grid-tile>
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <h3 class="chart-title-small">Evolución Asignaciones Especiales - SGP</h3>
+            <p class="chart-subtitle-small">Precios Corrientes</p>
+          </ng-template>
+          <div class="chart-container-small">
+            <p-chart 
+              type="bar" 
+              [data]="chartData9Left" 
+              [options]="smallMixedChartOptions"
+              height="300px">
+            </p-chart>
+          </div>
+        </p-card>
+      </mat-grid-tile>
+
+      <mat-grid-tile>
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <h3 class="chart-title-small">Evolución Asignaciones Especiales - SGP</h3>
+            <p class="chart-subtitle-small">Precios Constantes - 2025</p>
+          </ng-template>
+          <div class="chart-container-small">
+            <p-chart 
+              type="bar" 
+              [data]="chartData9Right" 
+              [options]="smallMixedChartOptions"
+              height="300px">
+            </p-chart>
+          </div>
+        </p-card>
+      </mat-grid-tile>
+
+    </mat-grid-list>
+  </div>
+</div>

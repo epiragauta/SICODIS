@@ -42,9 +42,18 @@
         font-weight: 600;
         font-size: 1.1rem;
       }
+
+      .p-ripple {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .p-button-text.p-button-secondary {
+        color: white;
+      }
       
       .p-dialog-header-icon {
         color: white;
+        background-color: #fff;
         
         &:hover {
           background-color: rgba(255, 255, 255, 0.1);
@@ -59,6 +68,7 @@
       .p-button {
         background-color: #3366cc;
         border-color: #3366cc;
+        color: #fff;
         
         &:hover {
           background-color: #2851a3;
