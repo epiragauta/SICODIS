@@ -67,7 +67,7 @@ export class ComparativoIacVsPresupuestoComponent implements OnInit {
   selectedNode: TreeNode | null = null;
   infoMap: Map<string, Map<string, NodeInfo>> = new Map();
 
-  selectedVigencia: any = { id: 1, label: 'Vigencia Bienio 2025 - 2026' };
+  selectedVigencia: any = { id: 1, label: '2025 - 2026' };
   selectedSearchType: any = { id: 1, label: 'General' };
   selectedDpto: any = { codigo: '-1', nombre: 'Por departamento' };
   selectedEntity: any;
@@ -94,31 +94,31 @@ export class ComparativoIacVsPresupuestoComponent implements OnInit {
   vigencia = [
       {
           "id": 1,
-          "label": "Vigencia Bienio 2025 - 2026"
+          "label": "2025 - 2026"
       },
       {
           "id": 2,
-          "label": "Vigencia Bienio 2023 - 2024"
+          "label": "2023 - 2024"
       },
       {
           "id": 3,
-          "label": "Vigencia Bienio 2021 - 2022"
+          "label": "2021 - 2022"
       },
       {
           "id": 4,
-          "label": "Vigencia Bienio 2019 - 2020"
+          "label": "2019 - 2020"
       },
       {
           "id": 5,
-          "label": "Vigencia Bienio 2017 - 2018"
+          "label": "2017 - 2018"
       },
       {
           "id": 6,
-          "label": "Vigencia Bienio 2015 - 2016"
+          "label": "2015 - 2016"
       },
       {
           "id": 7,
-          "label": "Vigencia Bienio 2013 - 2014"
+          "label": "2013 - 2014"
       },
       {
           "id": 8,

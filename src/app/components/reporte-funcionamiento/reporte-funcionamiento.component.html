@@ -250,11 +250,6 @@
       <!-- Gráfico 1: Donut Avance Ejecución-->
       <div class="chart-container">        
         <p-chart type="doughnut" [data]="donutAvanceEjecucionData" [options]="donutAvanceEjecucionOptions" class="chart"></p-chart>
-        <div class="chart-value">
-          <div style="display: flex; flex-direction: column; align-items: center;">
-            <span class="percentage">{{compromisoPorcentaje}}%</span>          
-          </div>          
-        </div>        
       </div>
 
       <!-- Gráfico 2: Barra horizontal -->
@@ -270,11 +265,6 @@
       <!-- Gráfico 4: Dona 180 grados -->
       <div class="chart-container">        
         <p-chart type="doughnut" [data]="donutAvanceRecaudoData" [options]="donutAvanceRecaudoOptions" class="chart"></p-chart>
-        <div class="chart-value">
-          <div style="display: flex; flex-direction: column; align-items: center;">
-            <span class="percentage"> {{avanceRecaudoPorcentaje}}%</span>          
-          </div>          
-        </div>
       </div> 
     </div>
   </div>

@@ -1,6 +1,6 @@
 .reporte-funcionamiento-container {
   padding: 1rem;
-  max-width: 1400px;
+  max-width: 1310px;
   margin: 0 auto;
   font-family: 'Work Sans', sans-serif;
 
@@ -330,14 +330,6 @@
           overflow: hidden;
         }
 
-        .chart-value {
-          position: absolute;          
-          font-size: 34px;
-          font-weight: bold;
-          margin-top: 9rem;
-          color: rgb(71, 69, 69);
-          width: 23%;
-        }
         
       }
     }
@@ -397,13 +389,23 @@
     justify-content: center;
 
     .detail-button {      
-      width: 395px;
+      width: 310px;
       font-size: 0.9rem;
+    }
+
+    p-splitbutton {
+      width: 310px;
     }
 
     @media (max-width: 768px) {
       .detail-button {
-        width: 400px;        
+        width: 100%;
+        max-width: 310px;        
+      }
+      
+      p-splitbutton {
+        width: 100%;
+        max-width: 310px;
       }
     }
   }
@@ -528,12 +530,46 @@
   }
 
   .action-buttons{
-    .p-splitbutton-button {
-      min-width: 350px;
+    // Forzar que todos los botones tomen el ancho completo
+    .p-button,
+    .detail-button {
+      button {
+        width: 100% !important;
+      }
     }
 
-    .p-splitbutton-dropdown{
-      width: 50px;
+    .p-splitbutton {
+      width: 26 0px;
+      
+      .p-splitbutton-button {
+        flex: 1;
+        width: auto;
+        min-width: 270px;
+        
+        button {
+          width: 100% !important;
+        }
+      }
+
+      .p-splitbutton-dropdown{
+        width: 50px;
+        flex-shrink: 0;
+        
+        button {
+          width: 100% !important;
+        }
+      }
+    }
+
+    @media (max-width: 768px) {
+      .p-splitbutton {
+        width: 100%;
+        max-width: 260px;
+        
+        .p-splitbutton-button {
+          min-width: auto;
+        }
+      }
     }
   }
 

@@ -1,5 +1,4 @@
 <div class="container">
-
   <div class="gradient-banner">    
     <div class="gradient-overlay"></div>
     <div class="banner-content">
@@ -11,7 +10,7 @@
           corresponde a doce doceavas). 
  	 	 	 	</p>
     </div>
-  </div>  
+  </div>
   
   <!-- Panel de filtros usando PrimeNG -->
   <div class="filters-panel">
@@ -26,9 +25,10 @@
             [(ngModel)]="selected"
             (onChange)="onVigenciaChange($event)"
             optionValue="year"
-            optionLabel="year">
+            optionLabel="year" 
+            placeholder="Vigencia">
           </p-select>
-          <label for="vigenciaSelect">Año</label>
+          <label for="vigenciaSelect">Vigencia a consultar</label>
         </p-floatlabel>
       </div>
 
@@ -42,8 +42,8 @@
             [(ngModel)]="departmentSelected"
             (onChange)="onDepartmentChange($event)"
             optionValue="codigo"
-            placeholder="Departamento"
-            optionLabel="nombre">
+            optionLabel="nombre" 
+            placeholder="Departamento">
           </p-select>
           <label for="departamentoSelect">Departamento</label>
         </p-floatlabel>
@@ -59,9 +59,8 @@
             [(ngModel)]="townSelected"
             (onChange)="onTownChange($event)"
             optionValue="name"
-            optionLabel="name"
-            placeholder="Municipio"
-            >
+            optionLabel="name" 
+            placeholder="Municipio">
           </p-select>
           <label for="municipioSelect">Municipio</label>
         </p-floatlabel>
@@ -79,89 +78,181 @@
     </div>
   </div>
 
-  <div class="info-cards">
-    <mat-card class="info-card">        
-        <mat-card-content>
-          <div class="metrics-row">
-            <div class="metric-item-2">
-              <div class="metric-value">5.678.141.948</div>
-              <div class="metric-label">Total asignado</div>
-            </div>
-          </div>
-          <div class="metrics-row">
-            <div class="metric-item-2">
-              <div class="metric-value">512.417.167</div>
-              <div class="metric-label">Ultima doceava</div>
-            </div>
-          </div>
-          <div class="metrics-row">
-            <div class="metric-item-2">
-              <div class="metric-value">
-                5.174.724.781
-              </div>
-              <div class="metric-label">Once doceavas</div>
-            </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
+  <!-- Sección principal con resumen y tabla -->
+  <div class="resume">
+    <p class="title-graph">Resumen de la distribución del presupuesto vigencia {{selected}}</p>
+    <div class="main-grid">
+      <!-- Columna izquierda: Métricas -->
+      <div class="metrics-column">
+        <div class="col">
+          <h3>Presupuesto SGP</h3>
+          <p>{{infoToResume.budget | numberFormat}}</p>
+        </div>
+        <div class="col">
+          <h3>Recursos distribuidos hasta la fecha</h3>
+          <p>{{infoToResume.budgetDistributed | numberFormat}}</p>
+        </div>
+        <div class="col">
+          <h3>Recursos pendientes por distribuir</h3>
+          <p>{{infoToResume.pending | numberFormat}}</p>
+        </div>
+        <div class="col gauge-column">
+          <h3>Avance de distribución</h3>
+          <canvas id="gaugeChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Columna derecha: Tabla -->
+      <div class="table-column">
+        <div class="card">
+          <p-table [value]="dataSource2" 
+                   dataKey="desc" 
+                   stripedRows 
+                   [tableStyle]="{ 'min-width': '40rem' }" 
+                   [expandedRowKeys]="expandedRows" 
+                   [styleClass]="tableClass">
+            <ng-template #header>
+              <tr>
+                <th class="table-header" style="width: 5rem"></th>
+                <th pSortableColumn="desc" class="table-header">Concepto<p-sortIcon field="desc" /></th>
+                <th pSortableColumn="value" class="table-header">Total<p-sortIcon field="value" /></th>
+              </tr>
+            </ng-template>
+            <ng-template #body let-data let-expanded="expanded">
+              <tr>
+                <td>
+                  <p-button *ngIf="data.detail.length > 0" 
+                            type="button" 
+                            pRipple 
+                            [pRowToggler]="data" 
+                            [text]="true" 
+                            [rounded]="true" 
+                            [plain]="true" 
+                            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
+                  </p-button>
+                </td>
+                <td>{{ data.desc }}</td>
+                <td>{{ data.value | numberFormat }}</td>
+              </tr>
+            </ng-template>
+            <ng-template #rowexpansion let-data>
+              <tr>
+                <td colspan="3">
+                  <div class="p-3">
+                    <p-table [value]="data.detail" dataKey="desc" [tableStyle]="{ 'min-width': '30rem' }">
+                      <ng-template #header>
+                        <tr>
+                          <th class="table-header">Detalle</th>
+                          <th class="table-header">Valor</th>
+                        </tr>
+                      </ng-template>
+                      <ng-template #body let-detail>
+                        <tr>
+                          <td>{{ detail.desc }}</td>
+                          <td>{{ detail.value | numberFormat }}</td>
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+        <div class="button-export">
+          <button pButton type="button" icon="pi pi-download" label="Exportar a Excel" class="p-button-success"></button>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- Tabla de datos usando PrimeNG -->
-  <div class="card">
-    <h1>Asignación de recursos del SGP</h1>
-    <p-table [value]="dataSource2" 
-             dataKey="desc" 
-             stripedRows 
-             [tableStyle]="{ 'min-width': '40rem' }" 
-             [expandedRowKeys]="expandedRows" 
-             [styleClass]="tableClass">
+  <!-- Sección de documentos de distribución -->
+  <div class="resume">
+    <p class="title-graph">Documentos de distribución para la vigencia ({{selected}})</p>
+    <p-table [value]="distributionData"
+             [paginator]="true"
+             [rows]="10"
+             [tableStyle]="{ 'min-width': '50rem' }">
       <ng-template #header>
-        
         <tr>
-          <th class="table-header" style="width: 5rem"></th>
-          <th pSortableColumn="desc" class="table-header">Concepto<p-sortIcon field="desc" /></th>
-          <th pSortableColumn="value" class="table-header">Total<p-sortIcon field="value" /></th>
+          <th class="table-header">Fecha</th>
+          <th class="table-header">Documento</th>
+          <th class="table-header">Valor</th>
+          <th class="table-header">Acciones</th>
         </tr>
       </ng-template>
-      <ng-template #body let-data let-expanded="expanded">
+      <ng-template #body let-data>
         <tr>
+          <td>{{ data.b }}</td>
+          <td>{{ data.c }}</td>
+          <td>{{ data.g | numberFormat }}</td>
           <td>
-            <p-button *ngIf="data.detail.length > 0" 
-                      type="button" 
-                      pRipple 
-                      [pRowToggler]="data" 
-                      [text]="true" 
-                      [rounded]="true" 
-                      [plain]="true" 
-                      [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
-            </p-button>
-          </td>
-          <td>{{ data.desc }}</td>
-          <td>{{ data.value | numberFormat }}</td>
-        </tr>
-      </ng-template>
-      <ng-template #rowexpansion let-data>
-        <tr>
-          <td colspan="3">
-            <div class="p-3">
-              <p-table [value]="data.detail" dataKey="desc" [tableStyle]="{ 'min-width': '30rem' }">
-                <ng-template #header>
-                  <tr>
-                    <th class="table-header">Detalle</th>
-                    <th class="table-header">Valor</th>
-                  </tr>
-                </ng-template>
-                <ng-template #body let-detail>
-                  <tr>
-                    <td>{{ detail.desc }}</td>
-                    <td>{{ detail.value | numberFormat }}</td>
-                  </tr>
-                </ng-template>
-              </p-table>
-            </div>
+            <button pButton type="button" icon="pi pi-eye" class="p-button-info p-button-sm" 
+                    (click)="showDetails(data)" pTooltip="Ver detalles"></button>
+            <button pButton type="button" icon="pi pi-file" class="p-button-secondary p-button-sm" 
+                    (click)="showFiles(data)" pTooltip="Ver archivos" style="margin-left: 0.5rem;"></button>
           </td>
         </tr>
       </ng-template>
     </p-table>
   </div>
+
+  <!-- Diálogos -->
+  <!-- Diálogo de detalles -->
+  <p-dialog header="Detalles de distribución" 
+            [(visible)]="visibleDlgDetail" 
+            [modal]="true" 
+            [style]="{ width: '50vw' }" 
+            [dismissableMask]="true">
+    <div class="dialog-content">
+      <p><strong>Nombre:</strong> {{ distributionName }}</p>
+      <p><strong>Fecha:</strong> {{ distributionDate }}</p>
+      <p>Información detallada de la distribución seleccionada.</p>
+    </div>
+    <ng-template pTemplate="footer">
+      <button pButton type="button" label="Cerrar" icon="pi pi-times" 
+              class="p-button-secondary" (click)="visibleDlgDetail = false"></button>
+    </ng-template>
+  </p-dialog>
+
+  <!-- Diálogo de archivos -->
+  <p-dialog header="Archivos de distribución" 
+            [(visible)]="visibleDlgFiles" 
+            [modal]="true" 
+            [style]="{ width: '60vw' }" 
+            [dismissableMask]="true">
+    <div class="dialog-content">
+      <p><strong>Distribución:</strong> {{ distributionName }}</p>
+      <p><strong>Fecha:</strong> {{ distributionDate }}</p>
+      
+      <div class="files-list" style="margin-top: 1rem;">
+        <h4>Archivos disponibles:</h4>
+        <p-table [value]="distributionFiles" [tableStyle]="{ 'min-width': '30rem' }">
+          <ng-template #header>
+            <tr>
+              <th>Descripción</th>
+              <th>Archivo</th>
+              <th>Acciones</th>
+            </tr>
+          </ng-template>
+          <ng-template #body let-file>
+            <tr>
+              <td>{{ file.desc }}</td>
+              <td>{{ file.value }}</td>
+              <td>
+                <button pButton type="button" icon="pi pi-download" 
+                        class="p-button-success p-button-sm" 
+                        (click)="downloadFiles(file)" 
+                        pTooltip="Descargar archivo"></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+    <ng-template pTemplate="footer">
+      <button pButton type="button" label="Cerrar" icon="pi pi-times" 
+              class="p-button-secondary" (click)="visibleDlgFiles = false"></button>
+    </ng-template>
+  </p-dialog>
 </div>

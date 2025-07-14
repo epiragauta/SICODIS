@@ -11,6 +11,7 @@ import { ButtonModule } from 'primeng/button';
 import { Select, SelectChangeEvent } from 'primeng/select';
 import { FloatLabel } from 'primeng/floatlabel';
 import { Dialog } from 'primeng/dialog';
+import { TooltipModule } from 'primeng/tooltip';
 
 import Chart from 'chart.js/auto';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
@@ -30,6 +31,7 @@ import { departamentos } from '../../data/departamentos';
     Select,
     FloatLabel,
     Dialog,
+    TooltipModule,
     NumberFormatPipe
   ],
   templateUrl: './reports-sgp.component.html',
@@ -39,7 +41,7 @@ export class ReportsSgpComponent {
   color1 = 'lightblue';
   color2 = 'lightgreen';
   color3 = 'lightpink';
-  selected: string = '2025';
+  selected: string = '2024';
   departmentSelected: string = '';
   townSelected: string = '';
   tableClass = "p-datatable-sm";
@@ -48,46 +50,36 @@ export class ReportsSgpComponent {
   visibleDlgFiles: boolean = false;
 
   expandedRows = {};
-
   infoToResume: any = {};
-  entidadTerritorialUrl = '/assets/data/entidad_territorial.json';
-  entidadTerritorialData: any = {};
 
   infoResume: any = [
-    {
-      year: '2025',
-      budget: '70540879911189',
-      budgetDistributed: '70540879911189',
-      pending: 0,
-      percent: 1,
-    },
     {
       year: '2024',
       budget: '70540879911189',
       budgetDistributed: '70540879911189',
       pending: 0,
-      percent: 1,
+      percent: .75,
     },
     {
       year: '2023',
       budget: '54936407931948',
       budgetDistributed: '54936407931948',
       pending: 0,
-      percent: 1,
+      percent: .68,
     },
     {
       year: '2022',
       budget: '49564897462512',
       budgetDistributed: '49564897462512',
       pending: 0,
-      percent: 1,
+      percent: .99,
     },
     {
       year: '2021',
       budget: '47675273699939',
       budgetDistributed: '47675273699939',
       pending: 0,
-      percent: 1,
+      percent: .98,
     },
     {
       year: '2020',
@@ -158,13 +150,42 @@ export class ReportsSgpComponent {
     }
   ];
 
+  distributionData: any = [
+    {
+      b: "2024-01-15",
+      c: "DD SGP-01-2024",
+      g: "12345678901234"
+    },
+    {
+      b: "2024-02-15", 
+      c: "DD SGP-02-2024",
+      g: "23456789012345"
+    },
+    {
+      b: "2024-03-15",
+      c: "DD SGP-03-2024", 
+      g: "34567890123456"
+    }
+  ];
+
+  distributionName = "";
+  distributionDate = "";
+  distributionFiles: any = [];
+
+  entidadTerritorialUrl = '/assets/data/entidad_territorial.json';
+  entidadTerritorialData: any[] = [];
+
   constructor(private renderer: Renderer2) {}
 
   ngOnInit(): void {
     this.infoToResume = this.infoResume.filter(
       (item: any) => item.year === this.selected
     )[0];
-    this.createGraph();
+    
+    // Crear el gráfico después de un pequeño delay para asegurar que el DOM esté listo
+    setTimeout(() => {
+      this.createGraph();
+    }, 100);
 
     fetch(this.entidadTerritorialUrl)
       .then((response: any) => response.json())
@@ -173,60 +194,80 @@ export class ReportsSgpComponent {
         console.log('Entidad Territorial Data:', this.entidadTerritorialData);
       })
       .catch((error: any) => console.error('Error loading data:', error)); 
+
+    console.log('Component initialized');
   }
 
-  createGraph() {
-    const ctx = this.renderer.selectRootElement(
-      '#gaugeChart'
-    ) as HTMLCanvasElement;
-    const ctx2d = ctx.getContext('2d');
+  /**
+   * Crea el gráfico de gauge (dona) para mostrar el avance de distribución
+   */
+  createGraph(): void {
+    try {
+      const ctx = this.renderer.selectRootElement('#gaugeChart') as HTMLCanvasElement;
+      if (!ctx) {
+        console.error('Canvas element not found');
+        return;
+      }
 
-    const gradient = ctx2d?.createLinearGradient(0, 0, ctx.width, 0);
-    gradient?.addColorStop(0, 'rgba(53, 106, 212, 0.445)');
-    gradient?.addColorStop(1, 'rgb(53, 106, 212)');
+      const ctx2d = ctx.getContext('2d');
+      if (!ctx2d) {
+        console.error('Could not get 2D context');
+        return;
+      }
 
-    const value = this.infoToResume.percent * 100;
-    const customPlugin = {
-      id: 'customPlugin',
-      beforeDraw(chart: any) {
-        const { width } = chart;
-        const { height } = chart;
-        const { ctx } = chart;
+      const gradient = ctx2d.createLinearGradient(0, 0, ctx.width, 0);
+      gradient.addColorStop(0, 'rgba(53, 106, 212, 0.445)');
+      gradient.addColorStop(1, 'rgb(53, 106, 212)');
 
-        ctx.save();
-        ctx.font = 'bold 20px Arial';
-        ctx.fillStyle = '#3366CC';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(`${value}%`, width / 2, height / 1.3);
-        ctx.restore();
-      },
-    };
-    Chart.register(customPlugin);
-    new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Valor Actual'],
-        datasets: [
-          {
-            data: [value, 100 - value],
-            backgroundColor: [gradient, '#E0E0E0'],
-            borderWidth: 0,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        rotation: -90,
-        circumference: 180,
-        cutout: '80%',
-        plugins: {
-          tooltip: {
-            enabled: true,
+      const value = this.infoToResume.percent * 100;
+      
+      const customPlugin = {
+        id: 'customPlugin',
+        beforeDraw(chart: any) {
+          const { width, height, ctx } = chart;
+
+          ctx.save();
+          ctx.font = 'bold 20px Arial';
+          ctx.fillStyle = '#3366CC';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(`${value}%`, width / 2, height / 1.3);
+          ctx.restore();
+        },
+      };
+
+      Chart.register(customPlugin);
+      
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Valor Actual'],
+          datasets: [
+            {
+              data: [value, 100 - value],
+              backgroundColor: [gradient, '#E0E0E0'],
+              borderWidth: 0,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          rotation: -90,
+          circumference: 180,
+          cutout: '80%',
+          plugins: {
+            tooltip: {
+              enabled: true,
+            },
+            legend: {
+              display: false
+            }
           },
         },
-      },
-    });
+      });
+    } catch (error) {
+      console.error('Error creating gauge chart:', error);
+    }
   }
 
   /**
@@ -235,6 +276,15 @@ export class ReportsSgpComponent {
   onVigenciaChange(event: SelectChangeEvent): void {
     console.log('Vigencia seleccionada:', event.value);
     this.selected = event.value;
+    this.infoToResume = this.infoResume.filter(
+      (item: any) => item.year === event.value
+    )[0];
+    
+    // Recrear el gráfico con los nuevos datos
+    setTimeout(() => {
+      this.createGraph();
+    }, 100);
+    
     this.loadDataForYear();
   }
 
@@ -314,24 +364,76 @@ export class ReportsSgpComponent {
    */
   optionChange(evt: any): void {
     console.log('Option change (legacy):', evt);
-    // Mantener por compatibilidad si es necesario
+    this.infoToResume = this.infoResume.filter(
+      (item: any) => item.year === evt.value
+    )[0];
+    this.selected = evt.value;
+    
+    // Recrear el gráfico con los nuevos datos
+    setTimeout(() => {
+      this.createGraph();
+    }, 100);
+  }
+
+  /**
+   * Muestra el diálogo de detalles
+   */
+  showDetails(data: any): void {
+    console.log("show Details", data);
+    this.showDialogDetail();
+  }
+
+  /**
+   * Muestra el diálogo de archivos
+   */
+  showFiles(data: any): void {
+    console.log("show Files", data);
+    this.showDialogFiles(data);
   }
 
   /**
    * Abre el diálogo de detalles
    */
-  showDetailDialog(): void {
+  showDialogDetail(): void {
     this.visibleDlgDetail = true;
   }
 
   /**
    * Abre el diálogo de archivos
    */
-  showFilesDialog(): void {
+  showDialogFiles(data: any): void {
     this.visibleDlgFiles = true;
+    this.distributionFiles = [];
+    this.distributionName = data.c;
+    this.distributionDate = data.b;
+    this.distributionFiles.push({
+      desc: data.d || data.c,
+      value: data.c
+    });
+    this.distributionFiles.push({
+      desc: "Anexos 1 al 3 DD SGP-94-2024",
+      value: "Anexos"
+    });
   }
 
-  downloadFiles(data: any){
-    console.log("downloadFiles")
+  /**
+   * Descarga archivos
+   */
+  downloadFiles(data: any): void {
+    console.log("downloadFiles", data);
+  }
+
+  /**
+   * Abre el diálogo de detalles (método anterior)
+   */
+  showDetailDialog(): void {
+    this.visibleDlgDetail = true;
+  }
+
+  /**
+   * Abre el diálogo de archivos (método anterior)
+   */
+  showFilesDialog(): void {
+    this.visibleDlgFiles = true;
   }
 }

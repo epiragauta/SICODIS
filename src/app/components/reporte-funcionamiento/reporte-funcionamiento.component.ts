@@ -6,6 +6,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { ButtonModule } from 'primeng/button';
 import { ChartModule } from 'primeng/chart';
+import Chart from 'chart.js/auto';
 
 import { 
   getFuentes,
@@ -1436,6 +1437,33 @@ export class ReporteFuncionamientoComponent implements OnInit {
   }
 
   private initializeCharts(): void {
+    // Register custom plugin for center text in donut charts
+    const centerTextPlugin = {
+      id: 'centerText',
+      beforeDraw: (chart: any) => {
+        if (chart.config.options.plugins?.centerText?.display) {
+          const ctx = chart.ctx;
+          const centerX = (chart.chartArea.left + chart.chartArea.right) / 2;
+          const centerY = (chart.chartArea.top + chart.chartArea.bottom) / 1.4;
+          
+          ctx.save();
+          ctx.font = 'bold 34px Arial';
+          ctx.fillStyle = '#47454';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          
+          const text = chart.config.options.plugins.centerText.text();
+          ctx.fillText(text, centerX, centerY);
+          ctx.restore();
+        }
+      }
+    };
+
+    // Register the plugin globally
+    if (typeof Chart !== 'undefined') {
+      Chart.register(centerTextPlugin);
+    }
+
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--p-text-color') || '#000';
     const surfaceBorder = documentStyle.getPropertyValue('--p-content-border-color') || '#dee2e6';
@@ -1559,6 +1587,10 @@ export class ReporteFuncionamientoComponent implements OnInit {
           },
           xAlign: 'left',
           yAlign: 'bottom'
+        },
+        centerText: {
+          display: true,
+          text: () => this.compromisoPorcentaje + '%'
         }
       }
     };
@@ -1592,6 +1624,10 @@ export class ReporteFuncionamientoComponent implements OnInit {
           },
           xAlign: 'left',
           yAlign: 'bottom'
+        },
+        centerText: {
+          display: true,
+          text: () => this.avanceRecaudoPorcentaje + '%'
         }
       }
     };
