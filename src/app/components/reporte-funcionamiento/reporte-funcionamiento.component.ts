@@ -1444,7 +1444,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         if (chart.config.options.plugins?.centerText?.display) {
           const ctx = chart.ctx;
           const centerX = (chart.chartArea.left + chart.chartArea.right) / 2;
-          const centerY = (chart.chartArea.top + chart.chartArea.bottom) / 1.4;
+          const centerY = (chart.chartArea.top + chart.chartArea.bottom) / 1.42;
           
           ctx.save();
           ctx.font = 'bold 34px Arial';
