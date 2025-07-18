@@ -773,7 +773,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       
       if (conceptosFuentes && conceptosFuentes.length > 0) {
         // Usar conceptos del API ordenados alfabéticamente
-        const conceptosOrdenados = conceptosFuentes.sort((a, b) => a.concepto.localeCompare(b.concepto));
+        const conceptosOrdenados = conceptosFuentes.sort((a: any, b: any) => a.concepto.localeCompare(b.concepto));
         
         this.conceptos = [
           { value: "TOTAL", label: "TOTAL" },
