@@ -21,6 +21,7 @@ import { ReporteFuncionamientoComponent } from './components/reporte-funcionamie
 import { HomeSgpComponent } from './components/home-sgp/home-sgp.component';
 import { ReportsSgpResguardosComponent } from './components/reports-sgp-resguardos/reports-sgp-resguardos.component';
 import { HistoricoSgpComponent } from './components/historico-sgp/historico-sgp.component';
+import { SgpInicioComponent } from './components/sgp-inicio/sgp-inicio.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -43,6 +44,7 @@ export const routes: Routes = [
     { path: 'graphics-sgp', component: GraphicsSgpComponent},
     { path: 'reporte-funcionamiento', component: ReporteFuncionamientoComponent },
     { path: 'home-sgp', component: HomeSgpComponent},
+    { path: 'sgp-inicio', component: SgpInicioComponent},
     { path: 'sgp-resguardos', component: ReportsSgpResguardosComponent},
     { path: 'historico-sgp', component: HistoricoSgpComponent}
 
