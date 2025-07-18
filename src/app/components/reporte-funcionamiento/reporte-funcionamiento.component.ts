@@ -909,7 +909,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
           if (typeof conceptoSeleccionado.value === 'number') {
             idsConceptosSeleccionados.push(conceptoSeleccionado.value);
           } else {
-            const conceptoEncontrado = conceptosFuentes.find(c => c.concepto === conceptoSeleccionado.label);
+            const conceptoEncontrado = conceptosFuentes.find((c: any) => c.concepto === conceptoSeleccionado.label);
             if (conceptoEncontrado) {
               idsConceptosSeleccionados.push(conceptoEncontrado.id_concepto);
             }
@@ -1064,12 +1064,12 @@ export class ReporteFuncionamientoComponent implements OnInit {
       if (municipiosAPI && municipiosAPI.length > 0) {
         // Usar municipios del API
         this.municipios = municipiosAPI
-          .map(mpio => ({
+          .map((mpio: any) => ({
             value: mpio.codigo_municipio,
             label: mpio.nombre_municipio,
             'cod-sicodis': mpio.codigo_municipio
           }))
-          .sort((a, b) => a.label.localeCompare(b.label));
+          .sort((a: any, b: any) => a.label.localeCompare(b.label));
         
         console.log('Municipios cargados desde API (ordenados):', this.municipios);
       } else {
