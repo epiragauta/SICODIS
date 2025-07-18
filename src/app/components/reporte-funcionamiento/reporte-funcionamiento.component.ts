@@ -1,6 +1,7 @@
 import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { SicodisApiService, DiccionarioItem, SiglasItem, FuncionamientoSiglasDiccionario } from '../../services/sicodis-api.service';
+import { SicodisApiService } from '../../services/sicodis-api.service';
+import type { DiccionarioItem, SiglasItem, FuncionamientoSiglasDiccionario } from '../../services/sicodis-api.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -336,7 +337,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
   async cargarVigencias(): Promise<void> {
     try {
       const vigencias = await this.sicodisApiService.getVigencias().toPromise();
-      this.vigencias = vigencias?.map(vigencia => ({
+      this.vigencias = vigencias?.map((vigencia: any) => ({
         id: vigencia.id_vigencia,
         label: vigencia.vigencia
       })) || [];
