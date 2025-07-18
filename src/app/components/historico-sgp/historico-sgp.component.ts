@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
+import { HttpClientModule } from '@angular/common/http';
 
 // PrimeNG imports
 import { TableModule } from 'primeng/table';
@@ -16,6 +17,7 @@ import { CardModule } from 'primeng/card';
 
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { departamentos } from '../../data/departamentos';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-historico-sgp',
@@ -24,6 +26,7 @@ import { departamentos } from '../../data/departamentos';
     CommonModule,
     FormsModule,
     MatGridListModule,
+    HttpClientModule,
     TableModule,
     ButtonModule,
     Select,
@@ -47,43 +50,9 @@ export class HistoricoSgpComponent implements OnInit {
   townSelected: string = '';
 
   // Datos de años disponibles
-  infoResume: any = [
-    {
-      year: '2024',
-      budget: '70540879911189',
-      budgetDistributed: '70540879911189',
-      pending: 0,
-      percent: .75,
-    },
-    {
-      year: '2023',
-      budget: '54936407931948',
-      budgetDistributed: '54936407931948',
-      pending: 0,
-      percent: .68,
-    },
-    {
-      year: '2022',
-      budget: '49564897462512',
-      budgetDistributed: '49564897462512',
-      pending: 0,
-      percent: .99,
-    },
-    {
-      year: '2021',
-      budget: '47675273699939',
-      budgetDistributed: '47675273699939',
-      pending: 0,
-      percent: .98,
-    },
-    {
-      year: '2020',
-      budget: '43847390906182',
-      budgetDistributed: '43847390906182',
-      pending: 0,
-      percent: 1,
-    },
-  ];
+  infoResume: any[] = [];
+  sgpData: any = null;
+  territorialEntities: any[] = [];
 
   departments = departamentos;
 
@@ -121,7 +90,7 @@ export class HistoricoSgpComponent implements OnInit {
   // Opciones para los gráficos
   smallMixedChartOptions: any;
 
-  constructor(private breakpointObserver: BreakpointObserver) {
+  constructor(private breakpointObserver: BreakpointObserver, private http: HttpClient) {
     // Configuración responsiva
     this.breakpointObserver.observe([
       Breakpoints.XSmall,
@@ -143,17 +112,52 @@ export class HistoricoSgpComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initializeDefaultSelection();
+    this.loadSgpData();
+    this.loadTerritorialEntities();
     this.initializeChartOptions();
     this.initializeAllCharts();
-    this.initializeTableData();
     console.log('Historico SGP Component initialized');
+  }
+
+  /**
+   * Carga los datos del SGP desde el archivo JSON
+   */
+  loadSgpData(): void {
+    this.http.get('assets/data/sgp/sgp-data_agrupado_vigencia_dpto_test.json').subscribe({
+      next: (data: any) => {
+        this.sgpData = data;
+        if (data.summary && data.summary.vigencias_found) {
+          this.infoResume = data.summary.vigencias_found.map((year: string) => ({ year }));
+          this.initializeDefaultSelection();
+          this.initializeTableData();
+        }
+      },
+      error: (error) => {
+        console.error('Error loading SGP data:', error);
+      }
+    });
+  }
+
+  /**
+   * Carga las entidades territoriales desde el archivo JSON
+   */
+  loadTerritorialEntities(): void {
+    this.http.get('assets/data/territorial-entities-detail.json').subscribe({
+      next: (data: any) => {
+        this.territorialEntities = data;
+      },
+      error: (error) => {
+        console.error('Error loading territorial entities:', error);
+      }
+    });
   }
 
   /**
    * Inicializa la selección predeterminada con los últimos 4 años
    */
   initializeDefaultSelection(): void {
+    if (this.infoResume.length === 0) return;
+    
     // Ordenar los años de mayor a menor y tomar los primeros 4
     const sortedYears = this.infoResume
       .map((item: any) => item.year)
@@ -473,14 +477,32 @@ export class HistoricoSgpComponent implements OnInit {
    * Carga los municipios para el departamento seleccionado
    */
   private loadTownsForDepartment(): void {
-    if (!this.departmentSelected) {
+    if (!this.departmentSelected || this.territorialEntities.length === 0) {
       this.towns = [];
       this.townSelected = '';
       return;
     }
 
     console.log('Cargando municipios para departamento:', this.departmentSelected);
-    // Aquí iría la lógica para cargar municipios del departamento seleccionado
-    // Por ahora mantenemos la lista de ejemplo
+    
+    // Transformar código del departamento: remover cero a la izquierda y agregar tres ceros
+    const departmentCode = this.departmentSelected.replace(/^0+/, '') + '000';
+    const departmentCodeNumber = parseInt(departmentCode);
+    
+    console.log('Código transformado:', departmentCodeNumber);
+    
+    // Filtrar municipios por codPadre y excluir el departamento mismo
+    this.towns = this.territorialEntities
+      .filter(entity => 
+        entity.codPadre === departmentCodeNumber && 
+        entity.codigo !== departmentCodeNumber
+      )
+      .map(entity => ({
+        name: entity.entidad,
+        value: entity.codigo2 || entity.codigo
+      }));
+    
+    console.log('Municipios encontrados:', this.towns);
+    this.townSelected = '';
   }
 }

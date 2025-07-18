@@ -1,0 +1,124 @@
+<!-- prototipo-sgp.component.html -->
+<div class="container">
+  <!-- Sección A: Banner con título -->
+  <div class="gradient-banner">
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h2>Consulta y visualiza la distribución de recursos del SGP</h2>
+    </div>
+  </div>
+
+  <!-- Fechas de información -->
+  <div class="dates-buttons-container">
+    <div style="width: 83%;">
+      <p class="date-update">Fecha de actualización: {{ fechaActualizacion }}</p>
+    </div>
+  </div>
+
+  <!-- Sección B + C: Tarjetas de cifras (izquierda) y Treemap (derecha) -->
+  <div class="main-grid">
+    <!-- C: Tarjetas de presentación de cifras -->
+    <div class="metrics-column">
+      <mat-card class="metric-item">
+        <mat-card-header>
+          <mat-card-title class="card-title card-main">Presupuesto SGP</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="metric-value">{{ cifras.presupuesto | numberFormat }}</div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="metric-item">
+        <mat-card-header>
+          <mat-card-title class="card-title card-main">Recursos Distribuido</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="metric-value">{{ cifras.distribuido | numberFormat }}</div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="metric-item">
+        <mat-card-header>
+          <mat-card-title class="card-title card-main">Recursos Pendientes</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="metric-value">{{ cifras.pendiente | numberFormat }}</div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="metric-item">
+        <mat-card-header>
+          <mat-card-title class="card-title card-main">Avance Distribución</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="metric-value">{{ cifras.avance }}%</div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- B: Gráfico Treemap -->
+    <div class="chart-treemap">
+      <p-chart [type]="treemapType" [data]="treemapData" [options]="treemapOptions"></p-chart>
+    </div>
+  </div>
+
+  <!-- Sección D: Notas informativas -->
+  <div class="final-notes-container">
+    <strong>NOTAS</strong>
+    <p class="final-note">
+      <strong>(1))</strong> Los valores corresponden a cifras en miles de millones de pesos corrientes.
+    </p>
+    <p class="final-note">
+      <strong>(2)</strong> Subdirección de Distribución de Recursos Territoriales - DPIP a partir de la ley bienal de presupuesto, resoluciones de distribución (Comisión Rectora del SGR y Ministerio de Minas y Energía) y los reportes del Sistema de Presupuesto y Giro de Regalías (SPGR)
+    </p>
+  </div>
+
+  <!-- Sección E: Gráficas de barras -->
+  <div class="bar-charts">
+    <div class="chart-container">
+      <p-card>
+        <ng-template pTemplate="header">
+          <h2>Evolución SGP - Precios Corrientes</h2>
+          <p class="chart-subtitle">
+            El crecimiento promedio anual en términos reales es del 4% anual durante los últimos 20 años (2005 – 2025).
+            La información se presenta en miles de millones de pesos corrientes.
+          </p>
+        </ng-template>
+        <p-chart type="bar" [data]="chartData1" [options]="mixedChartOptions"></p-chart>
+      </p-card>
+    </div>
+    <div class="chart-container">
+      <p-card>
+        <ng-template pTemplate="header">
+          <h2>Evolución SGP – Precios Constantes</h2>
+          <p class="chart-subtitle">
+            El crecimiento promedio anual en términos reales es del 4% anual durante los últimos 20 años (2005 – 2025).
+            La información se presenta en miles de millones de pesos constantes.
+          </p>
+        </ng-template>
+        <p-chart type="bar" [data]="chartData3" [options]="barChartOptions"></p-chart>
+      </p-card>
+    </div>
+    <div class="final-notes-container">
+      <strong>NOTA</strong>
+      <p class="final-note">
+        <strong>(1))</strong> Cifras en pesos constantes 2025-
+      </p>      
+    </div>
+
+  </div>
+
+  <!-- Sección F: Herramientas y recursos -->
+  <div class="herramientas-recursos-section">
+    <h2>Herramientas y Recursos</h2>
+    <div class="herramientas-cards-container">
+      <div class="herramienta-card" *ngFor="let recurso of recursos">
+        <div class="card-icon-placeholder">
+          <mat-icon style="color: #fff;" class="mr-2 sgp-icon">{{ recurso.icon }}</mat-icon>
+        </div>
+        <div class="card-content">
+          <h3>{{ recurso.titulo }}</h3>
+          <p>{{ recurso.descripcion }}</p>
+        </div>
+        <button type="button">{{ recurso.boton }}</button>
+      </div>
+    </div>
+  </div>
+</div>
