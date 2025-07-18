@@ -34,7 +34,7 @@
         <p-floatlabel class="w-full md:w-56" variant="on">
            <p-select 
             id="vigencia" 
-            [options]="vigencia" 
+            [options]="vigencias" 
             inputId="vigenciaSelect" 
             [(ngModel)]="selectedVigencia"
             (onChange)="onVigenciaChange($event)"
@@ -85,7 +85,7 @@
       <div class="p-field mpio-select" *ngIf="showMpios">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="municipio" [options]="municipios" inputId="municipioSelect"
-            [(ngModel)]="selectedMunicipio" optionLabel="beneficiario" (onChange)="onMunicipioChange($event)" 
+            [(ngModel)]="selectedMunicipio" optionLabel="label" (onChange)="onMunicipioChange($event)" 
             placeholder="Municipio" ></p-select>
           <label for="municipioSelect">Municipio</label>
         </p-floatlabel>
@@ -297,7 +297,7 @@
   </div>
 
   <!-- Información adicional del registro seleccionado -->
-  <div class="registro-detalle" *ngIf="registrosFiltrados.length > 0">
+  <!-- <div class="registro-detalle" *ngIf="registrosFiltrados.length > 0">
     <mat-card class="info-card" style="height: auto;">
       <mat-card-header>
         <mat-card-title class="card-title card-main">Detalle del Registro Seleccionado</mat-card-title>
@@ -339,6 +339,6 @@
         <strong>Cifras en pesos corrientes.</strong>        
       </p>
     </mat-card>    
-  </div>
+  </div> -->
   
 </div>
