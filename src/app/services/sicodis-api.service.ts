@@ -88,20 +88,15 @@ export interface ResumenGeneral {
   total_distribuido: number;
   total_presupuesto: number;
   porcentaje_ejecucion: number;
-  departamentos: number;
-  municipios: number;
+  porcentaje_avance: number;
+  porcentaje_avance_str: string;
+  fecha_ultima_actualizacion: Date;
 }
 
 export interface ResumenParticipaciones {
   anio: number;
-  codigo_depto: string;
-  nombre_depto: string;
-  codigo_municipio: string;
-  nombre_municipio: string;
-  educacion: number;
-  salud: number;
-  agua_potable: number;
-  proposito_general: number;
+  id_concepto: string;
+  concepto: string;  
   total: number;
 }
 
@@ -116,6 +111,8 @@ export interface ResumenDistribuciones {
 
 export interface ResumenHistorico {
   anio: number;
+  id_concepto: string,
+  concepto: string,
   precios_corrientes: number;
   precios_constantes: number;
   variacion_anual: number;
