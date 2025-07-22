@@ -301,7 +301,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         command: () => this.clickMenuItem('historico')
       },
       {
-        label: 'Últmo Informe',
+        label: 'Último Informe',
         
         command: () => this.clickMenuItem('ultimoInforme')
       }
@@ -403,7 +403,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
     this.siglasDiccionarioData.siglas.data.forEach((item: SiglasItem) => {
       contenido += `<tr>
-        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top; font-weight: 500;"><strong>${item.siglas}</strong></td>
+        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top; font-weight: 500;"><strong>${item.sigla}</strong></td>
         <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top;">${item.descripcion}</td>
       </tr>`;
     });
