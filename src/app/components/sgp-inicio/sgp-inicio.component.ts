@@ -71,6 +71,9 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
   barChartOptions: any;
   
   years2005to2025 = ['2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'];
+  years2015to2025 = ['2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'];
+  
+  historicoData: any[] = [];
 
   recursos = [
     {
@@ -105,32 +108,6 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.loadSgpData();
-
-    const sgpDataCorrientes = this.generateGrowingData(20000, 85000, this.years2005to2025.length);
-    const variationDataCorrientes = this.generateVariationData(sgpDataCorrientes);
-
-    this.chartData1 = {
-      labels: this.years2005to2025,
-      datasets: [
-        {
-          type: 'line',
-          label: 'Variación Anual',
-          data: variationDataCorrientes,
-          borderColor: '#0f4987',
-          fill: false,
-          yAxisID: 'y1'
-        },
-        {
-          type: 'bar',
-          label: 'SGP',
-          data: sgpDataCorrientes,
-          backgroundColor: '#FF8C00',
-          yAxisID: 'y'
-        }
-      ]
-    };
-
-    this.initChart3();
 
     this.mixedChartOptions = {
       responsive: true,
@@ -269,6 +246,7 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
           avance: resumen.porcentaje_avance / 100
         };
         this.loadSgpParticipaciones();
+        this.loadSgpHistoricoData();
       },
       error: (error) => {
         console.error('Error loading SGP data:', error);
@@ -280,6 +258,7 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
           avance: 92.5
         };
         this.loadSgpParticipaciones();
+        this.loadSgpHistoricoData();
       }
     });
   }
@@ -314,6 +293,134 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
     });
     
     console.log('Updated resumenParticipaciones:', this.resumenParticipaciones);
+  }
+
+  loadSgpHistoricoData(): void {
+    console.log("loadSgpHistoricoData...");
+    const aniosString = this.years2015to2025.join(',');
+    
+    this.sicodisApiService.getSgpResumenHistorico({ anios: aniosString }).subscribe({
+      next: (result: any) => {
+        console.log('Historico data:', result);
+        this.historicoData = result;
+        this.initializeChartsWithHistoricoData();
+      },
+      error: (error) => {
+        console.error('Error loading SGP historico:', error);
+        // Usar datos generados en caso de error
+        this.initializeChartsWithGeneratedData();
+      }
+    });
+  }
+
+  initializeChartsWithHistoricoData(): void {
+    // Filtrar solo los registros con id_concepto = '99' que corresponden al total
+    let totalData: any = {};
+    this.historicoData.forEach((item: any) => {
+      if (item.id_concepto === '99'){        
+        totalData[item.annio] = {corrientes: item.total_corrientes, constantes: item.total_constantes};        
+      }
+    });
+    
+    /* const dataByYear = totalData.reduce((acc: any, item: any) => {
+      acc[item.anio] = {
+        total_corrientes: item.total_corrientes,
+        variacion_anual: item.variacion_anual
+      };
+      return acc;
+    }, {}); */
+
+    const sgpDataCorrientes = this.years2015to2025.map(year => 
+      totalData[parseInt(year)]?.corrientes || 0
+    );
+    
+    const variationDataCorrientes = this.years2015to2025.map(year => 
+      totalData[parseInt(year)]?.variacion_anual || 0
+    );
+
+    this.chartData1 = {
+      labels: this.years2015to2025,
+      datasets: [
+        {
+          type: 'line',
+          label: 'Variación Anual',
+          data: variationDataCorrientes,
+          borderColor: '#0f4987',
+          fill: false,
+          yAxisID: 'y1'
+        },
+        {
+          type: 'bar',
+          label: 'SGP',
+          data: sgpDataCorrientes,
+          backgroundColor: '#FF8C00',
+          yAxisID: 'y'
+        }
+      ]
+    };
+
+    this.initChart3WithHistoricoData(totalData);
+  }
+
+  initializeChartsWithGeneratedData(): void {
+    const sgpDataCorrientes = this.generateGrowingData(20000, 85000, this.years2015to2025.length);
+    const variationDataCorrientes = this.generateVariationData(sgpDataCorrientes);
+
+    this.chartData1 = {
+      labels: this.years2015to2025,
+      datasets: [
+        {
+          type: 'line',
+          label: 'Variación Anual',
+          data: variationDataCorrientes,
+          borderColor: '#0f4987',
+          fill: false,
+          yAxisID: 'y1'
+        },
+        {
+          type: 'bar',
+          label: 'SGP',
+          data: sgpDataCorrientes,
+          backgroundColor: '#FF8C00',
+          yAxisID: 'y'
+        }
+      ]
+    };
+
+    this.initChart3();
+  }
+
+  initChart3WithHistoricoData(dataByYear: any): void {
+    const sgpData = this.years2015to2025.map(year => 
+      dataByYear[parseInt(year)]?.constantes || 0
+    );
+    
+    const variationData = this.years2015to2025.map(year => 
+      dataByYear[parseInt(year)]?.variacion_anual || 0
+    );
+
+    this.chartData3 = {
+      labels: this.years2015to2025,
+      datasets: [
+        {
+          type: 'line',
+          label: 'Variación Anual',
+          data: variationData,
+          borderColor: '#FF1493',
+          backgroundColor: 'rgba(255, 20, 147, 0.1)',
+          fill: false,
+          yAxisID: 'y1'
+        },
+        {
+          type: 'bar',
+          label: 'SGP',
+          data: sgpData,
+          backgroundColor: '#0f4987',
+          borderColor: '#007BFF',
+          yAxisID: 'y'
+        }        
+      ]
+    };
   }
 
   initChart3(): void {
