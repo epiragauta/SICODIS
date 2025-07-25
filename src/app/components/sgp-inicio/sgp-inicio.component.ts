@@ -13,8 +13,8 @@ import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
+import { Select, SelectChangeEvent } from 'primeng/select';
 import { Chart, registerables } from 'chart.js';
-import { TreemapController, TreemapElement } from 'chartjs-chart-treemap';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { SicodisApiService } from '../../services/sicodis-api.service';
 
@@ -34,14 +34,15 @@ import { SicodisApiService } from '../../services/sicodis-api.service';
       FloatLabel,      
       InfoPopupComponent,
       SplitButtonModule,
-      CardModule],
+      CardModule,
+      Select],
   templateUrl: './sgp-inicio.component.html',
   styleUrl: './sgp-inicio.component.scss'
 })
 export class SgpInicioComponent implements OnInit, AfterViewInit {
 
   constructor(private sicodisApiService: SicodisApiService) {
-    Chart.register(...registerables, TreemapController, TreemapElement, ChartDataLabels);
+    Chart.register(...registerables, ChartDataLabels);
   }
 
   fechaActualizacion = '10 de julio de 2025';
@@ -61,9 +62,8 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
     { v: 0, label: 'Asignaciones Especiales', idConcepto: '0204' }
   ]
 
-  treemapData: any;
-  treemapOptions: any;
-  treemapType: any = 'treemap';
+  donutData: any;
+  donutOptions: any;
 
   chartData1: any;
   chartData3: any;
@@ -71,38 +71,75 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
   barChartOptions: any;
   
   years2005to2025 = ['2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'];
-  years2015to2025 = ['2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'];
+  yearsRange = ['2002', '2003', '2004','2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'];
   
   historicoData: any[] = [];
+
+  // Select options and selected value
+  vigencias: any[] = [
+    { value: '2025', label: '2025' },
+    { value: '2024', label: '2024' },
+    { value: '2023', label: '2023' },
+    { value: '2022', label: '2022' },
+    { value: '2021', label: '2021' }
+  ];
+  selectedVigencia: any = { value: '2025', label: '2025' };
 
   recursos = [
     {
       titulo: 'Histórico SGP',
-      descripcion: 'Consulta y explora el detalla de la distribución histórica del SGP.',
+      descripcion: 'Consulta y explora el detalle histórico del sistema',
       boton: 'Consultar',
       link: '/comparador',
-      icon: 'assessment'
+      icon: 'timeline'
     },
     {
       titulo: 'SGP Documentos y anexos',
-      descripcion: 'Consulta y descarga los documentos y anexos oficiales de distribución.',
+      descripcion: 'Consulta los documentos y anexos publicados',
       boton: 'Consultar',
       link: '/detalle-entidad',
-      icon: 'receipt_long'
+      icon: 'description'
     },
     {
       titulo: 'Presupuesto',
-      descripcion: 'Consulta el detalle de la información presupuestal del SGP.',
+      descripcion: 'Consulta el detalle de la información presupuestal',
       boton: 'Consultar',
       link: '/documentos',
-      icon: 'style'
+      icon: 'account_balance_wallet'
     },
     {
       titulo: 'Comparativa',
-      descripcion: 'Consulta y compara la información distribuida entre vigencias y entidades.',
+      descripcion: 'Compara vigencias y entidades.',
       boton: 'Consultar',
       link: '/reportes',
-      icon: 'business_center'
+      icon: 'compare_arrows'
+    },{
+      titulo: 'Consulta de eficiencia',
+      descripcion: 'Consulta de eficiencia',
+      boton: 'Consultar',
+      link: '/reportes',
+      icon: 'trending_up'
+    },
+    {
+      titulo: 'Resguardos indígenas',
+      descripcion: 'Consulta los resguardos indígenas',
+      boton: 'Consultar',
+      link: '/reportes',
+      icon: 'groups'
+    },
+    {
+      titulo: 'Proyecciones SGP',
+      descripcion: 'Consulta las proyecciones del sistema',
+      boton: 'Consultar',
+      link: '/reportes',
+      icon: 'insights'
+    },
+    {
+      titulo: 'Proyecciones SGP',
+      descripcion: 'Consulta variables del sistema',
+      boton: 'Consultar',
+      link: '/reportes',
+      icon: 'insights'
     }
   ];
 
@@ -194,9 +231,9 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // Reinitialize treemap after view is initialized
+    // Reinitialize donut chart after view is initialized
     setTimeout(() => {
-      this.initializeTreemapData();
+      this.initializeDonutData();
     }, 100);
   }
 
@@ -235,7 +272,8 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
 
   loadSgpData(): void {
     console.log("loadSgpData...");
-    this.sicodisApiService.getSgpResumenGeneral(2025).subscribe({
+    const year = this.selectedVigencia?.value || 2025;
+    this.sicodisApiService.getSgpResumenGeneral(year).subscribe({
       next: (result: any) => {
         let resumen = result[0];
         this.fechaActualizacion = this.formatFecha(new Date(resumen.fecha_ultima_actualizacion));
@@ -246,7 +284,7 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
           avance: resumen.porcentaje_avance / 100
         };
         this.loadSgpParticipaciones();
-        this.loadSgpHistoricoData();
+        // this.loadSgpHistoricoData();
       },
       error: (error) => {
         console.error('Error loading SGP data:', error);
@@ -258,24 +296,25 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
           avance: 92.5
         };
         this.loadSgpParticipaciones();
-        this.loadSgpHistoricoData();
+        // this.loadSgpHistoricoData();
       }
     });
   }
 
   loadSgpParticipaciones(): void {
     console.log("loadSgpParticipaciones...");
-    this.sicodisApiService.getSgpResumenParticipaciones(2025, 'TODOS', 'TODOS').subscribe({
+    const year = this.selectedVigencia?.value || 2025;
+    this.sicodisApiService.getSgpResumenParticipaciones(year, 'TODOS', 'TODOS').subscribe({
       next: (result: any) => {
-        console.log('Participaciones data:', result);
+        //console.log('Participaciones data:', result);
         // Actualizar resumenParticipaciones con los datos del API
         this.updateResumenParticipaciones(result);
-        this.initializeTreemapData();
+        this.initializeDonutData();
       },
       error: (error) => {
         console.error('Error loading SGP participaciones:', error);
         // Usar datos por defecto en caso de error
-        this.initializeTreemapData();
+        this.initializeDonutData();
       }
     });
   }
@@ -297,7 +336,7 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
 
   loadSgpHistoricoData(): void {
     console.log("loadSgpHistoricoData...");
-    const aniosString = this.years2015to2025.join(',');
+    const aniosString = this.yearsRange.join(',');
     
     this.sicodisApiService.getSgpResumenHistorico({ anios: aniosString }).subscribe({
       next: (result: any) => {
@@ -330,16 +369,16 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
       return acc;
     }, {}); */
 
-    const sgpDataCorrientes = this.years2015to2025.map(year => 
+    const sgpDataCorrientes = this.yearsRange.map(year => 
       totalData[parseInt(year)]?.corrientes || 0
     );
     
-    const variationDataCorrientes = this.years2015to2025.map(year => 
+    const variationDataCorrientes = this.yearsRange.map(year => 
       totalData[parseInt(year)]?.variacion_anual || 0
     );
 
     this.chartData1 = {
-      labels: this.years2015to2025,
+      labels: this.yearsRange,
       datasets: [
         {
           type: 'line',
@@ -363,11 +402,11 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
   }
 
   initializeChartsWithGeneratedData(): void {
-    const sgpDataCorrientes = this.generateGrowingData(20000, 85000, this.years2015to2025.length);
+    const sgpDataCorrientes = this.generateGrowingData(20000, 85000, this.yearsRange.length);
     const variationDataCorrientes = this.generateVariationData(sgpDataCorrientes);
 
     this.chartData1 = {
-      labels: this.years2015to2025,
+      labels: this.yearsRange,
       datasets: [
         {
           type: 'line',
@@ -391,16 +430,16 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
   }
 
   initChart3WithHistoricoData(dataByYear: any): void {
-    const sgpData = this.years2015to2025.map(year => 
+    const sgpData = this.yearsRange.map(year => 
       dataByYear[parseInt(year)]?.constantes || 0
     );
     
-    const variationData = this.years2015to2025.map(year => 
+    const variationData = this.yearsRange.map(year => 
       dataByYear[parseInt(year)]?.variacion_anual || 0
     );
 
     this.chartData3 = {
-      labels: this.years2015to2025,
+      labels: this.yearsRange,
       datasets: [
         {
           type: 'line',
@@ -451,81 +490,78 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
     };
   }
 
-  initializeTreemapData(): void {
+  initializeDonutData(): void {
     // Usar datos de resumenParticipaciones en lugar de datos hardcodeados
     const rawData = this.resumenParticipaciones.filter((item: any) => item.v > 0);
 
-    const dataWithPercentages = rawData.map((item: any) => ({
-      v: item.v,
-      label: item.label,
-      percentage: Math.round((item.v / this.cifras.presupuesto) * 100 * 100) / 100
-    }));
+    const labels = rawData.map((item: any) => item.label);
+    const data = rawData.map((item: any) => item.v);
+    
+    // Colores especificados: #156082, #e97132, #196b24, #196b24, #a02b93
+    const colors = ['#156082', '#e97132', '#196b24', '#0c9bd3', '#a02b93'];
 
-    this.treemapData = {
+    this.donutData = {
+      labels: labels,
       datasets: [
         {
           label: 'Distribución SGP',
-          data: dataWithPercentages,
-          key: 'v',
-          groups: ['label'],
-          spacing: 0.5,
-          borderWidth: 0.1,
+          data: data,
+          backgroundColor: colors,
           borderColor: '#ffffff',
-          backgroundColor: (context: any) => {
-            const colors = [ '#66BB6A', '#b4e5a2', '#d9f2d0', '#c2f1c8', '#84e291'  ];
-            return colors[context.dataIndex] || '#42A5F5';
-          }
+          borderWidth: 2
         }
       ]
     };
 
-    this.treemapOptions = {
+    this.donutOptions = {
       responsive: true,
       maintainAspectRatio: false,
-      aspectRatio: 0.72,
-      interaction: {
-        intersect: false
-      },
+      aspectRatio: 0.7,
       plugins: {
-        legend: { 
-          display: false
+        legend: {
+          display: true,
+          position: 'bottom',
+          labels: {
+            padding: 20,
+            usePointStyle: true,
+            font: {
+              size: 12
+            }
+          }
         },
         tooltip: {
           callbacks: {
-            title: (context: any) => {
-              return context[0].raw._data.label || 'SGP';
-            },
             label: (context: any) => {
-              //console.log(context);
+              const value = context.parsed;
               const formattedValue = new Intl.NumberFormat('es-CO', { 
                 minimumFractionDigits: 0, 
                 maximumFractionDigits: 0 
-              }).format(context.raw.v);
-              return [`${formattedValue}`, `${context.raw._data.children[0].percentage}%`];
+              }).format(value);
+              return `${context.label}: ${formattedValue}`;
             }
           }
         },
         datalabels: {
           display: true,
-          anchor: 'center',
-          align: 'center',
-          color: '#363333ff',
+          color: '#ffffff',
           font: {
-            size: 12,            
+            size: 14,
+            weight: 'bold'
           },
-          textAlign: 'center',
           formatter: (value: any, context: any) => {
-            const data = context.chart.data.datasets[context.datasetIndex].data[context.dataIndex];
-            const label = data._data.label.replace(/ /g, '\n');
-            const formattedValue = new Intl.NumberFormat('es-CO', { 
-              minimumFractionDigits: 0, 
-              maximumFractionDigits: 0 
-            }).format(data.v);
-            //console.log("datasetIndex: ", context.dataIndex, value.g, context.dataset.tree[context.dataIndex]);
-            return `${label}\n${formattedValue}\n${context.dataset.tree.filter((e:any) => e.label == value.g)[0].percentage}%`;
+            const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
+            const percentage = Math.round((value / total) * 100 * 100) / 100;
+            return `${percentage}%`;
           }
         }
       }
     };
+  }
+
+  onVigenciaChange(event: SelectChangeEvent): void {
+    console.log('Vigencia changed:', event.value);
+    this.selectedVigencia = event.value;
+    // Reload data for the selected year
+    this.loadSgpData();
   }
 }

@@ -299,37 +299,37 @@
   </div>
 
   <!-- Información adicional del registro seleccionado -->
-  <!-- <div class="registro-detalle" *ngIf="registrosFiltrados.length > 0">
+  <div class="registro-detalle" *ngIf="showDetailInfo && selectedBeneficiario.length > 0">
     <mat-card class="info-card" style="height: auto;">
       <mat-card-header>
         <mat-card-title class="card-title card-main">Detalle del Registro Seleccionado</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <div style="display: table-row;width: 100%;;">
-          <div *ngFor="let registro of registrosFiltrados">
+          <div *ngFor="let registro of (selectedBeneficiario.length > 1 ? distribucionTotalMultiple : distribucionTotal)">
             <div class="detail-grid">
               <div class="detail-item">
-                <strong>Fuente:</strong> {{registro['fuente'] || 'N/A'}}
+                <strong>Fuente:</strong> {{registro.fuente_principal || 'N/A'}}
               </div>
               <div class="detail-item">
-                <strong>Beneficiario:</strong> {{registro['beneficiario'] || 'N/A'}}
+                <strong>Beneficiario:</strong> {{registro.beneficiario_seleccionado || registro.beneficiario || selectedBeneficiario[0]?.label || 'N/A'}}
               </div>
               <div class="detail-item">
                 <strong>Presupuesto disponible:</strong> 
                 <div style="text-align: right;">
-                  {{formatMillions2(registro['apropiacion-vigente-disponible'], {includeMillionSuffix: false}) || 'N/A'}}
+                  {{formatMillions2(registro.apropiacion_vigente_disponible, {includeMillionSuffix: false}) || 'N/A'}}
                 </div>            
               </div>
               <div class="detail-item">
                 <strong>Compromisos:</strong> 
                 <div style="text-align:right;">
-                  {{formatMillions2(registro['compromisos'], {includeMillionSuffix: false}) || 'N/A'}}
+                  {{formatMillions2(registro.compromisos, {includeMillionSuffix: false}) || 'N/A'}}
                 </div>            
               </div>
               <div class="detail-item">
                 <strong>Saldo sin afectación:</strong> 
                 <div style="text-align:right;">
-                  {{formatMillions2(registro['saldo-sin-afectacion'], {includeMillionSuffix: false}) || 'N/A'}}
+                  {{formatMillions2(registro.saldo_sin_afectacion, {includeMillionSuffix: false}) || 'N/A'}}
                 </div>            
               </div>
             </div>
@@ -341,6 +341,6 @@
         <strong>Cifras en pesos corrientes.</strong>        
       </p>
     </mat-card>    
-  </div> -->
+  </div>
   
 </div>

@@ -15,21 +15,7 @@
   display: flex;
   margin-bottom: .5rem;
   border-radius: 8px;
-
-  .gradient-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 65%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      #f1f2f3 0%,
-      rgba(255, 255, 255, 0.01) 100%
-    );
-    z-index: 1;
-  }
-
+  
   .banner-content {
     position: relative;
     margin-top: 1rem;
@@ -39,20 +25,20 @@
         
     h2 {
       font-size: 1.5rem;
-      margin-top: 3.75rem;
+      margin-top: 2.25rem;
       margin-bottom: 2.5rem;
       color: #e4e6eb;
       font-weight: bold;
       text-shadow: 1px 1px 3px rgba(245, 245, 247, 0.92);
-      color: #2062aa;
+      color: #103d6e;
     }
 
     p {
         font-size: 1.25rem;
-        margin-bottom: 2rem;
-        color: #fff;     
-        text-shadow: 1px 1px 3px rgba(154, 154, 168, 0.92);   
-        width: 92%;
+        margin-bottom: 1rem;
+        color: #cbdbec;     
+        text-shadow: 1px 1px 3px rgba(239, 239, 241, 0.92);   
+        width: 100%;
         font-weight: 500;
       }
   }
@@ -83,11 +69,15 @@
   align-items: stretch;
 
   .metrics-column {
-    flex: 1;
-    width: 50%;
+    flex: 1 1 calc(50% - 1rem);
+    max-width: calc(50% - 1rem);
     display: flex;
     flex-direction: column;
     gap: 1rem;
+
+    .vigencia-selector{
+      margin: 0 auto;
+    }
 
     .metric-item {
       border-radius: 12px;
@@ -122,9 +112,9 @@
     }
   }
 
-  .chart-treemap {
-    flex: 1;
-    width: 50%;
+  .chart-donut {
+    flex: 1 1 calc(50% - 1rem);
+    max-width: calc(50% - 1rem);
     height: auto;
     min-height: 100%;
     background: #ffffff;
@@ -135,7 +125,7 @@
     flex-direction: column;
     
     .chart-title {
-      color: #28a745;
+      color: #4837a7;
       font-size: 1.2rem;
       font-weight: bold;
       margin-bottom: 1rem;
@@ -228,24 +218,27 @@
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 20px;
   align-items: stretch;
+  width: 60%;
+  margin: 0 auto;
 }
 
 .herramienta-card {
-  background-color: #0051a3;
+  background-color: #3366cc;
   color: white;
   border-radius: 8px;
-  padding: 9%;
+  padding: 20px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   gap: 15px;
   height: 100%;
-  min-height: 200px;
-  text-align: center;
+  min-height: 80px;
+  text-align: left;
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #003d7a;
+    background-color: #9fc8f1;
+    color: rgb(70, 127, 196);
   }
 
   .card-icon-placeholder {
@@ -253,56 +246,47 @@
     flex-shrink: 0;
     
     .sgp-icon {
-      width: 64px;
-      height: 64px;
-      font-size: 64px;
+      width: 58px;
+      height: 58px;
+      font-size: 58px;
     }
   }
 
   .card-content {
     flex-grow: 1;
-    
+    cursor: pointer;
     h3 {
       margin-top: 0;
       margin-bottom: 5px;
       font-size: 1.3em;
-      padding-top: 10px;
-      padding-bottom: 10px;
     }
     
     p {
       margin: 0;
-      font-size: 1em;
+      font-size: 1.1em;
       opacity: 0.9;
-      padding-bottom: 10px;
+      line-height: 1.4;      
     }
   }
 
-  button {
-    padding: 8px 15px;
-    background-color: #ffffff;
-    color: #0051a3;
-    border: 1px solid #0051a3;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
+  mat-icon {
+    color: #ffffff;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
     flex-shrink: 0;
-    transition: background-color 0.3s ease;
-
-    &:hover {
-      background-color: #f0f0f0;
-    }
+    margin-left: auto;
   }
 }
 
 // Responsive design
 @media (max-width: 1199px) {
   .herramienta-card {
+    display: grid;
     .card-content {
       h3 {
         font-size: 1.1em;
-      }
-      
+      }      
       p {
         font-size: 0.9em;
       }

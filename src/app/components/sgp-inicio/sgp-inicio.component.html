@@ -19,8 +19,24 @@
 
   <!-- Sección B + C: Tarjetas de cifras (izquierda) y Treemap (derecha) -->
   <div class="main-grid">
+    
     <!-- C: Tarjetas de presentación de cifras -->
     <div class="metrics-column">
+      <!-- Selector de vigencia -->
+      <div class="vigencia-selector">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select 
+            id="vigencia" 
+            [options]="vigencias" 
+            inputId="vigenciaSelect" 
+            [(ngModel)]="selectedVigencia"
+            (onChange)="onVigenciaChange($event)"
+            optionLabel="label" 
+            placeholder="Vigencia">
+          </p-select>
+          <label for="vigenciaSelect">Vigencia</label>
+        </p-floatlabel>
+      </div>
       <mat-card class="metric-item">
         <mat-card-header>
           <mat-card-title class="card-title card-main">Presupuesto SGP</mat-card-title>
@@ -31,7 +47,7 @@
       </mat-card>
       <mat-card class="metric-item">
         <mat-card-header>
-          <mat-card-title class="card-title card-main">Recursos Distribuido</mat-card-title>
+          <mat-card-title class="card-title card-main">Recursos Distribuidos</mat-card-title>
         </mat-card-header>
         <mat-card-content>
           <div class="metric-value">{{ cifras.distribuido | numberFormat }}</div>
@@ -50,14 +66,15 @@
           <mat-card-title class="card-title card-main">Avance Distribución</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <div class="metric-value">{{ cifras.avance | percent:'1.0-2'}}%</div>
+          <div class="metric-value">{{ cifras.avance | percent:'1.0-2'}}</div>
         </mat-card-content>
       </mat-card>
     </div>
 
-    <!-- B: Gráfico Treemap -->
-    <div class="chart-treemap">
-      <p-chart [type]="treemapType" [data]="treemapData" [options]="treemapOptions"></p-chart>
+    <!-- B: Gráfico Donut -->
+    <div class="chart-donut">
+      <h1 class="chart-title">Avance en la distribución SGP</h1>
+      <p-chart type="doughnut" [data]="donutData" [options]="donutOptions"></p-chart>
     </div>
   </div>
 
@@ -65,7 +82,7 @@
   <div class="final-notes-container">
     <strong>NOTAS</strong>
     <p class="final-note">
-      <strong>(1))</strong> Cifras en pesos corrientes.
+      <strong>(1)</strong> Cifras en pesos corrientes.
     </p>
     <p class="final-note">
       <strong>(2)</strong> Los recursos pendientes por distribuir corresponden a i) la participación para educación 
@@ -75,7 +92,7 @@
   </div>
 
   <!-- Sección E: Gráficas de barras -->
-  <div class="bar-charts">
+  <div class="bar-charts" style="display: none;">
     <div class="chart-container">
       <p-card>
         <ng-template pTemplate="header">
@@ -103,7 +120,7 @@
     <div class="final-notes-container">
       <strong>NOTA</strong>
       <p class="final-note">
-        <strong>(1))</strong> Cifras en pesos constantes 2025-
+        <strong>(1)</strong> Cifras en pesos constantes 2025.
       </p>      
     </div>
 
@@ -118,10 +135,9 @@
           <mat-icon style="color: #fff;" class="mr-2 sgp-icon">{{ recurso.icon }}</mat-icon>
         </div>
         <div class="card-content">
-          <h3>{{ recurso.titulo }}</h3>
           <p>{{ recurso.descripcion }}</p>
         </div>
-        <button type="button">{{ recurso.boton }}</button>
+        <mat-icon style="font-size: 32px;">chevron_right</mat-icon>        
       </div>
     </div>
   </div>
