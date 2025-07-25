@@ -10,7 +10,7 @@ export interface DiccionarioItem {
 }
 
 export interface SiglasItem {
-  siglas: string;
+  sigla: string;
   descripcion: string;
 }
 
