@@ -1599,7 +1599,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       'iac_corriente',
       'iac_iInformadas',
       'caja_total',
-      'cpd',
+      'cdp',
       'compromisos',
       'pagos',
       'saldo_por_comprometer',
@@ -1690,7 +1690,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
       // Actualizar datos de ejecución
       this.ejecucionData = {
-        cdp: convertirANumero(this.registroActual['cpd']) / 1000000,
+        cdp: convertirANumero(this.registroActual['cdp']) / 1000000,
         compromiso: convertirANumero(this.registroActual['compromisos']) / 1000000,
         pagos: convertirANumero(this.registroActual['pagos']) / 1000000,
         recursoComprometer: convertirANumero(this.registroActual['saldo_sin_afectacion']) / 1000000
@@ -1831,7 +1831,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
       // Datos para gráfico de barras (Ejecución vs Presupuesto)
       const presupuestoTotal = convertirANumero(this.registroActual['apropiacion_vigente']);
-      const cdpEjecutado = convertirANumero(this.registroActual['cpd']);
+      const cdpEjecutado = convertirANumero(this.registroActual['cdp']);
       const compromisosEjecutados = convertirANumero(this.registroActual['compromisos']);
       const pagosEjecutados = convertirANumero(this.registroActual['pagos']);
 
@@ -1862,7 +1862,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       };
 
       // Actualizar gráfico de barras horizontales (Disponibilidad vs Ejecutado)
-      const cdp = convertirANumero(this.registroActual['cpd']) / 1000000; // En millones
+      const cdp = convertirANumero(this.registroActual['cdp']) / 1000000; // En millones
       let pagos = convertirANumero(this.registroActual['pagos']) / 1000000; // En millones
       const compromisoSinAfectacion = (convertirANumero(this.registroActual['compromisos']) / 1000000) - pagos;
       const saldoSinAfectacion = convertirANumero(this.registroActual['saldo_sin_afectacion']) / 1000000; // En millones

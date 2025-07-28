@@ -57,7 +57,7 @@ export interface DistribucionTotal {
   iac_iInformadas: number;
   avance_iac_corriente: number;
   caja_total: number;
-  cpd: number;
+  cdp: number;
   compromisos: number;
   pagos: number;
   saldo_por_comprometer: number;
