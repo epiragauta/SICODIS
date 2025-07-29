@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -140,6 +140,18 @@ export class SicodisApiService {
 
   constructor(private http: HttpClient) {}
 
+  /**
+   * Genera headers para evitar caché del navegador
+   * @returns HttpHeaders con configuración anti-caché
+   */
+  private getNoCacheHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    });
+  }
+
   // ========== SGR Funcionamiento Methods ==========
 
   /**
@@ -150,9 +162,12 @@ export class SicodisApiService {
     const siglasUrl = `${this.baseUrl}/sgrfun/siglas`;
     const diccionarioUrl = `${this.baseUrl}/sgrfun/diccionario`;
 
+    // Headers para evitar caché del navegador
+    const httpOptions = { headers: this.getNoCacheHeaders() };
+
     return forkJoin({
-      siglas: this.http.get<SiglasItem[]>(siglasUrl),
-      diccionario: this.http.get<DiccionarioItem[]>(diccionarioUrl)
+      siglas: this.http.get<SiglasItem[]>(siglasUrl, httpOptions),
+      diccionario: this.http.get<DiccionarioItem[]>(diccionarioUrl, httpOptions)
     }).pipe(
       map(({ siglas, diccionario }) => ({
         diccionario: {
@@ -171,7 +186,8 @@ export class SicodisApiService {
    */
   getSiglasFuncionamiento(): Observable<SiglasItem[]> {
     const url = `${this.baseUrl}/sgrfun/siglas`;
-    return this.http.get<SiglasItem[]>(url);
+    const httpOptions = { headers: this.getNoCacheHeaders() };
+    return this.http.get<SiglasItem[]>(url, httpOptions);
   }
 
   /**
@@ -180,7 +196,8 @@ export class SicodisApiService {
    */
   getDiccionarioFuncionamiento(): Observable<DiccionarioItem[]> {
     const url = `${this.baseUrl}/sgrfun/diccionario`;
-    return this.http.get<DiccionarioItem[]>(url);
+    const httpOptions = { headers: this.getNoCacheHeaders() };
+    return this.http.get<DiccionarioItem[]>(url, httpOptions);
   }
 
   /**
@@ -248,7 +265,13 @@ export class SicodisApiService {
       if (params.tipoEntidad) httpParams = httpParams.set('tipoEntidad', params.tipoEntidad);
     }
 
-    return this.http.get<DistribucionTotal[]>(url, { params: httpParams });
+    // Combinar headers anti-caché con parámetros
+    const httpOptions = { 
+      headers: this.getNoCacheHeaders(),
+      params: httpParams 
+    };
+
+    return this.http.get<DistribucionTotal[]>(url, httpOptions);
   }
 
   // ========== SGR General Methods ==========
