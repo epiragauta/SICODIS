@@ -18,7 +18,8 @@
   }
 
   // Estilos para la tabla de PrimeNG
-  .p-datatable {
+  .p-datatable,
+  .p-treetable {
     font-size: 0.8rem;
     
     .p-datatable-header {
@@ -27,7 +28,8 @@
       padding: 0.5rem;
     }
 
-    .p-datatable-thead > tr > th {
+    .p-datatable-thead > tr > th,
+    .p-treetable-thead > tr > th {
       background: var(--p-surface-100);
       color: var(--p-text-color);
       font-weight: 600;
@@ -36,13 +38,15 @@
       font-size: 0.8rem;
     }
 
-    .p-datatable-tbody > tr > td {
+    .p-datatable-tbody > tr > td,
+    .p-treetable-tbody > tr > td {
       padding: 0.5rem 0.75rem !important;
       font-size: 0.8rem;
       vertical-align: middle;
     }
 
-    .p-datatable-tbody > tr {
+    .p-datatable-tbody > tr,
+    .p-treetable-tbody > tr {
       &:nth-child(even) {
         background: var(--p-surface-50);
       }
@@ -181,7 +185,7 @@
     position: relative;
     width: 100%;
     height: 320px;
-    background-image: url('/assets/img/banner-sgp.jpg');
+    background-image: url('/assets/img/sgp/sgp-historico.jpg');
     background-size: cover;
     background-position: center;
     overflow: hidden;
@@ -197,7 +201,7 @@
       height: 100%;
       background: linear-gradient(
         90deg,
-        #404a55 0%,
+        #475c72d1 0%,
         rgba(255, 255, 255, 0.01) 100%
       );
       z-index: 1;
@@ -230,24 +234,17 @@
     }
   }
 
-// Secci�n principal con filtros y tabla
-.main-content-section {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  margin-bottom: .75rem;
+// Secciones organizadas verticalmente
+// (Removido main-content-section ya que ahora son secciones independientes)
 
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
-}
-
-// Secci�n de filtros (lado izquierdo)
+// Secci�n de filtros - Primera fila completa
 .filters-section {
   background: var(--p-surface-card);
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  width: 100%;
 
   .filters-panel {
     margin-bottom: 1.5rem;
@@ -257,18 +254,19 @@
       flex-wrap: wrap;
       gap: 1rem;
       align-items: flex-end;
+      justify-content: flex-start;
 
       .p-field {
-        flex: 1;
-        min-width: 140px;
-        max-width: 190px;
+        flex: 0 1 auto;
+        min-width: 200px;
+        max-width: 250px;
         margin-bottom: 0;
 
         &.vigencia-select,
         &.department-select,
         &.town-select {
-          min-width: 140px;
-          max-width: 190px;
+          min-width: 200px;
+          max-width: 250px;
         }
 
         .p-floatlabel {
@@ -288,38 +286,63 @@
     }
   }
 
-  // Grid de botones 2x2
-  .buttons-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-
-    .p-button {
-      height: 42px;
-      padding: 0 1rem;
-      font-size: 0.875rem;
-    }
-
-    @media (max-width: 480px) {
-      grid-template-columns: 1fr;
-    }
-  }
 }
 
-// Secci�n de tabla (lado derecho)
+// Secci�n de tabla - Segunda fila completa
 .table-section {
   background: var(--p-surface-card);
   border-radius: 8px;
   padding: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  width: 100%;
 
   .card {
-    .historico-table {
+    .historico-table,
+    .historico-treetable {
       font-size: 0.8rem;
       
-      .p-datatable-wrapper {
+      .p-datatable-wrapper,
+      .p-treetable-wrapper {
         border-radius: 6px;
         overflow: hidden;
+      }
+    }
+
+    // Notas de la tabla
+    .table-notes {
+      margin: 1rem 0;
+      padding: 1rem;
+      background: var(--p-surface-50);
+      border-radius: 6px;
+      border-left: 4px solid var(--p-primary-color);
+      
+      h4 {
+        margin: 0 0 0.5rem 0;
+        color: var(--p-primary-color);
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+      
+      p {
+        margin: 0.25rem 0;
+        font-size: 0.8rem;
+        color: var(--p-text-color);
+        line-height: 1.4;
+      }
+    }
+
+    // Botón de exportar centrado en la tabla
+    .buttons-grid {
+      display: flex;
+      justify-content: center;
+      margin-top: 1rem;
+      
+      .p-button {
+        height: 42px;
+        padding: 0 1.5rem;
+        font-size: 0.875rem;
+        min-width: 160px;
       }
     }
   }
@@ -395,19 +418,27 @@
 // Responsive
 @media (max-width: 768px) {
   .filters-section {
+    padding: 1rem;
+    
     .filters-panel .filters-row {
       flex-direction: column;
       
       .p-field {
         min-width: 100%;
+        max-width: 100%;
         
         &.vigencia-select,
         &.department-select,
         &.town-select {
           min-width: 100%;
+          max-width: 100%;
         }
       }
     }
+  }
+
+  .table-section {
+    padding: 1rem;
   }
 
   .graphics-section {
@@ -431,14 +462,11 @@
     padding: 0.5rem;
   }
 
-  .main-content-section {
-    gap: 1rem;
-  }
-
   .filters-section,
   .table-section,
   .graphics-section {
-    padding: 1rem;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
   }
 
   .graphics-section {

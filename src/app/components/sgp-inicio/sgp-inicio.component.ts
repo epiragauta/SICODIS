@@ -257,6 +257,31 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
     return variations;
   }
 
+  /**
+   * Calcula la variación anual porcentual entre años consecutivos
+   * @param baseData Array de datos base para calcular variaciones
+   * @returns Array de variaciones porcentuales
+   */
+  calculateVariationData(baseData: number[]): number[] {
+    const variations: number[] = [0]; // Primer valor nulo (no hay año anterior)
+    
+    for (let i = 1; i < baseData.length; i++) {
+      const prevValue = baseData[i-1];
+      const currentValue = baseData[i];
+      
+      if (prevValue === 0 || currentValue === 0) {
+        // Si algún valor es 0, no se puede calcular variación válida
+        variations.push(0);
+      } else {
+        const variation = ((currentValue - prevValue) / prevValue) * 100;
+        // Redondear a 2 decimales
+        variations.push(Math.round(variation * 100) / 100);
+      }
+    }
+    
+    return variations;
+  }
+
   formatFecha(fecha: Date): string {
     const meses = [
       'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
@@ -284,7 +309,7 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
           avance: resumen.porcentaje_avance / 100
         };
         this.loadSgpParticipaciones();
-        // this.loadSgpHistoricoData();
+        this.loadSgpHistoricoData();
       },
       error: (error) => {
         console.error('Error loading SGP data:', error);
@@ -360,22 +385,16 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
         totalData[item.annio] = {corrientes: item.total_corrientes, constantes: item.total_constantes};        
       }
     });
-    
-    /* const dataByYear = totalData.reduce((acc: any, item: any) => {
-      acc[item.anio] = {
-        total_corrientes: item.total_corrientes,
-        variacion_anual: item.variacion_anual
-      };
-      return acc;
-    }, {}); */
 
     const sgpDataCorrientes = this.yearsRange.map(year => 
       totalData[parseInt(year)]?.corrientes || 0
     );
     
-    const variationDataCorrientes = this.yearsRange.map(year => 
-      totalData[parseInt(year)]?.variacion_anual || 0
-    );
+    // Calcular la variación anual basada en los datos reales
+    const variationDataCorrientes = this.calculateVariationData(sgpDataCorrientes);
+
+    console.log('SGP Data Corrientes:', sgpDataCorrientes);
+    console.log('Variation Data Corrientes:', variationDataCorrientes);
 
     this.chartData1 = {
       labels: this.yearsRange,
@@ -434,9 +453,11 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
       dataByYear[parseInt(year)]?.constantes || 0
     );
     
-    const variationData = this.yearsRange.map(year => 
-      dataByYear[parseInt(year)]?.variacion_anual || 0
-    );
+    // Calcular la variación anual basada en los datos reales de precios constantes
+    const variationData = this.calculateVariationData(sgpData);
+
+    console.log('SGP Data Constantes:', sgpData);
+    console.log('Variation Data Constantes:', variationData);
 
     this.chartData3 = {
       labels: this.yearsRange,

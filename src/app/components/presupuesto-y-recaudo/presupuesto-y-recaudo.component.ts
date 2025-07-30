@@ -3,17 +3,20 @@ import { CommonModule } from '@angular/common';
 //import { HttpClient } from '@angular/common/http';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
+
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
+
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
 import { TreeTableModule } from 'primeng/treetable';
 import { ButtonModule } from 'primeng/button';
 import { SplitButtonModule } from 'primeng/splitbutton';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { FormsModule } from '@angular/forms';
 import { Select } from 'primeng/select';
 import { FloatLabel } from 'primeng/floatlabel';
 import { TreeNode, MenuItem } from 'primeng/api';
+
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { departamentos } from '../../data/departamentos';
 import { territorialEntities } from '../../data/territorial-entities';

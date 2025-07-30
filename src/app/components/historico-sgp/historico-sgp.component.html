@@ -11,74 +11,67 @@
     </div>
   </div>
   
-  <!-- Responsive 50/50 horizontal section -->
-  <div class="main-content-section">
-    <!-- Left side: Filters -->
-    <div class="filters-section">
-      <!-- Panel de filtros usando PrimeNG -->
-      <div class="filters-panel">
-        <div class="filters-row">
-          <!-- Vigencia a consultar (multi-select) -->
-          <div class="p-field vigencia-select">
-            <p-floatlabel class="w-full md:w-56" variant="on">
-              <p-multiselect 
-                id="vigencia" 
-                [options]="infoResume" 
-                inputId="vigenciaSelect" 
-                [(ngModel)]="selectedYears"
-                (onChange)="onVigenciaChange($event)"
-                optionValue="year"
-                optionLabel="year" 
-                [maxSelectedLabels]="2"
-                selectedItemsLabel="{0} vigencias seleccionadas">
-              </p-multiselect>
-              <label for="vigenciaSelect">Vigencia</label>
-            </p-floatlabel>
-          </div>
-
-          <!-- Departamento -->
-          <div class="p-field department-select">
-            <p-floatlabel class="w-full md:w-56" variant="on">
-              <p-select 
-                id="departamento" 
-                [options]="departments" 
-                inputId="departamentoSelect"
-                [(ngModel)]="departmentSelected"
-                (onChange)="onDepartmentChange($event)"
-                optionValue="codigo"
-                optionLabel="nombre" 
-                placeholder="Departamento">
-              </p-select>
-              <label for="departamentoSelect">Departamento</label>
-            </p-floatlabel>
-          </div>
-
-          <!-- Municipio -->
-          <div class="p-field town-select">
-            <p-floatlabel class="w-full md:w-56" variant="on">
-              <p-select 
-                id="municipio" 
-                [options]="towns" 
-                inputId="municipioSelect"
-                [(ngModel)]="townSelected"
-                (onChange)="onTownChange($event)"
-                optionValue="value"
-                optionLabel="name" 
-                placeholder="Municipio">
-              </p-select>
-              <label for="municipioSelect">Municipio</label>
-            </p-floatlabel>
-          </div>
+  <!-- Filters section - Primera fila -->
+  <div class="filters-section">
+    <!-- Panel de filtros usando PrimeNG -->
+    <div class="filters-panel">
+      <div class="filters-row">
+        <!-- Vigencia a consultar (multi-select) -->
+        <div class="p-field vigencia-select">
+          <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-multiselect 
+              id="vigencia" 
+              [options]="infoResume" 
+              inputId="vigenciaSelect" 
+              [(ngModel)]="selectedYears"
+              (onChange)="onVigenciaChange($event)"
+              optionValue="year"
+              optionLabel="year" 
+              [maxSelectedLabels]="2"
+              selectedItemsLabel="{0} vigencias seleccionadas">
+            </p-multiselect>
+            <label for="vigenciaSelect">Vigencia</label>
+          </p-floatlabel>
         </div>
-      </div>
 
-      <!-- Buttons grid 2x2 -->
-      <div class="buttons-grid">
+        <!-- Departamento -->
+        <div class="p-field department-select">
+          <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-select 
+              id="departamento" 
+              [options]="departments" 
+              inputId="departamentoSelect"
+              [(ngModel)]="departmentSelected"
+              (onChange)="onDepartmentChange($event)"
+              optionValue="codigo"
+              optionLabel="nombre" 
+              placeholder="Departamento">
+            </p-select>
+            <label for="departamentoSelect">Departamento</label>
+          </p-floatlabel>
+        </div>
+
+        <!-- Municipio -->
+        <div class="p-field town-select">
+          <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-select 
+              id="municipio" 
+              [options]="towns" 
+              inputId="municipioSelect"
+              [(ngModel)]="townSelected"
+              (onChange)="onTownChange($event)"
+              optionValue="value"
+              optionLabel="name" 
+              placeholder="Municipio">
+            </p-select>
+            <label for="municipioSelect">Municipio</label>
+          </p-floatlabel>
+        </div>
         <button pButton type="button" 
-                icon="pi pi-filter" 
-                label="Aplicar Filtros" 
-                class="p-button-primary"
-                (click)="applyFilters()">
+              icon="pi pi-filter" 
+              label="Aplicar Filtros" 
+              class="p-button-primary"
+              (click)="applyFilters()">
         </button>
         <button pButton type="button" 
                 icon="pi pi-times" 
@@ -86,53 +79,73 @@
                 class="p-button-secondary"
                 (click)="clearFilters()">
         </button>
+      </div>
+    </div>    
+  </div>
+
+  <!-- Table section - Segunda fila -->
+  <div class="table-section">
+    <div class="card">
+      <!-- Debug info -->
+      <div *ngIf="treeTableData.length === 0" style="padding: 1rem; text-align: center; color: #666;">
+        <p>No hay datos para mostrar. Años seleccionados: {{ selectedYears.join(', ') }}</p>
+        <p>Total de nodos: {{ treeTableData.length }}</p>
+      </div>
+      
+      <p-treetable [value]="treeTableData" 
+                   dataKey="key" 
+                   [scrollable]="true"
+                   [scrollHeight]="treeTableData && treeTableData.length > 5 ? '400px' : 'auto'"
+                   [styleClass]="'historico-treetable'"
+                   *ngIf="treeTableData.length > 0">
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="table-header concept-header">Concepto</th>
+            <th *ngFor="let year of selectedYears" 
+                class="table-header vigencia-header">
+              Vigencia ({{ year }})
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+          <tr>
+            <td class="concept-cell">
+              <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+              <strong>{{ rowData.concepto }}</strong>
+            </td>
+            <td *ngFor="let year of selectedYears" 
+                class="vigencia-cell">
+              {{ rowData['vigencia_' + year] | numberFormat }}
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <tr class="total-row">
+            <td class="concept-cell"><strong>Total General</strong></td>
+            <td *ngFor="let year of selectedYears" 
+                class="vigencia-cell">
+              <strong>{{ getTreeTableYearTotal(year) | numberFormat }}</strong>
+            </td>
+          </tr>
+        </ng-template>
+      </p-treetable>
+      
+      <!-- Notas -->
+      <div class="table-notes">
+        <h4>NOTAS</h4>
+        <p>(1) Cifras en pesos corrientes.</p>
+        <p>(2) Los datos que se presentan para los años 2002-2015, corresponden a las distribuciones efectuadas mediante Documentos CONPES de su respectiva vigencia; para los años 2015 en adelante, corresponden a las distribuciones efectuadas mediante Documentos de Distribución de su respectiva vigencia.</p>
+      </div>
+      
+      <!-- Buttons grid -->
+      <div class="buttons-grid">
+        
         <button pButton type="button" 
                 icon="pi pi-file-excel" 
                 label="Exportar a Excel" 
                 class="p-button-success"
                 (click)="exportToExcel()">
         </button>
-        <button pButton type="button" 
-                icon="pi pi-file-pdf" 
-                label="Exportar a PDF" 
-                class="p-button-danger"
-                (click)="exportToPDF()">
-        </button>
-      </div>
-    </div>
-
-    <!-- Right side: Table -->
-    <div class="table-section">
-      <div class="card">
-        <p-table [value]="tableData" 
-                 dataKey="year" 
-                 stripedRows 
-                 [tableStyle]="{ 'min-width': '20rem' }"
-                 [scrollable]="true"
-                 [scrollHeight]="tableData && tableData.length > 4 ? '200px' : 'auto'"
-                 [styleClass]="'historico-table'">
-          <ng-template #header>
-            <tr>
-              <th pSortableColumn="year" class="table-header">Año<p-sortIcon field="year" /></th>
-              <th pSortableColumn="source" class="table-header">Fuente<p-sortIcon field="source" /></th>
-              <th pSortableColumn="value" class="table-header">Valor($)<p-sortIcon field="value" /></th>
-            </tr>
-          </ng-template>
-          <ng-template #body let-data>
-            <tr>
-              <td>{{ data.year }}</td>
-              <td>{{ data.source }}</td>
-              <td>{{ data.value | numberFormat }}</td>
-            </tr>
-          </ng-template>
-          <ng-template #footer>
-            <tr class="total-row">
-              <td><strong>Total</strong></td>
-              <td></td>
-              <td><strong>{{ totalValue | numberFormat }}</strong></td>
-            </tr>
-          </ng-template>
-        </p-table>
       </div>
     </div>
   </div>
