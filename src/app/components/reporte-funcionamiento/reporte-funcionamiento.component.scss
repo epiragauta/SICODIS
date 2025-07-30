@@ -14,9 +14,22 @@
     overflow: hidden;
     display: flex;
     margin-bottom: .5rem;
-    border-radius: 8px;
-         
+    border-radius: 8px;         
     
+    .gradient-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 95%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        #e5e6e8b5 0%,
+        rgba(255, 255, 255, 0.01) 100%
+      );
+      z-index: 1;
+    }
+
     .banner-content {
       position: relative;
       margin-top: 1rem;
