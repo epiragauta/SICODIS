@@ -352,66 +352,47 @@
 .graphics-section {
   background: var(--p-surface-card);
   border-radius: 8px;
-  padding: .25rem;
+  padding: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
   
-  // Forzar ancho completo en todas las tarjetas
-  p-card,
-  .p-card {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
+  .single-chart-container {
+    width: 100%;
+    max-width: 100%;
+    
+    .p-card {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+    }
   }
 
   // Estilos para t�tulos de gr�ficos
-  .chart-title-small {
+  .chart-title {
     color: #004583;
-    font-size: 1rem;
+    font-size: 1.2rem;
     font-weight: 600;
     margin: 0 0 0.25rem 0;
     text-align: center;
   }
 
   // Estilos para subt�tulos
-  .chart-subtitle-small {
+  .chart-subtitle {
     color: #666;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     margin: 0 0 0.5rem 0;
     text-align: center;
     font-style: italic;
   }
 
-  // Contenedores de gr�ficos
-  .chart-container-small {
+  // Contenedor principal del gr�fico
+  .chart-container {
     width: 100%;
-    height: 300px;
-    padding: 0.5rem;
+    height: 400px;
+    padding: 1rem;
+    display: flex;
     align-items: center;
     justify-content: center;
-  }
-
-  // Grid responsivo para gr�ficos
-  :host ::ng-deep {
-    .mat-grid-list {
-      margin-top: 1rem;
-    }
-    
-    .mat-grid-tile {
-      width: 100% !important;
-      
-      .mat-grid-tile-content {
-        width: 100% !important;
-        height: 100% !important;
-        padding: 0.5rem !important;
-      }
-      
-      .p-card {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        flex: 1 !important;
-      }
-    }
   }
 }
 

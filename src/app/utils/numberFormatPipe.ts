@@ -12,18 +12,27 @@ export class NumberFormatPipe implements PipeTransform {
     }
 
     // Convert to number and parse
-    const num = Number(value);
+    let num = Number(value);
 
     // Check if it's a valid number
     if (isNaN(num)) {
       return '';
     }
 
-    // Use toLocaleString with specific options for Spanish (Colombia) formatting
-    return num.toLocaleString('es-CO', {
+    // Convert to millions
+    num = num / 1000000;
+
+    // Format with Colombian locale and then adjust separators
+    // Separador de miles: punto (.), decimales: coma (,)
+    const formatted = num.toLocaleString('es-CO', {
       minimumFractionDigits: decimals,
-      maximumFractionDigits: decimals,
+      maximumFractionDigits: 1,
       useGrouping: true
     });
+
+    // Replace Colombian format (thousands: comma, decimals: period) 
+    // to requested format (thousands: period, decimals: comma)
+    //.replace(/\./g, '|').replace(/,/g, '.').replace(/\|/g, ',')
+    return formatted;
   }
 }

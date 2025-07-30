@@ -163,7 +163,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
   showDetailInfo: boolean = false;
 
   urlTrimestralReport: string = "https://www.dnp.gov.co/LaEntidad_/subdireccion-general-inversiones-seguimiento-evaluacion/direccion-programacion-inversiones-publicas/Paginas/sistema-general-de-regalias.aspx#funveinticincoseis"
-  urlCurrentReport: string = "https://colaboracion.dnp.gov.co/CDT/Inversiones%20y%20finanzas%20pblicas/Documentos%20GFT/Informe%20Trimestral%20de%20funcionamiento%20del%20SGR%20Primer%20trimestre%20bienio%202025-2026.pdf";
+  urlCurrentReport: string = "https://colaboracion.dnp.gov.co/CDT/Inversiones%20y%20finanzas%20pblicas/Documentos%20GFT/Informe%20Trimestral%20de%20funcionamiento%20del%20SGR%20%C3%9Altimo%20Informe.pdf";
   detailReportXlsFile = "reporte-detalle-recaudo-2025.xlsx"
   managementReportXlsFile = "reporte-gestion-financiera-2025.xlsx"
   // URLs de datos locales para fallback (solo se usan si la API falla)

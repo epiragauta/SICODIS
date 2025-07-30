@@ -74,8 +74,8 @@
               (click)="applyFilters()">
         </button>
         <button pButton type="button" 
-                icon="pi pi-times" 
-                label="Limpiar" 
+                icon="pi pi-eraser" 
+                label="Limpiar filtros" 
                 class="p-button-secondary"
                 (click)="clearFilters()">
         </button>
@@ -83,7 +83,27 @@
     </div>    
   </div>
 
-  <!-- Table section - Segunda fila -->
+  <!-- Graphics section - Gráfico de barras apiladas (Primera sección) -->
+  <div class="graphics-section">
+    <div class="single-chart-container">
+      <p-card class="chart-card">
+        <ng-template pTemplate="header">
+          <h3 class="chart-title">Evolución Histórica SGP por Conceptos</h3>
+          <p class="chart-subtitle">Distribución por conceptos principales - Precios Corrientes (millones de pesos)</p>
+        </ng-template>
+        <div class="chart-container">
+          <p-chart 
+            type="bar" 
+            [data]="stackedBarChartData" 
+            [options]="stackedBarChartOptions"
+            height="400px" width="800px">
+          </p-chart>
+        </div>
+      </p-card>
+    </div>
+  </div>
+
+  <!-- Table section - Segunda sección -->
   <div class="table-section">
     <div class="card">
       <!-- Debug info -->
@@ -133,7 +153,7 @@
       <!-- Notas -->
       <div class="table-notes">
         <h4>NOTAS</h4>
-        <p>(1) Cifras en pesos corrientes.</p>
+        <p>(1) Cifras en millones de pesos corrientes.</p>
         <p>(2) Los datos que se presentan para los años 2002-2015, corresponden a las distribuciones efectuadas mediante Documentos CONPES de su respectiva vigencia; para los años 2015 en adelante, corresponden a las distribuciones efectuadas mediante Documentos de Distribución de su respectiva vigencia.</p>
       </div>
       
@@ -142,194 +162,11 @@
         
         <button pButton type="button" 
                 icon="pi pi-file-excel" 
-                label="Exportar a Excel" 
-                class="p-button-success"
+                label="Descargar Excel" 
+                class="p-button-primary"
                 (click)="exportToExcel()">
         </button>
       </div>
     </div>
-  </div>
-
-  <!-- Graphics section from graphics-sgp component (line 92+) -->
-  <div class="graphics-section">
-    <!-- Filas de gráficos de dos columnas -->
-    <mat-grid-list [cols]="cols" rowHeight="400px" gutterSize="16" >
-      
-      <!-- Fila 1: Evolución Educación SGP -->
-      <mat-grid-tile>
-        <p-card class="chart-card">
-          <ng-template pTemplate="header">
-            <h3 class="chart-title-small">Evolución Educación SGP</h3>
-            <p class="chart-subtitle-small">Precios Corrientes</p>
-          </ng-template>
-          <div class="chart-container-small">
-            <p-chart 
-              type="bar" 
-              [data]="chartData5Left" 
-              [options]="smallMixedChartOptions"
-              height="300px">
-            </p-chart>
-          </div>
-        </p-card>
-      </mat-grid-tile>
-
-      <mat-grid-tile>
-        <p-card class="chart-card">
-          <ng-template pTemplate="header">
-            <h3 class="chart-title-small">Evolución Educación SGP</h3>
-            <p class="chart-subtitle-small">Precios Constantes - 2025</p>
-          </ng-template>
-          <div class="chart-container-small">
-            <p-chart 
-              type="bar" 
-              [data]="chartData5Right" 
-              [options]="smallMixedChartOptions"
-              height="300px">
-            </p-chart>
-          </div>
-        </p-card>
-      </mat-grid-tile>
-
-      <!-- Fila 2: Evolución Salud SGP -->
-      <mat-grid-tile>
-        <p-card class="chart-card">
-          <ng-template pTemplate="header">
-            <h3 class="chart-title-small">Evolución Salud SGP</h3>
-            <p class="chart-subtitle-small">Precios Corrientes</p>
-          </ng-template>
-          <div class="chart-container-small">
-            <p-chart 
-              type="bar" 
-              [data]="chartData6Left" 
-              [options]="smallMixedChartOptions"
-              height="300px">
-            </p-chart>
-          </div>
-        </p-card>
-      </mat-grid-tile>
-
-      <mat-grid-tile>
-        <p-card class="chart-card">
-          <ng-template pTemplate="header">
-            <h3 class="chart-title-small">Evolución Salud SGP</h3>
-            <p class="chart-subtitle-small">Precios Constantes - 2025</p>
-          </ng-template>
-          <div class="chart-container-small">
-            <p-chart 
-              type="bar" 
-              [data]="chartData6Right" 
-              [options]="smallMixedChartOptions"
-              height="300px">
-            </p-chart>
-          </div>
-        </p-card>
-      </mat-grid-tile>
-
-      <!-- Fila 3: Evolución Agua Potable SGP -->
-      <mat-grid-tile>
-        <p-card class="chart-card">
-          <ng-template pTemplate="header">
-            <h3 class="chart-title-small">Evolución Agua Potable - SGP</h3>
-            <p class="chart-subtitle-small">Precios Corrientes</p>
-          </ng-template>
-          <div class="chart-container-small">
-            <p-chart 
-              type="bar" 
-              [data]="chartData7Left" 
-              [options]="smallMixedChartOptions"
-              height="300px">
-            </p-chart>
-          </div>
-        </p-card>
-      </mat-grid-tile>
-
-      <mat-grid-tile>
-        <p-card class="chart-card">
-          <ng-template pTemplate="header">
-            <h3 class="chart-title-small">Evolución Agua Potable - SGP</h3>
-            <p class="chart-subtitle-small">Precios Constantes - 2025</p>
-          </ng-template>
-          <div class="chart-container-small">
-            <p-chart 
-              type="bar" 
-              [data]="chartData7Right" 
-              [options]="smallMixedChartOptions"
-              height="300px">
-            </p-chart>
-          </div>
-        </p-card>
-      </mat-grid-tile>
-
-      <!-- Fila 4: Evolución Propósito General SGP -->
-      <mat-grid-tile>
-        <p-card class="chart-card">
-          <ng-template pTemplate="header">
-            <h3 class="chart-title-small">Evolución Propósito General - SGP</h3>
-            <p class="chart-subtitle-small">Precios Corrientes</p>
-          </ng-template>
-          <div class="chart-container-small">
-            <p-chart 
-              type="bar" 
-              [data]="chartData8Left" 
-              [options]="smallMixedChartOptions"
-              height="300px">
-            </p-chart>
-          </div>
-        </p-card>
-      </mat-grid-tile>
-
-      <mat-grid-tile>
-        <p-card class="chart-card">
-          <ng-template pTemplate="header">
-            <h3 class="chart-title-small">Evolución Propósito General - SGP</h3>
-            <p class="chart-subtitle-small">Precios Constantes - 2025</p>
-          </ng-template>
-          <div class="chart-container-small">
-            <p-chart 
-              type="bar" 
-              [data]="chartData8Right" 
-              [options]="smallMixedChartOptions"
-              height="300px">
-            </p-chart>
-          </div>
-        </p-card>
-      </mat-grid-tile>
-
-      <!-- Fila 5: Evolución Asignaciones Especiales SGP -->
-      <mat-grid-tile>
-        <p-card class="chart-card">
-          <ng-template pTemplate="header">
-            <h3 class="chart-title-small">Evolución Asignaciones Especiales - SGP</h3>
-            <p class="chart-subtitle-small">Precios Corrientes</p>
-          </ng-template>
-          <div class="chart-container-small">
-            <p-chart 
-              type="bar" 
-              [data]="chartData9Left" 
-              [options]="smallMixedChartOptions"
-              height="300px">
-            </p-chart>
-          </div>
-        </p-card>
-      </mat-grid-tile>
-
-      <mat-grid-tile>
-        <p-card class="chart-card">
-          <ng-template pTemplate="header">
-            <h3 class="chart-title-small">Evolución Asignaciones Especiales - SGP</h3>
-            <p class="chart-subtitle-small">Precios Constantes - 2025</p>
-          </ng-template>
-          <div class="chart-container-small">
-            <p-chart 
-              type="bar" 
-              [data]="chartData9Right" 
-              [options]="smallMixedChartOptions"
-              height="300px">
-            </p-chart>
-          </div>
-        </p-card>
-      </mat-grid-tile>
-
-    </mat-grid-list>
   </div>
 </div>

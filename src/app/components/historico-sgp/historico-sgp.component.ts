@@ -21,6 +21,7 @@ import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { departamentos } from '../../data/departamentos';
 import { HttpClient } from '@angular/common/http';
 import { SicodisApiService } from '../../services/sicodis-api.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-historico-sgp',
@@ -84,20 +85,9 @@ export class HistoricoSgpComponent implements OnInit {
   totalValue: number = 0;
   historicoApiData: any[] = [];
 
-  // Variables para gráficos
-  chartData5Left: any; // Evolución Educación SGP - Precios Corrientes
-  chartData5Right: any; // Evolución Educación SGP - Precios Constantes
-  chartData6Left: any; // Evolución Salud SGP - Precios Corrientes
-  chartData6Right: any; // Evolución Salud SGP - Precios Constantes
-  chartData7Left: any; // Evolución Agua Potable SGP - Precios Corrientes
-  chartData7Right: any; // Evolución Agua Potable SGP - Precios Constantes
-  chartData8Left: any; // Evolución Propósito General SGP - Precios Corrientes
-  chartData8Right: any; // Evolución Propósito General SGP - Precios Constantes
-  chartData9Left: any; // Evolución Asignaciones Especiales SGP - Precios Corrientes
-  chartData9Right: any; // Evolución Asignaciones Especiales SGP - Precios Constantes
-
-  // Opciones para los gráficos
-  smallMixedChartOptions: any;
+  // Variables para el gráfico de barras apiladas
+  stackedBarChartData: any;
+  stackedBarChartOptions: any;
 
   constructor(private breakpointObserver: BreakpointObserver, private http: HttpClient, private sicodisApiService: SicodisApiService) {
     // Configuración responsiva
@@ -125,8 +115,7 @@ export class HistoricoSgpComponent implements OnInit {
     this.initializeDefaultSelection();
     this.loadSgpData();
     this.loadTerritorialEntities();
-    this.initializeChartOptions();
-    this.initializeAllCharts();
+    this.initializeStackedBarChart();
     console.log('Historico SGP Component initialized');
   }
 
@@ -163,24 +152,94 @@ export class HistoricoSgpComponent implements OnInit {
       return;
     }
 
-    const aniosString = this.selectedYears.join(',');
-    console.log('Cargando datos históricos para años:', aniosString);
-    
-    this.sicodisApiService.getSgpResumenHistorico({ anios: aniosString }).subscribe({
-      next: (result: any[]) => {
-        console.log('Datos históricos del API:', result);
-        this.historicoApiData = result;
-        if (result && result.length > 0) {
-          this.buildTreeTableData();
-        } else {
-          console.log('No hay datos del API, creando datos de ejemplo');
+    // Si hay municipio seleccionado, usar getSgpResumenParticipaciones con municipio específico
+    if (this.townSelected && this.townSelected !== '') {
+      this.loadSgpParticipacionesByMunicipality();
+    } else if (this.departmentSelected && this.departmentSelected !== '-1') {
+      // Si hay departamento seleccionado, usar getSgpResumenParticipaciones
+      this.loadSgpParticipacionesByDepartment();
+    } else {
+      // Usar método histórico original
+      const aniosString = this.selectedYears.join(',');
+      console.log('Cargando datos históricos para años:', aniosString);
+      
+      this.sicodisApiService.getSgpResumenHistorico({ anios: aniosString }).subscribe({
+        next: (result: any[]) => {
+          console.log('Datos históricos del API:', result);
+          this.historicoApiData = result;
+          if (result && result.length > 0) {
+            this.buildTreeTableData();
+          } else {
+            console.log('No hay datos del API, creando datos de ejemplo');
+            this.createSampleTreeData();
+          }
+        },
+        error: (error) => {
+          console.error('Error loading SGP historico from API:', error);
+          // Fallback con datos de ejemplo
+          console.log('Error en API, creando datos de ejemplo');
           this.createSampleTreeData();
         }
+      });
+    }
+  }
+
+  /**
+   * Carga datos del SGP por departamento usando getSgpResumenParticipaciones
+   */
+  loadSgpParticipacionesByDepartment(): void {
+    console.log('Cargando participaciones por departamento:', this.departmentSelected);
+    
+    // Crear array de observables para cada año seleccionado
+    const participacionesObservables = this.selectedYears.map(year => 
+      this.sicodisApiService.getSgpResumenParticipaciones(
+        parseInt(year), 
+        this.departmentSelected + "000", 
+        'TODOS'
+      )
+    );
+
+    // Ejecutar todas las llamadas en paralelo
+    forkJoin(participacionesObservables).subscribe({
+      next: (results: any[]) => {
+        console.log('Datos de participaciones por departamento:', results);
+        this.processParticipacionesData(results);
       },
       error: (error) => {
-        console.error('Error loading SGP historico from API:', error);
+        console.error('Error loading SGP participaciones by department:', error);
         // Fallback con datos de ejemplo
-        console.log('Error en API, creando datos de ejemplo');
+        console.log('Error en API participaciones, creando datos de ejemplo');
+        this.createSampleTreeData();
+      }
+    });
+  }
+
+  /**
+   * Carga datos del SGP por municipio usando getSgpResumenParticipaciones
+   */
+  loadSgpParticipacionesByMunicipality(): void {
+    console.log('Cargando participaciones por municipio:', this.townSelected);
+    console.log('Departamento padre:', this.departmentSelected);
+    
+    // Crear array de observables para cada año seleccionado
+    const participacionesObservables = this.selectedYears.map(year => 
+      this.sicodisApiService.getSgpResumenParticipaciones(
+        parseInt(year), 
+        this.departmentSelected + "000", // Código del departamento 
+        this.townSelected // Código del municipio específico
+      )
+    );
+
+    // Ejecutar todas las llamadas en paralelo
+    forkJoin(participacionesObservables).subscribe({
+      next: (results: any[]) => {
+        console.log('Datos de participaciones por municipio:', results);
+        this.processParticipacionesData(results);
+      },
+      error: (error) => {
+        console.error('Error loading SGP participaciones by municipality:', error);
+        // Fallback con datos de ejemplo
+        console.log('Error en API participaciones municipio, creando datos de ejemplo');
         this.createSampleTreeData();
       }
     });
@@ -277,6 +336,57 @@ export class HistoricoSgpComponent implements OnInit {
     this.treeTableData = sampleData;
     console.log('Datos de ejemplo creados:', this.treeTableData);
     this.calculateTreeTableTotal();
+    
+    // Actualizar gráfico con datos de ejemplo
+    this.updateStackedBarChart();
+  }
+
+  /**
+   * Procesa los datos de participaciones del departamento y los organiza en estructura de árbol
+   */
+  processParticipacionesData(results: any[]): void {
+    console.log('Procesando datos de participaciones:', results);
+    
+    // Crear un array plano con todos los conceptos de todas las vigencias
+    this.historicoApiData = [];
+    
+    results.forEach((yearResult, index) => {
+      const year = this.selectedYears[index];
+      
+      if (yearResult && Array.isArray(yearResult)) {
+        yearResult.forEach((item: any) => {
+          // Convertir estructura de participaciones a formato histórico
+          this.historicoApiData.push({
+            id_concepto: item.id_concepto,
+            concepto: item.concepto,
+            annio: parseInt(year),
+            total_corrientes: item.total || 0,
+            total_constantes: item.total || 0 // Por ahora usar el mismo valor
+          });
+        });
+      } else if (yearResult) {
+        // Si es un objeto único, convertirlo a array
+        this.historicoApiData.push({
+          id_concepto: yearResult.id_concepto || '99',
+          concepto: yearResult.concepto || 'Total SGP',
+          annio: parseInt(year),
+          total_corrientes: yearResult.total || 0,
+          total_constantes: yearResult.total || 0
+        });
+      }
+    });
+    
+    console.log('Datos históricos procesados:', this.historicoApiData);
+    
+    if (this.historicoApiData.length > 0) {
+      this.buildTreeTableData();
+    } else {
+      console.log('No se pudieron procesar los datos, usando datos de ejemplo');
+      this.createSampleTreeData();
+    }
+    
+    // Actualizar gráfico después de procesar los datos
+    this.updateStackedBarChart();
   }
 
   /**
@@ -310,12 +420,14 @@ export class HistoricoSgpComponent implements OnInit {
   }
 
   /**
-   * Inicializa las opciones de los gráficos
+   * Inicializa el gráfico de barras apiladas
    */
-  initializeChartOptions(): void {
-    this.smallMixedChartOptions = {
+  initializeStackedBarChart(): void {
+    // Configurar opciones del gráfico
+    this.stackedBarChartOptions = {
       responsive: true,
       maintainAspectRatio: false,
+      aspectRatio: 1.2,
       interaction: {
         mode: 'index',
         intersect: false,
@@ -324,176 +436,131 @@ export class HistoricoSgpComponent implements OnInit {
         x: {
           title: {
             display: true,
-            text: 'Años'
-          }
+            text: 'Años',
+            font: {
+              size: 12,
+              weight: 'bold'
+            }
+          },
+          stacked: true
         },
         y: {
           type: 'linear',
           display: true,
-          position: 'left',
           title: {
             display: true,
-            text: 'Miles de millones COP'
+            text: 'Millones de pesos COP',
+            font: {
+              size: 12,
+              weight: 'bold'
+            }
           },
-          beginAtZero: true
+          beginAtZero: true,
+          stacked: true,
+          ticks: {
+            callback: function(value: any) {
+              return new Intl.NumberFormat('es-CO', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2,
+                useGrouping: true
+              }).format(value).replace(/,/g, '.');
+            }
+          }
         }
       },
       plugins: {
         legend: {
-          position: 'bottom' as const,
+          position: 'right' as const,
+          labels: {
+            usePointStyle: true,
+            font: {
+              size: 11
+            },
+            padding: 15
+          }
         },
         tooltip: {
           enabled: true,
           backgroundColor: 'rgba(0, 0, 0, 0.8)',
           titleColor: 'white',
           bodyColor: 'white',
-          borderColor: '#004583',
-          borderWidth: 1
+          borderColor: '#2d5016',
+          borderWidth: 1,
+          callbacks: {
+            label: function(context: any) {
+              const label = context.dataset.label || '';
+              const value = new Intl.NumberFormat('es-CO', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 1,
+                useGrouping: true
+              }).format(context.parsed.y);
+              return `${label}: ${value} millones`;
+              //.replace(/,/g, '.')
+            }
+          }
         }
       }
     };
+
+    // Inicializar con datos de ejemplo
+    this.updateStackedBarChart();
   }
 
   /**
-   * Inicializa todos los gráficos con datos de ejemplo
+   * Actualiza el gráfico de barras apiladas con datos reales o de ejemplo
    */
-  initializeAllCharts(): void {
-    const years = ['2020', '2021', '2022', '2023', '2024'];
-    
-    // Datos de ejemplo para Educación
-    this.chartData5Left = {
-      labels: years,
-      datasets: [
-        {
-          label: 'Educación SGP (Corrientes)',
-          data: [25000, 27000, 28500, 30000, 32000],
-          borderColor: '#FF6384',
-          backgroundColor: 'rgba(255, 99, 132, 0.2)',
-          tension: 0.4
+  updateStackedBarChart(): void {
+    // Colores verdes degradados para cada concepto
+    const greenColors = [
+      '#1e5f1e', // Verde oscuro - Educación
+      '#2d7a2d', // Verde medio oscuro - Salud
+      '#3b9b3b', // Verde medio - Agua Potable
+      '#4abb4a', // Verde medio claro - Propósito General
+      '#66cc66'  // Verde claro - Fonpet Asignaciones Especiales
+    ];
+
+    // Conceptos principales
+    const conceptos = [
+      { id: '0101', label: 'Educación' },
+      { id: '0102', label: 'Salud' },
+      { id: '0103', label: 'Agua Potable' },
+      { id: '0104', label: 'Propósito General' },
+      { id: '0204', label: 'Fonpet Asignaciones Especiales' }
+    ];
+
+    // Crear datasets para cada concepto
+    const datasets = conceptos.map((concepto, index) => {
+      const data = this.selectedYears.map(year => {
+        // Buscar datos reales del concepto para este año
+        const conceptoData = this.historicoApiData.find(item => 
+          item.id_concepto === concepto.id && item.annio?.toString() === year
+        );
+        
+        if (conceptoData) {
+          return conceptoData.total_corrientes / 1000000; // Convertir a millones
+        } else {
+          // Datos de ejemplo si no hay datos reales
+          const baseValue = (index + 1) * 15000000;
+          const yearIndex = this.selectedYears.indexOf(year);
+          return baseValue + (yearIndex * 2000000) + (Math.random() * 5000000);
         }
-      ]
+      });
+
+      return {
+        label: concepto.label,
+        data: data,
+        backgroundColor: greenColors[index],
+        borderColor: greenColors[index],
+        borderWidth: 1
+      };
+    });
+
+    this.stackedBarChartData = {
+      labels: this.selectedYears,
+      datasets: datasets
     };
 
-    this.chartData5Right = {
-      labels: years,
-      datasets: [
-        {
-          label: 'Educación SGP (Constantes)',
-          data: [23000, 24500, 25200, 26000, 27500],
-          borderColor: '#36A2EB',
-          backgroundColor: 'rgba(54, 162, 235, 0.2)',
-          tension: 0.4
-        }
-      ]
-    };
-
-    // Datos de ejemplo para Salud
-    this.chartData6Left = {
-      labels: years,
-      datasets: [
-        {
-          label: 'Salud SGP (Corrientes)',
-          data: [24000, 26000, 27500, 29000, 31000],
-          borderColor: '#4BC0C0',
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',
-          tension: 0.4
-        }
-      ]
-    };
-
-    this.chartData6Right = {
-      labels: years,
-      datasets: [
-        {
-          label: 'Salud SGP (Constantes)',
-          data: [22000, 23500, 24200, 25000, 26500],
-          borderColor: '#9966FF',
-          backgroundColor: 'rgba(153, 102, 255, 0.2)',
-          tension: 0.4
-        }
-      ]
-    };
-
-    // Datos de ejemplo para Agua Potable
-    this.chartData7Left = {
-      labels: years,
-      datasets: [
-        {
-          label: 'Agua Potable SGP (Corrientes)',
-          data: [6000, 6500, 6800, 7000, 7200],
-          borderColor: '#FF9F40',
-          backgroundColor: 'rgba(255, 159, 64, 0.2)',
-          tension: 0.4
-        }
-      ]
-    };
-
-    this.chartData7Right = {
-      labels: years,
-      datasets: [
-        {
-          label: 'Agua Potable SGP (Constantes)',
-          data: [5500, 5900, 6000, 6100, 6300],
-          borderColor: '#FF6384',
-          backgroundColor: 'rgba(255, 99, 132, 0.2)',
-          tension: 0.4
-        }
-      ]
-    };
-
-    // Datos de ejemplo para Propósito General
-    this.chartData8Left = {
-      labels: years,
-      datasets: [
-        {
-          label: 'Propósito General SGP (Corrientes)',
-          data: [7000, 7500, 7800, 8000, 8300],
-          borderColor: '#4BC0C0',
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',
-          tension: 0.4
-        }
-      ]
-    };
-
-    this.chartData8Right = {
-      labels: years,
-      datasets: [
-        {
-          label: 'Propósito General SGP (Constantes)',
-          data: [6500, 6800, 6900, 7000, 7200],
-          borderColor: '#36A2EB',
-          backgroundColor: 'rgba(54, 162, 235, 0.2)',
-          tension: 0.4
-        }
-      ]
-    };
-
-    // Datos de ejemplo para Asignaciones Especiales
-    this.chartData9Left = {
-      labels: years,
-      datasets: [
-        {
-          label: 'Asignaciones Especiales SGP (Corrientes)',
-          data: [2000, 2200, 2400, 2500, 2600],
-          borderColor: '#9966FF',
-          backgroundColor: 'rgba(153, 102, 255, 0.2)',
-          tension: 0.4
-        }
-      ]
-    };
-
-    this.chartData9Right = {
-      labels: years,
-      datasets: [
-        {
-          label: 'Asignaciones Especiales SGP (Constantes)',
-          data: [1800, 2000, 2100, 2200, 2300],
-          borderColor: '#FF9F40',
-          backgroundColor: 'rgba(255, 159, 64, 0.2)',
-          tension: 0.4
-        }
-      ]
-    };
+    console.log('Gráfico de barras apiladas actualizado:', this.stackedBarChartData);
   }
 
   /**
@@ -542,6 +609,7 @@ export class HistoricoSgpComponent implements OnInit {
   onDepartmentChange(event: SelectChangeEvent): void {
     console.log('Departamento seleccionado:', event.value);
     this.departmentSelected = event.value;
+    this.loadSgpData();
     this.loadTownsForDepartment();
   }
 
@@ -551,6 +619,8 @@ export class HistoricoSgpComponent implements OnInit {
   onTownChange(event: SelectChangeEvent): void {
     console.log('Municipio seleccionado:', event.value);
     this.townSelected = event.value;
+    // Recargar datos con el nuevo municipio seleccionado
+    this.loadSgpData();
   }
 
   /**
@@ -573,7 +643,12 @@ export class HistoricoSgpComponent implements OnInit {
     this.selectedYears = [];
     this.departmentSelected = '';
     this.townSelected = '';
-    this.initializeTableData();
+    this.towns = []; // Limpiar municipios
+    
+    // Regenerar años disponibles y selección por defecto
+    this.generateAvailableYears();
+    this.initializeDefaultSelection();
+    this.loadSgpHistoricoFromApi();
   }
 
   /**
@@ -652,25 +727,40 @@ export class HistoricoSgpComponent implements OnInit {
       return;
     }
 
+    // Filtrar registros excluyendo id_concepto = 99
+    const filteredData = this.historicoApiData.filter(item => item.id_concepto !== '99');
+
+    // Obtener conceptos únicos (sin duplicar por años)
+    const uniqueConceptos = new Map<string, any>();
+    filteredData.forEach(item => {
+      if (!uniqueConceptos.has(item.id_concepto)) {
+        uniqueConceptos.set(item.id_concepto, {
+          id_concepto: item.id_concepto,
+          concepto: item.concepto
+        });
+      }
+    });
+
     // Agrupar datos por concepto padre (primeros 4 dígitos del id_concepto)
     const conceptosMap = new Map<string, TreeNode>();
     
-    this.historicoApiData.forEach(item => {
-      const conceptoPadreId = item.id_concepto.substring(0, 4);
-      const isConceptoPadre = item.id_concepto.length === 4;
+    // Procesar conceptos únicos
+    uniqueConceptos.forEach((conceptoInfo, conceptoId) => {
+      const conceptoPadreId = conceptoId.substring(0, 4);
+      const isConceptoPadre = conceptoId.length === 4;
       
       if (isConceptoPadre) {
         // Es un concepto padre
         if (!conceptosMap.has(conceptoPadreId)) {
           const nodeData: any = {
-            concepto: item.concepto,
-            id_concepto: item.id_concepto
+            concepto: conceptoInfo.concepto,
+            id_concepto: conceptoId
           };
           
           // Agregar columnas dinámicas por vigencia
           this.selectedYears.forEach(year => {
-            const yearData = this.historicoApiData.find(d => 
-              d.id_concepto === item.id_concepto && d.annio?.toString() === year
+            const yearData = filteredData.find(d => 
+              d.id_concepto === conceptoId && d.annio?.toString() === year
             );
             nodeData[`vigencia_${year}`] = yearData?.total_corrientes || 0;
           });
@@ -699,33 +789,42 @@ export class HistoricoSgpComponent implements OnInit {
           });
         }
         
-        // Crear concepto hijo
-        const childData: any = {
-          concepto: item.concepto,
-          id_concepto: item.id_concepto
-        };
+        // Verificar si el hijo ya existe
+        const parentNode = conceptosMap.get(conceptoPadreId)!;
+        const existingChild = parentNode.children!.find(child => child.key === conceptoId);
         
-        // Agregar columnas dinámicas por vigencia para el hijo
-        this.selectedYears.forEach(year => {
-          const yearData = this.historicoApiData.find(d => 
-            d.id_concepto === item.id_concepto && d.annio?.toString() === year
-          );
-          childData[`vigencia_${year}`] = yearData?.total_corrientes || 0;
-        });
-        
-        const childNode: TreeNode = {
-          key: item.id_concepto,
-          data: childData,
-          leaf: true
-        };
-        
-        conceptosMap.get(conceptoPadreId)!.children!.push(childNode);
+        if (!existingChild) {
+          // Crear concepto hijo solo si no existe
+          const childData: any = {
+            concepto: conceptoInfo.concepto,
+            id_concepto: conceptoId
+          };
+          
+          // Agregar columnas dinámicas por vigencia para el hijo
+          this.selectedYears.forEach(year => {
+            const yearData = filteredData.find(d => 
+              d.id_concepto === conceptoId && d.annio?.toString() === year
+            );
+            childData[`vigencia_${year}`] = yearData?.total_corrientes || 0;
+          });
+          
+          const childNode: TreeNode = {
+            key: conceptoId,
+            data: childData,
+            leaf: true
+          };
+          
+          parentNode.children!.push(childNode);
+        }
       }
     });
 
     this.treeTableData = Array.from(conceptosMap.values());
     console.log('Tree table data:', this.treeTableData);
     this.calculateTreeTableTotal();
+    
+    // Actualizar gráfico con los nuevos datos
+    this.updateStackedBarChart();
   }
 
   /**
@@ -755,14 +854,8 @@ export class HistoricoSgpComponent implements OnInit {
    * Actualiza los gráficos según los filtros
    */
   private updateCharts(): void {
-    if (this.selectedYears.length === 0) {
-      this.initializeAllCharts();
-      return;
-    }
-
-    // Actualizar gráficos con datos filtrados
-    console.log('Actualizando gráficos para años:', this.selectedYears);
-    // Aquí iría la lógica para actualizar los gráficos según los filtros
+    console.log('Actualizando gráfico para años:', this.selectedYears);
+    this.updateStackedBarChart();
   }
 
   /**
