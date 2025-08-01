@@ -102,11 +102,12 @@ export interface ResumenParticipaciones {
 
 export interface ResumenDistribuciones {
   anio: number;
-  distribucion_id: number;
-  nombre_distribucion: string;
+  id_distribucion: number;
+  nombre: string;
   fecha_distribucion: string;
-  total_distribuido: number;
-  entidades_beneficiadas: number;
+  total_distribucion: number;
+  descripcion: string;
+  tipo_distribucion: string;
 }
 
 export interface ResumenHistorico {
