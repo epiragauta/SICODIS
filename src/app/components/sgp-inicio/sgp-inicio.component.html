@@ -23,20 +23,24 @@
     <!-- C: Tarjetas de presentación de cifras -->
     <div class="metrics-column">
       <!-- Selector de vigencia -->
-      <div class="vigencia-selector">
-        <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-select 
-            id="vigencia" 
-            [options]="vigencias" 
-            inputId="vigenciaSelect" 
-            [(ngModel)]="selectedVigencia"
-            (onChange)="onVigenciaChange($event)"
-            optionLabel="label" 
-            placeholder="Vigencia">
-          </p-select>
-          <label for="vigenciaSelect">Vigencia</label>
-        </p-floatlabel>
-      </div>
+       <mat-card class="metric-item">
+        <mat-card-header>
+          <div class="vigencia-selector">
+            <p-floatlabel class="w-full md:w-56" variant="on">
+              <p-select 
+                id="vigencia" 
+                [options]="vigencias" 
+                inputId="vigenciaSelect" 
+                [(ngModel)]="selectedVigencia"
+                (onChange)="onVigenciaChange($event)"
+                optionLabel="label" 
+                placeholder="Vigencia">
+              </p-select>
+              <label for="vigenciaSelect">Vigencia</label>
+            </p-floatlabel>        
+          </div>
+        </mat-card-header>
+      </mat-card>
       <mat-card class="metric-item">
         <mat-card-header>
           <mat-card-title class="card-title card-main">Presupuesto SGP</mat-card-title>
