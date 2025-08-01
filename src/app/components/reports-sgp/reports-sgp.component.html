@@ -91,7 +91,7 @@
                        [scrollable]="true"
                        [scrollHeight]="treeTableData && treeTableData.length > 5 ? '400px' : 'auto'"
                        styleClass="reports-treetable"
-                       [tableStyle]="{'min-width':'40rem'}"
+                       [tableStyle]="{'min-width':'30rem'}"
                        *ngIf="treeTableData.length > 0">
             <ng-template pTemplate="header">
               <tr>
@@ -132,7 +132,7 @@
       <!-- Columna derecha: Gráfica de conceptos principales -->
       <div class="metrics-column">        
         <div class="col chart-column">
-          <h3>Conceptos para la vigencia {{selected}}</h3>
+          <h3 class="chart-title">Conceptos para la vigencia {{selected}}</h3>
           <div class="chart-container">
             <canvas id="barChart"></canvas>
           </div>

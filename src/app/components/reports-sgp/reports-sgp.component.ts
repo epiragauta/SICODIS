@@ -235,7 +235,7 @@ export class ReportsSgpComponent implements OnInit {
               label: 'Valor (Millones COP)',
               data: data,
               backgroundColor: greenColors,
-              borderColor: greenColors.map(color => this.darkenColor(color, 20)),
+              /*borderColor: greenColors.map(color => this.darkenColor(color, 20)),*/
               borderWidth: 1,
               borderRadius: 4,
               borderSkipped: false,
@@ -252,7 +252,7 @@ export class ReportsSgpComponent implements OnInit {
                 display: true,
                 text: 'Conceptos Principales',
                 font: {
-                  size: 12,
+                  size: 16,
                   weight: 'bold'
                 }
               },
@@ -260,7 +260,7 @@ export class ReportsSgpComponent implements OnInit {
                 maxRotation: 45,
                 minRotation: 0,
                 font: {
-                  size: 10
+                  size: 15
                 }
               }
             },

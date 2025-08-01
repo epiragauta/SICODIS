@@ -68,7 +68,6 @@
         
         &.vigencia-cell {
           text-align: right !important;
-          font-family: 'Courier New', monospace;
         }
       }
       
@@ -89,7 +88,6 @@
     .p-treetable-tbody > tr > td {
       &.vigencia-cell {
         text-align: right;
-        font-family: 'Courier New', monospace;
       }
     }
   }
@@ -252,7 +250,7 @@
 
   .main-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 40% 60%;
     gap: 2rem;
     
     @media (max-width: 768px) {
@@ -273,7 +271,7 @@
       border-left: 4px solid var(--p-primary-color);
 
       h3 {
-        font-size: 0.9rem;
+        font-size: 1.25rem;
         font-weight: 600;
         color: var(--p-text-muted-color);
         margin: 0 0 0.5rem 0;

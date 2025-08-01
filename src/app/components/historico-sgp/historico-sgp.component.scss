@@ -67,8 +67,7 @@
         font-size: 0.8rem !important;
         
         &.vigencia-cell {
-          text-align: right !important;
-          font-family: 'Courier New', monospace;
+          text-align: right !important;          
         }
       }
       
@@ -131,8 +130,7 @@
           
           &.vigencia-cell {
             min-width: 150px;
-            text-align: right;
-            font-family: 'Courier New', monospace;
+            text-align: right;            
           }
         }
         
@@ -144,8 +142,7 @@
           
           td.vigencia-cell {
             background: var(--p-primary-50) !important;
-            text-align: right !important;
-            font-family: 'Courier New', monospace;
+            text-align: right !important;            
           }
         }
       }
@@ -159,8 +156,7 @@
       
       .p-treetable-tbody > tr > td {
         &.vigencia-cell {
-          text-align: right;
-          font-family: 'Courier New', monospace;
+          text-align: right;          
         }
       }
     }
