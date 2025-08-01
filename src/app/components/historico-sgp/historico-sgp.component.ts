@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
@@ -16,6 +16,8 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { ChartModule } from 'primeng/chart';
 import { CardModule } from 'primeng/card';
 import { TreeNode, MenuItem } from 'primeng/api';
+import { Chart, registerables } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { departamentos } from '../../data/departamentos';
@@ -44,7 +46,7 @@ import { forkJoin } from 'rxjs';
   templateUrl: './historico-sgp.component.html',
   styleUrl: './historico-sgp.component.scss'
 })
-export class HistoricoSgpComponent implements OnInit {
+export class HistoricoSgpComponent implements OnInit, AfterViewInit {
   
   // Configuración responsiva para gráficos
   cols: number = 2;
@@ -88,8 +90,24 @@ export class HistoricoSgpComponent implements OnInit {
   // Variables para el gráfico de barras apiladas
   stackedBarChartData: any;
   stackedBarChartOptions: any;
+  
+  // Variables para gráficas de barras evolutivas
+  chartData1: any;
+  chartData3: any;
+  mixedChartOptions: any;
+  barChartOptions: any;
+
+  // Estados de carga
+  isLoadingChart: boolean = false;
+  isLoadingTable: boolean = false;
+
+  @ViewChild('treeTable', { static: false }) treeTable: any;
+  
+  years2005to2025 = ['2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'];
+  yearsRange = ['2002', '2003', '2004','2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'];
 
   constructor(private breakpointObserver: BreakpointObserver, private http: HttpClient, private sicodisApiService: SicodisApiService) {
+    Chart.register(...registerables, ChartDataLabels);
     // Configuración responsiva
     this.breakpointObserver.observe([
       Breakpoints.XSmall,
@@ -116,7 +134,16 @@ export class HistoricoSgpComponent implements OnInit {
     this.loadSgpData();
     this.loadTerritorialEntities();
     this.initializeStackedBarChart();
+    this.initializeBarChartsOptions();
+    this.loadSgpHistoricoDataForEvolution();
     console.log('Historico SGP Component initialized');
+  }
+
+  ngAfterViewInit(): void {
+    // Inicializar el ancho de la tabla después de que la vista esté lista
+    setTimeout(() => {
+      this.updateTableWidth();
+    }, 100);
   }
 
   /**
@@ -173,12 +200,18 @@ export class HistoricoSgpComponent implements OnInit {
             console.log('No hay datos del API, creando datos de ejemplo');
             this.createSampleTreeData();
           }
+          // Desactivar indicadores de carga
+          this.isLoadingChart = false;
+          this.isLoadingTable = false;
         },
         error: (error) => {
           console.error('Error loading SGP historico from API:', error);
           // Fallback con datos de ejemplo
           console.log('Error en API, creando datos de ejemplo');
           this.createSampleTreeData();
+          // Desactivar indicadores de carga
+          this.isLoadingChart = false;
+          this.isLoadingTable = false;
         }
       });
     }
@@ -204,12 +237,18 @@ export class HistoricoSgpComponent implements OnInit {
       next: (results: any[]) => {
         console.log('Datos de participaciones por departamento:', results);
         this.processParticipacionesData(results);
+        // Desactivar indicadores de carga
+        this.isLoadingChart = false;
+        this.isLoadingTable = false;
       },
       error: (error) => {
         console.error('Error loading SGP participaciones by department:', error);
         // Fallback con datos de ejemplo
         console.log('Error en API participaciones, creando datos de ejemplo');
         this.createSampleTreeData();
+        // Desactivar indicadores de carga
+        this.isLoadingChart = false;
+        this.isLoadingTable = false;
       }
     });
   }
@@ -235,12 +274,18 @@ export class HistoricoSgpComponent implements OnInit {
       next: (results: any[]) => {
         console.log('Datos de participaciones por municipio:', results);
         this.processParticipacionesData(results);
+        // Desactivar indicadores de carga
+        this.isLoadingChart = false;
+        this.isLoadingTable = false;
       },
       error: (error) => {
         console.error('Error loading SGP participaciones by municipality:', error);
         // Fallback con datos de ejemplo
         console.log('Error en API participaciones municipio, creando datos de ejemplo');
         this.createSampleTreeData();
+        // Desactivar indicadores de carga
+        this.isLoadingChart = false;
+        this.isLoadingTable = false;
       }
     });
   }
@@ -339,6 +384,10 @@ export class HistoricoSgpComponent implements OnInit {
     
     // Actualizar gráfico con datos de ejemplo
     this.updateStackedBarChart();
+    
+    // Desactivar indicadores de carga
+    this.isLoadingChart = false;
+    this.isLoadingTable = false;
   }
 
   /**
@@ -409,9 +458,9 @@ export class HistoricoSgpComponent implements OnInit {
   initializeDefaultSelection(): void {
     if (this.availableYears.length === 0) return;
     
-    // Tomar los primeros 4 años (ya están ordenados descendente)
+    // Tomar los primeros 6 años (ya están ordenados descendente)
     const defaultYears = this.availableYears
-      .slice(0, 4)
+      .slice(0, 6)
       .map((item: any) => item.year);
     
     this.selectedYears = defaultYears;
@@ -498,6 +547,9 @@ export class HistoricoSgpComponent implements OnInit {
               //.replace(/,/g, '.')
             }
           }
+        },
+        datalabels: {
+          display: false
         }
       }
     };
@@ -600,7 +652,17 @@ export class HistoricoSgpComponent implements OnInit {
   onVigenciaChange(event: MultiSelectChangeEvent): void {
     console.log('Vigencias seleccionadas:', event.value);
     this.selectedYears = event.value;
+    
+    // Activar indicadores de carga
+    this.isLoadingChart = true;
+    this.isLoadingTable = true;
+    
     this.loadSgpHistoricoFromApi();
+    
+    // Actualizar ancho de tabla después de un breve delay para asegurar que se renderice
+    setTimeout(() => {
+      this.updateTableWidth();
+    }, 200);
   }
 
   /**
@@ -609,6 +671,11 @@ export class HistoricoSgpComponent implements OnInit {
   onDepartmentChange(event: SelectChangeEvent): void {
     console.log('Departamento seleccionado:', event.value);
     this.departmentSelected = event.value;
+    
+    // Activar indicadores de carga
+    this.isLoadingChart = true;
+    this.isLoadingTable = true;
+    
     this.loadSgpData();
     this.loadTownsForDepartment();
   }
@@ -619,6 +686,11 @@ export class HistoricoSgpComponent implements OnInit {
   onTownChange(event: SelectChangeEvent): void {
     console.log('Municipio seleccionado:', event.value);
     this.townSelected = event.value;
+    
+    // Activar indicadores de carga
+    this.isLoadingChart = true;
+    this.isLoadingTable = true;
+    
     // Recargar datos con el nuevo municipio seleccionado
     this.loadSgpData();
   }
@@ -631,6 +703,11 @@ export class HistoricoSgpComponent implements OnInit {
     console.log('Vigencias:', this.selectedYears);
     console.log('Departamento:', this.departmentSelected);
     console.log('Municipio:', this.townSelected);
+    
+    // Activar indicadores de carga
+    this.isLoadingChart = true;
+    this.isLoadingTable = true;
+    
     this.loadSgpHistoricoFromApi();
     this.updateCharts();
   }
@@ -825,6 +902,11 @@ export class HistoricoSgpComponent implements OnInit {
     
     // Actualizar gráfico con los nuevos datos
     this.updateStackedBarChart();
+    
+    // Actualizar ancho de tabla
+    setTimeout(() => {
+      this.updateTableWidth();
+    }, 100);
   }
 
   /**
@@ -889,5 +971,317 @@ export class HistoricoSgpComponent implements OnInit {
     
     console.log('Municipios encontrados:', this.towns);
     this.townSelected = '';
+  }
+
+  /**
+   * Actualiza el ancho dinámico de la tabla basado en el número de vigencias
+   */
+  updateTableWidth(): void {
+    if (!this.treeTable || !this.treeTable.el) return;
+
+    const scrollableView = this.treeTable.el.nativeElement.querySelector('.p-treetable-scrollable-view');
+    if (!scrollableView) return;
+
+    // Ancho base de 1199px para hasta 6 vigencias
+    const baseWidth = 1199;
+    
+    if (this.selectedYears.length <= 6) {
+      scrollableView.style.width = `${baseWidth}px`;
+    } else {
+      // Cada vigencia adicional suma 225px
+      const additionalColumns = this.selectedYears.length - 6;
+      const additionalWidth = additionalColumns * 225;
+      const totalWidth = baseWidth + additionalWidth;
+      scrollableView.style.width = `${totalWidth}px`;
+    }
+
+    console.log(`Table width updated: ${scrollableView.style.width} for ${this.selectedYears.length} vigencias`);
+  }
+
+  /**
+   * Inicializa las opciones para las gráficas de barras evolutivas
+   */
+  initializeBarChartsOptions(): void {
+    this.mixedChartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      aspectRatio: 1.25,
+      scales: {
+        y: {
+          beginAtZero: true,
+          position: 'left',
+          title: { display: true, text: 'Miles de millones COP' }
+        },
+        y1: {
+          beginAtZero: true,
+          position: 'right',
+          grid: { drawOnChartArea: false },
+          title: { display: true, text: 'Variación (%)' }
+        }
+      },
+      plugins: {
+        legend: { position: 'top' },
+        datalabels: { display: false }
+      }
+    };
+
+    this.barChartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      aspectRatio: 1.25,
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Años'
+          }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Miles de millones COP'
+          },
+          ticks: {
+            callback: function(value: any) {
+              return new Intl.NumberFormat('es-CO').format(value);
+            }
+          }
+        },
+        y1: {
+          type: 'linear',
+          display: true,
+          position: 'right',
+          title: {
+            display: true,
+            text: 'Variación Anual (%)'
+          },
+          grid: {
+            drawOnChartArea: false,
+          },
+          ticks: {
+            callback: function(value: any) {
+              return value + '%';
+            }
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          position: 'top'
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context: any) {
+              let label = context.dataset.label || '';
+              if (context.dataset.yAxisID === 'y1') {
+                return label + ': ' + context.parsed.y + '%';
+              } else {
+                return label + ': ' + new Intl.NumberFormat('es-CO').format(context.parsed.y) + ' COP';
+              }
+            }
+          }
+        },
+        datalabels: { display: false }
+      }
+    };
+  }
+
+  /**
+   * Carga datos históricos para las gráficas evolutivas
+   */
+  loadSgpHistoricoDataForEvolution(): void {
+    console.log("loadSgpHistoricoDataForEvolution...");
+    const aniosString = this.yearsRange.join(',');
+    
+    this.sicodisApiService.getSgpResumenHistorico({ anios: aniosString }).subscribe({
+      next: (result: any) => {
+        console.log('Historico data for evolution:', result);
+        this.initializeChartsWithHistoricoData(result);
+      },
+      error: (error) => {
+        console.error('Error loading SGP historico for evolution:', error);
+        // Usar datos generados en caso de error
+        this.initializeChartsWithGeneratedData();
+      }
+    });
+  }
+
+  generateGrowingData(startValue: number, endValue: number, length: number): number[] {
+    const data = [];
+    const increment = (endValue - startValue) / (length - 1);
+    for (let i = 0; i < length; i++) {
+      const randomFactor = 0.9 + Math.random() * 0.2; // Variación aleatoria ±10%
+      data.push(Math.round((startValue + increment * i) * randomFactor));
+    }
+    data[data.length - 1] = endValue; // Asegurar valor final
+    return data;
+  }
+
+  generateVariationData(baseData: number[]): number[] {
+    const variations = [5]; // Primera variación
+    for (let i = 1; i < baseData.length; i++) {
+      const variation = ((baseData[i] - baseData[i-1]) / baseData[i-1]) * 100;
+      variations.push(Math.round(variation));
+    }
+    return variations;
+  }
+
+  /**
+   * Calcula la variación anual porcentual entre años consecutivos
+   * @param baseData Array de datos base para calcular variaciones
+   * @returns Array de variaciones porcentuales
+   */
+  calculateVariationData(baseData: number[]): number[] {
+    const variations: number[] = [0]; // Primer valor nulo (no hay año anterior)
+    
+    for (let i = 1; i < baseData.length; i++) {
+      const prevValue = baseData[i-1];
+      const currentValue = baseData[i];
+      
+      if (prevValue === 0 || currentValue === 0) {
+        // Si algún valor es 0, no se puede calcular variación válida
+        variations.push(0);
+      } else {
+        const variation = ((currentValue - prevValue) / prevValue) * 100;
+        // Redondear a 2 decimales
+        variations.push(Math.round(variation * 100) / 100);
+      }
+    }
+    
+    return variations;
+  }
+
+  initializeChartsWithHistoricoData(historicoData: any[]): void {
+    // Filtrar solo los registros con id_concepto = '99' que corresponden al total
+    let totalData: any = {};
+    historicoData.forEach((item: any) => {
+      if (item.id_concepto === '99'){        
+        totalData[item.annio] = {corrientes: item.total_corrientes, constantes: item.total_constantes};        
+      }
+    });
+
+    const sgpDataCorrientes = this.yearsRange.map(year => 
+      totalData[parseInt(year)]?.corrientes || 0
+    );
+    
+    // Calcular la variación anual basada en los datos reales
+    const variationDataCorrientes = this.calculateVariationData(sgpDataCorrientes);
+
+    console.log('SGP Data Corrientes:', sgpDataCorrientes);
+    console.log('Variation Data Corrientes:', variationDataCorrientes);
+
+    this.chartData1 = {
+      labels: this.yearsRange,
+      datasets: [
+        {
+          type: 'line',
+          label: 'Variación Anual',
+          data: variationDataCorrientes,
+          borderColor: '#0f4987',
+          fill: false,
+          yAxisID: 'y1'
+        },
+        {
+          type: 'bar',
+          label: 'SGP',
+          data: sgpDataCorrientes,
+          backgroundColor: '#FF8C00',
+          yAxisID: 'y'
+        }
+      ]
+    };
+
+    this.initChart3WithHistoricoData(totalData);
+  }
+
+  initializeChartsWithGeneratedData(): void {
+    const sgpDataCorrientes = this.generateGrowingData(20000, 85000, this.yearsRange.length);
+    const variationDataCorrientes = this.generateVariationData(sgpDataCorrientes);
+
+    this.chartData1 = {
+      labels: this.yearsRange,
+      datasets: [
+        {
+          type: 'line',
+          label: 'Variación Anual',
+          data: variationDataCorrientes,
+          borderColor: '#0f4987',
+          fill: false,
+          yAxisID: 'y1'
+        },
+        {
+          type: 'bar',
+          label: 'SGP',
+          data: sgpDataCorrientes,
+          backgroundColor: '#FF8C00',
+          yAxisID: 'y'
+        }
+      ]
+    };
+
+    this.initChart3();
+  }
+
+  initChart3WithHistoricoData(dataByYear: any): void {
+    const sgpData = this.yearsRange.map(year => 
+      dataByYear[parseInt(year)]?.constantes || 0
+    );
+    
+    // Calcular la variación anual basada en los datos reales de precios constantes
+    const variationData = this.calculateVariationData(sgpData);
+
+    console.log('SGP Data Constantes:', sgpData);
+    console.log('Variation Data Constantes:', variationData);
+
+    this.chartData3 = {
+      labels: this.yearsRange,
+      datasets: [
+        {
+          type: 'line',
+          label: 'Variación Anual',
+          data: variationData,
+          borderColor: '#FF1493',
+          backgroundColor: 'rgba(255, 20, 147, 0.1)',
+          fill: false,
+          yAxisID: 'y1'
+        },
+        {
+          type: 'bar',
+          label: 'SGP',
+          data: sgpData,
+          backgroundColor: '#0f4987',
+          borderColor: '#007BFF',
+          yAxisID: 'y'
+        }        
+      ]
+    };
+  }
+
+  initChart3(): void {
+    const sgpData = this.generateGrowingData(15000, 78000, this.years2005to2025.length);
+    const variationData = this.generateVariationData(sgpData);
+
+    this.chartData3 = {
+      labels: this.years2005to2025,
+      datasets: [
+        {
+          type: 'line',
+          label: 'Variación Anual',
+          data: variationData,
+          borderColor: '#FF1493',
+          backgroundColor: 'rgba(255, 20, 147, 0.1)',
+          fill: false,
+          yAxisID: 'y1'
+        },
+        {
+          type: 'bar',
+          label: 'SGP',
+          data: sgpData,
+          backgroundColor: '#0f4987',
+          borderColor: '#007BFF',
+          yAxisID: 'y'
+        }        
+      ]
+    };
   }
 }

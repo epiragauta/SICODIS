@@ -88,8 +88,16 @@
     <div class="single-chart-container">
       <p-card class="chart-card">
         <ng-template pTemplate="header">
-          <h3 class="chart-title">Evolución Histórica SGP por Conceptos</h3>
-          <p class="chart-subtitle">Distribución por conceptos principales - Precios Corrientes (millones de pesos)</p>
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <h3 class="chart-title">Evolución Histórica SGP por Conceptos</h3>
+              <p class="chart-subtitle">Distribución por conceptos principales - Precios Corrientes (millones de pesos)</p>
+            </div>
+            <div *ngIf="isLoadingChart" style="display: flex; align-items: center; gap: 8px;">
+              <i class="pi pi-spin pi-spinner" style="font-size: 1.2rem; color: #0f4987;"></i>
+              <span style="color: #0f4987; font-size: 0.9rem;">Actualizando gráfica...</span>
+            </div>
+          </div>
         </ng-template>
         <div class="chart-container">
           <p-chart 
@@ -106,18 +114,39 @@
   <!-- Table section - Segunda sección -->
   <div class="table-section">
     <div class="card">
+      <!-- Loading indicator -->
+      <div *ngIf="isLoadingTable" style="padding: 1rem; text-align: center;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <i class="pi pi-spin pi-spinner" style="font-size: 1.2rem; color: #0f4987;"></i>
+          <span style="color: #0f4987; font-size: 0.9rem;">Actualizando tabla...</span>
+        </div>
+      </div>
+      
+      <!-- Scroll horizontal indicator -->
+      <div *ngIf="selectedYears.length > 5 && treeTableData.length > 0" style="padding: 0.5rem; background: #e3f2fd; border-radius: 4px; margin-bottom: 0.5rem; text-align: center;">
+        <i class="pi pi-arrow-right-arrow-left" style="color: #1976d2; margin-right: 0.5rem;"></i>
+        <span style="color: #1976d2; font-size: 0.85rem;">Desliza horizontalmente para ver todas las vigencias ({{ selectedYears.length }} seleccionadas)</span>
+      </div>
+
       <!-- Debug info -->
-      <div *ngIf="treeTableData.length === 0" style="padding: 1rem; text-align: center; color: #666;">
+      <div *ngIf="treeTableData.length === 0 && !isLoadingTable" style="padding: 1rem; text-align: center; color: #666;">
         <p>No hay datos para mostrar. Años seleccionados: {{ selectedYears.join(', ') }}</p>
         <p>Total de nodos: {{ treeTableData.length }}</p>
       </div>
       
-      <p-treetable [value]="treeTableData" 
+      <p-treetable #treeTable
+                   [value]="treeTableData" 
                    dataKey="key" 
                    [scrollable]="true"
                    [scrollHeight]="treeTableData && treeTableData.length > 5 ? '400px' : 'auto'"
-                   [styleClass]="'historico-treetable'"
+                   [styleClass]="selectedYears.length > 5 ? 'historico-treetable horizontal-scroll' : 'historico-treetable'"
+                   [tableStyle]="{'min-width':'20rem'}"
                    *ngIf="treeTableData.length > 0">
+        <ng-template>
+          <colgroup>
+            <col *ngFor="let year of selectedYears" style="width: 500px;">
+          </colgroup>
+        </ng-template>
         <ng-template pTemplate="header">
           <tr>
             <th class="table-header concept-header">Concepto</th>
@@ -149,7 +178,6 @@
           </tr>
         </ng-template>
       </p-treetable>
-      
       <!-- Notas -->
       <div class="table-notes">
         <h4>NOTAS</h4>
@@ -167,6 +195,40 @@
                 (click)="exportToExcel()">
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- Sección E: Gráficas de barras -->
+  <div class="bar-charts" style="display: block;">
+    <div class="chart-container">
+      <p-card>
+        <ng-template pTemplate="header">
+          <h2>Evolución SGP - Precios Corrientes</h2>
+          <p class="chart-subtitle">
+            El crecimiento promedio anual en términos reales es del 4% anual durante los últimos 20 años (2005 – 2025).
+            La información se presenta en miles de millones de pesos corrientes.
+          </p>
+        </ng-template>
+        <p-chart type="bar" [data]="chartData1" [options]="mixedChartOptions"></p-chart>
+      </p-card>
+    </div>
+    <div class="chart-container">
+      <p-card>
+        <ng-template pTemplate="header">
+          <h2>Evolución SGP – Precios Constantes</h2>
+          <p class="chart-subtitle">
+            El crecimiento promedio anual en términos reales es del 4% anual durante los últimos 20 años (2005 – 2025).
+            La información se presenta en miles de millones de pesos constantes.
+          </p>
+        </ng-template>
+        <p-chart type="bar" [data]="chartData3" [options]="barChartOptions"></p-chart>
+      </p-card>
+    </div>
+    <div class="final-notes-container">
+      <strong>NOTA</strong>
+      <p class="final-note">
+        <strong>(1)</strong> Cifras en pesos constantes 2025.
+      </p>      
     </div>
   </div>
 </div>

@@ -91,40 +91,6 @@
     </p>
   </div>
 
-  <!-- Sección E: Gráficas de barras -->
-  <div class="bar-charts" style="display: none;">
-    <div class="chart-container">
-      <p-card>
-        <ng-template pTemplate="header">
-          <h2>Evolución SGP - Precios Corrientes</h2>
-          <p class="chart-subtitle">
-            El crecimiento promedio anual en términos reales es del 4% anual durante los últimos 20 años (2005 – 2025).
-            La información se presenta en miles de millones de pesos corrientes.
-          </p>
-        </ng-template>
-        <p-chart type="bar" [data]="chartData1" [options]="mixedChartOptions"></p-chart>
-      </p-card>
-    </div>
-    <div class="chart-container">
-      <p-card>
-        <ng-template pTemplate="header">
-          <h2>Evolución SGP – Precios Constantes</h2>
-          <p class="chart-subtitle">
-            El crecimiento promedio anual en términos reales es del 4% anual durante los últimos 20 años (2005 – 2025).
-            La información se presenta en miles de millones de pesos constantes.
-          </p>
-        </ng-template>
-        <p-chart type="bar" [data]="chartData3" [options]="barChartOptions"></p-chart>
-      </p-card>
-    </div>
-    <div class="final-notes-container">
-      <strong>NOTA</strong>
-      <p class="final-note">
-        <strong>(1)</strong> Cifras en pesos constantes 2025.
-      </p>      
-    </div>
-
-  </div>
 
   <!-- Sección F: Herramientas y recursos -->
   <div class="herramientas-recursos-section">
