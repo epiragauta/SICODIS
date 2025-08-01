@@ -19,7 +19,6 @@ import Chart from 'chart.js/auto';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { departamentos } from '../../data/departamentos';
 import { SicodisApiService } from '../../services/sicodis-api.service';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-reports-sgp',
@@ -171,32 +170,14 @@ export class ReportsSgpComponent implements OnInit {
     }
   ];
 
-  distributionData: any = [
-    {
-      b: "2024-01-15",
-      c: "DD SGP-01-2024",
-      g: "12345678901234"
-    },
-    {
-      b: "2024-02-15", 
-      c: "DD SGP-02-2024",
-      g: "23456789012345"
-    },
-    {
-      b: "2024-03-15",
-      c: "DD SGP-03-2024", 
-      g: "34567890123456"
-    }
-  ];
+  distributionData: any = [];
 
   distributionName = "";
   distributionDate = "";
   distributionFiles: any = [];
 
-  entidadTerritorialUrl = '/assets/data/entidad_territorial.json';
-  entidadTerritorialData: any[] = [];
 
-  constructor(private renderer: Renderer2, private sicodisApiService: SicodisApiService, private http: HttpClient) {}
+  constructor(private renderer: Renderer2, private sicodisApiService: SicodisApiService) {}
 
   ngOnInit(): void {
     this.infoToResume = this.infoResume.filter(
@@ -210,14 +191,7 @@ export class ReportsSgpComponent implements OnInit {
 
     // Cargar datos de la tabla
     this.loadSgpData();
-
-    fetch(this.entidadTerritorialUrl)
-      .then((response: any) => response.json())
-      .then((data: any) => {
-        this.entidadTerritorialData = data;        
-        console.log('Entidad Territorial Data:', this.entidadTerritorialData);
-      })
-      .catch((error: any) => console.error('Error loading data:', error)); 
+    this.loadDistributionData(); 
 
     console.log('Component initialized');
   }
@@ -403,6 +377,7 @@ export class ReportsSgpComponent implements OnInit {
     
     // Recargar datos de la tabla
     this.loadSgpData();
+    this.loadDistributionData();
     this.loadDataForYear();
   }
 
@@ -529,14 +504,14 @@ export class ReportsSgpComponent implements OnInit {
   showDialogFiles(data: any): void {
     this.visibleDlgFiles = true;
     this.distributionFiles = [];
-    this.distributionName = data.c;
-    this.distributionDate = data.b;
+    this.distributionName = data.nombre;
+    this.distributionDate = data.fecha_distribucion;
     this.distributionFiles.push({
-      desc: data.d || data.c,
-      value: data.c
+      desc: data.descripcion || data.nombre,
+      value: data.nombre
     });
     this.distributionFiles.push({
-      desc: "Anexos 1 al 3 DD SGP-94-2024",
+      desc: "Anexos 1 al 3 " + data.nombre,
       value: "Anexos"
     });
   }
@@ -754,6 +729,32 @@ export class ReportsSgpComponent implements OnInit {
   }
 
   /**
+   * Carga los datos de distribuciones del SGP usando el API
+   */
+  loadDistributionData(): void {
+    const selectedYear = parseInt(this.selected);
+    
+    this.sicodisApiService.getSgpResumenDistribuciones(selectedYear).subscribe({
+      next: (result: any[]) => {
+        console.log('Datos de distribuciones del API:', result);
+        this.distributionData = result.map(item => ({
+          id_distribucion: item.id_distribucion,
+          fecha_distribucion: item.fecha_distribucion,
+          nombre: item.nombre,
+          tipo_distribucion: item.tipo_distribucion,
+          anio: item.anio,
+          descripcion: item.descripcion,
+          total_distribucion: item.total_distribucion
+        }));
+      },
+      error: (error) => {
+        console.error('Error loading distribution data from API:', error);
+        this.distributionData = [];
+      }
+    });
+  }
+
+  /**
    * Obtiene los conceptos principales (>2% del total y que no sean hijos)
    */
   getMainConcepts(): any[] {
@@ -793,5 +794,16 @@ export class ReportsSgpComponent implements OnInit {
    */
   showFilesDialog(): void {
     this.visibleDlgFiles = true;
+  }
+
+  /**
+   * Trunca el texto a un número máximo de caracteres
+   * @param text - Texto a truncar
+   * @param maxLength - Longitud máxima (por defecto 100)
+   * @returns Texto truncado con "..." si excede la longitud
+   */
+  truncateText(text: string, maxLength: number = 100): string {
+    if (!text) return '';
+    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
   }
 }

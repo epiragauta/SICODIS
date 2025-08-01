@@ -155,18 +155,28 @@
              [tableStyle]="{ 'min-width': '50rem' }">
       <ng-template #header>
         <tr>
+          <th class="table-header">ID</th>
           <th class="table-header">Fecha Distribución</th>
-          <th class="table-header">Documento</th>
+          <th class="table-header">Nombre</th>
+          <th class="table-header">Tipo</th>
+          <th class="table-header">Año</th>
           <th class="table-header">Monto Total</th>
+          <th class="table-header">Descripción</th>          
           <th class="table-header">Acciones</th>
         </tr>
       </ng-template>
       <ng-template #body let-data>
         <tr>
-          <td>{{ data.b }}</td>
-          <td>{{ data.c }}</td>
-          <td>{{ data.g | numberFormat }}</td>
-          <td>
+          <td>{{ data.id_distribucion }}</td>
+          <td>{{ data.fecha_distribucion }}</td>
+          <td>{{ data.nombre }}</td>
+          <td>{{ data.tipo_distribucion }}</td>
+          <td>{{ data.anio }}</td>
+          <td>{{ data.total_distribucion | numberFormat }}</td>
+          <td [pTooltip]="data.descripcion" tooltipPosition="top" showDelay="500" hideDelay="200">
+            {{ truncateText(data.descripcion, 60) }}
+          </td>          
+          <td style="white-space: nowrap;">
             <button pButton type="button" icon="pi pi-file-pdf" class="p-button-danger p-button-sm" 
                     (click)="showDetails(data)" pTooltip="Ver detalles PDF"></button>
             <button pButton type="button" icon="pi pi-file-excel" class="p-button-success p-button-sm" 
