@@ -25,8 +25,7 @@ import { SgpInicioComponent } from './components/sgp-inicio/sgp-inicio.component
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
-    { path: 'reports-sgr', component: ReportsSgrComponent },
-    { path: 'reports-sgp', component: ReportsSgpComponent },
+    { path: 'reports-sgr', component: ReportsSgrComponent },    
     { path: 'reports-sgp-dist', component: ReportsSgpDistComponent },
     { path: 'reports-sgp-budget', component: ReportsSgpBudgetComponent },
     { path: 'reports-sgr-bienal', component: ReportsSgrBienalComponent },
@@ -46,6 +45,7 @@ export const routes: Routes = [
     { path: 'home-sgp', component: HomeSgpComponent},
     { path: 'sgp-inicio', component: SgpInicioComponent},
     { path: 'sgp-resguardos', component: ReportsSgpResguardosComponent},
-    { path: 'historico-sgp', component: HistoricoSgpComponent}
+    { path: 'sgp-historico', component: HistoricoSgpComponent},
+    { path: 'sgp-documentos-anexos', component: ReportsSgpComponent }
 
 ];

@@ -90,14 +90,7 @@
 
     // Estilos para scroll horizontal cuando hay muchas vigencias
     &.historico-treetable {
-      .p-treetable-scrollable-view {
-        width: 1199px; // Ancho inicial base
-      }
-      
-      &.horizontal-scroll {
-        .p-treetable-scrollable-body {
-          overflow-x: auto;
-        }
+      &.horizontal-scroll {        
         .p-treetable-scrollable-wrapper {
           overflow-x: auto;
         }

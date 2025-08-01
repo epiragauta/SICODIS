@@ -2,13 +2,8 @@
   <div class="gradient-banner">    
     <div class="gradient-overlay"></div>
     <div class="banner-content">
-      <h2>Presupuesto Sistema General de Participaciones, documentos y anexos</h2>
-        <p>Este módulo presenta los recursos presupuestados en cada vigencia por las entidades 
-          territoriales por concepto del SGP, recursos que son girados por los Ministerios competentes 
-          entre enero y diciembre de la vigencia seleccionada; y corresponden a la última doceava de 
-          la vigencia anterior y a las once doceavas de la vigencia seleccionada (excepto educación que 
-          corresponde a doce doceavas). 
- 	 	 	 	</p>
+      <h2>SGP Documentos y anexos - Sistema General de Participaciones (SGP)</h2>
+        <p>Consulta y descarga los documentos y anexos oficiales de distribución. </p>
     </div>
   </div>
   
@@ -69,10 +64,16 @@
       <!-- Botón Actualizar -->
       <div class="p-field update-button">
         <button pButton type="button" 
-                icon="pi pi-refresh" 
-                label="Actualizar" 
-                class="p-button-primary"
+                icon="pi pi-filter" 
+                label="Aplicar filtros" 
+                class="p-button-primary btn-apply-filters"
                 (click)="updateData()">
+        </button>
+        <button pButton type="button" 
+                icon="pi pi-eraser" 
+                label="Limpiar filtros" 
+                class="p-button-secondary"
+                (click)="clearFilters()">
         </button>
       </div>
     </div>
@@ -80,89 +81,68 @@
 
   <!-- Sección principal con resumen y tabla -->
   <div class="resume">
-    <p class="title-graph">Resumen de la distribución del presupuesto vigencia {{selected}}</p>
     <div class="main-grid">
-      <!-- Columna izquierda: Métricas -->
-      <div class="metrics-column">
-        <div class="col">
-          <h3>Presupuesto SGP</h3>
-          <p>{{infoToResume.budget | numberFormat}}</p>
-        </div>
-        <div class="col">
-          <h3>Recursos distribuidos hasta la fecha</h3>
-          <p>{{infoToResume.budgetDistributed | numberFormat}}</p>
-        </div>
-        <div class="col">
-          <h3>Recursos pendientes por distribuir</h3>
-          <p>{{infoToResume.pending | numberFormat}}</p>
-        </div>
-        <div class="col gauge-column">
-          <h3>Avance de distribución</h3>
-          <canvas id="gaugeChart"></canvas>
+      
+      <!-- Columna izquierda: Tabla -->
+      <div class="table-column">
+        <div class="card">
+          <p-treetable [value]="treeTableData" 
+                       dataKey="key" 
+                       [scrollable]="true"
+                       [scrollHeight]="treeTableData && treeTableData.length > 5 ? '400px' : 'auto'"
+                       styleClass="reports-treetable"
+                       [tableStyle]="{'min-width':'40rem'}"
+                       *ngIf="treeTableData.length > 0">
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="table-header concept-header">Concepto</th>
+                <th class="table-header vigencia-header">
+                  Vigencia ({{ selected }})
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+              <tr>
+                <td class="concept-cell">
+                  <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                  <strong>{{ rowData.concepto }}</strong>
+                </td>
+                <td class="vigencia-cell">
+                  {{ rowData.vigencia | numberFormat }}
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="footer">
+              <tr class="total-row">
+                <td class="concept-cell"><strong>Total General</strong></td>
+                <td class="vigencia-cell">
+                  <strong>{{ getTreeTableYearTotal() | numberFormat }}</strong>
+                </td>
+              </tr>
+            </ng-template>
+          </p-treetable>
+          
+          <!-- Mensaje cuando no hay datos -->
+          <div *ngIf="treeTableData.length === 0" style="padding: 1rem; text-align: center; color: #666;">
+            <p>No hay datos para mostrar para la vigencia: {{ selected }}</p>
+          </div>
         </div>
       </div>
 
-      <!-- Columna derecha: Tabla -->
-      <div class="table-column">
-        <div class="card">
-          <p-table [value]="dataSource2" 
-                   dataKey="desc" 
-                   stripedRows 
-                   [tableStyle]="{ 'min-width': '40rem' }" 
-                   [expandedRowKeys]="expandedRows" 
-                   [styleClass]="tableClass">
-            <ng-template #header>
-              <tr>
-                <th class="table-header" style="width: 5rem"></th>
-                <th pSortableColumn="desc" class="table-header">Concepto<p-sortIcon field="desc" /></th>
-                <th pSortableColumn="value" class="table-header">Total<p-sortIcon field="value" /></th>
-              </tr>
-            </ng-template>
-            <ng-template #body let-data let-expanded="expanded">
-              <tr>
-                <td>
-                  <p-button *ngIf="data.detail.length > 0" 
-                            type="button" 
-                            pRipple 
-                            [pRowToggler]="data" 
-                            [text]="true" 
-                            [rounded]="true" 
-                            [plain]="true" 
-                            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
-                  </p-button>
-                </td>
-                <td>{{ data.desc }}</td>
-                <td>{{ data.value | numberFormat }}</td>
-              </tr>
-            </ng-template>
-            <ng-template #rowexpansion let-data>
-              <tr>
-                <td colspan="3">
-                  <div class="p-3">
-                    <p-table [value]="data.detail" dataKey="desc" [tableStyle]="{ 'min-width': '30rem' }">
-                      <ng-template #header>
-                        <tr>
-                          <th class="table-header">Detalle</th>
-                          <th class="table-header">Valor</th>
-                        </tr>
-                      </ng-template>
-                      <ng-template #body let-detail>
-                        <tr>
-                          <td>{{ detail.desc }}</td>
-                          <td>{{ detail.value | numberFormat }}</td>
-                        </tr>
-                      </ng-template>
-                    </p-table>
-                  </div>
-                </td>
-              </tr>
-            </ng-template>
-          </p-table>
-        </div>
-        <div class="button-export">
-          <button pButton type="button" icon="pi pi-download" label="Exportar a Excel" class="p-button-success"></button>
+      <!-- Columna derecha: Gráfica de conceptos principales -->
+      <div class="metrics-column">        
+        <div class="col chart-column">
+          <h3>Conceptos para la vigencia {{selected}}</h3>
+          <div class="chart-container">
+            <canvas id="barChart"></canvas>
+          </div>
         </div>
       </div>
+    </div>
+
+    <!-- Botón Descargar Excel centrado -->
+    <div class="button-export-center">
+      <button pButton type="button" icon="pi pi-download" label="Descargar Excel" class="p-button-primary"></button>
     </div>
   </div>
 
@@ -175,9 +155,9 @@
              [tableStyle]="{ 'min-width': '50rem' }">
       <ng-template #header>
         <tr>
-          <th class="table-header">Fecha</th>
+          <th class="table-header">Fecha Distribución</th>
           <th class="table-header">Documento</th>
-          <th class="table-header">Valor</th>
+          <th class="table-header">Monto Total</th>
           <th class="table-header">Acciones</th>
         </tr>
       </ng-template>
@@ -187,10 +167,10 @@
           <td>{{ data.c }}</td>
           <td>{{ data.g | numberFormat }}</td>
           <td>
-            <button pButton type="button" icon="pi pi-eye" class="p-button-info p-button-sm" 
-                    (click)="showDetails(data)" pTooltip="Ver detalles"></button>
-            <button pButton type="button" icon="pi pi-file" class="p-button-secondary p-button-sm" 
-                    (click)="showFiles(data)" pTooltip="Ver archivos" style="margin-left: 0.5rem;"></button>
+            <button pButton type="button" icon="pi pi-file-pdf" class="p-button-danger p-button-sm" 
+                    (click)="showDetails(data)" pTooltip="Ver detalles PDF"></button>
+            <button pButton type="button" icon="pi pi-file-excel" class="p-button-success p-button-sm" 
+                    (click)="showFiles(data)" pTooltip="Ver archivos Excel" style="margin-left: 0.5rem;"></button>
           </td>
         </tr>
       </ng-template>

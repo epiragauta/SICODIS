@@ -18,20 +18,35 @@
   }
 
   // Estilos para la tabla de PrimeNG
-  .p-datatable {
+  .p-datatable,
+  .p-treetable {
+    font-size: 0.8rem;
+    
     .p-datatable-header {
       background: var(--p-surface-50);
       border: 1px solid var(--p-content-border-color);
+      padding: 0.5rem;
     }
 
-    .p-datatable-thead > tr > th {
+    .p-datatable-thead > tr > th,
+    .p-treetable-thead > tr > th {
       background: var(--p-surface-100);
       color: var(--p-text-color);
       font-weight: 600;
       border-bottom: 2px solid var(--p-primary-color);
+      padding: 0.5rem 0.75rem !important;
+      font-size: 0.8rem;
     }
 
-    .p-datatable-tbody > tr {
+    .p-datatable-tbody > tr > td,
+    .p-treetable-tbody > tr > td {
+      padding: 0.5rem 0.75rem !important;
+      font-size: 0.8rem;
+      vertical-align: middle;
+    }
+
+    .p-datatable-tbody > tr,
+    .p-treetable-tbody > tr {
       &:nth-child(even) {
         background: var(--p-surface-50);
       }
@@ -39,6 +54,42 @@
       &:hover {
         background: var(--p-highlight-bg);
         color: var(--p-highlight-text-color);
+      }
+    }
+
+    .total-row {
+      background: var(--p-primary-50) !important;
+      color: var(--p-primary-900) !important;
+      font-weight: 600;
+      
+      td {
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.8rem !important;
+        
+        &.vigencia-cell {
+          text-align: right !important;
+          font-family: 'Courier New', monospace;
+        }
+      }
+      
+      &:hover {
+        background: var(--p-primary-100) !important;
+      }
+    }
+  }
+
+  // Estilos específicos para TreeTable
+  .reports-treetable {
+    .p-treetable-thead > tr > th {
+      &.vigencia-header {
+        text-align: right;
+      }
+    }
+    
+    .p-treetable-tbody > tr > td {
+      &.vigencia-cell {
+        text-align: right;
+        font-family: 'Courier New', monospace;
       }
     }
   }
@@ -57,6 +108,8 @@
 }
 
 .container {
+  max-width: 1260px;
+  margin: 0 auto;
   padding: 1rem;
   background: var(--p-surface-0);
   min-height: 100vh;
@@ -82,7 +135,7 @@
       height: 100%;
       background: linear-gradient(
         90deg,
-        #404a55 0%,           /* Color sólido al inicio */
+        #e8ebeeba 0%,           /* Color sólido al inicio */
         rgba(255, 255, 255, 0.01) 100%  /* 80% de transparencia (20% de opacidad) al final */
       );
       z-index: 1;
@@ -98,18 +151,19 @@
       color: white;   /* Texto blanco para mejor contraste */
       
       h2 {
-        font-size: 1.5rem;
+        font-size: 1.75rem;
         margin-top: 3.75rem;
         margin-bottom: 2.5rem;
-        color: #e4e6eb;
         font-weight: bold;
-        text-shadow: 1px 1px 3px rgba(9, 8, 78, 0.92);
+        color: #3366cc;        
+        width: 80%;
       }
       
       p {
-        font-size: 1.15rem;
+        font-size: 1.25rem;
         margin-bottom: 2rem;
         color: #f4f1f1;        
+        text-shadow: 1px 1px 3px rgba(9, 8, 78, 0.92);
         width: 80%;
         font-weight: 500;
       }
@@ -118,7 +172,7 @@
 
 // Panel de filtros
 .filters-panel {
-  background: var(--p-surface-card);
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 2rem;
@@ -141,6 +195,20 @@
         min-width: 220px;
       }
 
+      .p-floatlabel {
+        width: 100%;
+        
+        &.w-full.md\:w-56 {
+          width: 100% !important;
+          max-width: 100% !important;
+        }
+        
+        .p-select,
+        .p-multiselect {
+          width: 100% !important;
+        }
+      }
+
       &.update-button {
         flex: 0 0 auto;
         min-width: auto;
@@ -149,6 +217,11 @@
           height: 42px; // Alinear con la altura de los selects
           padding: 0 1.5rem;
         }
+
+        .btn-apply-filters{
+          margin-right: 30px;
+        }
+
       }
     }
   }
@@ -176,14 +249,6 @@
   padding: 1.5rem;
   margin-bottom: 2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-  .title-graph {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--p-text-color);
-    margin-bottom: 1.5rem;
-    text-align: center;
-  }
 
   .main-grid {
     display: grid;
@@ -223,14 +288,23 @@
         margin: 0;
       }
 
-      &.gauge-column {
+      &.chart-column {
         grid-column: span 2;
         
-        #gaugeChart {
-          width: 200px;
-          height: 100px;
+        .chart-container {
+          width: 100%;
+          height: 300px;
           margin: 1rem auto 0;
-          display: block;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          
+          #barChart {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100%;
+            max-height: 100%;
+          }
         }
       }
     }
@@ -238,16 +312,31 @@
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
       
-      .col.gauge-column {
+      .col.chart-column {
         grid-column: span 1;
+        
+        .chart-container {
+          height: 200px;
+        }
       }
     }
   }
 
   .table-column {
-    .button-export {
-      margin-top: 1rem;
-      text-align: right;
+    // Removed button-export styles as button is now outside
+  }
+
+  // Botón centrado fuera de las columnas
+  .button-export-center {
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0;
+    
+    .p-button {
+      padding: 0.75rem 1.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      min-width: 180px;
     }
   }
 }
