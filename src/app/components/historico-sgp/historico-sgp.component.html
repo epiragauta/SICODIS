@@ -88,23 +88,26 @@
     <div class="single-chart-container">
       <p-card class="chart-card">
         <ng-template pTemplate="header">
-          <div style="display: flex; align-items: center; justify-content: space-between;">
-            <div>
-              <h3 class="chart-title">Evolución Histórica SGP por Conceptos</h3>
-              <p class="chart-subtitle">Distribución por conceptos principales - Precios Corrientes (millones de pesos)</p>
-            </div>
-            <div *ngIf="isLoadingChart" style="display: flex; align-items: center; gap: 8px;">
-              <i class="pi pi-spin pi-spinner" style="font-size: 1.2rem; color: #0f4987;"></i>
-              <span style="color: #0f4987; font-size: 0.9rem;">Actualizando gráfica...</span>
-            </div>
+          <div>
+            <h3 class="chart-title">Evolución Histórica SGP por Conceptos</h3>
+            <p class="chart-subtitle">Distribución por conceptos principales - Precios Corrientes (millones de pesos)</p>
           </div>
         </ng-template>
-        <div class="chart-container">
+        <div class="chart-container" style="position: relative;">
+          <div *ngIf="isLoadingChart" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10;">
+            <p-progress-spinner 
+              [style]="{'width': '50px', 'height': '50px'}" 
+              strokeWidth="4" 
+              fill="transparent" 
+              animationDuration="1s">
+            </p-progress-spinner>
+          </div>
           <p-chart 
             type="bar" 
             [data]="stackedBarChartData" 
             [options]="stackedBarChartOptions"
-            height="400px" width="800px">
+            height="400px" width="800px"
+            [style]="{'opacity': isLoadingChart ? '0.3' : '1'}">
           </p-chart>
         </div>
       </p-card>

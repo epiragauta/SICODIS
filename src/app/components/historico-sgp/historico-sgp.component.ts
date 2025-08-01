@@ -15,6 +15,7 @@ import { MultiSelect, MultiSelectChangeEvent } from 'primeng/multiselect';
 import { FloatLabel } from 'primeng/floatlabel';
 import { ChartModule } from 'primeng/chart';
 import { CardModule } from 'primeng/card';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TreeNode, MenuItem } from 'primeng/api';
 import { Chart, registerables } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -41,6 +42,7 @@ import { forkJoin } from 'rxjs';
     FloatLabel,
     ChartModule,
     CardModule,
+    ProgressSpinnerModule,
     NumberFormatPipe
   ],
   templateUrl: './historico-sgp.component.html',
