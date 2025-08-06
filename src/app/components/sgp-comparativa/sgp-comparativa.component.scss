@@ -1,0 +1,775 @@
+:host {
+  // Force dual chart layout with CSS Grid
+  .dual-chart-container {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    width: 100% !important;
+    
+    @media (max-width: 1200px) {
+      grid-template-columns: 1fr;
+    }
+    
+    .chart-column {
+      width: 100%;
+      
+      &:first-child {
+        .chart-card {
+          border-top: 4px solid #447721;
+          
+          .p-card-header::after {
+            background: linear-gradient(90deg, transparent, #447721, transparent);
+          }
+          
+          .chart-title {
+            color: #447721;
+            font-size: 1.25rem;
+            font-weight: bold;
+          }
+        }
+      }
+      
+      &:last-child {
+        .chart-card {
+          border-top: 4px solid #0f4987;
+          
+          .p-card-header::after {
+            background: linear-gradient(90deg, transparent, #0f4987, transparent);
+          }
+          
+          .chart-title {
+            color: #0f4987;
+            font-size: 1.25rem;
+            font-weight: bold;
+          }
+        }
+      }
+      
+      p-card {
+        width: 100% !important;
+        height: 100% !important;
+        
+        .p-card {
+          width: 100% !important;
+          height: 100% !important;
+        }
+      }
+    }
+  }
+}
+
+:host ::ng-deep {
+  // Force center alignment for chart headers
+  .chart-card .p-card-header {
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    
+    div {
+      width: 100% !important;
+      text-align: center !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      
+      h3, p {
+        text-align: center !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        width: 100% !important;
+      }
+    }
+  }
+
+  // Estilos para los componentes de PrimeNG
+  .p-select-label {
+    padding: .425rem !important;
+    font-size: 0.875rem;
+  }
+
+  .p-button {
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
+
+  // Estilos para la tabla de PrimeNG
+  .p-datatable,
+  .p-treetable {
+    font-size: 0.8rem;
+    
+    .p-datatable-header {
+      background: var(--p-surface-50);
+      border: 1px solid var(--p-content-border-color);
+      padding: 0.5rem;
+    }
+
+    .p-datatable-thead > tr > th,
+    .p-treetable-thead > tr > th {
+      background: var(--p-surface-100);
+      color: var(--p-text-color);
+      font-weight: 600;
+      border-bottom: 2px solid var(--p-primary-color);
+      padding: 0.5rem 0.75rem !important;
+      font-size: 0.8rem;
+    }
+
+    .p-datatable-tbody > tr > td,
+    .p-treetable-tbody > tr > td {
+      padding: 0.5rem 0.75rem !important;
+      font-size: 0.8rem;
+      vertical-align: middle;
+      
+      &.vigencia-cell {
+        text-align: right !important;
+      }
+    }
+
+    .p-datatable-tbody > tr,
+    .p-treetable-tbody > tr {
+      &:nth-child(even) {
+        background: var(--p-surface-50);
+      }
+
+      &:hover {
+        background: var(--p-highlight-bg);
+        color: var(--p-highlight-text-color);
+      }
+    }
+
+    .total-row {
+      background: var(--p-primary-50) !important;
+      color: var(--p-primary-900) !important;
+      font-weight: 600;
+      
+      td {
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.8rem !important;
+        
+        &.vigencia-cell {
+          text-align: right !important;          
+        }
+      }
+      
+      &:hover {
+        background: var(--p-primary-100) !important;
+      }
+    }
+
+    // Hacer la tabla más compacta
+    &.p-datatable-sm {
+      .p-datatable-thead > tr > th {
+        padding: 0.375rem 0.5rem !important;
+      }
+      
+      .p-datatable-tbody > tr > td {
+        padding: 0.375rem 0.5rem !important;
+      }
+    }
+
+    // Estilos para scroll horizontal cuando hay muchas vigencias
+    &.historico-treetable {
+      &.horizontal-scroll {        
+        .p-treetable-scrollable-wrapper {
+          overflow-x: auto;
+        }
+      }
+      
+      &.horizontal-scroll {
+        .p-treetable-thead > tr > th {
+          white-space: nowrap;
+          min-width: 120px;
+          
+          &.concept-header {
+            min-width: 200px;
+            position: sticky;
+            left: 0;
+            background: var(--p-surface-100);
+            z-index: 2;
+            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+          }
+          
+          &.vigencia-header {
+            min-width: 150px;
+            text-align: right;
+          }
+        }
+        
+        .p-treetable-tbody > tr > td {
+          white-space: nowrap;
+          min-width: 120px;
+          
+          &.concept-cell {
+            min-width: 200px;
+            position: sticky;
+            left: 0;
+            background: inherit;
+            z-index: 1;
+            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+          }
+          
+          &.vigencia-cell {
+            min-width: 150px;
+            text-align: right;            
+          }
+        }
+        
+        .total-row {
+          td.concept-cell {
+            background: var(--p-primary-50) !important;
+            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+          }
+          
+          td.vigencia-cell {
+            background: var(--p-primary-50) !important;
+            text-align: right !important;            
+          }
+        }
+      }
+      
+      // Estilos generales para todas las tablas
+      .p-treetable-thead > tr > th {
+        &.vigencia-header {
+          text-align: right;
+        }
+      }
+      
+      .p-treetable-tbody > tr > td {
+        &.vigencia-cell {
+          text-align: right;          
+        }
+      }
+    }
+  }
+
+  .p-multiselect {
+    width: 100% !important;
+    min-width: 140px;
+    height: 42px !important;
+    font-size: 0.875rem !important;
+    
+    .p-multiselect-label {
+      padding: .425rem !important;
+      font-size: 0.875rem !important;
+      line-height: 1.5;
+    }
+    
+    .p-multiselect-item {
+      font-size: 0.875rem !important;
+    }
+    
+    .p-multiselect-token {
+      font-size: 0.875rem !important;
+    }
+  }
+
+  .p-select {
+    width: 100% !important;
+    height: 42px !important;
+  }
+
+  // Dual table layout styles
+  .dual-table-container {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    width: 100% !important;
+    
+    @media (max-width: 1200px) {
+      grid-template-columns: 1fr;
+    }
+    
+    .table-column {
+      width: 100%;
+      
+      &:first-child {
+        .table-card {
+          border-top: 4px solid #447721;
+          
+          .p-card-header::after {
+            background: linear-gradient(90deg, transparent, #447721, transparent);
+          }
+          
+          .table-title {
+            color: #447721;
+            font-size: 1.25rem;
+            font-weight: bold;
+            text-align: center !important;
+            margin: 0;
+          }
+          
+          .table-subtitle {
+            color: #6b7280;
+            font-size: 0.9rem;
+            text-align: center !important;
+            margin: 0.5rem 0 0 0;
+          }
+        }
+      }
+      
+      &:last-child {
+        .table-card {
+          border-top: 4px solid #0f4987;
+          
+          .p-card-header::after {
+            background: linear-gradient(90deg, transparent, #0f4987, transparent);
+          }
+          
+          .table-title {
+            color: #0f4987;
+            font-size: 1.25rem;
+            font-weight: bold;
+            text-align: center !important;
+            margin: 0;
+          }
+          
+          .table-subtitle {
+            color: #6b7280;
+            font-size: 0.9rem;
+            text-align: center !important;
+            margin: 0.5rem 0 0 0;
+          }
+        }
+      }
+      
+      p-card {
+        width: 100% !important;
+        height: 100% !important;
+        
+        .p-card {
+          width: 100% !important;
+          height: 100% !important;
+        }
+      }
+    }
+  }
+  
+  // Shared table notes for dual tables
+  .shared-table-notes {
+    grid-column: 1 / -1;
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--p-surface-50);
+    border-radius: 6px;
+    border-left: 4px solid var(--p-primary-color);
+    
+    h4 {
+      margin: 0 0 0.5rem 0;
+      color: var(--p-text-color);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    
+    p {
+      margin: 0.25rem 0;
+      font-size: 0.85rem;
+      color: var(--p-text-muted-color);
+      line-height: 1.4;
+    }
+  }
+  
+  // Table buttons styling for dual tables
+  .table-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--p-surface-border);
+  }
+
+  // Estilos para gr�ficos
+  .mat-grid-tile {
+    .mat-grid-tile-content {
+      padding: 0.5rem;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .p-card {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+    }
+  }
+
+  // Estilos espec�ficos para PrimeNG Cards
+  .p-card {
+    width: 100% !important;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .p-card-header {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      padding: .25rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .p-card-body {
+      flex: 1;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .p-card-content {
+      flex: 1;
+      padding: 0;
+    }
+  }
+
+  // Ajustes para los gr�ficos de Chart.js
+  .p-chart {
+    width: 100% !important;
+    height: 100% !important;
+
+    canvas {
+      max-width: 100% !important;
+      max-height: 100% !important;
+    }
+  }
+}
+
+.container {
+  max-width: 1260px;
+  margin: 0 auto;
+  padding: 1rem;
+  background: var(--p-surface-0);
+  min-height: 100vh;
+}
+
+.gradient-banner {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  background-image: url('/assets/img/sgp/sgp-historico.jpg');
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  display: flex;
+  margin-bottom: .5rem;
+  border-radius: 8px;
+
+  .gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 95%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      #475c72d1 0%,
+      rgba(255, 255, 255, 0.01) 100%
+    );
+    z-index: 1;
+  }
+        
+  .banner-content {
+    position: relative;
+    margin-top: 1rem;
+    z-index: 2;
+    padding: 1rem;
+    max-width: 80%;
+    color: white;
+    
+    h2 {
+      font-size: 2rem;
+      margin-top: 3.75rem;
+      margin-bottom: 2.5rem;
+      color: #e4e6eb;
+      font-weight: bold;
+      text-shadow: 1px 1px 3px rgba(9, 8, 78, 0.92);
+    }
+    
+    p {
+      font-size: 1.35rem;
+      margin-bottom: 2rem;
+      color: #f4f1f1;        
+      width: 80%;
+      font-weight: 500;
+    }
+  }
+}
+
+  // Chart section styles
+  .graphics-section {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    width: 100%;
+    max-width: 100%;
+    overflow: visible;
+
+    .single-chart-container {
+      width: 100%;
+
+      .chart-card {
+        .chart-title {
+          font-size: 1.5rem;
+          margin-bottom: 0.5rem;
+          color: var(--p-text-color);
+          font-weight: 600;
+        }
+
+        .chart-subtitle {
+          font-size: 0.9rem;
+          color: var(--p-text-muted-color);
+          margin-bottom: 1rem;
+        }
+
+        .chart-container {
+          width: 100%;
+          height: 400px;
+          position: relative;
+          
+          canvas {
+            max-width: 100% !important;
+            max-height: 100% !important;
+          }
+        }
+      }
+    }
+
+    // Dual chart layout for comparison
+    .dual-chart-container {
+      display: flex !important;
+      flex-direction: row !important;
+      justify-content: space-between;
+      align-items: stretch;
+      gap: 1.5rem;
+      width: 100% !important;
+      flex-wrap: nowrap;
+      
+      @media (max-width: 1200px) {
+        flex-direction: column !important;
+        gap: 1rem;
+      }
+
+      .chart-column {
+        flex: 1 1 50% !important;
+        min-width: 300px;
+        max-width: calc(50% - 0.75rem);
+        box-sizing: border-box;
+        
+        .chart-card {
+          height: 100% !important;
+          width: 100% !important;
+          display: flex !important;
+          flex-direction: column !important;
+          max-width: none !important;
+          border-radius: 12px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          overflow: hidden;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+          
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+          }
+          
+          .p-card-header {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 1rem 1.5rem;
+            border-bottom: 2px solid #0f4987;
+            position: relative;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            
+            &::after {
+              content: '';
+              position: absolute;
+              bottom: 0;
+              left: 50%;
+              transform: translateX(-50%);
+              width: 60px;
+              height: 3px;
+              background: linear-gradient(90deg, transparent, #0f4987, transparent);
+              border-radius: 2px;
+            }
+          }
+          
+          .p-card-content {
+            flex: 1;
+            padding: 1rem;
+          }
+          
+          .chart-title {
+            font-size: 1.5rem;
+            margin: 0 auto 0.5rem auto;
+            font-weight: 700;
+            text-align: center !important;
+            letter-spacing: 0.3px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            line-height: 1.3;
+            padding: 0.5rem 0;
+            display: block;
+            width: 100%;
+          }
+
+          .chart-subtitle {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 0 auto 1rem auto;
+            text-align: center !important;
+            font-weight: 500;
+            line-height: 1.4;
+            font-style: italic;
+            background: linear-gradient(90deg, transparent, rgba(15, 73, 135, 0.05) 50%, transparent);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+          }
+          
+          // Responsive typography
+          @media (max-width: 768px) {
+            .chart-title {
+              font-size: 1.1rem;
+              padding: 0.25rem 0;
+            }
+            
+            .chart-subtitle {
+              font-size: 0.8rem;
+              padding: 0.25rem 0.5rem;
+            }
+          }
+
+          .chart-container {
+            width: 100%;
+            height: 400px;
+            position: relative;
+            
+            canvas {
+              max-width: 100% !important;
+              max-height: 100% !important;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Table section styles
+  .table-section {
+    background: var(--p-surface-card);
+    border-radius: 8px;
+    padding: .1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+    width: 100%;
+
+    .card {
+      .sgp-treetable {
+        font-size: 0.8rem;
+        
+        .p-treetable-wrapper {
+          border-radius: 6px;
+          overflow: hidden;
+        }
+      }
+
+      // Notas de la tabla
+      .table-notes {
+        margin: 1rem 0;
+        padding: 1rem;
+        background: var(--p-surface-50);
+        border-radius: 6px;
+        border-left: 4px solid var(--p-primary-color);
+        
+        h4 {
+          margin: 0 0 0.5rem 0;
+          color: var(--p-text-color);
+          font-size: 1rem;
+          font-weight: 600;
+        }
+        
+        p {
+          margin: 0.25rem 0;
+          font-size: 0.85rem;
+          color: var(--p-text-muted-color);
+          line-height: 1.4;
+        }
+      }
+
+      // Botones de exportación
+      .buttons-grid {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--p-surface-border);
+      }
+    }
+  }
+
+
+// Sección de filtros - Primera fila completa
+.filters-section {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  width: 100%;
+
+  .filters-panel {
+    margin-bottom: 1.5rem;
+
+    .filters-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: flex-end;
+      justify-content: flex-start;
+
+      .p-field {
+        flex: 0 1 auto;
+        min-width: 200px;
+        max-width: 250px;
+        margin-bottom: 0;
+
+        &.vigencia-select,
+        &.department-select,
+        &.town-select {
+          min-width: 200px;
+          max-width: 250px;
+        }
+
+        .p-floatlabel {
+          width: 100%;
+          
+          &.w-full.md\:w-56 {
+            width: 100% !important;
+            max-width: 100% !important;
+          }
+          
+          .p-select,
+          .p-multiselect {
+            width: 100% !important;
+          }
+        }
+      }
+    }
+  }
+}

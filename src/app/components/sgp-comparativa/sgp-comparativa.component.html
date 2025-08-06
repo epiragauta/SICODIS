@@ -1,1 +1,260 @@
-<p>sgp-comparativa works!</p>
+<div class="container">
+  <!-- Header section-->
+  <div class="gradient-banner">    
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h2>Comparativa Sistema General de Participaciones</h2>
+      <p>Consulta y compara la información distribuida entre vigencias y entidades.</p>
+    </div>
+  </div>
+
+  <!-- Filters section -->
+  <div class="filters-section">
+    <div class="filters-panel">
+      <div class="filters-row">
+        <!-- Vigencia a consultar (multi-select) -->
+        <div class="p-field vigencia-select">
+          <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-select 
+              id="vigencia" 
+              [options]="infoResume" 
+              inputId="vigenciaSelect" 
+              [(ngModel)]="selected"
+              (onChange)="onVigenciaChange($event)"
+              optionValue="year"
+              optionLabel="year" 
+              placeholder="Seleccionar vigencia">
+            </p-select>
+            <label for="vigenciaSelect">Vigencia</label>
+          </p-floatlabel>
+        </div>
+
+        <!-- Departamento -->
+        <div class="p-field department-select">
+          <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-select 
+              id="departamento" 
+              [options]="departments" 
+              inputId="departamentoSelect"
+              [(ngModel)]="departmentSelected"
+              (onChange)="onDepartmentChange($event)"
+              optionValue="codigo"
+              optionLabel="nombre" 
+              placeholder="Departamento">
+            </p-select>
+            <label for="departamentoSelect">Departamento</label>
+          </p-floatlabel>
+        </div>
+
+        <!-- Municipio -->
+        <div class="p-field town-select">
+          <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-select 
+              id="municipio" 
+              [options]="towns" 
+              inputId="municipioSelect"
+              [(ngModel)]="townSelected"
+              (onChange)="onTownChange($event)"
+              optionValue="value"
+              optionLabel="name" 
+              placeholder="Municipio">
+            </p-select>
+            <label for="municipioSelect">Municipio</label>
+          </p-floatlabel>
+        </div>
+
+        <!-- Municipio 2 -->
+        <div class="p-field town-select">
+          <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-select 
+              id="municipio2" 
+              [options]="towns2" 
+              inputId="municipioSelect2"
+              [(ngModel)]="townSelected2"
+              (onChange)="onTown2Change($event)"
+              optionValue="value"
+              optionLabel="name" 
+              placeholder="Municipio 2">
+            </p-select>
+            <label for="municipioSelect2">Municipio 2</label>
+          </p-floatlabel>
+        </div>
+        <button pButton type="button" 
+              icon="pi pi-filter" 
+              label="Aplicar Filtros" 
+              class="p-button-primary"
+              (click)="applyFilters()">
+        </button>
+        <button pButton type="button" 
+                icon="pi pi-eraser" 
+                label="Limpiar filtros" 
+                class="p-button-secondary"
+                (click)="clearFilters()">
+        </button>
+      </div>
+    </div>    
+  </div>
+
+  <!-- Chart section -->
+  <div class="graphics-section">
+    <div class="dual-chart-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; width: 100%;">
+      <!-- First Chart - Municipality 1 -->
+      <div class="chart-column">
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
+              <h3 class="chart-title">Conceptos Principales SGP - Municipio 1</h3>
+              <p class="chart-subtitle">{{ townSelected || 'Sin seleccionar' }} - Distribución por conceptos principales</p>
+            </div>
+          </ng-template>
+          <div class="chart-container" style="position: relative; height: 400px; width: 100%;">
+            <canvas id="barChart" style="max-width: 100%; max-height: 100%;"></canvas>
+          </div>
+        </p-card>
+      </div>
+
+      <!-- Second Chart - Municipality 2 -->
+      <div class="chart-column">
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
+              <h3 class="chart-title">Conceptos Principales SGP - Municipio 2</h3>
+              <p class="chart-subtitle">{{ townSelected2 || 'Sin seleccionar' }} - Distribución por conceptos principales</p>
+            </div>
+          </ng-template>
+          <div class="chart-container" style="position: relative; height: 400px; width: 100%;">
+            <canvas id="barChart2" style="max-width: 100%; max-height: 100%;"></canvas>
+          </div>
+        </p-card>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data table section -->
+  <div class="table-section">
+    <div class="dual-table-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; width: 100%;">
+      <!-- First Municipality Table -->
+      <div class="table-column">
+        <p-card class="table-card">
+          <ng-template pTemplate="header">
+            <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
+              <h3 class="table-title">Datos SGP - Municipio 1</h3>
+              <p class="table-subtitle">{{ townSelected || 'Sin seleccionar' }} - Vigencia {{ selected }}</p>
+            </div>
+          </ng-template>
+          <p-treetable #treeTable
+                       [value]="treeTableData" 
+                       dataKey="key" 
+                       [scrollable]="true"
+                       [scrollHeight]="treeTableData && treeTableData.length > 5 ? '400px' : 'auto'"
+                       [styleClass]="'sgp-treetable'"
+                       [tableStyle]="{'min-width':'15rem'}"
+                       *ngIf="treeTableData.length > 0">
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="table-header concept-header">Concepto</th>
+                <th class="table-header vigencia-header">
+                  Valor
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+              <tr>
+                <td class="concept-cell">
+                  <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                  <strong>{{ rowData.concepto }}</strong>
+                </td>
+                <td class="vigencia-cell">
+                  {{ rowData.vigencia | numberFormat }}
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="footer">
+              <tr class="total-row">
+                <td class="concept-cell"><strong>Total General</strong></td>
+                <td class="vigencia-cell">
+                  <strong>{{ getTreeTableYearTotal() | numberFormat }}</strong>
+                </td>
+              </tr>
+            </ng-template>
+          </p-treetable>
+          
+          <!-- Export button for first table -->
+          <div class="table-buttons" *ngIf="treeTableData.length > 0">
+            <button pButton type="button" 
+                    icon="pi pi-file-excel" 
+                    label="Excel" 
+                    class="p-button-primary p-button-sm"
+                    (click)="exportToExcel()">
+            </button>
+          </div>
+        </p-card>
+      </div>
+
+      <!-- Second Municipality Table -->
+      <div class="table-column">
+        <p-card class="table-card">
+          <ng-template pTemplate="header">
+            <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
+              <h3 class="table-title">Datos SGP - Municipio 2</h3>
+              <p class="table-subtitle">{{ townSelected2 || 'Sin seleccionar' }} - Vigencia {{ selected }}</p>
+            </div>
+          </ng-template>
+          <p-treetable #treeTable2
+                       [value]="treeTableData2" 
+                       dataKey="key" 
+                       [scrollable]="true"
+                       [scrollHeight]="treeTableData2 && treeTableData2.length > 5 ? '400px' : 'auto'"
+                       [styleClass]="'sgp-treetable'"
+                       [tableStyle]="{'min-width':'15rem'}"
+                       *ngIf="treeTableData2.length > 0">
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="table-header concept-header">Concepto</th>
+                <th class="table-header vigencia-header">
+                  Valor
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+              <tr>
+                <td class="concept-cell">
+                  <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                  <strong>{{ rowData.concepto }}</strong>
+                </td>
+                <td class="vigencia-cell">
+                  {{ rowData.vigencia | numberFormat }}
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="footer">
+              <tr class="total-row">
+                <td class="concept-cell"><strong>Total General</strong></td>
+                <td class="vigencia-cell">
+                  <strong>{{ getTreeTableYearTotal2() | numberFormat }}</strong>
+                </td>
+              </tr>
+            </ng-template>
+          </p-treetable>
+          
+          <!-- Export button for second table -->
+          <div class="table-buttons" *ngIf="treeTableData2.length > 0">
+            <button pButton type="button" 
+                    icon="pi pi-file-excel" 
+                    label="Excel" 
+                    class="p-button-primary p-button-sm"
+                    (click)="exportToExcel2()">
+            </button>
+          </div>
+        </p-card>
+      </div>
+    </div>
+
+    <!-- Shared Notes -->
+    <div class="shared-table-notes">
+      <h4>NOTAS</h4>
+      <p>(1) Cifras en millones de pesos corrientes.</p>
+      <p>(2) Comparativa entre municipios para la vigencia {{ selected }}.</p>
+    </div>
+  </div>
+</div>

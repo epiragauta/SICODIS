@@ -23,7 +23,7 @@ import { ReportsSgpResguardosComponent } from './components/reports-sgp-resguard
 import { HistoricoSgpComponent } from './components/historico-sgp/historico-sgp.component';
 import { SgpInicioComponent } from './components/sgp-inicio/sgp-inicio.component';
 import { SgpDetallePresupuestalComponent } from './components/sgp-detalle-presupuestal/sgp-detalle-presupuestal.component';
-import { sgpComparativaDistribucionPorEntidad } from './data/sgp-comparativa-distribucion-por-entidad';
+import { SgpComparativaComponent } from './components/sgp-comparativa/sgp-comparativa.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -50,7 +50,7 @@ export const routes: Routes = [
     { path: 'sgp-historico', component: HistoricoSgpComponent},
     { path: 'sgp-documentos-anexos', component: ReportsSgpComponent },
     { path: 'sgp-detalle-presupuestal', component: SgpDetallePresupuestalComponent },
-    { path: 'sgp-comparativa', component: sgpComparativaDistribucionPorEntidad}
+    { path: 'sgp-comparativa', component: SgpComparativaComponent }
 
 
 ];
