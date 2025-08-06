@@ -79,55 +79,55 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
   recursos = [
     {
       titulo: 'Histórico SGP',
-      descripcion: 'Consulta y explora el detalle histórico del sistema',
+      descripcion: 'Histórico del sistema',
       boton: 'Consultar',
       link: '/comparador',
       icon: 'timeline'
     },
     {
       titulo: 'SGP Documentos y anexos',
-      descripcion: 'Consulta los documentos y anexos publicados',
+      descripcion: 'Documentos y anexos',
       boton: 'Consultar',
       link: '/detalle-entidad',
       icon: 'description'
     },
     {
       titulo: 'Presupuesto',
-      descripcion: 'Consulta el detalle de la información presupuestal',
+      descripcion: 'Información presupuestal',
       boton: 'Consultar',
       link: '/documentos',
       icon: 'account_balance_wallet'
     },
     {
       titulo: 'Comparativa',
-      descripcion: 'Compara vigencias y entidades.',
+      descripcion: 'Ficha Comparativa',
       boton: 'Consultar',
       link: '/reportes',
       icon: 'compare_arrows'
     },{
       titulo: 'Consulta de eficiencia',
-      descripcion: 'Consulta de eficiencia',
+      descripcion: 'Eficiencias fiscal y administrativa',
       boton: 'Consultar',
       link: '/reportes',
       icon: 'trending_up'
     },
     {
       titulo: 'Resguardos indígenas',
-      descripcion: 'Consulta los resguardos indígenas',
+      descripcion: 'Resguardos indígenas',
       boton: 'Consultar',
       link: '/reportes',
       icon: 'groups'
     },
     {
       titulo: 'Proyecciones SGP',
-      descripcion: 'Consulta las proyecciones del sistema',
+      descripcion: 'Proyecciones del sistema',
       boton: 'Consultar',
       link: '/reportes',
       icon: 'insights'
     },
     {
       titulo: 'Proyecciones SGP',
-      descripcion: 'Consulta variables del sistema',
+      descripcion: 'Variables del sistema',
       boton: 'Consultar',
       link: '/reportes',
       icon: 'insights'
@@ -288,7 +288,7 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
               const formattedValue = new Intl.NumberFormat('es-CO', { 
                 minimumFractionDigits: 0, 
                 maximumFractionDigits: 0 
-              }).format(value);
+              }).format(value/1000000);
               return `${context.label}: ${formattedValue}`;
             }
           }

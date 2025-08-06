@@ -20,13 +20,13 @@ export class NumberFormatPipe implements PipeTransform {
     }
 
     // Convert to millions
-    num = num / 1000000;
+    // num = num / 1000000;
 
     // Format with Colombian locale and then adjust separators
     // Separador de miles: punto (.), decimales: coma (,)
     const formatted = num.toLocaleString('es-CO', {
       minimumFractionDigits: decimals,
-      maximumFractionDigits: 1,
+      maximumFractionDigits: 0,
       useGrouping: true
     });
 

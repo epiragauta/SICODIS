@@ -17,6 +17,7 @@ import { TreeNode } from 'primeng/api';
 
 import Chart from 'chart.js/auto';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
+import { SgpBoldPipe } from '../../utils/sgpBoldPipe';
 import { departamentos } from '../../data/departamentos';
 import { SicodisApiService } from '../../services/sicodis-api.service';
 
@@ -36,7 +37,8 @@ import { SicodisApiService } from '../../services/sicodis-api.service';
     FloatLabel,
     Dialog,
     TooltipModule,
-    NumberFormatPipe
+    NumberFormatPipe,
+    SgpBoldPipe
   ],
   templateUrl: './reports-sgp.component.html',
   styleUrl: './reports-sgp.component.scss',
@@ -232,7 +234,7 @@ export class ReportsSgpComponent implements OnInit {
           labels: labels,
           datasets: [
             {
-              label: 'Valor (Millones COP)',
+              label: 'Valor (Millones de pesos)',
               data: data,
               backgroundColor: greenColors,
               /*borderColor: greenColors.map(color => this.darkenColor(color, 20)),*/
@@ -250,7 +252,7 @@ export class ReportsSgpComponent implements OnInit {
             x: {
                              title: {
                  display: true,
-                 text: 'Conceptos Principales',
+                 text: '',
                  font: {
                    size: 16,
                    weight: 'bold'
@@ -267,7 +269,7 @@ export class ReportsSgpComponent implements OnInit {
             y: {
                              title: {
                  display: true,
-                 text: 'Millones de COP',
+                 text: 'Millones',
                  font: {
                    size: 12,
                    weight: 'bold'
@@ -298,7 +300,7 @@ export class ReportsSgpComponent implements OnInit {
                    }).format(context.parsed.y);
                    const percentage = parseFloat(percentages[index]).toFixed(1);
                    return [
-                     `Valor: ${value} millones COP`,
+                     `Valor: ${value} millones`,
                      `Porcentaje: ${percentage}% del total`
                    ];
                  }

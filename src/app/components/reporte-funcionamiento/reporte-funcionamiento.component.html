@@ -135,8 +135,13 @@
   <div class="main-panel" *ngIf="registroActual">
     <!-- Columna izquierda (60%) - Tarjetas -->
     <div class="left-column">
+      <!-- Loading overlay for left column -->
+      <div class="loading-overlay" *ngIf="isLoadingData">
+        <p-progressSpinner strokeWidth="3" fill="transparent" animationDuration=".5s"></p-progressSpinner>
+      </div>
+      
       <!-- Tarjeta 1: Presupuesto -->
-      <mat-card class="info-card">
+      <mat-card class="info-card" [class.loading]="isLoadingData">
         <mat-card-header>
           <mat-card-title class="card-title card-main">Presupuesto</mat-card-title>
         </mat-card-header>
@@ -163,7 +168,7 @@
       </mat-card>
 
       <!-- Tarjeta 2: Ejecución Presupuestal -->
-      <mat-card class="info-card">
+      <mat-card class="info-card" [class.loading]="isLoadingData">
         <mat-card-header>
           <mat-card-title class="card-title card-main">Ejecución Presupuestal</mat-card-title>
         </mat-card-header>
@@ -190,7 +195,7 @@
       </mat-card>
 
       <!-- Tarjeta 3: Situación de Caja -->
-      <mat-card class="info-card">
+      <mat-card class="info-card" [class.loading]="isLoadingData">
         <mat-card-header>
           <mat-card-title class="card-title card-main">Situación de Caja</mat-card-title>
         </mat-card-header>
@@ -217,7 +222,7 @@
       </mat-card>
 
       <!-- Tarjeta 4: Avance de Recaudo -->
-      <mat-card class="info-card">
+      <mat-card class="info-card" [class.loading]="isLoadingData">
         <mat-card-header class="card-header-avance-recaudo">
           <mat-card-title class="card-title card-main" card-main>Avance del recaudo de ingresos corrientes</mat-card-title>
         </mat-card-header>
@@ -248,23 +253,28 @@
 
     <!-- Columna derecha (40%) - Gráficos -->
     <div class="right-column">
+      <!-- Loading overlay for right column -->
+      <div class="loading-overlay" *ngIf="isLoadingData">
+        <p-progressSpinner strokeWidth="3" fill="transparent" animationDuration=".5s"></p-progressSpinner>
+      </div>
+      
       <!-- Gráfico 1: Donut Avance Ejecución-->
-      <div class="chart-container">        
+      <div class="chart-container" [class.loading]="isLoadingData">        
         <p-chart type="doughnut" [data]="donutAvanceEjecucionData" [options]="donutAvanceEjecucionOptions" class="chart"></p-chart>
       </div>
 
       <!-- Gráfico 2: Barra horizontal -->
-      <div class="chart-container">        
+      <div class="chart-container" [class.loading]="isLoadingData">        
         <p-chart type="bar" [data]="horizontalBarAfectacionData" [options]="horizontalBarAfectacionOptions" class="chart">
         </p-chart>        
       </div>
 
       <!-- Gráfico 3: Dona 180 grados -->
-      <div class="chart-container">        
+      <div class="chart-container" [class.loading]="isLoadingData">        
         <p-chart type="bar" [data]="donutSituacionCajaData" [options]="donutSituacionCajaOpts" class="chart"></p-chart>        
       </div>
       <!-- Gráfico 4: Dona 180 grados -->
-      <div class="chart-container">        
+      <div class="chart-container" [class.loading]="isLoadingData">        
         <p-chart type="doughnut" [data]="donutAvanceRecaudoData" [options]="donutAvanceRecaudoOptions" class="chart"></p-chart>
       </div> 
     </div>

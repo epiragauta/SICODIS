@@ -8,6 +8,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { ButtonModule } from 'primeng/button';
 import { ChartModule } from 'primeng/chart';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import Chart from 'chart.js/auto';
 
 // Funciones de utilidad solo para fallback en caso de que la API no responda
@@ -59,6 +60,7 @@ interface SelectOption {
     MatCardModule,
     ButtonModule,
     ChartModule,
+    ProgressSpinnerModule,
     NumberFormatPipe,
     MatIconModule,
     FloatLabel,
@@ -147,6 +149,9 @@ export class ReporteFuncionamientoComponent implements OnInit {
   
   distribucionTotal: any = [];
   distribucionTotalMultiple: any[] = [];
+  
+  // Loading states
+  isLoadingData: boolean = false;
   
   // Estructuras para mantener relaciones fuente → concepto → beneficiario
   fuenteConceptoMap: Map<string, any[]> = new Map(); // fuente_id -> conceptos[]
@@ -1409,6 +1414,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
    * Cargar distribución total desde API basado en los filtros seleccionados
    */
   private async cargarDistribucionTotalDesdeAPI(): Promise<void> {
+    this.isLoadingData = true;
+    
     try {
       // Construir parámetros para la API
       const params = this.construirParametrosAPI();
@@ -1432,6 +1439,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
       console.error('Error cargando distribución total desde API:', error);
       // En caso de error, limpiar datos
       this.limpiarDatos();
+    } finally {
+      this.isLoadingData = false;
     }
   }
 
@@ -2111,7 +2120,14 @@ export class ReporteFuncionamientoComponent implements OnInit {
         },
         centerText: {
           display: true,
-          text: () => this.compromisoPorcentaje + '%'
+          text: () => {
+            if (this.isLoadingData) return 'Cargando...';
+            const value = this.compromisoPorcentaje;
+            if (!value || value === 'Infinity' || value === 'NaN' || isNaN(parseFloat(value))) {
+              return '0.0%';
+            }
+            return value + '%';
+          }
         }
       }
     };
@@ -2148,7 +2164,14 @@ export class ReporteFuncionamientoComponent implements OnInit {
         },
         centerText: {
           display: true,
-          text: () => (this.avanceRecaudoData.avance*100).toFixed(2) + '%'
+          text: () => {
+            if (this.isLoadingData) return 'Cargando...';
+            const avance = this.avanceRecaudoData.avance * 100;
+            if (!isFinite(avance) || isNaN(avance)) {
+              return '0.00%';
+            }
+            return avance.toFixed(2) + '%';
+          }
         }
       }
     };

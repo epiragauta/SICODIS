@@ -97,7 +97,7 @@
               <tr>
                 <th class="table-header concept-header">Concepto</th>
                 <th class="table-header vigencia-header">
-                  Vigencia ({{ selected }})
+                  Presupuesto
                 </th>
               </tr>
             </ng-template>
@@ -132,7 +132,7 @@
       <!-- Columna derecha: Gráfica de conceptos principales -->
       <div class="metrics-column">        
         <div class="col chart-column">
-          <h3 class="chart-title">Conceptos para la vigencia {{selected}}</h3>
+          <h3 class="chart-title">Participaciones {{selected}}</h3>
           <div class="chart-container">
             <canvas id="barChart"></canvas>
           </div>
@@ -142,39 +142,35 @@
 
     <!-- Botón Descargar Excel centrado -->
     <div class="button-export-center">
-      <button pButton type="button" icon="pi pi-download" label="Descargar Excel" class="p-button-primary"></button>
+      <button pButton type="button" icon="pi pi-download" label="ExportarExcel" class="p-button-primary"></button>
     </div>
   </div>
 
   <!-- Sección de documentos de distribución -->
   <div class="resume">
-    <p class="title-graph">Documentos de distribución para la vigencia ({{selected}})</p>
+    <p class="title-graph">Documentos de distribución para la vigencia</p>
     <p-table [value]="distributionData"
              [paginator]="true"
              [rows]="10"
              [tableStyle]="{ 'min-width': '50rem' }">
       <ng-template #header>
         <tr>
-          <th class="table-header">ID</th>
           <th class="table-header">Fecha Distribución</th>
           <th class="table-header">Nombre</th>
-          <th class="table-header">Tipo</th>
           <th class="table-header">Año</th>
           <th class="table-header">Monto Total</th>
           <th class="table-header">Descripción</th>          
-          <th class="table-header">Acciones</th>
+          <th class="table-header">Anexos</th>
         </tr>
       </ng-template>
       <ng-template #body let-data>
         <tr>
-          <td>{{ data.id_distribucion }}</td>
-          <td>{{ data.fecha_distribucion }}</td>
-          <td>{{ data.nombre }}</td>
-          <td>{{ data.tipo_distribucion }}</td>
+          <td>{{ data.fecha_distribucion | date}}</td>
+          <td [innerHTML]="data.nombre | sgpBold"></td>
           <td>{{ data.anio }}</td>
           <td>{{ data.total_distribucion | numberFormat }}</td>
           <td [pTooltip]="data.descripcion" tooltipPosition="top" showDelay="500" hideDelay="200">
-            {{ truncateText(data.descripcion, 60) }}
+            {{ truncateText(data.descripcion, 190) }}
           </td>          
           <td style="white-space: nowrap;">
             <button pButton type="button" icon="pi pi-file-pdf" class="p-button-danger p-button-sm" 

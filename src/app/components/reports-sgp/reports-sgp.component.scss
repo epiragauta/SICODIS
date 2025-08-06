@@ -264,18 +264,16 @@
     gap: 1rem;
 
     .col {
-      background: var(--p-surface-100);
+      background: #fff;
       padding: 1.5rem;
       border-radius: 8px;
       text-align: center;
-      border-left: 4px solid var(--p-primary-color);
-
+      
       h3 {
         font-size: 1.25rem;
         font-weight: 600;
         color: var(--p-text-muted-color);
         margin: 0 0 0.5rem 0;
-        text-transform: uppercase;
         letter-spacing: 0.5px;
       }
 
