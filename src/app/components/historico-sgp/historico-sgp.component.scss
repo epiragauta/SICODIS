@@ -260,62 +260,62 @@
 }
 
 .gradient-banner {
-    position: relative;
-    width: 100%;
-    height: 320px;
-    background-image: url('/assets/img/sgp/sgp-historico.jpg');
-    background-size: cover;
-    background-position: center;
-    overflow: hidden;
-    display: flex;
-    margin-bottom: .5rem;
-    border-radius: 8px;
+  position: relative;
+  width: 100%;
+  height: 320px;
+  background-image: url('/assets/img/sgp/sgp-historico.jpg');
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  display: flex;
+  margin-bottom: .5rem;
+  border-radius: 8px;
 
-    .gradient-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 95%;
-      height: 100%;
-      background: linear-gradient(
-        90deg,
-        #475c72d1 0%,
-        rgba(255, 255, 255, 0.01) 100%
-      );
-      z-index: 1;
+  .gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 95%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      #475c72d1 0%,
+      rgba(255, 255, 255, 0.01) 100%
+    );
+    z-index: 1;
+  }
+        
+  .banner-content {
+    position: relative;
+    margin-top: 1rem;
+    z-index: 2;
+    padding: 1rem;
+    max-width: 80%;
+    color: white;
+    
+    h2 {
+      font-size: 2rem;
+      margin-top: 3.75rem;
+      margin-bottom: 2.5rem;
+      color: #e4e6eb;
+      font-weight: bold;
+      text-shadow: 1px 1px 3px rgba(9, 8, 78, 0.92);
     }
-         
-    .banner-content {
-      position: relative;
-      margin-top: 1rem;
-      z-index: 2;
-      padding: 1rem;
-      max-width: 80%;
-      color: white;
-      
-      h2 {
-        font-size: 2rem;
-        margin-top: 3.75rem;
-        margin-bottom: 2.5rem;
-        color: #e4e6eb;
-        font-weight: bold;
-        text-shadow: 1px 1px 3px rgba(9, 8, 78, 0.92);
-      }
-      
-      p {
-        font-size: 1.35rem;
-        margin-bottom: 2rem;
-        color: #f4f1f1;        
-        width: 80%;
-        font-weight: 500;
-      }
+    
+    p {
+      font-size: 1.35rem;
+      margin-bottom: 2rem;
+      color: #f4f1f1;        
+      width: 80%;
+      font-weight: 500;
     }
   }
+}
 
 // Secciones organizadas verticalmente
 // (Removido main-content-section ya que ahora son secciones independientes)
 
-// Secci�n de filtros - Primera fila completa
+// Sección de filtros - Primera fila completa
 .filters-section {
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   border-radius: 8px;
@@ -366,7 +366,7 @@
 
 }
 
-// Secci�n de tabla - Segunda fila completa
+// Sección de tabla - Segunda fila completa
 .table-section {
   background: var(--p-surface-card);
   border-radius: 8px;
@@ -426,7 +426,7 @@
   }
 }
 
-// Secci�n de gr�ficos
+// Sección de gr�ficos
 .graphics-section {
   background: var(--p-surface-card);
   border-radius: 8px;
