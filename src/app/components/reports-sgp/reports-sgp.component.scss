@@ -149,16 +149,16 @@
       color: white;   /* Texto blanco para mejor contraste */
       
       h2 {
-        font-size: 1.75rem;
+        font-size: 2rem;
         margin-top: 3.75rem;
         margin-bottom: 2.5rem;
         font-weight: bold;
-        color: #3366cc;        
+        color: #103d6e;        
         width: 80%;
       }
       
       p {
-        font-size: 1.25rem;
+        font-size: 1.35rem;
         margin-bottom: 2rem;
         color: #f4f1f1;        
         text-shadow: 1px 1px 3px rgba(9, 8, 78, 0.92);
@@ -338,6 +338,8 @@
     }
   }
 }
+
+
 
 // Estilos específicos para datos expandidos
 :host ::ng-deep {

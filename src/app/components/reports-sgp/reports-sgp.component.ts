@@ -248,62 +248,62 @@ export class ReportsSgpComponent implements OnInit {
           aspectRatio: .5,          
           scales: {
             x: {
-              title: {
-                display: true,
-                text: 'Conceptos Principales',
-                font: {
-                  size: 16,
-                  weight: 'bold'
-                }
-              },
-              ticks: {
-                maxRotation: 45,
-                minRotation: 0,
-                font: {
-                  size: 15
-                }
-              }
+                             title: {
+                 display: true,
+                 text: 'Conceptos Principales',
+                 font: {
+                   size: 16,
+                   weight: 'bold'
+                 }
+               },
+               ticks: {
+                 maxRotation: 45,
+                 minRotation: 0,
+                 font: {
+                   size: 15
+                 }
+               }
             },
             y: {
-              title: {
-                display: true,
-                text: 'Millones de COP',
-                font: {
-                  size: 12,
-                  weight: 'bold'
-                }
-              },
-              beginAtZero: true,
-              ticks: {
-                callback: function(value: any) {
-                  return new Intl.NumberFormat('es-CO', {
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 1
-                  }).format(value);
-                }
-              }
+                             title: {
+                 display: true,
+                 text: 'Millones de COP',
+                 font: {
+                   size: 12,
+                   weight: 'bold'
+                 }
+               },
+               beginAtZero: true,
+               ticks: {
+                 callback: function(value: any) {
+                   return new Intl.NumberFormat('es-CO', {
+                     minimumFractionDigits: 0,
+                     maximumFractionDigits: 1
+                   }).format(value);
+                 }
+               }
             }
           },
           plugins: {
             legend: {
               display: false
             },
-            tooltip: {
-              callbacks: {
-                label: function(context: any) {
-                  const index = context.dataIndex;
-                  const value = new Intl.NumberFormat('es-CO', {
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 1
-                  }).format(context.parsed.y);
-                  const percentage = parseFloat(percentages[index]).toFixed(1);
-                  return [
-                    `Valor: ${value} millones COP`,
-                    `Porcentaje: ${percentage}% del total`
-                  ];
-                }
-              }
-            }
+                         tooltip: {
+               callbacks: {
+                 label: function(context: any) {
+                   const index = context.dataIndex;
+                   const value = new Intl.NumberFormat('es-CO', {
+                     minimumFractionDigits: 0,
+                     maximumFractionDigits: 1
+                   }).format(context.parsed.y);
+                   const percentage = parseFloat(percentages[index]).toFixed(1);
+                   return [
+                     `Valor: ${value} millones COP`,
+                     `Porcentaje: ${percentage}% del total`
+                   ];
+                 }
+               }
+             }
           }
         }
       });

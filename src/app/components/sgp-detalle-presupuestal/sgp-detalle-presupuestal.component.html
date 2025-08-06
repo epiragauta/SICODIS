@@ -1,0 +1,210 @@
+<div class="container">
+  <!-- Header section -->
+  <div class="gradient-banner">    
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h2>Presupuesto - Sistema General de Participaciones (SGP)</h2>
+      <p>Consulta el detalle de la información presupuestal del SGP.
+      </p>
+    </div>
+  </div>
+  
+  <!-- Filters section -->
+  <div class="filters-section">
+    <div class="filters-panel">
+      <div class="filters-row">
+        <!-- Vigencia -->
+        <div class="p-field vigencia-select">
+          <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-select 
+              id="vigencia" 
+              [options]="vigencias" 
+              inputId="vigenciaSelect" 
+              [(ngModel)]="selectedVigencia"
+              (onChange)="onVigenciaChange($event)"
+              optionLabel="label" 
+              placeholder="Vigencia">
+            </p-select>
+            <label for="vigenciaSelect">Vigencia</label>
+          </p-floatlabel>
+        </div>
+
+        <!-- Departamento -->
+        <div class="p-field department-select">
+          <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-select 
+              id="departamento" 
+              [options]="departamentos" 
+              inputId="departamentoSelect"
+              [(ngModel)]="selectedDepartamento"
+              (onChange)="onDepartamentoChange($event)"
+              optionLabel="label"
+              optionValue="value">
+            </p-select>
+            <label for="departamentoSelect">Departamento</label>
+          </p-floatlabel>
+        </div>
+
+        <!-- Municipio -->
+        <div class="p-field town-select">
+          <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-select 
+              id="municipio" 
+              [options]="municipios" 
+              inputId="municipioSelect"
+              [(ngModel)]="selectedMunicipio"
+              (onChange)="onMunicipioChange($event)"
+              optionLabel="label"
+              optionValue="value">
+            </p-select>
+            <label for="municipioSelect">Municipio</label>
+          </p-floatlabel>
+        </div>
+
+        <!-- Botones -->
+        <button pButton type="button" 
+                icon="pi pi-filter" 
+                label="Aplicar Filtros" 
+                class="p-button-primary"
+                (click)="applyFilters()">
+        </button>
+        <button pButton type="button" 
+                icon="pi pi-eraser" 
+                label="Limpiar Filtros" 
+                class="p-button-secondary"
+                (click)="clearFilters()">
+        </button>
+      </div>
+    </div>    
+  </div>
+
+  <!-- Tarjeta p-card con métricas -->
+  <div class="metrics-card-section">
+    <p-card class="metrics-card">
+      <div class="metrics-row">
+        <div class="metric-item">
+          <div class="metric-value">{{ formatNumber(totalAsignado) }}</div>
+          <div class="metric-label">Total Asignado</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-value">{{ formatNumber(ultimaDoceava) }}</div>
+          <div class="metric-label">Última Doceava</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-value">{{ formatNumber(onceDoceava) }}</div>
+          <div class="metric-label">Once Doceava</div>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Tabla de asignación SGP -->
+  <div class="table-section">
+    <div class="card">
+      <h3 class="table-title">Asignación SGP: Última Doceava {{ getUltimaDoceavaYear() }} + Once Doceavas {{ getOnceDoceavasYear() }}</h3>
+      
+      <!-- Loading indicator -->
+      <div *ngIf="isLoadingTable" style="padding: 1rem; text-align: center;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <i class="pi pi-spin pi-spinner" style="font-size: 1.2rem; color: #0f4987;"></i>
+          <span style="color: #0f4987; font-size: 0.9rem;">Cargando datos...</span>
+        </div>
+      </div>
+      
+      <p-treetable 
+        #treeTable
+        [value]="treeTableData" 
+        dataKey="concepto" 
+        [scrollable]="true"
+        [scrollHeight]="treeTableData && treeTableData.length > 5 ? '400px' : 'auto'"
+        styleClass="sgp-treetable"
+        [tableStyle]="{'min-width':'20rem'}"
+        *ngIf="treeTableData.length > 0 && !isLoadingTable">
+        
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="table-header concept-header">Concepto</th>
+            <th class="table-header">Última Doceava</th>
+            <th class="table-header">Once Doceavas</th>
+            <th class="table-header">Total</th>
+          </tr>
+        </ng-template>
+        
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+          <tr>
+            <td class="concept-cell">
+              <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+              <strong>{{ rowData.concepto }}</strong>
+            </td>
+            <td class="value-cell">{{ formatNumber(rowData.ultimaDoceava) }}</td>
+            <td class="value-cell">{{ formatNumber(rowData.onceDoceavas) }}</td>
+            <td class="value-cell">{{ formatNumber(rowData.total) }}</td>
+          </tr>
+        </ng-template>
+        
+        <ng-template pTemplate="footer">
+          <tr class="total-row">
+            <td class="concept-cell"><strong>Total General</strong></td>
+            <td class="value-cell"><strong>{{ formatNumber(getColumnTotal('ultimaDoceava')) }}</strong></td>
+            <td class="value-cell"><strong>{{ formatNumber(getColumnTotal('onceDoceavas')) }}</strong></td>
+            <td class="value-cell"><strong>{{ formatNumber(getColumnTotal('total')) }}</strong></td>
+          </tr>
+        </ng-template>
+      </p-treetable>
+      
+             <!-- Notas -->
+       <div class="table-notes">
+         <h4>NOTAS</h4>
+         <p>(1) Cifras en pesos corrientes.</p>
+         <p>(2) Los datos corresponden a la distribución efectuada mediante Documentos de Distribución de su respectiva vigencia.</p>
+       </div>
+
+       <!-- Botón Descargar -->
+       <div class="download-button-container">
+         <button pButton type="button" 
+                 icon="pi pi-download" 
+                 label="Descargar" 
+                 class="p-button-primary"
+                 (click)="downloadData()">
+         </button>
+       </div>
+
+       <!-- Tarjeta de descargas -->
+       <div class="download-card-container">
+         <p-card class="download-card">
+           <div class="download-table">
+             <div class="download-row header-row">
+               <div class="download-cell header-cell">Concepto</div>
+               <div class="download-cell header-cell">Vigencia</div>
+               <div class="download-cell header-cell">Acción</div>
+             </div>
+             <div class="download-row">
+               <div class="download-cell">Once Doceavas</div>
+               <div class="download-cell">{{ getOnceDoceavasYear() }}</div>
+               <div class="download-cell">
+                 <button pButton type="button" 
+                         icon="pi pi-download" 
+                         label="Descargar" 
+                         class="p-button-primary p-button-sm"
+                         (click)="downloadOnceDoceavas()">
+                 </button>
+               </div>
+             </div>
+             <div class="download-row">
+               <div class="download-cell">Última Doceava</div>
+               <div class="download-cell">{{ getUltimaDoceavaYear() }}</div>
+               <div class="download-cell">
+                 <button pButton type="button" 
+                         icon="pi pi-download" 
+                         label="Descargar" 
+                         class="p-button-primary p-button-sm"
+                         (click)="downloadUltimaDoceava()">
+                 </button>
+               </div>
+             </div>
+           </div>
+         </p-card>
+       </div>
+     </div>
+   </div>
+</div>

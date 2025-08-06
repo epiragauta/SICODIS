@@ -230,7 +230,7 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
     const labels = rawData.map((item: any) => item.label);
     const data = rawData.map((item: any) => item.v);
     
-    // Colores especificados: #156082, #e97132, #196b24, #196b24, #a02b93
+    // Colores originales especificados
     const colors = ['#156082', '#e97132', '#196b24', '#0c9bd3', '#a02b93'];
 
     this.donutData = {
@@ -240,8 +240,18 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
           label: 'Distribución SGP',
           data: data,
           backgroundColor: colors,
-          borderColor: '#ffffff',
-          borderWidth: 2
+          borderColor: '#CCCCCC',
+          borderWidth: 2,
+          hoverBorderWidth: 4,
+          hoverOffset: 15,
+          hoverBackgroundColor: colors.map(color => {
+            // Hacer los colores más brillantes en hover
+            const hex = color.replace('#', '');
+            const r = Math.min(255, parseInt(hex.substr(0, 2), 16) + 30);
+            const g = Math.min(255, parseInt(hex.substr(2, 2), 16) + 30);
+            const b = Math.min(255, parseInt(hex.substr(4, 2), 16) + 30);
+            return `rgb(${r}, ${g}, ${b})`;
+          })
         }
       ]
     };
@@ -250,6 +260,7 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
       responsive: true,
       maintainAspectRatio: false,
       aspectRatio: 0.7,
+      cutout: '60%',
       plugins: {
         legend: {
           display: true,
@@ -259,10 +270,18 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
             usePointStyle: true,
             font: {
               size: 12
-            }
+            },
+            color: '#333333'
           }
         },
         tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.9)',
+          titleColor: '#ffffff',
+          bodyColor: '#ffffff',
+          borderColor: '#156082',
+          borderWidth: 2,
+          cornerRadius: 8,
+          displayColors: true,
           callbacks: {
             label: (context: any) => {
               const value = context.parsed;
@@ -281,12 +300,32 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
             size: 14,
             weight: 'bold'
           },
+          textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)',
           formatter: (value: any, context: any) => {
             const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
             const percentage = Math.round((value / total) * 100 * 100) / 100;
             return `${percentage}%`;
           }
         }
+      },
+             elements: {
+         arc: {
+           borderWidth: 3,
+           borderColor: '#BBBBBB',
+           hoverBorderWidth: 3,
+           hoverBorderColor: '#BBBBBB'
+         }
+       },
+      animation: {
+        animateRotate: true,
+        animateScale: true,
+        duration: 2000,
+        easing: 'easeOutQuart'
+      },
+      interaction: {
+        mode: 'nearest',
+        intersect: false,
+        axis: 'r'
       }
     };
   }

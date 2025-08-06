@@ -22,6 +22,8 @@ import { HomeSgpComponent } from './components/home-sgp/home-sgp.component';
 import { ReportsSgpResguardosComponent } from './components/reports-sgp-resguardos/reports-sgp-resguardos.component';
 import { HistoricoSgpComponent } from './components/historico-sgp/historico-sgp.component';
 import { SgpInicioComponent } from './components/sgp-inicio/sgp-inicio.component';
+import { SgpDetallePresupuestalComponent } from './components/sgp-detalle-presupuestal/sgp-detalle-presupuestal.component';
+import { sgpComparativaDistribucionPorEntidad } from './data/sgp-comparativa-distribucion-por-entidad';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -46,6 +48,9 @@ export const routes: Routes = [
     { path: 'sgp-inicio', component: SgpInicioComponent},
     { path: 'sgp-resguardos', component: ReportsSgpResguardosComponent},
     { path: 'sgp-historico', component: HistoricoSgpComponent},
-    { path: 'sgp-documentos-anexos', component: ReportsSgpComponent }
+    { path: 'sgp-documentos-anexos', component: ReportsSgpComponent },
+    { path: 'sgp-detalle-presupuestal', component: SgpDetallePresupuestalComponent },
+    { path: 'sgp-comparativa', component: sgpComparativaDistribucionPorEntidad}
+
 
 ];

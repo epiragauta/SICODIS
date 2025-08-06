@@ -1012,7 +1012,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
         y: {
           beginAtZero: true,
           position: 'left',
-          title: { display: true, text: 'Miles de millones COP' }
+          title: { display: true, text: 'Millones de pesos' }
         },
         y1: {
           beginAtZero: true,
@@ -1023,6 +1023,18 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
       },
       plugins: {
         legend: { position: 'top' },
+        tooltip: {
+          callbacks: {
+            label: function(context: any) {
+              let label = context.dataset.label || '';
+              if (context.dataset.yAxisID === 'y1') {
+                return label + ': ' + context.parsed.y + '%';
+              } else {
+                return label + ': ' + new Intl.NumberFormat('es-CO').format(context.parsed.y) + ' Millones de pesos';
+              }
+            }
+          }
+        },
         datalabels: { display: false }
       }
     };
@@ -1041,7 +1053,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
         y: {
           title: {
             display: true,
-            text: 'Miles de millones COP'
+            text: 'Millones de pesos'
           },
           ticks: {
             callback: function(value: any) {
@@ -1078,7 +1090,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
               if (context.dataset.yAxisID === 'y1') {
                 return label + ': ' + context.parsed.y + '%';
               } else {
-                return label + ': ' + new Intl.NumberFormat('es-CO').format(context.parsed.y) + ' COP';
+                return label + ': ' + new Intl.NumberFormat('es-CO').format(context.parsed.y) + ' Millones de pesos';
               }
             }
           }
@@ -1163,7 +1175,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
     });
 
     const sgpDataCorrientes = this.yearsRange.map(year => 
-      totalData[parseInt(year)]?.corrientes || 0
+      (totalData[parseInt(year)]?.corrientes || 0) / 1000000 // Convertir a miles de millones
     );
     
     // Calcular la variación anual basada en los datos reales
@@ -1197,7 +1209,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
   }
 
   initializeChartsWithGeneratedData(): void {
-    const sgpDataCorrientes = this.generateGrowingData(20000, 85000, this.yearsRange.length);
+    const sgpDataCorrientes = this.generateGrowingData(20, 85, this.yearsRange.length); // Valores en miles de millones
     const variationDataCorrientes = this.generateVariationData(sgpDataCorrientes);
 
     this.chartData1 = {
@@ -1226,7 +1238,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
 
   initChart3WithHistoricoData(dataByYear: any): void {
     const sgpData = this.yearsRange.map(year => 
-      dataByYear[parseInt(year)]?.constantes || 0
+      (dataByYear[parseInt(year)]?.constantes || 0) / 1000000 // Convertir a miles de millones
     );
     
     // Calcular la variación anual basada en los datos reales de precios constantes
@@ -1260,7 +1272,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
   }
 
   initChart3(): void {
-    const sgpData = this.generateGrowingData(15000, 78000, this.years2005to2025.length);
+    const sgpData = this.generateGrowingData(15, 78, this.years2005to2025.length); // Valores en miles de millones
     const variationData = this.generateVariationData(sgpData);
 
     this.chartData3 = {

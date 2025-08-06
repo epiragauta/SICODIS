@@ -1,0 +1,489 @@
+// Estilos del componente sgp-detalle-presupuestal
+:host ::ng-deep {
+  // Estilos para los componentes de PrimeNG
+  .p-select-label {
+    padding: .425rem !important;
+    font-size: 0.875rem;
+  }
+
+  .p-button {
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
+
+  // Estilos para p-card
+  .p-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+    
+    .p-card-body {
+      padding: 1.5rem;
+    }
+  }
+
+  // Estilos para la tabla de PrimeNG
+  .p-treetable {
+    font-size: 0.8rem;
+    
+    .p-treetable-header {
+      background: var(--p-surface-50);
+      border: 1px solid var(--p-content-border-color);
+      padding: 0.5rem;
+    }
+
+    .p-treetable-thead > tr > th {
+      background: var(--p-surface-100);
+      color: var(--p-text-color);
+      font-weight: 600;
+      border-bottom: 2px solid var(--p-primary-color);
+      padding: 0.5rem 0.75rem !important;
+      font-size: 0.8rem;
+    }
+
+    .p-treetable-tbody > tr > td {
+      padding: 0.5rem 0.75rem !important;
+      font-size: 0.8rem;
+      vertical-align: middle;
+    }
+
+    .p-treetable-tbody > tr {
+      &:nth-child(even) {
+        background: var(--p-surface-50);
+      }
+
+      &:hover {
+        background: var(--p-highlight-bg);
+        color: var(--p-highlight-text-color);
+      }
+    }
+
+    .total-row {
+      background: var(--p-primary-50) !important;
+      color: var(--p-primary-900) !important;
+      font-weight: 600;
+      
+      td {
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.8rem !important;
+        
+        &.value-cell {
+          text-align: right !important;          
+        }
+      }
+      
+      &:hover {
+        background: var(--p-primary-100) !important;
+      }
+    }
+  }
+}
+
+// Contenedor principal
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+// Banner con gradiente
+.gradient-banner {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  background-image: url('/assets/img/sgp/sgp-detalle.jpg');
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  display: flex;
+  margin-bottom: .5rem;
+  border-radius: 8px;
+
+  .gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 95%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      #969697d1 0%,
+      rgba(255, 255, 255, 0.01) 100%
+    );
+    z-index: 1;
+  }
+       
+  .banner-content {
+    position: relative;
+    margin-top: 1rem;
+    z-index: 2;
+    padding: 1rem;
+    max-width: 80%;
+    color: white;
+    
+    h2 {
+      font-size: 2rem;
+      margin-top: 3.75rem;
+      margin-bottom: 2.5rem;
+      color: #1a408c;
+      font-weight: bold;
+      max-width: 75%;
+      text-shadow: 1px 1px 3px rgba(241, 241, 247, 0.92);
+    }
+    
+    p {
+      font-size: 1.35rem;
+      margin-bottom: 2rem;
+      color: #f4f1f1;        
+      width: 67%;
+      font-weight: 500;
+      text-shadow: 1px 1px 3px rgba(23, 23, 104, 0.92);
+    }
+  }
+}
+
+// Sección de filtros
+.filters-section {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+  width: 100%;
+
+  .filters-panel {
+    margin-bottom: 1.5rem;
+
+    .filters-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: flex-end;
+      justify-content: flex-start;
+
+      .p-field {
+        flex: 0 1 auto;
+        min-width: 200px;
+        max-width: 250px;
+        margin-bottom: 0;
+
+        &.vigencia-select,
+        &.department-select,
+        &.town-select {
+          min-width: 200px;
+          max-width: 250px;
+        }
+
+        .p-floatlabel {
+          width: 100%;
+          
+          &.w-full.md\:w-56 {
+            width: 100% !important;
+            max-width: 100% !important;
+          }
+          
+          .p-select {
+            width: 100% !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Sección de la tarjeta de métricas
+.metrics-card-section {
+  margin-bottom: 1.5rem;
+  
+  .metrics-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    .metrics-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      width: 100%;
+
+      .metric-item {
+        flex: 1;
+        text-align: center;
+        min-width: 200px;
+        color: #3366cc;
+        padding: 1rem;
+
+        .metric-value {
+          font-size: 1.5rem;
+          font-weight: bold;
+          line-height: 1.2;
+          margin-bottom: 0.5rem;
+          color: #0f4987;
+          text-shadow: 
+            -1px -1px 0 #fff,
+            1px -1px 0 #fff,
+            -1px 1px 0 #fff,
+            1px 1px 0 #fff;
+        }
+
+        .metric-label {
+          font-size: 1.25rem;
+          line-height: 1.2;
+          word-wrap: break-word;
+          color: #666;
+          font-weight: 500;
+          text-shadow: 
+            -1px -1px 0 #fff,
+            1px -1px 0 #fff,
+            -1px 1px 0 #fff,
+            1px 1px 0 #fff;
+        }
+      }
+    }
+  }
+}
+
+// Sección de tabla
+.table-section {
+  background: var(--p-surface-card);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+  width: 100%;
+
+  .card {
+    .table-title {
+      margin: 0 0 1rem 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--p-primary-color);
+      text-align: center;
+    }
+
+    .sgp-treetable {
+      font-size: 0.8rem;
+      
+      .p-treetable-wrapper {
+        border-radius: 6px;
+        overflow: hidden;
+      }
+    }
+
+    // Notas de la tabla
+    .table-notes {
+      margin: 1rem 0;
+      padding: 1rem;
+      background: var(--p-surface-50);
+      border-radius: 6px;
+      border-left: 4px solid var(--p-primary-color);
+      
+      h4 {
+        margin: 0 0 0.5rem 0;
+        color: var(--p-primary-color);
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+      
+      p {
+        margin: 0.25rem 0;
+        font-size: 0.8rem;
+        color: var(--p-text-color);
+        line-height: 1.4;
+      }
+         }
+   }
+ }
+
+// Contenedor del botón de descarga
+.download-button-container {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+// Contenedor de la tarjeta de descargas
+.download-card-container {
+  width: 60%;
+  margin: 0 auto 1.5rem auto;
+
+  .download-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    .download-table {
+      width: 100%;
+
+      .download-row {
+        display: flex;
+        border-bottom: 1px solid #e0e0e0;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &.header-row {
+          background: var(--p-primary-50);
+          font-weight: 600;
+          color: var(--p-primary-color);
+        }
+
+        .download-cell {
+          flex: 1;
+          padding: 0.75rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+
+          &.header-cell {
+            font-weight: 600;
+            color: var(--p-primary-color);
+          }
+
+          &:first-child {
+            justify-content: flex-start;
+            text-align: left;
+          }
+
+          &:last-child {
+            justify-content: center;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .container {
+    padding: 0.5rem;
+  }
+
+  .gradient-banner {
+    height: 280px;
+
+    .banner-content {
+      h2 {
+        font-size: 1.3rem;
+        margin-top: 2.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      p {
+        font-size: 1rem;
+        width: 90%;
+      }
+    }
+  }
+
+  .filters-section {
+    padding: 1rem;
+
+    .filters-panel {
+      .filters-row {
+        flex-direction: column;
+        align-items: stretch;
+
+        .p-field {
+          min-width: 100%;
+          max-width: 100%;
+        }
+      }
+    }
+  }
+
+  .metrics-card-section {
+    .metrics-card {
+      .metrics-row {
+        flex-direction: column;
+
+        .metric-item {
+          min-width: 100%;
+        }
+      }
+    }
+  }
+
+  .table-section {
+    padding: 0.75rem;
+
+    .card {
+      .table-title {
+        font-size: 1.1rem;
+      }
+    }
+  }
+
+  .download-card-container {
+    width: 90%;
+
+    .download-card {
+      .download-table {
+        .download-row {
+          flex-direction: column;
+          gap: 0.5rem;
+
+          .download-cell {
+            padding: 0.5rem;
+            justify-content: center;
+            text-align: center;
+
+            &:first-child {
+              justify-content: center;
+              text-align: center;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .gradient-banner {
+    height: 240px;
+
+    .banner-content {
+      h2 {
+        font-size: 1.1rem;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      p {
+        font-size: 0.9rem;
+        width: 95%;
+      }
+    }
+  }
+
+  .filters-section {
+    padding: 0.75rem;
+  }
+
+  .metrics-card-section {
+    .metrics-card {
+      .metrics-row {
+        .metric-item {
+          padding: 0.75rem;
+
+          .metric-value {
+            font-size: 1.25rem;
+          }
+
+          .metric-label {
+            font-size: 1rem;
+          }
+        }
+      }
+    }
+  }
+}
