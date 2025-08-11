@@ -1007,18 +1007,27 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
     this.mixedChartOptions = {
       responsive: true,
       maintainAspectRatio: false,
-      aspectRatio: 1.25,
+      aspectRatio: .95,
       scales: {
         y: {
           beginAtZero: true,
           position: 'left',
-          title: { display: true, text: 'Millones de pesos' }
+          title: { display: true, text: 'Millones de pesos' },
+          ticks: {
+            callback: function(value: any) {
+              return new Intl.NumberFormat('es-CO', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2,
+                useGrouping: true
+              }).format(value).replace(/,/g, '.');
+            }
+          }
         },
         y1: {
           beginAtZero: true,
           position: 'right',
           grid: { drawOnChartArea: false },
-          title: { display: true, text: 'Variación (%)' }
+          title: { display: true, text: 'Variación anual (%)' }
         }
       },
       plugins: {
@@ -1042,7 +1051,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
     this.barChartOptions = {
       responsive: true,
       maintainAspectRatio: false,
-      aspectRatio: 1.25,
+      aspectRatio: .95,
       scales: {
         x: {
           title: {
@@ -1057,7 +1066,11 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
           },
           ticks: {
             callback: function(value: any) {
-              return new Intl.NumberFormat('es-CO').format(value);
+              return new Intl.NumberFormat('es-CO', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2,
+                useGrouping: true
+              }).format(value).replace(/,/g, '.');
             }
           }
         },
@@ -1067,7 +1080,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
           position: 'right',
           title: {
             display: true,
-            text: 'Variación Anual (%)'
+            text: 'Variación anual (%)'
           },
           grid: {
             drawOnChartArea: false,

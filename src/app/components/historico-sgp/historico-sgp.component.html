@@ -90,7 +90,7 @@
         <ng-template pTemplate="header">
           <div>
             <h3 class="chart-title">Evolución histórica por participaciones</h3>
-            <p class="chart-subtitle">Millones de pesos corrientes</p>
+            <p class="chart-subtitle">Cifras en pesos corrientes</p>
           </div>
         </ng-template>
         <div class="chart-container" style="position: relative;">
@@ -128,7 +128,7 @@
       <!-- Scroll horizontal indicator -->
       <div *ngIf="selectedYears.length > 5 && treeTableData.length > 0" style="padding: 0.5rem; background: #e3f2fd; border-radius: 4px; margin-bottom: 0.5rem; text-align: center;">
         <i class="pi pi-arrow-right-arrow-left" style="color: #1976d2; margin-right: 0.5rem;"></i>
-        <span style="color: #1976d2; font-size: 0.85rem;">Desliza horizontalmente para ver todas las vigencias ({{ selectedYears.length }} seleccionadas)</span>
+        <span style="color: #1976d2; font-size: 0.85rem;">Desliza horizontalmente para ver las vigencias ({{ selectedYears.length }} seleccionadas)</span>
       </div>
 
       <!-- Debug info -->
@@ -181,13 +181,7 @@
           </tr>
         </ng-template>
       </p-treetable>
-      <!-- Notas -->
-      <div class="table-notes">
-        <h4>NOTAS</h4>
-        <p>(1) Cifras en millones de pesos corrientes.</p>
-        <p>(2) Los datos que se presentan para los años 2002-2015, corresponden a las distribuciones efectuadas mediante Documentos CONPES de su respectiva vigencia; para los años 2015 en adelante, corresponden a las distribuciones efectuadas mediante Documentos de Distribución de su respectiva vigencia.</p>
-      </div>
-      
+            
       <!-- Buttons grid -->
       <div class="buttons-grid">
         
@@ -209,7 +203,7 @@
           <h2 class="chart-title">Evolución SGP - Precios corrientes</h2>
           <p class="chart-subtitle">
             El crecimiento promedio anual en términos reales es del 4% anual durante los últimos 20 años (2005 – 2025).
-            La información se presenta en miles de millones de pesos corrientes.
+            La información se presenta en pesos corrientes.
           </p>
         </ng-template>
         <p-chart type="bar" [data]="chartData1" [options]="mixedChartOptions"></p-chart>
@@ -221,12 +215,21 @@
           <h2 class="chart-title">Evolución SGP – Precios constantes 2025</h2>
           <p class="chart-subtitle">
             El crecimiento promedio anual en términos reales es del 4% anual durante los últimos 20 años (2005 – 2025).
-            La información se presenta en miles de millones de pesos constantes.
+            La información se presenta en pesos constantes.
           </p>
         </ng-template>
         <p-chart type="bar" [data]="chartData3" [options]="barChartOptions"></p-chart>
       </p-card>
     </div>
     
+  </div>
+
+  <!-- Notas -->
+  <div class="table-notes">
+    <h4>NOTAS</h4>
+    <p>(1) Cifras en pesos corrientes.</p>
+    <p>(2) Los datos que se presentan para los años 2002-2015, corresponden a las distribuciones efectuadas mediante Documentos CONPES de su respectiva vigencia; para los años 2015 en adelante, corresponden a las distribuciones efectuadas mediante Documentos de Distribución de su respectiva vigencia.</p>
+    <p>(3) El crecimiento promedio anual en términos reales es del 4% anual durante los últimos 20 años (2005 – 2025). Art. 357 de la C.P.</p>
+
   </div>
 </div>

@@ -765,7 +765,7 @@ export class ReportsSgpComponent implements OnInit {
     }
 
     const totalGeneral = this.getTreeTableYearTotal();
-    const threshold = totalGeneral * 0.02; // 2% del total
+    const threshold = totalGeneral * 0.01; // 2% del total
 
     // Filtrar solo conceptos padre (no hijos) que superen el 2%
     const mainConcepts = this.treeTableData
@@ -807,5 +807,14 @@ export class ReportsSgpComponent implements OnInit {
   truncateText(text: string, maxLength: number = 100): string {
     if (!text) return '';
     return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+  }
+
+  /**
+   * Verifica si la vigencia seleccionada corresponde al año actual
+   * @returns true si la vigencia es el año actual
+   */
+  isCurrentYear(): boolean {
+    const currentYear = new Date().getFullYear().toString();
+    return this.selected === currentYear;
   }
 }

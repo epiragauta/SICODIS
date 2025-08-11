@@ -79,6 +79,11 @@
     </div>
   </div>
 
+  <!-- Título de sección -->
+  <div class="section-title">
+    <h3>Distribución del presupuesto</h3>
+  </div>
+
   <!-- Sección principal con resumen y tabla -->
   <div class="resume">
     <div class="main-grid">
@@ -89,15 +94,15 @@
           <p-treetable [value]="treeTableData" 
                        dataKey="key" 
                        [scrollable]="true"
-                       [scrollHeight]="treeTableData && treeTableData.length > 5 ? '400px' : 'auto'"
+                       [scrollHeight]="treeTableData && treeTableData.length > 5 ? '380px' : 'auto'"
                        styleClass="reports-treetable"
-                       [tableStyle]="{'min-width':'30rem'}"
+                       [tableStyle]="{'min-width':'28rem'}"
                        *ngIf="treeTableData.length > 0">
             <ng-template pTemplate="header">
               <tr>
-                <th class="table-header concept-header">Concepto</th>
+                <th class="table-header concept-header">Participación</th>
                 <th class="table-header vigencia-header">
-                  Presupuesto
+                  Valor
                 </th>
               </tr>
             </ng-template>
@@ -132,12 +137,24 @@
       <!-- Columna derecha: Gráfica de conceptos principales -->
       <div class="metrics-column">        
         <div class="col chart-column">
-          <h3 class="chart-title">Participaciones {{selected}}</h3>
           <div class="chart-container">
             <canvas id="barChart"></canvas>
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Sección de notas informativas -->
+    <div class="final-notes-container">
+      <strong>NOTAS</strong>
+      <p class="final-note">
+        <strong>(1)</strong> Cifras en pesos corrientes.
+      </p>
+      <p class="final-note" *ngIf="isCurrentYear()">
+        <strong>(2)</strong> Los recursos pendientes por distribuir corresponden a i) la participación para educación 
+        por concepto de las doce doceavas por $1.839 mm y ii) la asignación especial para el FONPET por concepto de las
+        once doceavas por $ 2.469 mm.
+      </p>
     </div>
 
     <!-- Botón Descargar Excel centrado -->
@@ -170,7 +187,7 @@
           <td>{{ data.anio }}</td>
           <td>{{ data.total_distribucion | numberFormat }}</td>
           <td [pTooltip]="data.descripcion" tooltipPosition="top" showDelay="500" hideDelay="200">
-            {{ truncateText(data.descripcion, 190) }}
+            {{ truncateText(data.descripcion, 177) }}
           </td>          
           <td style="white-space: nowrap;">
             <button pButton type="button" icon="pi pi-file-pdf" class="p-button-danger p-button-sm" 

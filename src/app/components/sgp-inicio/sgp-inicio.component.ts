@@ -7,6 +7,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { ButtonModule } from 'primeng/button';
 import { ChartModule } from 'primeng/chart';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
+import { PercentFormatPipe } from '../../utils/percentFormatPipe';
 import { MatIconModule } from '@angular/material/icon';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
@@ -30,6 +31,7 @@ import { SicodisApiService } from '../../services/sicodis-api.service';
       ButtonModule,
       ChartModule,
       NumberFormatPipe,
+      PercentFormatPipe,
       MatIconModule,
       FloatLabel,      
       InfoPopupComponent,
@@ -231,7 +233,7 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
     const data = rawData.map((item: any) => item.v);
     
     // Colores originales especificados
-    const colors = ['#156082', '#e97132', '#196b24', '#0c9bd3', '#a02b93'];
+    const colors = ['#156082', '#e97132', '#0c9bd3', '#196b24', '#a02b93'];
 
     this.donutData = {
       labels: labels,
@@ -259,7 +261,7 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
     this.donutOptions = {
       responsive: true,
       maintainAspectRatio: false,
-      aspectRatio: 0.7,
+      aspectRatio: 0.725,
       cutout: '60%',
       plugins: {
         legend: {

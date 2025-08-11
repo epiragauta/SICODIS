@@ -34,13 +34,13 @@
       color: var(--p-text-color);
       font-weight: 600;
       border-bottom: 2px solid var(--p-primary-color);
-      padding: 0.5rem 0.75rem !important;
+      padding: 0.3rem 0.5rem !important;
       font-size: 0.8rem;
     }
 
     .p-datatable-tbody > tr > td,
     .p-treetable-tbody > tr > td {
-      padding: 0.5rem 0.75rem !important;
+      padding: 0.3rem 0.5rem !important;
       font-size: 0.8rem;
       vertical-align: middle;
     }
@@ -63,7 +63,7 @@
       font-weight: 600;
       
       td {
-        padding: 0.5rem 0.75rem !important;
+        padding: 0.3rem 0.5rem !important;
         font-size: 0.8rem !important;
         
         &.vigencia-cell {
@@ -168,6 +168,20 @@
     }
   }
 
+// Título de sección
+.section-title {
+  margin: 1.5rem 0 1rem 0;
+  text-align: center;
+  
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--p-primary-color);
+    margin: 0;
+    letter-spacing: 0.5px;
+  }
+}
+
 // Panel de filtros
 .filters-panel {
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
@@ -246,7 +260,8 @@
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 2rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 
   .main-grid {
     display: grid;
@@ -320,6 +335,28 @@
 
   .table-column {
     // Removed button-export styles as button is now outside
+  }
+
+  // Sección de notas informativas
+  .final-notes-container {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--p-surface-50);
+    border-radius: 6px;
+    border-left: 4px solid var(--p-primary-color);
+    
+    strong {
+      color: var(--p-primary-color);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    
+    .final-note {
+      margin: 0.25rem 0;
+      font-size: 0.8rem;
+      color: var(--p-text-color);
+      line-height: 1.4;
+    }
   }
 
   // Botón centrado fuera de las columnas
@@ -398,6 +435,16 @@
 .p-button,
 .p-select {
   transition: all 0.2s ease;
+}
+
+// Título de gráfico centrado
+.title-graph {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2563eb;
+  margin: .5rem 0;
+  letter-spacing: 0.5px;
 }
 
 // Estados de carga

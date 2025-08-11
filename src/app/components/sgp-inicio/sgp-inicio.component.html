@@ -17,6 +17,12 @@
     </div>
   </div>
 
+  <div class="main-title">
+    <h2>
+      Resumen de la distribución del presupuesto
+    </h2>
+  </div>
+
   <!-- Sección B + C: Tarjetas de cifras (izquierda) y Treemap (derecha) -->
   <div class="main-grid">
     
@@ -51,7 +57,7 @@
       </mat-card>
       <mat-card class="metric-item">
         <mat-card-header>
-          <mat-card-title class="card-title card-main">Recursos distribuidos </mat-card-title>
+          <mat-card-title class="card-title card-main">Recursos distribuidos hasta la fecha</mat-card-title>
         </mat-card-header>
         <mat-card-content>
           <div class="metric-value">{{ cifras.distribuido | numberFormat }}</div>
@@ -59,7 +65,7 @@
       </mat-card>
       <mat-card class="metric-item">
         <mat-card-header>
-          <mat-card-title class="card-title card-main">Recursos por distribuir</mat-card-title>
+          <mat-card-title class="card-title card-main">Recursos pendientes por distribuir</mat-card-title>
         </mat-card-header>
         <mat-card-content>
           <div class="metric-value">{{ cifras.pendiente | numberFormat }}</div>
@@ -67,17 +73,17 @@
       </mat-card>
       <mat-card class="metric-item">
         <mat-card-header>
-          <mat-card-title class="card-title card-main">Avance distribución</mat-card-title>
+          <mat-card-title class="card-title card-main">Avance de la distribución</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <div class="metric-value">{{ cifras.avance | percent:'1.0-2'}}</div>
+          <div class="metric-value">{{ cifras.avance | percentFormat:2}}</div>
         </mat-card-content>
       </mat-card>
     </div>
 
     <!-- B: Gráfico Donut -->
     <div class="chart-donut">
-      <h1 class="chart-title">Avance en la distribución SGP</h1>
+      <h1 class="chart-title">Avance en la distribución</h1>
       <p-chart type="doughnut" [data]="donutData" [options]="donutOptions"></p-chart>
     </div>
   </div>
@@ -86,9 +92,9 @@
   <div class="final-notes-container">
     <strong>NOTAS</strong>
     <p class="final-note">
-      <strong>(1)</strong> Cifras en millones de pesos corrientes.
+      <strong>(1)</strong> Cifras en pesos corrientes.
     </p>
-    <p class="final-note">
+    <p class="final-note" *ngIf="cifras.pendiente > 0">
       <strong>(2)</strong> Los recursos pendientes por distribuir corresponden a i) la participación para educación 
       por concepto de las doce doceavas por $1.839 mm y ii) la asignación especial para el FONPET por concepto de las
       once doceavas por $ 2.469 mm.
