@@ -242,7 +242,7 @@
           <div class="metrics-row">
             <div class="metric-item-2">
               <div class="metric-value">
-                {{avanceRecaudoData.avance | percent:'1.0-2'}}
+                {{avanceRecaudoData.avance | percentFormat:2}}
               </div>
               <div class="metric-label">Avance</div>
             </div>
@@ -283,7 +283,7 @@
   
   <div class="final-notes-container">
     <p class="final-note" style="font-size: 0.65rem;">
-      <strong>m:</strong> Corresponde a cifras en millones de pesos corrientes.
+      <strong>Nota:</strong> Corresponde a cifras en pesos corrientes.
     </p>
     <p class="final-note" style="padding-bottom: 1em; font-size: 0.65rem;">
       <strong>Fuente:</strong> DNP - DPIP - SDRT a partir de la ley bienal de presupuesto, resoluciones de distribución
@@ -328,19 +328,19 @@
               <div class="detail-item">
                 <strong>Presupuesto disponible:</strong> 
                 <div style="text-align: right;">
-                  {{formatMillions2(registro.apropiacion_vigente_disponible, {includeMillionSuffix: false}) || 'N/A'}}
+                  {{formatMillions2(registro.apropiacion_vigente_disponible, {}) || 'N/A'}}
                 </div>            
               </div>
               <div class="detail-item">
                 <strong>Compromisos:</strong> 
                 <div style="text-align:right;">
-                  {{formatMillions2(registro.compromisos, {includeMillionSuffix: false}) || 'N/A'}}
+                  {{formatMillions2(registro.compromisos, {}) || 'N/A'}}
                 </div>            
               </div>
               <div class="detail-item">
                 <strong>Saldo sin afectación:</strong> 
                 <div style="text-align:right;">
-                  {{formatMillions2(registro.saldo_sin_afectacion, {includeMillionSuffix: false}) || 'N/A'}}
+                  {{formatMillions2(registro.saldo_sin_afectacion, {}) || 'N/A'}}
                 </div>            
               </div>
             </div>

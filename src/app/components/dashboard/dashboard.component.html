@@ -68,7 +68,7 @@
                             [options]="getCategoryChartOptions(card)">
                     </p-chart>
                     <div class="chart-value">
-                      <span class="percentage">{{card.percent | number:'1.1-1'}}%</span>
+                      <span class="percentage">{{card.percent / 100 | percentFormat:1}}</span>
                       <span class="value" [ngStyle]="{'color': card.color}">{{card.formattedValue}}</span>
                     </div>
                   </div>

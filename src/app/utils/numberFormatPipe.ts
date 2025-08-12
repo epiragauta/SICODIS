@@ -19,20 +19,13 @@ export class NumberFormatPipe implements PipeTransform {
       return '';
     }
 
-    // Convert to millions
-    // num = num / 1000000;
-
-    // Format with Colombian locale and then adjust separators
-    // Separador de miles: punto (.), decimales: coma (,)
+    // Format with dot as thousand separator and comma as decimal separator
     const formatted = num.toLocaleString('es-CO', {
       minimumFractionDigits: decimals,
-      maximumFractionDigits: 0,
+      maximumFractionDigits: decimals,
       useGrouping: true
-    });
+    }).replace(/,/g, '.').replace(/\.([0-9]+)$/, ',$1');
 
-    // Replace Colombian format (thousands: comma, decimals: period) 
-    // to requested format (thousands: period, decimals: comma)
-    //.replace(/\./g, '|').replace(/,/g, '.').replace(/\|/g, ',')
     return formatted;
   }
 }

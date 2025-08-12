@@ -217,7 +217,7 @@ export class ReportsSgpComponent implements OnInit {
 
       // Preparar datos para la gráfica
       const labels = mainConcepts.map(concept => concept.concepto);
-      const data = mainConcepts.map(concept => concept.valor / 1000000); // Convertir a millones
+      const data = mainConcepts.map(concept => concept.valor); // Valores en pesos
       const percentages = mainConcepts.map(concept => concept.porcentaje);
 
       // Destruir la instancia anterior si existe
@@ -300,7 +300,7 @@ export class ReportsSgpComponent implements OnInit {
                    }).format(context.parsed.y);
                    const percentage = parseFloat(percentages[index]).toFixed(1);
                    return [
-                     `Valor: ${value} millones`,
+                     `Valor: ${value} pesos`,
                      `Porcentaje: ${percentage}% del total`
                    ];
                  }

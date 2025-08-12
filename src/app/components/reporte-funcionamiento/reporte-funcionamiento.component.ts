@@ -18,6 +18,7 @@ import {
   getBeneficiariosByFuenteAndConcepto
 } from '../../utils/sgr-functions';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
+import { PercentFormatPipe } from '../../utils/percentFormatPipe';
 import { MatIconModule } from '@angular/material/icon';
 import { FloatLabel } from 'primeng/floatlabel';
 import { Select, SelectChangeEvent } from 'primeng/select';
@@ -62,6 +63,7 @@ interface SelectOption {
     ChartModule,
     ProgressSpinnerModule,
     NumberFormatPipe,
+    PercentFormatPipe,
     MatIconModule,
     FloatLabel,
     Select,
@@ -1691,32 +1693,30 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
       // Actualizar datos de presupuesto
       this.presupuestoData = {
-        presupuestoAsignado: this.registroActual['total_asignado_bienio'] / 1000000, // En millones
-        disponibilidadInicial: convertirANumero(this.registroActual['disponibilidad_inicial']) / 1000000,
-        recursosBloquedos: convertirANumero(this.registroActual['recursos_bloqueados']) / 1000000,
-        presupuestoVigenteDisponible: convertirANumero(this.registroActual['apropiacion_vigente_disponible']) / 1000000 // En billones
+        presupuestoAsignado: this.registroActual['total_asignado_bienio'] , // Full peso values
+        disponibilidadInicial: convertirANumero(this.registroActual['disponibilidad_inicial']) ,
+        recursosBloquedos: convertirANumero(this.registroActual['recursos_bloqueados']) ,
+        presupuestoVigenteDisponible: convertirANumero(this.registroActual['apropiacion_vigente_disponible'])  // Full peso values
       };
 
       // Actualizar datos de ejecución
       this.ejecucionData = {
-        cdp: convertirANumero(this.registroActual['cdp']) / 1000000,
-        compromiso: convertirANumero(this.registroActual['compromisos']) / 1000000,
-        pagos: convertirANumero(this.registroActual['pagos']) / 1000000,
-        recursoComprometer: convertirANumero(this.registroActual['saldo_sin_afectacion']) / 1000000
-      };
+        cdp: convertirANumero(this.registroActual['cdp']) ,
+        compromiso: convertirANumero(this.registroActual['compromisos']) ,
+        pagos: convertirANumero(this.registroActual['pagos']) ,
+        recursoComprometer: convertirANumero(this.registroActual['saldo_sin_afectacion'])       };
 
       // Actualizar datos de situación de caja
       this.situacionCajaData = {
-        disponibilidadInicial: convertirANumero(this.registroActual['disponibilidad_inicial']) / 1000000,
-        recaudo: convertirANumero(this.registroActual['iac_corriente']) / 1000000,
-        cajaTotal: convertirANumero(this.registroActual['caja_total']) / 1000000,
-        cajaDisponible: convertirANumero(this.registroActual['caja_disponible']) / 1000000
-      };
+        disponibilidadInicial: convertirANumero(this.registroActual['disponibilidad_inicial']) ,
+        recaudo: convertirANumero(this.registroActual['iac_corriente']) ,
+        cajaTotal: convertirANumero(this.registroActual['caja_total']) ,
+        cajaDisponible: convertirANumero(this.registroActual['caja_disponible'])       };
 
       // Actualizar datos de avance de recaudo
       this.avanceRecaudoData = {
-        presupuestoCorriente: convertirANumero(this.registroActual['distribucion_presupuesto_corriente']) / 1000000,
-        iacCorriente: convertirANumero(this.registroActual['iac_corriente']) / 1000000,
+        presupuestoCorriente: convertirANumero(this.registroActual['distribucion_presupuesto_corriente']) ,
+        iacCorriente: convertirANumero(this.registroActual['iac_corriente']) ,
         avance: convertirANumero(this.registroActual['avance_iac_corriente'] / 100)
       };
 
@@ -1775,35 +1775,32 @@ export class ReporteFuncionamientoComponent implements OnInit {
     
   }
 
-  // Método para formatear números en millones
+  // Método para formatear números en pesos
   formatMillions(value: number): string {
     if (value === 0) return '$0';
     
-    return `$ ${value.toFixed(0)} m`;
+    return `$ ${value.toFixed(0)}`;
   }
 
   /**
  * Formats a large number in billions (thousands of millions) with Colombian notation
  * @param {number|string} number - The number to be formatted
  * @param {Object} [options] - Formatting options
- * @param {boolean} [options.includeSymbol=true] - Include COP currency symbol
+ * @param {boolean} [options.includeSymbol=true] - Include currency symbol
  * @param {number} [options.decimalPlaces=1] - Decimal places to display
- * @param {boolean} [options.includeBillionSuffix=true] - Add "bn" suffix
  * @returns {string} Formatted number string
  */
   formatMillions2(
     num: number,
     options: {
       includeSymbol?: boolean;
-      decimalPlaces?: number;
-      includeMillionSuffix?: boolean;
+      decimalPlaces?: number;      
     } = {}
   ) {
     // Default options
     const {
       includeSymbol = false,
-      decimalPlaces = 0,
-      includeMillionSuffix = true
+      decimalPlaces = 0,      
     } = options;
 
     // Convert to miles of millions
@@ -1819,8 +1816,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
     let result = '';
     if (includeSymbol) result += '$ ';
     result += formattedValue;
-    if (includeMillionSuffix) result += ' m';
-
+    
     return result;
   }
 
@@ -1871,10 +1867,10 @@ export class ReporteFuncionamientoComponent implements OnInit {
       };
 
       // Actualizar gráfico de barras horizontales (Disponibilidad vs Ejecutado)
-      const cdp = convertirANumero(this.registroActual['cdp']) / 1000000; // En millones
-      let pagos = convertirANumero(this.registroActual['pagos']) / 1000000; // En millones
-      const compromisoSinAfectacion = (convertirANumero(this.registroActual['compromisos']) / 1000000) - pagos;
-      const saldoSinAfectacion = convertirANumero(this.registroActual['saldo_sin_afectacion']) / 1000000; // En millones
+      const cdp = convertirANumero(this.registroActual['cdp']) ; // Full peso values
+      let pagos = convertirANumero(this.registroActual['pagos']) ; // Full peso values
+      const compromisoSinAfectacion = (convertirANumero(this.registroActual['compromisos']) ) - pagos;
+      const saldoSinAfectacion = convertirANumero(this.registroActual['saldo_sin_afectacion']) ; // Full peso values
       const cdpSinAfectacion = (cdp-compromisoSinAfectacion-pagos) < 0 ? cdp - compromisoSinAfectacion : cdp - compromisoSinAfectacion - pagos;
       this.horizontalBarAfectacionData = {
         labels: [''],
@@ -1882,21 +1878,29 @@ export class ReporteFuncionamientoComponent implements OnInit {
           {
             label: 'Pagos',
             backgroundColor: '#e8a58c',
+            borderColor: '#CCCCCC',
+            borderWidth: 1,
             data: [pagos]
           },
           {
             label: 'Compromisos por pagar',
             backgroundColor: '#ee825a',
+            borderColor: '#CCCCCC',
+            borderWidth: 1,
             data: [compromisoSinAfectacion]
           },
           {
             label: 'CDP por comprometer',
             backgroundColor: '#F74E11',
+            borderColor: '#CCCCCC',
+            borderWidth: 1,
             data: [cdpSinAfectacion]
           },
           {
             label: 'Saldo sin afect.',
             backgroundColor: '#eceae9',
+            borderColor: '#CCCCCC',
+            borderWidth: 1,
             data: [saldoSinAfectacion]
           }
           
@@ -1904,8 +1908,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
       };
 
       // Actualizar gráfico de dona (Avance de ejecución)
-      let compromiso = convertirANumero(this.registroActual['compromisos']) / 1000000; // En millones
-      let presupuestoDisponible = convertirANumero(this.registroActual['apropiacion_vigente_disponible']) / 1000000; // En millones
+      let compromiso = convertirANumero(this.registroActual['compromisos']) ; // Full peso values
+      let presupuestoDisponible = convertirANumero(this.registroActual['apropiacion_vigente_disponible']) ; // Full peso values
             
       let compromisoPorcentaje = compromiso > 0 ? (compromiso / (presupuestoDisponible)) * 100 : 0;
       this.compromisoPorcentaje = compromisoPorcentaje.toFixed(1).replace('.', ',');
@@ -1917,12 +1921,14 @@ export class ReporteFuncionamientoComponent implements OnInit {
           {
             data: [compromiso, presupuestoDisponible],
             backgroundColor: ['#ee825a', '#eceae9'],
-            hoverBackgroundColor: ['#e85c16', '#dee2e6']
+            hoverBackgroundColor: ['#e85c16', '#dee2e6'],
+            borderColor: '#CCCCCC',
+            borderWidth: 1,
           }
         ]
       };
 
-      let cajaDisponible = convertirANumero(this.registroActual['caja_disponible']) / 1000000; // En millones
+      let cajaDisponible = convertirANumero(this.registroActual['caja_disponible']) ; // Full peso values
       let pagosPorcentaje = pagos > 0 ? ((pagos) / cajaDisponible) * 100 : 0;
       this.avanceRecaudoPorcentaje = pagosPorcentaje.toFixed(1).replace(".", ",");
       this.donutSituacionCajaData = {
@@ -1932,11 +1938,15 @@ export class ReporteFuncionamientoComponent implements OnInit {
             label: 'Pagos',
             data: [pagos],
             backgroundColor: '#e8a58c',
+            borderColor: '#CCCCCC',
+            borderWidth: 1,
           },
           {
             label: 'Caja Disponible',
             data: [cajaDisponible],
-            backgroundColor: '#eceae9'            
+            backgroundColor: '#eceae9',
+            borderColor: '#CCCCCC',
+            borderWidth: 1,        
           }
         ]
       };
@@ -1949,7 +1959,9 @@ export class ReporteFuncionamientoComponent implements OnInit {
               this.avanceRecaudoData.iacCorriente, this.avanceRecaudoData.presupuestoCorriente
             ],
             backgroundColor: ['#FF8D00', '#eceae9'],
-            hoverBackgroundColor: ['#2851a3', '#dee2e6']
+            hoverBackgroundColor: ['#db5c21ff', '#dee2e6'],
+            borderColor: '#CCCCCC',
+            borderWidth: 1,
           }
         ]
       };
@@ -2024,7 +2036,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         tooltip: {
           callbacks: {
             label: function(tooltipItem: any) {
-              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')} m`;
+              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')}`;
             }
           }
         }
@@ -2040,6 +2052,25 @@ export class ReporteFuncionamientoComponent implements OnInit {
           grid: { color: surfaceBorder },
           stacked: true
         }
+      },
+      elements: {
+        arc: {
+          borderWidth: 2,
+          borderColor: '#BBBBBB',
+          hoverBorderWidth: 2,
+          hoverBorderColor: '#BBBBBB'
+        }
+      },
+      animation: {
+        animateRotate: true,
+        animateScale: true,
+        duration: 2000,
+        easing: 'easeOutQuart'
+      },
+      interaction: {
+        mode: 'nearest',
+        intersect: false,
+        axis: 'r'
       }      
     };
 
@@ -2068,7 +2099,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         tooltip: {
           callbacks: {
             label: function(tooltipItem: any) {
-              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')} m`;
+              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')}`;
             }
           }
         }
@@ -2084,6 +2115,25 @@ export class ReporteFuncionamientoComponent implements OnInit {
           grid: { color: surfaceBorder },
           stacked: true
         }
+      },
+      elements: {
+        arc: {
+          borderWidth: 2,
+          borderColor: '#BBBBBB',
+          hoverBorderWidth: 2,
+          hoverBorderColor: '#BBBBBB'
+        }
+      },
+      animation: {
+        animateRotate: true,
+        animateScale: true,
+        duration: 2000,
+        easing: 'easeOutQuart'
+      },
+      interaction: {
+        mode: 'nearest',
+        intersect: false,
+        axis: 'r'
       }      
     };
 
@@ -2112,7 +2162,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         tooltip: {
           callbacks: {
             label: function(tooltipItem: any) {
-              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')} m`;
+              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')}`;
             }
           },
           xAlign: 'left',
@@ -2129,6 +2179,25 @@ export class ReporteFuncionamientoComponent implements OnInit {
             return value + '%';
           }
         }
+      },
+      elements: {
+        arc: {
+          borderWidth: 2,
+          borderColor: '#BBBBBB',
+          hoverBorderWidth: 2,
+          hoverBorderColor: '#BBBBBB'
+        }
+      },
+      animation: {
+        animateRotate: true,
+        animateScale: true,
+        duration: 2000,
+        easing: 'easeOutQuart'
+      },
+      interaction: {
+        mode: 'nearest',
+        intersect: false,
+        axis: 'r'
       }
     };
 
@@ -2156,7 +2225,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         tooltip: {
           callbacks: {
             label: function(tooltipItem: any) {
-              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')} m`;            
+              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')}`;            
             }
           },
           xAlign: 'left',
@@ -2170,9 +2239,28 @@ export class ReporteFuncionamientoComponent implements OnInit {
             if (!isFinite(avance) || isNaN(avance)) {
               return '0.00%';
             }
-            return avance.toFixed(2) + '%';
+            return avance.toFixed(2).replace(".", ",") + '%';
           }
         }
+      },
+      elements: {
+        arc: {
+          borderWidth: 2,
+          borderColor: '#BBBBBB',
+          hoverBorderWidth: 2,
+          hoverBorderColor: '#BBBBBB'
+        }
+      },
+      animation: {
+        animateRotate: true,
+        animateScale: true,
+        duration: 2000,
+        easing: 'easeOutQuart'
+      },
+      interaction: {
+        mode: 'nearest',
+        intersect: false,
+        axis: 'r'
       }
     };
 

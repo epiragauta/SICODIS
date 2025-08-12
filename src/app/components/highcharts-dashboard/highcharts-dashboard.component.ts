@@ -105,13 +105,13 @@ export class HighchartsDashboardComponent implements OnInit { // Changed class n
         // Format for Highcharts bar chart: array of objects { name, y }
         this.mainChartData = filteredData.map(item => ({ 
             name: item.desc, 
-            y: item.value / 1000000000 // Example: value in billions
+            y: item.value // Use full peso values
         }));
     } else if (this.mainChartType === 'pie') {
         // Format for Highcharts pie chart: array of objects { name, y }
         this.mainChartData = filteredData.map(item => ({ 
             name: item.desc, 
-            y: item.value / 1000000000 // Example: value in billions
+            y: item.value // Use full peso values
         }));
     }
     // console.log('Main chart data prepared:', this.mainChartData);
@@ -188,7 +188,7 @@ export class HighchartsDashboardComponent implements OnInit { // Changed class n
   formatCurrency(value: number): string {
     return new Intl.NumberFormat('es-CO', {
       style: 'currency',
-      currency: 'COP',
+      currency: 'Pesos',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }).format(value);

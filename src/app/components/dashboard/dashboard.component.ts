@@ -14,6 +14,7 @@ import { BudgetChartComponent } from './budget-chart.component';
 import { BudgetMapComponent } from './budget-map.component';
 import { ChartModule } from 'primeng/chart';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
+import { PercentFormatPipe } from '../../utils/percentFormatPipe';
 
 interface CardData {
   title: string;
@@ -43,7 +44,8 @@ interface CardData {
     BudgetChartComponent,
     BudgetMapComponent,
     ChartModule,
-    NumberFormatPipe
+    NumberFormatPipe,
+    PercentFormatPipe
   ],
   providers: [
     BudgetServiceStatic

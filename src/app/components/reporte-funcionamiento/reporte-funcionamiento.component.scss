@@ -35,12 +35,12 @@
       margin-top: 1rem;
       z-index: 2;
       padding: 1rem;
-      max-width: 60%;      
+      max-width: 70%;      
       width: 1210px;
       color: white;
       
       h2 {
-        font-size: 1.5rem;
+        font-size: 2rem;
         margin-top: 3.75rem;
         margin-bottom: 2.5rem;
         color: #1a408c;
@@ -299,7 +299,7 @@
             color: #3366cc;
 
             .metric-value {
-              font-size: 1.25rem;
+              font-size: 1.2rem;
               font-weight: bold;
               line-height: 1.2;
               margin-bottom: 0.3rem;
@@ -320,7 +320,7 @@
             color: #3366cc;
 
             .metric-value {
-              font-size: 1.5rem;
+              font-size: 1.25rem;
               font-weight: bold;
               line-height: 1.2;
               margin-bottom: 0.3rem;
@@ -360,6 +360,14 @@
         justify-content: center;
         /*align-items: center;*/
         overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+        &:hover {
+          transform: translateY(-4px);
+          box-shadow: 
+            0 12px 40px rgba(0, 0, 0, 0.15),
+            0 6px 20px rgba(0, 0, 0, 0.1);
+        }
 
         .chart {
           width: 100%;
@@ -664,6 +672,14 @@
       max-height: 160px !important;
       width: auto !important;
       height: auto !important;
+      border: 2px solid #4a4a4a !important;
+      border-radius: 8px !important;
+      transition: all 0.3s ease !important;
+      
+      &:hover {
+        filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25)) !important;
+        border-color: #2a2a2a !important;
+      }
     }
 
     .p-chart-canvas {

@@ -290,7 +290,7 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
               const formattedValue = new Intl.NumberFormat('es-CO', { 
                 minimumFractionDigits: 0, 
                 maximumFractionDigits: 0 
-              }).format(value/1000000);
+              }).format(value);
               return `${context.label}: ${formattedValue}`;
             }
           }
@@ -310,7 +310,7 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
           }
         }
       },
-             elements: {
+      elements: {
          arc: {
            borderWidth: 3,
            borderColor: '#BBBBBB',

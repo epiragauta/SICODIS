@@ -97,7 +97,7 @@ export class GraphicsSgpComponent implements OnInit {
           position: 'left',
           title: {
             display: true,
-            text: 'Miles de millones COP'
+            text: 'Pesos'
           },
           ticks: {
             callback: function(value: any) {
@@ -134,7 +134,7 @@ export class GraphicsSgpComponent implements OnInit {
               if (context.dataset.yAxisID === 'y1') {
                 return label + ': ' + context.parsed.y + '%';
               } else {
-                return label + ': ' + new Intl.NumberFormat('es-CO').format(context.parsed.y) + ' COP';
+                return label + ': ' + new Intl.NumberFormat('es-CO').format(context.parsed.y);
               }
             }
           }
@@ -162,7 +162,7 @@ export class GraphicsSgpComponent implements OnInit {
           stacked: true,
           title: {
             display: true,
-            text: 'Miles de millones COP'
+            text: 'Pesos'
           },
           ticks: {
             callback: function(value: any) {
@@ -199,7 +199,7 @@ export class GraphicsSgpComponent implements OnInit {
               if (context.dataset.yAxisID === 'y1') {
                 return label + ': ' + context.parsed.y + '%';
               } else {
-                return label + ': ' + new Intl.NumberFormat('es-CO').format(context.parsed.y) + ' COP';
+                return label + ': ' + new Intl.NumberFormat('es-CO').format(context.parsed.y);
               }
             }
           }
@@ -221,7 +221,7 @@ export class GraphicsSgpComponent implements OnInit {
         y: {
           title: {
             display: true,
-            text: 'Miles de millones COP'
+            text: 'Pesos'
           },
           ticks: {
             callback: function(value: any) {
@@ -258,7 +258,7 @@ export class GraphicsSgpComponent implements OnInit {
               if (context.dataset.yAxisID === 'y1') {
                 return label + ': ' + context.parsed.y + '%';
               } else {
-                return label + ': ' + new Intl.NumberFormat('es-CO').format(context.parsed.y) + ' COP';
+                return label + ': ' + new Intl.NumberFormat('es-CO').format(context.parsed.y);
               }
             }
           }
@@ -295,7 +295,7 @@ export class GraphicsSgpComponent implements OnInit {
           position: 'left',
           title: {
             display: true,
-            text: 'Miles de millones COP',
+            text: 'Pesos',
             font: {
               size: 10
             }
@@ -349,7 +349,7 @@ export class GraphicsSgpComponent implements OnInit {
               if (context.dataset.yAxisID === 'y1') {
                 return label + ': ' + context.parsed.y + '%';
               } else {
-                return label + ': ' + new Intl.NumberFormat('es-CO').format(context.parsed.y) + ' COP';
+                return label + ': ' + new Intl.NumberFormat('es-CO').format(context.parsed.y);
               }
             }
           }

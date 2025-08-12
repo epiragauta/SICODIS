@@ -161,7 +161,7 @@ export class ReportsMapComponent implements OnInit, OnDestroy {
       // Estilo del marcador basado en el valor
       const style = new Style({
         image: new Circle({
-          radius: Math.log(location.value / 1000000) * 2,
+          radius: Math.log(location.value / 100000000) * 2,
           fill: new Fill({ color: 'rgba(59, 130, 246, 0.7)' }),
           stroke: new Stroke({ color: '#3B82F6', width: 2 })
         })
@@ -228,7 +228,7 @@ export class ReportsMapComponent implements OnInit, OnDestroy {
 
       const style = new Style({
         image: new Circle({
-          radius: Math.log(location.value / 1000000) * 2,
+          radius: Math.log(location.value / 100000000) * 2,
           fill: new Fill({ color: activeColor + '70' }), // Agregar transparencia
           stroke: new Stroke({ color: activeColor, width: 2 })
         })

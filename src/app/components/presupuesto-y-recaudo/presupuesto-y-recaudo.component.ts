@@ -311,9 +311,9 @@ export class PresupuestoYRecaudoComponent implements OnInit {
         {
           label: 'Presupuesto',
           data: [
-            this.formatToBillions(this.financialData.presupuesto_total_vigente),
-            this.formatToBillions(this.financialData.presupuesto_corriente),
-            this.formatToBillions(this.financialData.presupuesto_otros)
+            this.financialData.presupuesto_total_vigente,
+            this.financialData.presupuesto_corriente,
+            this.financialData.presupuesto_otros
           ],
           backgroundColor: '#1e40af', // Azul oscuro para presupuesto
           borderColor: '#1e40af',
@@ -322,9 +322,9 @@ export class PresupuestoYRecaudoComponent implements OnInit {
         {
           label: 'Recaudo',
           data: [
-            this.formatToBillions(this.financialData.caja_total),
-            this.formatToBillions(this.financialData.caja_corriente_informada),
-            this.formatToBillions(this.financialData.caja_total) // Usando caja_total para "Otros"
+            this.financialData.caja_total,
+            this.financialData.caja_corriente_informada,
+            this.financialData.caja_total // Usando caja_total para "Otros"
           ],
           backgroundColor: '#60a5fa', // Azul claro para caja/recaudo
           borderColor: '#60a5fa',
@@ -351,7 +351,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
         tooltip: {
           callbacks: {
             label: (context: any) => {
-              return `${context.dataset.label}: ${context.parsed.x.toFixed(2)} billones COP`;
+              return `${context.dataset.label}: ${new Intl.NumberFormat('es-CO').format(context.parsed.x)} Pesos`;
             }
           }
         }
@@ -362,7 +362,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
           beginAtZero: true,
           title: {
             display: true,
-            text: 'Billones de Pesos Colombianos (COP)',
+            text: 'Pesos Colombianos',
             font: {
               family: '"Work Sans", sans-serif',
               size: 12,
@@ -489,7 +489,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
   }
 
   formatToBillions(value: number): number {
-    return value / 1000000000000; // Convertir a billones
+    return value; // Return full peso values
   }
 
   formatCurrency(value: number): string {

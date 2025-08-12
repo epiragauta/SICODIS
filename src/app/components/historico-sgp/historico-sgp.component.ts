@@ -591,7 +591,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
         );
         
         if (conceptoData) {
-          return conceptoData.total_corrientes / 1000000; // Convertir a millones
+          return conceptoData.total_corrientes; // Valores en pesos
         } else {
           // Datos de ejemplo si no hay datos reales
           const baseValue = (index + 1) * 15000000;
@@ -1188,7 +1188,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
     });
 
     const sgpDataCorrientes = this.yearsRange.map(year => 
-      (totalData[parseInt(year)]?.corrientes || 0) / 1000000 // Convertir a miles de millones
+      (totalData[parseInt(year)]?.corrientes || 0) // Valores en pesos
     );
     
     // Calcular la variación anual basada en los datos reales
@@ -1222,7 +1222,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
   }
 
   initializeChartsWithGeneratedData(): void {
-    const sgpDataCorrientes = this.generateGrowingData(20, 85, this.yearsRange.length); // Valores en miles de millones
+    const sgpDataCorrientes = this.generateGrowingData(20000000000, 85000000000, this.yearsRange.length); // Valores en pesos
     const variationDataCorrientes = this.generateVariationData(sgpDataCorrientes);
 
     this.chartData1 = {
@@ -1251,7 +1251,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
 
   initChart3WithHistoricoData(dataByYear: any): void {
     const sgpData = this.yearsRange.map(year => 
-      (dataByYear[parseInt(year)]?.constantes || 0) / 1000000 // Convertir a miles de millones
+      (dataByYear[parseInt(year)]?.constantes || 0) // Valores en pesos
     );
     
     // Calcular la variación anual basada en los datos reales de precios constantes
@@ -1285,7 +1285,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
   }
 
   initChart3(): void {
-    const sgpData = this.generateGrowingData(15, 78, this.years2005to2025.length); // Valores en miles de millones
+    const sgpData = this.generateGrowingData(15000000000, 78000000000, this.years2005to2025.length); // Valores en pesos
     const variationData = this.generateVariationData(sgpData);
 
     this.chartData3 = {

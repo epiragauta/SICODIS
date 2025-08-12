@@ -137,7 +137,7 @@ export class BudgetChartComponent implements OnInit, OnChanges {
     // Preparar datos para ambos gráficos
     if (filteredData.length > 0) {
       const labels = filteredData.map(item => item.desc);
-      const values = filteredData.map(item => item.value / 1000000000); // Convertir a miles de millones
+      const values = filteredData.map(item => item.value); // Use full peso values
 
       this.chartData = {
         pie: {
@@ -154,7 +154,7 @@ export class BudgetChartComponent implements OnInit, OnChanges {
           labels: labels,
           datasets: [
             {
-              label: 'Presupuesto (Miles de Millones COP)',
+              label: 'Presupuesto',
               data: values,
               backgroundColor: this.chartColors.slice(0, filteredData.length),
               borderColor: this.chartColors.map(color => this.adjustBrightness(color, -20)),
@@ -174,7 +174,7 @@ export class BudgetChartComponent implements OnInit, OnChanges {
 
   // Función para formatear valores grandes en formato de moneda
   formatCurrency(value: number): string {
-    return (value * 1000000000).toLocaleString('es-CO', {
+    return value.toLocaleString('es-CO', {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
       useGrouping: true

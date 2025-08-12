@@ -204,7 +204,7 @@ export class SgpComparativaComponent {
 
       // Preparar datos para la gráfica
       const labels = mainConcepts.map(concept => concept.concepto);
-      const data = mainConcepts.map(concept => concept.valor / 1000000); // Convertir a millones
+      const data = mainConcepts.map(concept => concept.valor); // Valores en pesos
       const percentages = mainConcepts.map(concept => concept.porcentaje);
 
       // Destruir la instancia anterior si existe
@@ -221,7 +221,7 @@ export class SgpComparativaComponent {
           labels: labels,
           datasets: [
             {
-              label: 'Valor (Millones COP)',
+              label: 'Valor (Pesos)',
               data: data,
               backgroundColor: greenColors,
               /*borderColor: greenColors.map(color => this.darkenColor(color, 20)),*/
@@ -254,9 +254,9 @@ export class SgpComparativaComponent {
                 }
             },
             y: {
-                              title: {
+                title: {
                   display: true,
-                  text: 'Millones de COP',
+                  text: 'Pesos',
                   font: {
                     size: 12,
                     weight: 'bold'
@@ -287,7 +287,7 @@ export class SgpComparativaComponent {
                     }).format(context.parsed.y);
                     const percentage = parseFloat(percentages[index]).toFixed(1);
                     return [
-                      `Valor: ${value} millones COP`,
+                      `Valor: ${value} pesos`,
                       `Porcentaje: ${percentage}% del total`
                     ];
                   }
@@ -320,7 +320,7 @@ export class SgpComparativaComponent {
 
       // Preparar datos para la gráfica
       const labels = mainConcepts.map(concept => concept.concepto);
-      const data = mainConcepts.map(concept => concept.valor / 1000000); // Convertir a millones
+      const data = mainConcepts.map(concept => concept.valor); // Valores en pesos
       const percentages = mainConcepts.map(concept => concept.porcentaje);
 
       // Destruir la instancia anterior si existe
@@ -337,7 +337,7 @@ export class SgpComparativaComponent {
           labels: labels,
           datasets: [
             {
-              label: 'Valor (Millones COP)',
+              label: 'Valor (Pesos)',
               data: data,
               backgroundColor: blueColors,
               borderWidth: 1,
@@ -371,7 +371,7 @@ export class SgpComparativaComponent {
             y: {
               title: {
                 display: true,
-                text: 'Millones de COP',
+                text: 'Pesos',
                 font: {
                   size: 12,
                   weight: 'bold'
@@ -402,7 +402,7 @@ export class SgpComparativaComponent {
                   }).format(context.parsed.y);
                   const percentage = parseFloat(percentages[index]).toFixed(1);
                   return [
-                    `Valor: ${value} millones COP`,
+                    `Valor: ${value} pesos`,
                     `Porcentaje: ${percentage}% del total`
                   ];
                 }
