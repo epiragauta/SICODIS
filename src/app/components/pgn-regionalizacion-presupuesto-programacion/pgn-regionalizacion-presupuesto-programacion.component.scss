@@ -1,0 +1,344 @@
+.pgn-regionalizacion-container {
+  padding: .1rem;
+  max-width: 1260px;
+  margin: 0 auto;
+  font-family: 'Work Sans', sans-serif;
+
+  .gradient-banner {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    background-image: url('/assets/img/pgn/pgn-banner-regionalizacion.jpg');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    display: flex;
+    margin-bottom: .5rem;
+    border-radius: 8px;         
+    
+    .gradient-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 95%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        #e5e6e8b5 0%,
+        rgba(255, 255, 255, 0.01) 100%
+      );
+      z-index: 1;
+    }
+
+    .banner-content {
+      position: relative;
+      margin-top: 1rem;
+      z-index: 2;
+      padding: 1rem;
+      max-width: 70%;      
+      width: 1210px;
+      color: white;
+      
+      h2 {
+        font-size: 2rem;
+        margin-top: 3.75rem;
+        margin-bottom: 2.5rem;
+        color: #1a408c;
+        font-weight: bold;
+      }
+      
+      p {
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
+        color: #000;        
+        width: 80%;
+        font-weight: 500;
+      }
+    }
+  }
+
+  // Panel de filtros
+  .filters-panel {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #dee2e6;
+    width: 100%;
+
+    .filters-row {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      font-size: 12px;
+      align-items: end;
+
+      .p-field {
+        flex: 0 0 auto;
+        min-width: 180px;
+
+        &.vigencia-select,
+        &.periodo-select,
+        &.departamento-select,
+        &.fuente-select {
+          width: 210px;
+        }
+
+        &.action-buttons {
+          display: flex;
+          gap: 0.5rem;
+          margin-left: auto;
+          min-width: auto;
+          
+          button {
+            height: 40px;
+          }
+        }
+      }
+    }
+  }
+
+  // Mensaje de no datos
+  .no-data-message {
+    margin: 2rem 0;
+
+    .info-card {
+      .no-data-content {
+        text-align: center;
+        padding: 2rem;
+
+        .no-data-icon {
+          font-size: 3rem;
+          color: #6c757d;
+          margin-bottom: 1rem;
+        }
+
+        h3 {
+          color: #495057;
+          margin-bottom: 1rem;
+        }
+
+        p {
+          color: #6c757d;
+          max-width: 600px;
+          margin: 0 auto;
+        }
+      }
+    }
+  }
+
+  // Loading overlay
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+
+    p {
+      margin-top: 1rem;
+      font-size: 1.1rem;
+      color: #495057;
+    }
+  }
+
+  // Content area
+  .content-area {
+    margin: 2rem 0;
+
+    .data-sections {
+      display: flex;
+      gap: 2rem;
+      
+      .left-section {
+        flex: 0 0 40%;
+        
+        .summary-card {
+          .card-title {
+            color: #1a408c;
+            font-weight: bold;
+            font-size: 1.2rem;
+            padding-bottom: 1rem;
+          }
+
+          .summary-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e9ecef;
+
+            &:last-child {
+              border-bottom: none;
+              margin-bottom: 0;
+            }
+
+            .summary-title {
+              font-size: 1.25rem;
+              color: #474a4c;
+              margin-bottom: 0.5rem;
+              font-weight: bold;
+            }
+
+            .summary-value {
+              font-size: 1.1rem;
+              font-weight: bold;
+              color: #2a2c2e;
+              background-color: #f8f9fa;
+              padding: 0.5rem;
+              border-radius: 4px;
+              text-align: center;
+            }
+
+            &.two-column {
+              .summary-values {
+                display: grid;
+                grid-template-columns: 2fr 1fr;
+                gap: 0.5rem;
+
+                .summary-value {
+                  font-size: 1rem;
+                }
+
+                .summary-percentage {
+                  font-size: 1rem;
+                  font-weight: bold;
+                  color: #495057;
+                  background-color: #e9ecef;
+                  padding: 0.5rem;
+                  border-radius: 4px;
+                  text-align: center;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .right-section {
+        flex: 1;
+        
+        .table-card {
+          .card-title {
+            color: #1a408c;
+            font-weight: bold;
+            font-size: 1.2rem;
+          }
+
+          .p-table {
+            font-size: 0.9rem;
+
+            th {
+              background-color: #f8f9fa;
+              font-weight: bold;
+              color: #495057;
+              border-bottom: 2px solid #dee2e6;
+            }
+
+            td {
+              border-bottom: 1px solid #dee2e6;
+            }
+
+            .total-row {
+              background-color: #f8f9fa;
+              font-weight: bold;
+              
+              td {
+                border-top: 2px solid #495057;
+                font-weight: bold;
+              }
+            }
+          }
+
+          .export-section {
+            margin-top: 1rem;
+            text-align: right;
+          }
+        }
+      }
+    }
+  }
+
+  // Final notes
+  .final-notes-container {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+
+    .final-note {
+      margin: 0.5rem 0;
+      color: #6c757d;
+      line-height: 1.4;
+
+      strong {
+        color: #495057;
+      }
+    }
+  }
+
+  // Responsive design
+  @media (max-width: 768px) {
+    .filters-panel {
+      .filters-row {
+        flex-direction: column;
+
+        .p-field {
+          width: 100%;
+          min-width: unset;
+
+          &.action-buttons {
+            margin-left: 0;
+            margin-top: 1rem;
+            
+            button {
+              flex: 1;
+            }
+          }
+        }
+      }
+    }
+
+    .gradient-banner {
+      height: 250px;
+
+      .banner-content {
+        max-width: 90%;
+
+        h2 {
+          font-size: 1.5rem;
+          margin-top: 2rem;
+          margin-bottom: 1.5rem;
+        }
+
+        p {
+          font-size: 1rem;
+          width: 100%;
+        }
+      }
+    }
+
+    .content-area {
+      .data-sections {
+        flex-direction: column;
+
+        .left-section {
+          flex: none;
+        }
+
+        .right-section {
+          flex: none;
+        }
+      }
+    }
+  }
+}
+
+// Text alignment utility class (like in PresupuestoYRecaudoComponent)
+.text-right {
+  text-align: right !important;
+}

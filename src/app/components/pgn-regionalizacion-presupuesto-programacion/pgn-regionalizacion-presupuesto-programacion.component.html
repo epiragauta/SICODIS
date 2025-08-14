@@ -1,0 +1,216 @@
+<div class="pgn-regionalizacion-container">
+  
+  <div class="gradient-banner">    
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h2>PGN - Regionalización Presupuesto Programación</h2>
+      <p>Consulte información sobre la regionalización del presupuesto de programación 
+        del Presupuesto General de la Nación por vigencia, periodo, departamento y fuente.
+      </p>
+    </div>
+  </div>
+
+  <!-- Panel superior con filtros -->
+  <div class="filters-panel">
+    <div class="filters-row">
+      <div class="p-field vigencia-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select 
+            id="vigencia" 
+            [options]="vigencias" 
+            inputId="vigenciaSelect" 
+            [(ngModel)]="selectedVigencia"
+            (onChange)="onVigenciaChange($event)"
+            optionLabel="label" 
+            placeholder="Vigencia">
+          </p-select>
+          <label for="vigenciaSelect">Vigencia</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field periodo-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select 
+            id="periodo" 
+            [options]="periodos" 
+            inputId="periodoSelect" 
+            [(ngModel)]="selectedPeriodo"
+            (onChange)="onPeriodoChange($event)"
+            optionLabel="label" 
+            placeholder="Periodo">
+          </p-select>
+          <label for="periodoSelect">Periodo</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field departamento-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select 
+            id="departamento" 
+            [options]="departamentos" 
+            inputId="departamentoSelect"
+            [(ngModel)]="selectedDepartamento" 
+            (onChange)="onDepartamentoChange($event)"
+            optionLabel="label" 
+            placeholder="Departamento">
+          </p-select>
+          <label for="departamentoSelect">Departamento</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field fuente-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select 
+            id="fuente" 
+            [options]="fuentes" 
+            inputId="fuenteSelect"
+            [(ngModel)]="selectedFuente" 
+            (onChange)="onFuenteChange($event)"
+            optionLabel="label" 
+            placeholder="Fuente">
+          </p-select>
+          <label for="fuenteSelect">Fuente</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field action-buttons">
+        <button pButton type="button" icon="pi pi-refresh" label="Actualizar" 
+          class="p-button-primary" (click)="onActualizar()" [disabled]="isLoading">
+        </button>
+        <button pButton type="button" icon="pi pi-eraser" label="Limpiar filtros" 
+          class="p-button-secondary" (click)="clearFilters()">
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mensaje cuando no hay datos seleccionados -->
+  <div *ngIf="!selectedVigencia || !selectedPeriodo" class="no-data-message">
+    <mat-card class="info-card">
+      <mat-card-content>
+        <div class="no-data-content">
+          <mat-icon class="no-data-icon">info</mat-icon>
+          <h3>Seleccione los filtros para ver la información</h3>
+          <p>Para visualizar los datos de regionalización del presupuesto, complete la selección de 
+            Vigencia y Periodo en el panel superior.</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Loading overlay -->
+  <div class="loading-overlay" *ngIf="isLoading">
+    <p-progressSpinner strokeWidth="3" fill="transparent" animationDuration=".5s"></p-progressSpinner>
+    <p>Cargando datos...</p>
+  </div>
+
+  <!-- Content area -->
+  <div class="content-area" *ngIf="selectedVigencia && selectedPeriodo && !isLoading">
+    <div class="data-sections">
+      <!-- Left section - Summary -->
+      <div class="left-section">
+        <mat-card class="summary-card">
+          <mat-card-header>
+            <mat-card-title class="card-title">Resumen de la distribución PGN Inversión</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <!-- Single column items -->
+            <div class="summary-item">
+              <div class="summary-title">Vigencia</div>
+              <div class="summary-value">{{selectedVigencia?.label}}</div>
+            </div>
+            
+            <div class="summary-item">
+              <div class="summary-title">Período</div>
+              <div class="summary-value">{{selectedPeriodo?.label}}</div>
+            </div>
+
+            <!-- Two column items -->
+            <div class="summary-item two-column">
+              <div class="summary-title">Total Presupuesto PGN - Inversión</div>
+              <div class="summary-values">
+                <div class="summary-value">{{formatCurrency(resumenData.totalPresupuesto)}}</div>
+                <div class="summary-percentage">{{resumenData.totalPorcentaje}}%</div>
+              </div>
+            </div>
+
+            <div class="summary-item two-column">
+              <div class="summary-title">Regionalizado</div>
+              <div class="summary-values">
+                <div class="summary-value">{{formatCurrency(resumenData.regionalizado)}}</div>
+                <div class="summary-percentage">{{resumenData.regionalizadoPorcentaje}}%</div>
+              </div>
+            </div>
+
+            <div class="summary-item two-column">
+              <div class="summary-title">Nacional</div>
+              <div class="summary-values">
+                <div class="summary-value">{{formatCurrency(resumenData.nacional)}}</div>
+                <div class="summary-percentage">{{resumenData.nacionalPorcentaje}}%</div>
+              </div>
+            </div>
+
+            <div class="summary-item two-column">
+              <div class="summary-title">Por Regionalizar</div>
+              <div class="summary-values">
+                <div class="summary-value">{{formatCurrency(resumenData.porRegionalizar)}}</div>
+                <div class="summary-percentage">{{resumenData.porRegionalizarPorcentaje}}%</div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <!-- Right section - Table -->
+      <div class="right-section">
+        <mat-card class="table-card">
+          <mat-card-header>
+            <mat-card-title class="card-title">Distribución por Departamento</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p-table [value]="departamentosData" [scrollable]="true" scrollHeight="615px">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Departamento</th>
+                  <th class="text-right">{{selectedVigencia?.label}}</th>
+                  <th class="text-right">Per Capita</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-dept>
+                <tr>
+                  <td>{{dept.departamento}}</td>
+                  <td class="text-right">{{formatCurrency(dept.vigencia)}}</td>
+                  <td class="text-right">{{formatPercentage(dept.perCapita)}}</td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="footer">
+                <tr class="total-row">
+                  <td><strong>Total General</strong></td>
+                  <td class="text-right"><strong>{{formatCurrency(getTotalVigencia())}}</strong></td>
+                  <td class="text-right"><strong>{{formatPercentage(getAveragePerCapita())}}</strong></td>
+                </tr>
+              </ng-template>
+            </p-table>
+            
+            <div class="export-section">
+              <button pButton type="button" icon="pi pi-file-excel" label="Exportar Excel" 
+                class="p-button-success" (click)="exportToExcel()">
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+
+  <div class="final-notes-container">
+    <p class="final-note" style="font-size: 0.65rem;">
+      <strong>Nota:</strong> Corresponde a cifras en pesos corrientes.
+    </p>
+    <p class="final-note" style="padding-bottom: 1em; font-size: 0.65rem;">
+      <strong>Fuente:</strong> DNP - DPIP - SDRT a partir del Presupuesto General de la Nación y reportes 
+      de regionalización presupuestal.
+    </p>
+  </div>
+
+</div>

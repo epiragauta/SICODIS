@@ -24,6 +24,7 @@ import { HistoricoSgpComponent } from './components/historico-sgp/historico-sgp.
 import { SgpInicioComponent } from './components/sgp-inicio/sgp-inicio.component';
 import { SgpDetallePresupuestalComponent } from './components/sgp-detalle-presupuestal/sgp-detalle-presupuestal.component';
 import { SgpComparativaComponent } from './components/sgp-comparativa/sgp-comparativa.component';
+import { PgnRegionalizacionPresupuestoProgramacionComponent } from './components/pgn-regionalizacion-presupuesto-programacion/pgn-regionalizacion-presupuesto-programacion.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -50,7 +51,8 @@ export const routes: Routes = [
     { path: 'sgp-historico', component: HistoricoSgpComponent},
     { path: 'sgp-documentos-anexos', component: ReportsSgpComponent },
     { path: 'sgp-detalle-presupuestal', component: SgpDetallePresupuestalComponent },
-    { path: 'sgp-comparativa', component: SgpComparativaComponent }
+    { path: 'sgp-comparativa', component: SgpComparativaComponent },
+    { path: 'pgn-regionalizacion', component: PgnRegionalizacionPresupuestoProgramacionComponent }
 
 
 ];
