@@ -7,7 +7,7 @@
         <p>El Sistema de información y consulta de distribuciones de recursos territoriales "SICODIS", presenta información agregada y detallada, 
           correspondiente a las distribuciones de los recursos del Sistema General de Participaciones (SGP) y el Sistema General de Regalías (SGR) realizadas por el DNP.
  	 	 	 	</p>
-        <button class="banner-button">Sobre SICODIS</button>
+        <p-button label="Sobre SICODIS" [rounded]="true" class="banner-button"></p-button>
       </div>
     </div>
     <!-- <div class="banner">
@@ -54,8 +54,7 @@
                       </div>
                         <ng-template pTemplate="footer">
                             <div class="flex gap-4 mt-1 sicodis-card">
-                                <p-button class="button" severity="contrast" [rounded]="true" label="Ver todos los reportes del SGP" (click)="redirectSGP()"
-                                class="w-full" styleClass="w-full" />
+                                <p-button label="Ver todos los reportes del SGP" (click)="redirectSGP()" [rounded]="true" class="w-full unified-button" />
                             </div>
                         </ng-template>
                     </p-card>
@@ -89,8 +88,7 @@
                       </div>
                         <ng-template pTemplate="footer">
                             <div class="flex gap-4 mt-1 sicodis-card">
-                                <p-button severity="contrast" [rounded]="true" label="Ver todos los reportes del SGR" (click)="redirectSGR()"
-                                class="w-full" styleClass="w-full" />
+                                <p-button label="Ver todos los reportes del SGR" (click)="redirectSGR()" [rounded]="true" class="w-full unified-button" />
                             </div>
                         </ng-template>
                     </p-card>
@@ -122,8 +120,8 @@
             </select>
           </div>
           <div class="filter-buttons">
-            <p-button severity="primary" label="Actualizar"></p-button>
-            <p-button severity="secondary" label="Borrar filtros" styleClass="p-button-outlined"></p-button>
+            <p-button label="Actualizar" [rounded]="true" class="unified-button"></p-button>
+            <p-button label="Borrar filtros" [rounded]="true" class="unified-button-outlined"></p-button>
           </div>
         </div>
       </mat-card>
@@ -145,9 +143,7 @@
               </div>
             </div>
             <div style="text-align: center; padding-top: 1rem;">              
-              <p-button severity="primary">
-                Más información
-              </p-button>              
+              <p-button label="Más información" [rounded]="true" (click)="redirectSGP()" class="unified-button"></p-button>              
             </div>
           </mat-card>
         </mat-grid-tile>
@@ -165,9 +161,7 @@
               </div>
             </div>
             <div style="text-align: center; padding-top: 1rem;">              
-              <p-button severity="primary">
-                Más información
-              </p-button>              
+              <p-button label="Más información" [rounded]="true" class="unified-button"></p-button>              
             </div>
           </mat-card>
         </mat-grid-tile>
@@ -250,9 +244,7 @@
         </ul>
       </div>
       <div>
-        <p-button severity="secondary" [rounded]="true" [raised]="true">
-          Ir a preguntas frecuentes
-        </p-button>
+        <p-button label="Ir a preguntas frecuentes" [rounded]="true" class="unified-button" (click)="redirectToFAQ()"></p-button>
       </div>
     </div>
 

@@ -54,21 +54,7 @@
     }
   }
   
-  .banner-button {
-    background-color: white;
-    color: #004583;
-    border: 2px solid white;
-    padding: 12px 24px;
-    border-radius: 30px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s;
-    
-    &:hover {
-      background-color: transparent;
-      color: white;
-    }
-  }
+  
 }
 
 /* Versión responsive */
@@ -294,6 +280,58 @@
       right: 25px;
       height: 13rem;
     }
+  }
+}
+
+// Estilos unificados para todos los botones
+:host ::ng-deep .unified-button,
+:host ::ng-deep .banner-button {
+  background-color: #3366cc !important;
+  border-color: #3366cc !important;
+  color: white !important;
+  font-weight: bold !important;
+  border-radius: 25px !important;
+  transition: all 0.3s ease !important;
+
+  &:hover {
+    background-color: #004583 !important;
+    border-color: #004583 !important;
+    color: white !important;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(51, 102, 204, 0.25) !important;
+  }
+
+  &:active {
+    background-color: #004583 !important;
+    border-color: #004583 !important;
+    color: white !important;
+  }
+}
+
+:host ::ng-deep .unified-button-outlined {
+  background-color: transparent !important;
+  border-color: #3366cc !important;
+  color: #3366cc !important;
+  font-weight: bold !important;
+  border-radius: 25px !important;
+  transition: all 0.3s ease !important;
+
+  &:hover {
+    background-color: #004583 !important;
+    border-color: #004583 !important;
+    color: white !important;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(51, 102, 204, 0.25) !important;
+  }
+
+  &:active {
+    background-color: #004583 !important;
+    border-color: #004583 !important;
+    color: white !important;
   }
 }
 

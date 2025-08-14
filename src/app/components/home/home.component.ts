@@ -352,15 +352,27 @@ export class HomeComponent {
   }
 
   redirectSGR() {
-    this.route.navigate(['/reports-sgr']);
+    this.route.navigate(['/reports-sgr']).then(() => {
+      window.scrollTo(0, 0);
+    });
   }
 
   redirectSGP() {
-    this.route.navigate(['/reports-sgp']);
+    this.route.navigate(['/sgp-inicio']).then(() => {
+      window.scrollTo(0, 0);
+    });
   }
 
   redirectTo(page: string){
-    this.route.navigate([`/${page}`]);
+    this.route.navigate([`/${page}`]).then(() => {
+      window.scrollTo(0, 0);
+    });
+  }
+
+  redirectToFAQ(){
+    this.route.navigate(['/faq']).then(() => {
+      window.scrollTo(0, 0);
+    });
   }
 }
 
