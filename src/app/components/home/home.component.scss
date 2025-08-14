@@ -546,6 +546,14 @@
         font-size: 14px;
         text-align: center;
 
+        &:first-child {
+          text-align: left;
+        }
+
+        &:not(:first-child) {
+          text-align: right;
+        }
+
         &.bold {
           font-weight: bold;
         }
@@ -581,6 +589,14 @@
         padding: 0 0.25rem;
         font-size: 14px;
         text-align: center;
+
+        &:first-child {
+          text-align: left;
+        }
+
+        &:not(:first-child) {
+          text-align: right;
+        }
 
         &.bold {
           font-weight: bold;
@@ -624,6 +640,14 @@
         padding: 0 0.25rem;
         font-size: 14px;
         text-align: center;
+
+        &:first-child {
+          text-align: left;
+        }
+
+        &:not(:first-child) {
+          text-align: right;
+        }
 
         &.bold {
           font-weight: bold;
