@@ -21,8 +21,8 @@
               inputId="vigenciaSelect" 
               [(ngModel)]="selected"
               (onChange)="onVigenciaChange($event)"
-              optionValue="year"
-              optionLabel="year" 
+              optionValue="id_vigencia"
+              optionLabel="vigencia" 
               placeholder="Seleccionar vigencia">
             </p-select>
             <label for="vigenciaSelect">Vigencia</label>
@@ -55,11 +55,29 @@
               inputId="municipioSelect"
               [(ngModel)]="townSelected"
               (onChange)="onTownChange($event)"
-              optionValue="value"
-              optionLabel="name" 
-              placeholder="Municipio">
+              optionValue="codigo_municipio"
+              optionLabel="nombre_municipio" 
+              placeholder="Municipio"
+              [disabled]="!departmentSelected">
             </p-select>
             <label for="municipioSelect">Municipio</label>
+          </p-floatlabel>
+        </div>
+
+        <!-- Departamento 2 -->
+        <div class="p-field department-select">
+          <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-select 
+              id="departamento2" 
+              [options]="departments" 
+              inputId="departamentoSelect2"
+              [(ngModel)]="departmentSelected2"
+              (onChange)="onDepartment2Change($event)"
+              optionValue="codigo"
+              optionLabel="nombre" 
+              placeholder="Departamento 2">
+            </p-select>
+            <label for="departamentoSelect2">Departamento 2</label>
           </p-floatlabel>
         </div>
 
@@ -72,22 +90,23 @@
               inputId="municipioSelect2"
               [(ngModel)]="townSelected2"
               (onChange)="onTown2Change($event)"
-              optionValue="value"
-              optionLabel="name" 
-              placeholder="Municipio 2">
+              optionValue="codigo_municipio"
+              optionLabel="nombre_municipio" 
+              placeholder="Municipio 2"
+              [disabled]="!departmentSelected2">
             </p-select>
             <label for="municipioSelect2">Municipio 2</label>
           </p-floatlabel>
         </div>
         <button pButton type="button" 
               icon="pi pi-filter" 
-              label="Aplicar Filtros" 
+              label="Aplicar" 
               class="p-button-primary"
               (click)="applyFilters()">
         </button>
         <button pButton type="button" 
                 icon="pi pi-eraser" 
-                label="Limpiar filtros" 
+                label="Limpiar" 
                 class="p-button-secondary"
                 (click)="clearFilters()">
         </button>
@@ -95,16 +114,54 @@
     </div>    
   </div>
 
+  <!-- Informative message when no municipalities are selected -->
+  <div class="info-message-section" *ngIf="!townSelected || !townSelected2">
+    <p-card class="info-card">
+      <div class="info-content" style="text-align: center; padding: 2rem;">
+        <i class="pi pi-info-circle" style="font-size: 3rem; color: #2196F3; margin-bottom: 1rem;"></i>
+        <h3>Seleccione las entidades territoriales a comparar</h3>
+        <p>Para visualizar la comparativa entre municipios, por favor seleccione:</p>
+        <ul style="text-align: left; margin: 1rem 0; display: inline-block;">
+          <li>Una vigencia</li>
+          <li>Los departamentos de los municipios</li>
+          <li>Los dos municipios que desea comparar</li>
+        </ul>
+        <p><strong>Nota:</strong> Los gráficos y tablas comparativas se mostrarán una vez realice las selecciones.</p>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Loading indicator while fetching comparative data -->
+  <div class="loading-section" *ngIf="isLoadingComparativeData && townSelected && townSelected2">
+    <p-card class="loading-card">
+      <div class="loading-content" style="text-align: center; padding: 3rem;">
+        <p-progressSpinner 
+          styleClass="w-4rem h-4rem" 
+          strokeWidth="4" 
+          fill="var(--surface-ground)" 
+          animationDuration=".5s">
+        </p-progressSpinner>
+        <h3 style="margin-top: 1.5rem; color: #666;">Cargando datos comparativos</h3>
+        <p>Consultando información de los municipios seleccionados...</p>
+        <div class="loading-details" style="margin-top: 1rem; font-size: 0.9rem; color: #888;">
+          <p>• {{ getSelectedMunicipalityName(1) }}</p>
+          <p>• {{ getSelectedMunicipalityName(2) }}</p>
+          <p>• Vigencia {{ getSelectedVigenciaName() }}</p>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
   <!-- Chart section -->
-  <div class="graphics-section">
+  <div class="graphics-section" *ngIf="townSelected && townSelected2 && !isLoadingComparativeData">
     <div class="dual-chart-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; width: 100%;">
       <!-- First Chart - Municipality 1 -->
       <div class="chart-column">
         <p-card class="chart-card">
           <ng-template pTemplate="header">
             <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
-              <h3 class="chart-title">Conceptos Principales SGP - Municipio 1</h3>
-              <p class="chart-subtitle">{{ townSelected || 'Sin seleccionar' }} - Distribución por conceptos principales</p>
+              <h3 class="chart-title">Conceptos Principales SGP</h3>
+              <p class="chart-subtitle">{{ getSelectedMunicipalityName(1) }} - Distribución por conceptos principales</p>
             </div>
           </ng-template>
           <div class="chart-container" style="position: relative; height: 400px; width: 100%;">
@@ -118,8 +175,8 @@
         <p-card class="chart-card">
           <ng-template pTemplate="header">
             <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
-              <h3 class="chart-title">Conceptos Principales SGP - Municipio 2</h3>
-              <p class="chart-subtitle">{{ townSelected2 || 'Sin seleccionar' }} - Distribución por conceptos principales</p>
+              <h3 class="chart-title">Conceptos Principales SGP</h3>
+              <p class="chart-subtitle">{{ getSelectedMunicipalityName(2) }} - Distribución por conceptos principales</p>
             </div>
           </ng-template>
           <div class="chart-container" style="position: relative; height: 400px; width: 100%;">
@@ -131,15 +188,15 @@
   </div>
 
   <!-- Data table section -->
-  <div class="table-section">
+  <div class="table-section" *ngIf="townSelected && townSelected2 && !isLoadingComparativeData">
     <div class="dual-table-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; width: 100%;">
       <!-- First Municipality Table -->
       <div class="table-column">
         <p-card class="table-card">
           <ng-template pTemplate="header">
             <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
-              <h3 class="table-title">Datos SGP - Municipio 1</h3>
-              <p class="table-subtitle">{{ townSelected || 'Sin seleccionar' }} - Vigencia {{ selected }}</p>
+              <h3 class="table-title">Datos SGP</h3>
+              <p class="table-subtitle">{{ getSelectedMunicipalityName(1) }} - Vigencia {{ getSelectedVigenciaName() }}</p>
             </div>
           </ng-template>
           <p-treetable #treeTable
@@ -196,8 +253,8 @@
         <p-card class="table-card">
           <ng-template pTemplate="header">
             <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
-              <h3 class="table-title">Datos SGP - Municipio 2</h3>
-              <p class="table-subtitle">{{ townSelected2 || 'Sin seleccionar' }} - Vigencia {{ selected }}</p>
+              <h3 class="table-title">Datos SGP</h3>
+              <p class="table-subtitle">{{ getSelectedMunicipalityName(2) }} - Vigencia {{ getSelectedVigenciaName() }}</p>
             </div>
           </ng-template>
           <p-treetable #treeTable2
@@ -254,7 +311,7 @@
     <div class="shared-table-notes">
       <h4>NOTAS</h4>
       <p>(1) Cifras en pesos corrientes.</p>
-      <p>(2) Comparativa entre municipios para la vigencia {{ selected }}.</p>
+      <p>(2) Comparativa entre municipios para la vigencia {{ getSelectedVigenciaName() }}.</p>
     </div>
   </div>
 </div>

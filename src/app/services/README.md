@@ -56,7 +56,7 @@ this.sicodisApiService.getDistribucionTotal(params).subscribe(data => {
 
 ### SGR General
 
-#### `getVigencias(): Observable<Vigencia[]>`
+#### `getSgrVigencias(): Observable<Vigencia[]>`
 Obtiene las vigencias registradas del SGR.
 
 ### SGP (Sistema General de Participaciones)
@@ -130,7 +130,7 @@ export class MiComponente implements OnInit {
       const resumenSgp = await this.sicodisApiService.getSgpResumenGeneral(2025).toPromise();
       
       // Vigencias
-      const vigencias = await this.sicodisApiService.getVigencias().toPromise();
+      const vigencias = await this.sicodisApiService.getSgrVigencias().toPromise();
 
       console.log('Todos los datos cargados');
     } catch (error) {
@@ -166,7 +166,7 @@ Es recomendable usar try/catch con async/await o catchError con observables para
 // Ejemplo de manejo con fallback
 async cargarDatos() {
   try {
-    const vigencias = await this.sicodisApiService.getVigencias().toPromise();
+    const vigencias = await this.sicodisApiService.getSgrVigencias().toPromise();
     this.vigencias = vigencias;
   } catch (error) {
     console.warn('CORS error, usando datos por defecto:', error);

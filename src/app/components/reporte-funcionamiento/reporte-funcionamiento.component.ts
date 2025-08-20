@@ -350,7 +350,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
    */
   async cargarVigencias(): Promise<void> {
     try {
-      const vigencias = await this.sicodisApiService.getVigencias().toPromise();
+      const vigencias = await this.sicodisApiService.getSgrVigencias().toPromise();
       this.vigencias = vigencias?.map((vigencia: any) => ({
         id: vigencia.id_vigencia,
         label: vigencia.vigencia

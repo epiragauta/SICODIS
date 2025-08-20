@@ -12,7 +12,7 @@ import { TableModule } from 'primeng/table';
 import { TreeTableModule } from 'primeng/treetable';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { departamentos } from '../../data/departamentos';
-import { SicodisApiService } from '../../services/sicodis-api.service';
+import { SicodisApiService, FichaComparativaEntidad } from '../../services/sicodis-api.service';
 import { TreeNode } from 'primeng/api';
 import { Chart } from 'chart.js';
 
@@ -38,9 +38,10 @@ import { Chart } from 'chart.js';
 })
 export class SgpComparativaComponent {
 
-  selected: string = '2025';
+  selected: number = 0; // Changed to number for id_vigencia
   selectedYears: string[] = [];
   departmentSelected: string = '';
+  departmentSelected2: string = '';
   townSelected: string = '';
   townSelected2: string = '';
   tableClass = "p-datatable-sm";
@@ -53,110 +54,28 @@ export class SgpComparativaComponent {
   treeTableData: TreeNode[] = [];
   treeTableData2: TreeNode[] = [];
   historicoApiData: any[] = [];
+  fichaComparativaData: FichaComparativaEntidad[] = [];
+  
+  // Estado de carga
+  isLoadingComparativeData: boolean = false;
 
   barChartInstance: any;
   barChart2Instance: any;
   infoToResume: any = {};
 
-  infoResume: any = [
-    {
-      year: '2025',
-      budget: '75540879911189',
-      budgetDistributed: '70540879911189',
-      pending: 5000000000000,
-      percent: .93,
-    },
-    {
-      year: '2024',
-      budget: '70540879911189',
-      budgetDistributed: '70540879911189',
-      pending: 0,
-      percent: .75,
-    },
-    {
-      year: '2023',
-      budget: '54936407931948',
-      budgetDistributed: '54936407931948',
-      pending: 0,
-      percent: .68,
-    },
-    {
-      year: '2022',
-      budget: '49564897462512',
-      budgetDistributed: '49564897462512',
-      pending: 0,
-      percent: .99,
-    },
-    {
-      year: '2021',
-      budget: '47675273699939',
-      budgetDistributed: '47675273699939',
-      pending: 0,
-      percent: .98,
-    },
-    {
-      year: '2020',
-      budget: '43847390906182',
-      budgetDistributed: '43847390906182',
-      pending: 0,
-      percent: 1,
-    },
-  ];
+  infoResume: any[] = [];
 
   departments = departamentos;
-  towns: any = [
-    { name: 'Municipio1', value: '1' },
-    { name: 'Municipio2', value: '2' },
-    { name: 'Municipio3', value: '3' },
-    { name: 'Municipio4', value: '4' },
-    { name: 'Municipio5', value: '5' },
-    { name: 'Municipio6', value: '6' },
-    { name: 'Municipio7', value: '7' },
-    { name: 'Municipio8', value: '8' },
-    { name: 'Municipio9', value: '9' },
-    { name: 'Municipio10', value: '10' },
-    { name: 'Municipio11', value: '11' },
-    { name: 'Municipio12', value: '12' },
-  ];
-
-  towns2: any = [
-    { name: 'Municipio2-1', value: '21' },
-    { name: 'Municipio2-2', value: '22' },
-    { name: 'Municipio2-3', value: '23' },
-    { name: 'Municipio2-4', value: '24' },
-    { name: 'Municipio2-5', value: '25' },
-    { name: 'Municipio2-6', value: '26' },
-    { name: 'Municipio2-7', value: '27' },
-    { name: 'Municipio2-8', value: '28' },
-    { name: 'Municipio2-9', value: '29' },
-    { name: 'Municipio2-10', value: '30' },
-    { name: 'Municipio2-11', value: '31' },
-    { name: 'Municipio2-12', value: '32' },
-  ];
+  towns: any[] = [];
+  towns2: any[] = [];
 
   distributionData: any = [];
 
   constructor(private renderer: Renderer2, private sicodisApiService: SicodisApiService) {}
   
   ngOnInit(): void {
-    this.generateAvailableYears();
-    this.initializeDefaultSelection();
-    
-    this.infoToResume = this.infoResume.filter(
-      (item: any) => item.year === this.selected
-    )[0];
-    
-    // Crear los gráficos después de un pequeño delay para asegurar que el DOM esté listo
-    setTimeout(() => {
-      this.createBarChart();
-      this.createBarChart2();
-    }, 500);
-
-    // Cargar datos de la tabla
-    this.loadSgpData();
-    this.loadDistributionData();
-    this.loadSgpData2(); 
-
+    this.loadVigencias();
+    // Don't load any charts or data initially
     console.log('Component initialized');
   }
 
@@ -175,14 +94,23 @@ export class SgpComparativaComponent {
   }
 
   /**
-   * Inicializa la selección predeterminada
+   * Carga las vigencias disponibles desde la API
    */
-  initializeDefaultSelection(): void {
-    if (this.availableYears.length === 0) return;
-    
-    this.selectedYears = [this.selected];
-    this.infoResume = this.availableYears;
-    console.log('Años seleccionados por defecto:', this.selectedYears);
+  loadVigencias(): void {
+    this.sicodisApiService.getSgpVigenciasPresupuestoUltimaOnce().subscribe({
+      next: (vigencias) => {
+        console.log('Vigencias cargadas:', vigencias);
+        this.infoResume = vigencias;
+        if (vigencias.length > 0) {
+          this.selected = vigencias[0].id_vigencia;
+          this.infoToResume = vigencias.find(v => v.id_vigencia === this.selected);
+        }
+      },
+      error: (error) => {
+        console.error('Error cargando vigencias:', error);
+        this.infoResume = [];
+      }
+    });
   }
 
   /**
@@ -492,85 +420,69 @@ export class SgpComparativaComponent {
   }
 
   /**
-   * Obtiene los conceptos principales (>2% del total y que no sean hijos)
+   * Obtiene los conceptos principales (1.1 Educación, 1.2 Salud, 1.3 Agua Potable, 1.4 Propósito General)
    */
   getMainConcepts(): any[] {
-    if (!this.treeTableData || this.treeTableData.length === 0) {
+    if (!this.fichaComparativaData || this.fichaComparativaData.length === 0) {
       return [];
     }
 
-    const totalGeneral = this.getTreeTableYearTotal();
-    const threshold = totalGeneral * 0.02; // 2% del total
+    // Definir los conceptos principales exactos
+    const mainConcepts = [
+      { id: '1.1', name: 'Educación' },
+      { id: '1.2', name: 'Salud' },
+      { id: '1.3', name: 'Agua Potable' },
+      { id: '1.4', name: 'Propósito General' }
+    ];
+    
+    const result = mainConcepts.map(concept => {
+      // Buscar el concepto en los datos de la ficha comparativa
+      const foundItem = this.fichaComparativaData.find(item => 
+        item.Concepto.includes(concept.id) || item.Concepto.toLowerCase().includes(concept.name.toLowerCase())
+      );
+      
+      return {
+        concepto: `${concept.id} - ${concept.name}`,
+        valor: foundItem ? foundItem.PeriodoVigencia_Entidad1 : 0,
+        porcentaje: foundItem ? (foundItem.Porcentual_Entidad1 * 100).toFixed(1) : '0.0'
+      };
+    }).filter(item => item.valor > 0); // Solo incluir conceptos con valores
 
-    // Filtrar solo conceptos padre (no hijos) que superen el 2%
-    const mainConcepts = this.treeTableData
-      .filter((node: TreeNode) => {
-        const value = node.data.vigencia || 0;
-        return value >= threshold; // Solo conceptos que superen el 2%
-      })
-      .map((node: TreeNode) => ({
-        concepto: node.data.concepto,
-        valor: node.data.vigencia || 0,
-        porcentaje: ((node.data.vigencia || 0) / totalGeneral * 100).toFixed(1)
-      }))
-      .sort((a, b) => b.valor - a.valor); // Ordenar de mayor a menor
-
-    console.log('Conceptos principales (>2%):', mainConcepts);
-    return mainConcepts;
+    console.log('Conceptos principales (1.1-1.4) Municipio 1:', result);
+    return result;
   }
 
   /**
-   * Obtiene los conceptos principales para el segundo municipio (>2% del total y que no sean hijos)
+   * Obtiene los conceptos principales para el segundo municipio (1.1 Educación, 1.2 Salud, 1.3 Agua Potable, 1.4 Propósito General)
    */
   getMainConcepts2(): any[] {
-    // Por ahora usamos datos de ejemplo para el segundo municipio
-    // En implementación real, aquí se filtrarían los datos específicos del segundo municipio
-    
-    if (!this.treeTableData || this.treeTableData.length === 0) {
-      // Datos de ejemplo para el segundo gráfico con valores diferentes
-      return [
-        {
-          concepto: 'Educación',
-          valor: 28000000000000,
-          porcentaje: '45.2'
-        },
-        {
-          concepto: 'Salud',
-          valor: 22000000000000,
-          porcentaje: '35.5'
-        },
-        {
-          concepto: 'Agua Potable',
-          valor: 8000000000000,
-          porcentaje: '12.9'
-        },
-        {
-          concepto: 'Propósito General',
-          valor: 4000000000000,
-          porcentaje: '6.4'
-        }
-      ];
+    if (!this.fichaComparativaData || this.fichaComparativaData.length === 0) {
+      return [];
     }
 
-    const totalGeneral = this.getTreeTableYearTotal();
-    const threshold = totalGeneral * 0.02; // 2% del total
+    // Definir los conceptos principales exactos
+    const mainConcepts = [
+      { id: '1.1', name: 'Educación' },
+      { id: '1.2', name: 'Salud' },
+      { id: '1.3', name: 'Agua Potable' },
+      { id: '1.4', name: 'Propósito General' }
+    ];
+    
+    const result = mainConcepts.map(concept => {
+      // Buscar el concepto en los datos de la ficha comparativa
+      const foundItem = this.fichaComparativaData.find(item => 
+        item.Concepto.includes(concept.id) || item.Concepto.toLowerCase().includes(concept.name.toLowerCase())
+      );
+      
+      return {
+        concepto: `${concept.id} - ${concept.name}`,
+        valor: foundItem ? foundItem.PeriodoVigencia_Entidad2 : 0,
+        porcentaje: foundItem ? (foundItem.Porcentual_Entidad2 * 100).toFixed(1) : '0.0'
+      };
+    }).filter(item => item.valor > 0); // Solo incluir conceptos con valores
 
-    // Por ahora usar los mismos datos pero con valores modificados
-    // En implementación real, aquí se usarían datos específicos del segundo municipio
-    const mainConcepts = this.treeTableData
-      .filter((node: TreeNode) => {
-        const value = (node.data.vigencia || 0) * 0.8; // Simular datos diferentes
-        return value >= threshold;
-      })
-      .map((node: TreeNode) => ({
-        concepto: node.data.concepto,
-        valor: (node.data.vigencia || 0) * 0.8,
-        porcentaje: (((node.data.vigencia || 0) * 0.8) / (totalGeneral * 0.8) * 100).toFixed(1)
-      }))
-      .sort((a, b) => b.valor - a.valor);
-
-    console.log('Conceptos principales municipio 2 (>2%):', mainConcepts);
-    return mainConcepts;
+    console.log('Conceptos principales (1.1-1.4) Municipio 2:', result);
+    return result;
   }
 
   /**
@@ -617,28 +529,34 @@ export class SgpComparativaComponent {
   onVigenciaChange(event: SelectChangeEvent): void {
     console.log('Vigencia seleccionada:', event.value);
     this.selected = event.value;
-    this.infoToResume = this.infoResume.filter(
-      (item: any) => item.year === event.value
-    )[0];
+    this.infoToResume = this.infoResume.find(
+      (item: any) => item.id_vigencia === event.value
+    );
     
-    // Recrear los gráficos con los nuevos datos
-    setTimeout(() => {
-      this.createBarChart();
-      this.createBarChart2();
-    }, 500);
+    // Only load charts and data if both municipalities are selected
+    if (this.townSelected && this.townSelected2) {
+      // Crear los gráficos después de un pequeño delay para asegurar que el DOM esté listo
+      setTimeout(() => {
+        this.createBarChart();
+        this.createBarChart2();
+      }, 500);
+      
+      // Recargar datos de la tabla
+      this.loadSgpData();
+      this.loadSgpData2();
+      this.loadDistributionData();
+      this.loadDataForYear();
+    }
     
-    // Recargar datos de la tabla
-    this.loadSgpData();
-    this.loadSgpData2();
-    this.loadDistributionData();
-    this.loadDataForYear();
+    // Si ambos municipios están seleccionados, cargar datos comparativos
+    this.loadComparativeDataIfReady();
   }
 
   /**
    * Carga los datos SGP para la tabla
    */
   loadSgpData(): void {
-    const aniosString = this.selected;
+    const aniosString = this.selected.toString();
     
     this.sicodisApiService.getSgpResumenHistorico({ anios: aniosString }).subscribe({
       next: (result: any[]) => {
@@ -729,7 +647,9 @@ export class SgpComparativaComponent {
    * Carga los datos de distribuciones del SGP usando el API
    */
   loadDistributionData(): void {
-    const selectedYear = parseInt(this.selected);
+    if (!this.infoToResume?.vigencia) return;
+    
+    const selectedYear = parseInt(this.infoToResume.vigencia);
     
     this.sicodisApiService.getSgpResumenDistribuciones(selectedYear).subscribe({
       next: (result: any[]) => {
@@ -757,7 +677,24 @@ export class SgpComparativaComponent {
   onDepartmentChange(event: SelectChangeEvent): void {
     console.log('Departamento seleccionado:', event.value);
     this.departmentSelected = event.value;
+    this.townSelected = '';
     this.loadTownsForDepartment();
+    
+    // Si no hay departamento 2 seleccionado, copiarlo del departamento 1
+    if (!this.departmentSelected2) {
+      this.departmentSelected2 = event.value;
+      this.loadTownsForDepartment2();
+    }
+  }
+
+  /**
+   * Evento cuando cambia el segundo departamento seleccionado
+   */
+  onDepartment2Change(event: SelectChangeEvent): void {
+    console.log('Departamento 2 seleccionado:', event.value);
+    this.departmentSelected2 = event.value;
+    this.townSelected2 = '';
+    this.loadTownsForDepartment2();
   }
 
   /**
@@ -767,6 +704,12 @@ export class SgpComparativaComponent {
     console.log('Municipio seleccionado:', event.value);
     this.townSelected = event.value;
     this.filterDataByLocation();
+    
+    // Actualizar la lista del municipio 2 para evitar duplicados
+    this.updateTowns2List();
+    
+    // Cargar datos comparativos si está listo
+    this.loadComparativeDataIfReady();
   }
 
   /**
@@ -776,6 +719,9 @@ export class SgpComparativaComponent {
     console.log('Municipio 2 seleccionado:', event.value);
     this.townSelected2 = event.value;
     this.filterDataByLocation();
+    
+    // Cargar datos comparativos si está listo
+    this.loadComparativeDataIfReady();
   }
 
   /**
@@ -810,27 +756,15 @@ export class SgpComparativaComponent {
    */
   clearFilters(): void {
     console.log('Limpiando filtros...');
-    this.selected = '2025';
+    this.selected = this.infoResume.length > 0 ? this.infoResume[0].id_vigencia : 0;
     this.departmentSelected = '';
+    this.departmentSelected2 = '';
     this.townSelected = '';
     this.townSelected2 = '';
     this.towns = [];
-    
-    // Reinicializar lista de municipios 2
-    this.towns2 = [
-      { name: 'Municipio2-1', value: '21' },
-      { name: 'Municipio2-2', value: '22' },
-      { name: 'Municipio2-3', value: '23' },
-      { name: 'Municipio2-4', value: '24' },
-      { name: 'Municipio2-5', value: '25' },
-      { name: 'Municipio2-6', value: '26' },
-      { name: 'Municipio2-7', value: '27' },
-      { name: 'Municipio2-8', value: '28' },
-      { name: 'Municipio2-9', value: '29' },
-      { name: 'Municipio2-10', value: '30' },
-      { name: 'Municipio2-11', value: '31' },
-      { name: 'Municipio2-12', value: '32' },
-    ];
+    this.towns2 = [];
+    this.fichaComparativaData = [];
+    this.isLoadingComparativeData = false;
     
     this.loadSgpData();
     this.loadSgpData2();
@@ -856,8 +790,53 @@ export class SgpComparativaComponent {
     }
 
     console.log('Cargando municipios para departamento:', this.departmentSelected);
-    // Aquí iría la lógica para cargar municipios del departamento seleccionado
-    // Por ahora mantenemos la lista de ejemplo
+    
+    this.sicodisApiService.getMunicipiosPorDepartamento(this.departmentSelected).subscribe({
+      next: (municipios) => {
+        console.log('Municipios cargados:', municipios);
+        this.towns = municipios;
+        this.updateTowns2List();
+      },
+      error: (error) => {
+        console.error('Error cargando municipios:', error);
+        this.towns = [];
+      }
+    });
+  }
+
+  /**
+   * Carga los municipios para el segundo departamento seleccionado
+   */
+  private loadTownsForDepartment2(): void {
+    if (!this.departmentSelected2) {
+      this.towns2 = [];
+      this.townSelected2 = '';
+      return;
+    }
+
+    console.log('Cargando municipios para departamento 2:', this.departmentSelected2);
+    
+    this.sicodisApiService.getMunicipiosPorDepartamento(this.departmentSelected2).subscribe({
+      next: (municipios) => {
+        console.log('Municipios 2 cargados:', municipios);
+        this.towns2 = municipios;
+        this.updateTowns2List();
+      },
+      error: (error) => {
+        console.error('Error cargando municipios 2:', error);
+        this.towns2 = [];
+      }
+    });
+  }
+
+  /**
+   * Actualiza la lista de municipios 2 para evitar duplicados
+   */
+  private updateTowns2List(): void {
+    if (this.townSelected && this.departmentSelected === this.departmentSelected2) {
+      // Si ambos departamentos son iguales, filtrar el municipio seleccionado en la lista 1
+      this.towns2 = this.towns2.filter(town => town.codigo_municipio !== this.townSelected);
+    }
   }
 
   /**
@@ -865,10 +844,150 @@ export class SgpComparativaComponent {
    */
   private filterDataByLocation(): void {
     console.log('Filtrando datos por ubicación');
-    console.log('Departamento:', this.departmentSelected);
+    console.log('Departamento 1:', this.departmentSelected);
+    console.log('Departamento 2:', this.departmentSelected2);
     console.log('Municipio 1:', this.townSelected);
     console.log('Municipio 2:', this.townSelected2);
-    // Lógica para filtrar datos según departamento y municipios
+    
+    // Aquí se cargarían los datos específicos para cada municipio usando la API
+    if (this.townSelected && this.departmentSelected) {
+      this.loadSgpDataForMunicipality1();
+    }
+    
+    if (this.townSelected2 && this.departmentSelected2) {
+      this.loadSgpDataForMunicipality2();
+    }
+  }
+
+  /**
+   * Carga datos SGP específicos para el primer municipio
+   */
+  private loadSgpDataForMunicipality1(): void {
+    console.log('Cargando datos SGP para municipio 1:', this.townSelected);
+    // Aquí se implementaría la llamada específica al API para obtener
+    // datos del municipio seleccionado cuando esté disponible
+    this.loadSgpData();
+  }
+
+  /**
+   * Carga datos SGP específicos para el segundo municipio
+   */
+  private loadSgpDataForMunicipality2(): void {
+    console.log('Cargando datos SGP para municipio 2:', this.townSelected2);
+    // Aquí se implementaría la llamada específica al API para obtener
+    // datos del segundo municipio seleccionado cuando esté disponible
+    this.loadSgpData2();
+  }
+
+  /**
+   * Carga datos comparativos si ambos municipios están seleccionados
+   */
+  private loadComparativeDataIfReady(): void {
+    if (this.selected && this.townSelected && this.townSelected2) {
+      console.log('Cargando datos comparativos:', {
+        vigencia: this.selected,
+        municipio1: this.townSelected,
+        municipio2: this.townSelected2
+      });
+      
+      // Mostrar indicador de carga
+      this.isLoadingComparativeData = true;
+      
+      this.sicodisApiService.getSgpFichaComparativaEntidad(
+        this.selected,
+        this.townSelected,
+        this.townSelected2
+      ).subscribe({
+        next: (data) => {
+          console.log('Datos comparativos cargados:', data);
+          this.fichaComparativaData = data;
+          this.buildComparativeTreeData();
+          
+          // Ocultar indicador de carga
+          this.isLoadingComparativeData = false;
+        },
+        error: (error) => {
+          console.error('Error cargando datos comparativos:', error);
+          this.fichaComparativaData = [];
+          
+          // Ocultar indicador de carga incluso en caso de error
+          this.isLoadingComparativeData = false;
+        }
+      });
+    } else {
+      // Si no están todos los datos, asegurar que no esté en estado de carga
+      this.isLoadingComparativeData = false;
+    }
+  }
+
+  /**
+   * Construye los datos de la tabla comparativa usando la ficha comparativa
+   */
+  private buildComparativeTreeData(): void {
+    if (!this.fichaComparativaData || this.fichaComparativaData.length === 0) {
+      return;
+    }
+
+    // Construir datos para el primer municipio
+    this.treeTableData = this.fichaComparativaData.map((item, index) => ({
+      key: `comp1_${index}`,
+      data: {
+        concepto: item.Concepto,
+        id_concepto: item.IdConcepto.trim(),
+        vigencia: item.PeriodoVigencia_Entidad1,
+        periodo_anterior: item.PeriodoAnterior_Entidad1,
+        diferencia: item.Diferencias_Entidad1,
+        porcentual: item.Porcentual_Entidad1
+      },
+      children: [],
+      expanded: false
+    }));
+
+    // Construir datos para el segundo municipio
+    this.treeTableData2 = this.fichaComparativaData.map((item, index) => ({
+      key: `comp2_${index}`,
+      data: {
+        concepto: item.Concepto,
+        id_concepto: item.IdConcepto.trim(),
+        vigencia: item.PeriodoVigencia_Entidad2,
+        periodo_anterior: item.PeriodoAnterior_Entidad2,
+        diferencia: item.Diferencias_Entidad2,
+        porcentual: item.Porcentual_Entidad2
+      },
+      children: [],
+      expanded: false
+    }));
+
+    console.log('Datos comparativos construidos para TreeTable');
+    
+    // Actualizar gráficos
+    setTimeout(() => {
+      this.createBarChart();
+      this.createBarChart2();
+    }, 200);
+  }
+
+  /**
+   * Obtiene el nombre del municipio seleccionado
+   */
+  getSelectedMunicipalityName(municipalityNumber: number): string {
+    if (municipalityNumber === 1) {
+      if (!this.townSelected) return 'Sin seleccionar';
+      const municipality = this.towns.find(town => town.codigo_municipio === this.townSelected);
+      return municipality ? municipality.nombre_municipio : 'Municipio 1';
+    } else {
+      if (!this.townSelected2) return 'Sin seleccionar';
+      const municipality = this.towns2.find(town => town.codigo_municipio === this.townSelected2);
+      return municipality ? municipality.nombre_municipio : 'Municipio 2';
+    }
+  }
+
+  /**
+   * Obtiene el nombre de la vigencia seleccionada
+   */
+  getSelectedVigenciaName(): string {
+    if (!this.selected || !this.infoToResume) return '';
+    return this.infoToResume.vigencia || this.selected.toString();
   }
 
   /**
@@ -891,7 +1010,7 @@ export class SgpComparativaComponent {
    * Carga los datos SGP para el segundo municipio
    */
   loadSgpData2(): void {
-    const aniosString = this.selected;
+    const aniosString = this.selected.toString();
     
     // Por ahora usar los mismos datos pero crear una copia para el segundo municipio
     this.sicodisApiService.getSgpResumenHistorico({ anios: aniosString }).subscribe({
@@ -1019,7 +1138,7 @@ export class SgpComparativaComponent {
             concepto: conceptoInfo.concepto,
             id_concepto: conceptoId,
             // Simular datos diferentes multiplicando por 0.8
-            vigencia: Math.round(this.getValueForYear(filteredData, conceptoId, this.selected) * 0.8)
+            vigencia: Math.round(this.getValueForYear(filteredData, conceptoId, this.selected.toString()) * 0.8)
           };
 
           conceptosMap.set(conceptoPadreId, {
@@ -1057,7 +1176,7 @@ export class SgpComparativaComponent {
             concepto: conceptoInfo.concepto,
             id_concepto: conceptoId,
             // Simular datos diferentes multiplicando por 0.8
-            vigencia: Math.round(this.getValueForYear(filteredData, conceptoId, this.selected) * 0.8)
+            vigencia: Math.round(this.getValueForYear(filteredData, conceptoId, this.selected.toString()) * 0.8)
           };
           
           const childNode: TreeNode = {
@@ -1111,7 +1230,7 @@ export class SgpComparativaComponent {
           const nodeData: any = {
             concepto: conceptoInfo.concepto,
             id_concepto: conceptoId,
-            vigencia: this.getValueForYear(filteredData, conceptoId, this.selected)
+            vigencia: this.getValueForYear(filteredData, conceptoId, this.selected.toString())
           };
 
           conceptosMap.set(conceptoPadreId, {
@@ -1148,7 +1267,7 @@ export class SgpComparativaComponent {
           const childData: any = {
             concepto: conceptoInfo.concepto,
             id_concepto: conceptoId,
-            vigencia: this.getValueForYear(filteredData, conceptoId, this.selected)
+            vigencia: this.getValueForYear(filteredData, conceptoId, this.selected.toString())
           };
           
           const childNode: TreeNode = {

@@ -124,6 +124,36 @@ export interface ResumenHistoricoParams {
   anios?: string;
 }
 
+export interface VigenciaPresupuesto {
+  id_vigencia: number;
+  vigencia: string;
+}
+
+export interface ResumenUltimaOnce {
+  anio: number;
+  total_distribuido: number;
+  total_presupuesto: number;
+  porcentaje_ejecucion: number;
+  porcentaje_avance: number;
+  porcentaje_avance_str: string;
+  fecha_ultima_actualizacion: Date;
+}
+
+export interface FichaComparativaEntidad {
+  Concepto: string;
+  IdConcepto: string;
+  ConceptoDescripcion: string;
+  PeriodoAnterior_Entidad1: number;
+  PeriodoVigencia_Entidad1: number;
+  Diferencias_Entidad1: number;
+  Porcentual_Entidad1: number;
+  PeriodoAnterior_Entidad2: number;
+  PeriodoVigencia_Entidad2: number;
+  Diferencias_Entidad2: number;
+  Porcentual_Entidad2: number;
+  tipo: number;
+}
+
 // ========== Request Parameters Interfaces ==========
 export interface DistribucionTotalParams {
   idVigencia?: number;
@@ -282,7 +312,7 @@ export class SicodisApiService {
    * @returns Observable con el array de vigencias
    * @note Este endpoint puede tener restricciones CORS en desarrollo local
    */
-  getVigencias(): Observable<Vigencia[]> {
+  getSgrVigencias(): Observable<Vigencia[]> {
     const url = `${this.baseUrl}/sgr/vigencias`;
     return this.http.get<Vigencia[]>(url);
   }
@@ -347,5 +377,60 @@ export class SicodisApiService {
     }
 
     return this.http.get<ResumenHistorico[]>(url, { params: httpParams });
+  }
+
+  /**
+   * Descarga un archivo del SGP por su ID
+   * @param idArchivo - ID del archivo a descargar
+   * @returns Observable con los datos del archivo
+   */
+  getSgpDescargarArchivo(idArchivo: number): Observable<any> {
+    const url = `${this.baseUrl}/sgp/descargararchivo/${idArchivo}`;
+    return this.http.get<any>(url);
+  }
+
+  /**
+   * Obtiene las vigencias de presupuesto de la última once del SGP
+   * @returns Observable con el array de vigencias de presupuesto
+   */
+  getSgpVigenciasPresupuestoUltimaOnce(): Observable<VigenciaPresupuesto[]> {
+    const url = `${this.baseUrl}/sgp/vigenciasPresupuestoUltimaOnce`;
+    return this.http.get<VigenciaPresupuesto[]>(url);
+  }
+
+  /**
+   * Obtiene el resumen general de la última once del SGP
+   * @param idVigencia - ID de la vigencia
+   * @param codigoDepto - Código del departamento
+   * @param codigoMunicipio - Código del municipio
+   * @returns Observable con el resumen de la última once
+   */
+  getSgpResumenGeneralUltimaOnce(idVigencia: number, codigoDepto: string, codigoMunicipio: string): Observable<ResumenUltimaOnce> {
+    const url = `${this.baseUrl}/sgp/resumen_general_ultima_once/${idVigencia}/${codigoDepto}/${codigoMunicipio}`;
+    return this.http.get<ResumenUltimaOnce>(url);
+  }
+
+  /**
+   * Obtiene el resumen de participaciones de la última once del SGP
+   * @param idVigencia - ID de la vigencia
+   * @param codigoDepto - Código del departamento
+   * @param codigoMunicipio - Código del municipio
+   * @returns Observable con el resumen de participaciones de la última once
+   */
+  getSgpResumenParticipacionesUltimaOnce(idVigencia: number, codigoDepto: string, codigoMunicipio: string): Observable<ResumenParticipaciones> {
+    const url = `${this.baseUrl}/sgp/resumen_participaciones_ultima_once/${idVigencia}/${codigoDepto}/${codigoMunicipio}`;
+    return this.http.get<ResumenParticipaciones>(url);
+  }
+
+  /**
+   * Obtiene la ficha comparativa entre dos entidades del SGP
+   * @param idVigencia - ID de la vigencia
+   * @param codigoEntidad1 - Código de la primera entidad
+   * @param codigoEntidad2 - Código de la segunda entidad
+   * @returns Observable con la ficha comparativa de las entidades
+   */
+  getSgpFichaComparativaEntidad(idVigencia: number, codigoEntidad1: string, codigoEntidad2: string): Observable<FichaComparativaEntidad[]> {
+    const url = `${this.baseUrl}/sgp/ficha_comparativa_entidad/${idVigencia}/${codigoEntidad1}/${codigoEntidad2}`;
+    return this.http.get<FichaComparativaEntidad[]>(url);
   }
 }
