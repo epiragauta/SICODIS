@@ -745,31 +745,14 @@
 
       .p-field {
         flex: 0 1 auto;
-        min-width: 200px;
-        max-width: 250px;
+        min-width: 175px;
+        max-width: 220px;
         margin-bottom: 0;
 
-        &.vigencia-select,
-        &.department-select,
-        &.town-select {
-          min-width: 200px;
-          max-width: 250px;
-        }
-
-        .p-floatlabel {
-          width: 100%;
-          
-          &.w-full.md\:w-56 {
-            width: 100% !important;
-            max-width: 100% !important;
-          }
-          
-          .p-select,
-          .p-multiselect {
-            width: 100% !important;
-          }
-        }
+               
       }
+
+
     }
   }
 }

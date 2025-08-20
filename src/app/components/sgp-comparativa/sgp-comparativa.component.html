@@ -14,7 +14,7 @@
       <div class="filters-row">
         <!-- Vigencia a consultar (multi-select) -->
         <div class="p-field vigencia-select">
-          <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-floatlabel class="w-full" variant="on">
             <p-select 
               id="vigencia" 
               [options]="infoResume" 
@@ -23,7 +23,8 @@
               (onChange)="onVigenciaChange($event)"
               optionValue="id_vigencia"
               optionLabel="vigencia" 
-              placeholder="Seleccionar vigencia">
+              placeholder="Seleccionar vigencia"
+              styleClass="vigencia-select-custom">
             </p-select>
             <label for="vigenciaSelect">Vigencia</label>
           </p-floatlabel>
@@ -135,12 +136,12 @@
   <div class="loading-section" *ngIf="isLoadingComparativeData && townSelected && townSelected2">
     <p-card class="loading-card">
       <div class="loading-content" style="text-align: center; padding: 3rem;">
-        <p-progressSpinner 
+        <p-progress-spinner 
           styleClass="w-4rem h-4rem" 
           strokeWidth="4" 
-          fill="var(--surface-ground)" 
+          fill="#ddd" 
           animationDuration=".5s">
-        </p-progressSpinner>
+        </p-progress-spinner>
         <h3 style="margin-top: 1.5rem; color: #666;">Cargando datos comparativos</h3>
         <p>Consultando información de los municipios seleccionados...</p>
         <div class="loading-details" style="margin-top: 1rem; font-size: 0.9rem; color: #888;">
@@ -210,7 +211,7 @@
             <ng-template pTemplate="header">
               <tr>
                 <th class="table-header concept-header">Concepto</th>
-                <th class="table-header vigencia-header">
+                <th class="table-header vigencia-header" style="text-align: right;">
                   Valor
                 </th>
               </tr>
@@ -268,7 +269,7 @@
             <ng-template pTemplate="header">
               <tr>
                 <th class="table-header concept-header">Concepto</th>
-                <th class="table-header vigencia-header">
+                <th class="table-header vigencia-header" style="text-align: right;">
                   Valor
                 </th>
               </tr>
