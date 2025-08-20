@@ -131,7 +131,7 @@ export class SgpComparativaComponent {
       }
 
       // Preparar datos para la gráfica
-      const labels = mainConcepts.map(concept => concept.concepto);
+      const labels = mainConcepts.map(concept => concept.concepto.split(' - ')[1]);
       const data = mainConcepts.map(concept => concept.valor); // Valores en pesos
       const percentages = mainConcepts.map(concept => concept.porcentaje);
 
@@ -165,9 +165,8 @@ export class SgpComparativaComponent {
           aspectRatio: .5,          
           scales: {
             x: {
-                              title: {
+                  title: {
                   display: true,
-                  text: 'Conceptos Principales',
                   font: {
                     size: 16,
                     weight: 'bold'
@@ -247,7 +246,7 @@ export class SgpComparativaComponent {
       }
 
       // Preparar datos para la gráfica
-      const labels = mainConcepts.map(concept => concept.concepto);
+      const labels = mainConcepts.map(concept => concept.concepto.split(' - ')[1]);
       const data = mainConcepts.map(concept => concept.valor); // Valores en pesos
       const percentages = mainConcepts.map(concept => concept.porcentaje);
 
@@ -282,7 +281,6 @@ export class SgpComparativaComponent {
             x: {
               title: {
                 display: true,
-                text: 'Conceptos Principales',
                 font: {
                   size: 14,
                   weight: 'bold'
@@ -486,9 +484,16 @@ export class SgpComparativaComponent {
   }
 
   /**
-   * Obtiene el total para la vigencia seleccionada
+   * Obtiene el total para la vigencia seleccionada usando el registro con IdConcepto = '99' de los datos originales
    */
   getTreeTableYearTotal(): number {
+    // Buscar el registro total en los datos originales (IdConcepto = '99')
+    const totalRecord = this.fichaComparativaData.find(item => item.IdConcepto.trim() === '99');
+    if (totalRecord) {
+      return totalRecord.PeriodoVigencia_Entidad1 || 0;
+    }
+    
+    // Fallback: sumar todos los nodos del árbol si no existe el total
     let total = 0;
     this.treeTableData.forEach((node: TreeNode) => {
       total += node.data.vigencia || 0;
@@ -497,9 +502,16 @@ export class SgpComparativaComponent {
   }
 
   /**
-   * Obtiene el total para la vigencia seleccionada del segundo municipio
+   * Obtiene el total para la vigencia seleccionada del segundo municipio usando el registro con IdConcepto = '99' de los datos originales
    */
   getTreeTableYearTotal2(): number {
+    // Buscar el registro total en los datos originales (IdConcepto = '99')
+    const totalRecord = this.fichaComparativaData.find(item => item.IdConcepto.trim() === '99');
+    if (totalRecord) {
+      return totalRecord.PeriodoVigencia_Entidad2 || 0;
+    }
+    
+    // Fallback: sumar todos los nodos del árbol si no existe el total
     let total = 0;
     this.treeTableData2.forEach((node: TreeNode) => {
       total += node.data.vigencia || 0;
@@ -921,50 +933,199 @@ export class SgpComparativaComponent {
   }
 
   /**
-   * Construye los datos de la tabla comparativa usando la ficha comparativa
+   * Construye los datos de la tabla comparativa usando la ficha comparativa organizados jerárquicamente
    */
   private buildComparativeTreeData(): void {
     if (!this.fichaComparativaData || this.fichaComparativaData.length === 0) {
       return;
     }
 
-    // Construir datos para el primer municipio
-    this.treeTableData = this.fichaComparativaData.map((item, index) => ({
-      key: `comp1_${index}`,
-      data: {
-        concepto: item.Concepto,
-        id_concepto: item.IdConcepto.trim(),
-        vigencia: item.PeriodoVigencia_Entidad1,
-        periodo_anterior: item.PeriodoAnterior_Entidad1,
-        diferencia: item.Diferencias_Entidad1,
-        porcentual: item.Porcentual_Entidad1
-      },
-      children: [],
-      expanded: false
-    }));
+    // Construir datos jerárquicos para el primer municipio
+    this.treeTableData = this.buildHierarchicalData(this.fichaComparativaData, 1);
 
-    // Construir datos para el segundo municipio
-    this.treeTableData2 = this.fichaComparativaData.map((item, index) => ({
-      key: `comp2_${index}`,
-      data: {
-        concepto: item.Concepto,
-        id_concepto: item.IdConcepto.trim(),
-        vigencia: item.PeriodoVigencia_Entidad2,
-        periodo_anterior: item.PeriodoAnterior_Entidad2,
-        diferencia: item.Diferencias_Entidad2,
-        porcentual: item.Porcentual_Entidad2
-      },
-      children: [],
-      expanded: false
-    }));
+    // Construir datos jerárquicos para el segundo municipio
+    this.treeTableData2 = this.buildHierarchicalData(this.fichaComparativaData, 2);
 
-    console.log('Datos comparativos construidos para TreeTable');
+    console.log('Datos comparativos jerárquicos construidos para TreeTable');
+    console.log('TreeTable 1:', this.treeTableData);
+    console.log('TreeTable 2:', this.treeTableData2);
     
     // Actualizar gráficos
     setTimeout(() => {
       this.createBarChart();
       this.createBarChart2();
     }, 200);
+  }
+
+  /**
+   * Construye la estructura jerárquica basada en el texto antes del guión en el campo Concepto
+   */
+  private buildHierarchicalData(data: FichaComparativaEntidad[], entityNumber: 1 | 2): TreeNode[] {
+    const conceptsMap = new Map<string, TreeNode>();
+    let totalRecord: TreeNode | null = null;
+    
+    data.forEach((item, index) => {
+      // Verificar si es el registro total (IdConcepto = '99')
+      if (item.IdConcepto.trim() === '99') {
+        const entityData = entityNumber === 1 ? {
+          vigencia: item.PeriodoVigencia_Entidad1,
+          periodo_anterior: item.PeriodoAnterior_Entidad1,
+          diferencia: item.Diferencias_Entidad1,
+          porcentual: item.Porcentual_Entidad1
+        } : {
+          vigencia: item.PeriodoVigencia_Entidad2,
+          periodo_anterior: item.PeriodoAnterior_Entidad2,
+          diferencia: item.Diferencias_Entidad2,
+          porcentual: item.Porcentual_Entidad2
+        };
+
+        totalRecord = {
+          key: `${entityNumber}_total`,
+          data: {
+            concepto: item.Concepto.trim() || 'TOTAL GENERAL',
+            id_concepto: '99',
+            ...entityData
+          },
+          leaf: true
+        };
+        return; // Continuar con el siguiente item
+      }
+
+      // Extraer el código del concepto (texto antes del guión)
+      const conceptoText = item.Concepto.trim();
+      const dashIndex = conceptoText.indexOf(' - ');
+      
+      if (dashIndex === -1) {
+        // Si no hay guión, usar el concepto completo
+        console.warn(`Concepto sin formato estándar: ${conceptoText}`);
+        return;
+      }
+      
+      const conceptCode = conceptoText.substring(0, dashIndex).trim();
+      const conceptName = conceptoText.substring(dashIndex + 3).trim();
+      
+      // Dividir el código en partes (ej: "1.1.01" -> ["1", "1", "01"])
+      const codeParts = conceptCode.split('.');
+      
+      // Determinar si es concepto padre (ej: 1.1) o hijo (ej: 1.1.01)
+      const isParentConcept = codeParts.length === 2;
+      const parentKey = codeParts.length >= 2 ? `${codeParts[0]}.${codeParts[1]}` : conceptCode;
+      
+      // Datos según la entidad
+      const entityData = entityNumber === 1 ? {
+        vigencia: item.PeriodoVigencia_Entidad1,
+        periodo_anterior: item.PeriodoAnterior_Entidad1,
+        diferencia: item.Diferencias_Entidad1,
+        porcentual: item.Porcentual_Entidad1
+      } : {
+        vigencia: item.PeriodoVigencia_Entidad2,
+        periodo_anterior: item.PeriodoAnterior_Entidad2,
+        diferencia: item.Diferencias_Entidad2,
+        porcentual: item.Porcentual_Entidad2
+      };
+
+      if (isParentConcept) {
+        // Es un concepto padre (ej: "1.1 - Educación")
+        if (!conceptsMap.has(parentKey)) {
+          conceptsMap.set(parentKey, {
+            key: `${entityNumber}_${parentKey}`,
+            data: {
+              concepto: conceptoText,
+              id_concepto: conceptCode,
+              ...entityData
+            },
+            children: [],
+            expanded: false
+          });
+        } else {
+          // Actualizar datos del concepto padre si ya existe
+          const existingNode = conceptsMap.get(parentKey)!;
+          existingNode.data = {
+            concepto: conceptoText,
+            id_concepto: conceptCode,
+            ...entityData
+          };
+        }
+      } else {
+        // Es un concepto hijo (ej: "1.1.01 - Prestación de Servicios")
+        // Asegurar que existe el concepto padre
+        if (!conceptsMap.has(parentKey)) {
+          // Crear concepto padre genérico basado en los primeros dos niveles
+          const parentName = this.getParentConceptName(parentKey);
+          conceptsMap.set(parentKey, {
+            key: `${entityNumber}_${parentKey}`,
+            data: {
+              concepto: `${parentKey} - ${parentName}`,
+              id_concepto: parentKey,
+              vigencia: 0,
+              periodo_anterior: 0,
+              diferencia: 0,
+              porcentual: 0
+            },
+            children: [],
+            expanded: false
+          });
+        }
+
+        // Agregar como hijo
+        const parentNode = conceptsMap.get(parentKey)!;
+        parentNode.children!.push({
+          key: `${entityNumber}_${conceptCode}`,
+          data: {
+            concepto: conceptoText,
+            id_concepto: conceptCode,
+            ...entityData
+          },
+          leaf: true
+        });
+      }
+    });
+
+    // Calcular totales para conceptos padre que tienen hijos
+    conceptsMap.forEach(parentNode => {
+      if (parentNode.children && parentNode.children.length > 0) {
+        // Sumar valores de los hijos para obtener el total del padre
+        const totals = parentNode.children.reduce((acc, child) => ({
+          vigencia: acc.vigencia + (child.data.vigencia || 0),
+          periodo_anterior: acc.periodo_anterior + (child.data.periodo_anterior || 0),
+          diferencia: acc.diferencia + (child.data.diferencia || 0)
+        }), { vigencia: 0, periodo_anterior: 0, diferencia: 0 });
+
+        // Solo actualizar si el padre no tenía valores propios
+        if (parentNode.data.vigencia === 0) {
+          parentNode.data.vigencia = totals.vigencia;
+          parentNode.data.periodo_anterior = totals.periodo_anterior;
+          parentNode.data.diferencia = totals.diferencia;
+          parentNode.data.porcentual = totals.periodo_anterior > 0 ? 
+            totals.diferencia / totals.periodo_anterior : 0;
+        }
+      }
+    });
+
+    // Ordenar por código de concepto y devolver solo los conceptos regulares
+    // El registro total (IdConcepto = '99') se excluye de la estructura jerárquica
+    return Array.from(conceptsMap.values()).sort((a, b) => {
+      const aId = a.data.id_concepto;
+      const bId = b.data.id_concepto;
+      return aId.localeCompare(bId, undefined, { numeric: true });
+    });
+  }
+
+  /**
+   * Obtiene el nombre del concepto padre basado en el código
+   */
+  private getParentConceptName(parentCode: string): string {
+    const conceptNames: { [key: string]: string } = {
+      '1.1': 'Educación',
+      '1.2': 'Salud', 
+      '1.3': 'Agua Potable',
+      '1.4': 'Propósito General',
+      '2.1': 'Deporte y Recreación',
+      '2.2': 'Cultura',
+      '2.3': 'Otros Sectores'
+    };
+    
+    return conceptNames[parentCode] || 'Concepto Principal';
   }
 
   /**
