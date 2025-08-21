@@ -303,14 +303,8 @@
             font-weight: bold;
             text-align: center !important;
             margin: 0;
-          }
+          }          
           
-          .table-subtitle {
-            color: #6b7280;
-            font-size: 0.9rem;
-            text-align: center !important;
-            margin: 0.5rem 0 0 0;
-          }
         }
       }
       
@@ -328,14 +322,8 @@
             font-weight: bold;
             text-align: center !important;
             margin: 0;
-          }
+          }          
           
-          .table-subtitle {
-            color: #6b7280;
-            font-size: 0.9rem;
-            text-align: center !important;
-            margin: 0.5rem 0 0 0;
-          }
         }
       }
       
@@ -525,13 +513,7 @@
           margin-bottom: 0.5rem;
           color: var(--p-text-color);
           font-weight: 600;
-        }
-
-        .chart-subtitle {
-          font-size: 0.9rem;
-          color: var(--p-text-muted-color);
-          margin-bottom: 1rem;
-        }
+        }        
 
         .chart-container {
           width: 100%;
@@ -613,7 +595,7 @@
           }
           
           .chart-title {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             margin: 0 auto 0.5rem auto;
             font-weight: 700;
             text-align: center !important;
@@ -624,34 +606,14 @@
             display: block;
             width: 100%;
           }
-
-          .chart-subtitle {
-            font-size: 0.9rem;
-            color: #666;
-            margin: 0 auto 1rem auto;
-            text-align: center !important;
-            font-weight: 500;
-            line-height: 1.4;
-            font-style: italic;
-            background: linear-gradient(90deg, transparent, rgba(15, 73, 135, 0.05) 50%, transparent);
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            display: block;
-            width: 100%;
-            box-sizing: border-box;
-          }
           
           // Responsive typography
           @media (max-width: 768px) {
             .chart-title {
               font-size: 1.1rem;
               padding: 0.25rem 0;
-            }
+            }           
             
-            .chart-subtitle {
-              font-size: 0.8rem;
-              padding: 0.25rem 0.5rem;
-            }
           }
 
           .chart-container {

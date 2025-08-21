@@ -114,20 +114,7 @@ export class ReportsSgpComponent implements OnInit {
 
   departments = departamentos;
 
-  towns: any = [
-    { name: 'Municipio1' },
-    { name: 'Municipio2' },
-    { name: 'Municipio3' },
-    { name: 'Municipio4' },
-    { name: 'Municipio5' },
-    { name: 'Municipio6' },
-    { name: 'Municipio7' },
-    { name: 'Municipio8' },
-    { name: 'Municipio9' },
-    { name: 'Municipio10' },
-    { name: 'Municipio11' },
-    { name: 'Municipio12' },
-  ];
+  towns: any[] = [];
 
   dataSource2: any = [
     {
@@ -247,7 +234,7 @@ export class ReportsSgpComponent implements OnInit {
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          aspectRatio: .5,          
+          aspectRatio: .25,          
           scales: {
             x: {
                              title: {
@@ -389,6 +376,7 @@ export class ReportsSgpComponent implements OnInit {
   onDepartmentChange(event: SelectChangeEvent): void {
     console.log('Departamento seleccionado:', event.value);
     this.departmentSelected = event.value;
+    this.townSelected = '';
     this.loadTownsForDepartment();
   }
 
@@ -399,6 +387,7 @@ export class ReportsSgpComponent implements OnInit {
     console.log('Municipio seleccionado:', event.value);
     this.townSelected = event.value;
     this.filterDataByLocation();
+    this.loadSgpDataForMunicipality();
   }
 
   /**
@@ -410,7 +399,15 @@ export class ReportsSgpComponent implements OnInit {
     console.log('Departamento:', this.departmentSelected);
     console.log('Municipio:', this.townSelected);
     
-    // Aquí iría la lógica para actualizar los datos según los filtros seleccionados
+    // Si hay municipio seleccionado, cargar datos específicos
+    if (this.townSelected && this.departmentSelected) {
+      this.loadSgpDataForMunicipality();
+    } else {
+      // Si no hay municipio, cargar datos generales
+      this.loadSgpData();
+    }
+    
+    this.loadDistributionData();
     this.loadFilteredData();
   }
 
@@ -419,6 +416,17 @@ export class ReportsSgpComponent implements OnInit {
    */
   clearFilters(): void {
     console.log('Limpiando filtros...');
+    this.selected = '2025';
+    this.departmentSelected = '';
+    this.townSelected = '';
+    this.towns = [];
+    
+    this.infoToResume = this.infoResume.filter(
+      (item: any) => item.year === this.selected
+    )[0];
+    
+    this.loadSgpData();
+    this.loadDistributionData();
   }
 
   /**
@@ -440,8 +448,17 @@ export class ReportsSgpComponent implements OnInit {
     }
 
     console.log('Cargando municipios para departamento:', this.departmentSelected);
-    // Aquí iría la lógica para cargar municipios del departamento seleccionado
-    // Por ahora mantenemos la lista de ejemplo
+    
+    this.sicodisApiService.getMunicipiosPorDepartamento(this.departmentSelected).subscribe({
+      next: (municipios) => {
+        console.log('Municipios cargados:', municipios);
+        this.towns = municipios;
+      },
+      error: (error) => {
+        console.error('Error cargando municipios:', error);
+        this.towns = [];
+      }
+    });
   }
 
   /**
@@ -450,6 +467,44 @@ export class ReportsSgpComponent implements OnInit {
   private filterDataByLocation(): void {
     console.log('Filtrando datos por ubicación');
     // Lógica para filtrar datos según departamento y municipio
+  }
+
+  /**
+   * Carga datos SGP específicos para el municipio seleccionado
+   */
+  private loadSgpDataForMunicipality(): void {
+    if (!this.townSelected || !this.departmentSelected) {
+      console.log('No hay municipio o departamento seleccionado');
+      return;
+    }
+
+    console.log('Cargando datos SGP para municipio:', this.townSelected);
+    console.log('Departamento:', this.departmentSelected);
+    
+    const params = {
+      anios: this.selected,
+      codigoDepto: this.departmentSelected,
+      codigoMunicipio: this.townSelected
+    };
+
+    this.sicodisApiService.getSgpResumenHistoricoEntidad(params).subscribe({
+      next: (result: any[]) => {
+        console.log('Datos SGP del municipio desde API:', result);
+        this.historicoApiData = result;
+        if (result && result.length > 0) {
+          this.buildTreeTableData();
+        } else {
+          console.log('No hay datos del API para el municipio, usando datos generales');
+          this.loadSgpData();
+        }
+      },
+      error: (error) => {
+        console.error('Error loading SGP data for municipality from API:', error);
+        // Fallback con datos generales
+        console.log('Error en API del municipio, cargando datos generales');
+        this.loadSgpData();
+      }
+    });
   }
 
   /**
@@ -816,5 +871,26 @@ export class ReportsSgpComponent implements OnInit {
   isCurrentYear(): boolean {
     const currentYear = new Date().getFullYear().toString();
     return this.selected === currentYear;
+  }
+
+  /**
+   * Genera el título dinámico para la distribución del presupuesto
+   * @returns Título con año y municipio/departamento si están seleccionados
+   */
+  getDistributionTitle(): string {
+    let title = `Distribución del presupuesto ${this.selected}`;
+    
+    if (this.townSelected && this.departmentSelected) {
+      // Buscar el nombre del municipio seleccionado
+      const selectedTown = this.towns.find(town => town.codigo_municipio === this.townSelected);
+      // Buscar el nombre del departamento seleccionado
+      const selectedDepartment = this.departments.find(dept => dept.codigo === this.departmentSelected);
+      
+      if (selectedTown && selectedDepartment) {
+        title += ` - ${selectedTown.nombre_municipio} (${selectedDepartment.nombre})`;
+      }
+    }
+    
+    return title;
   }
 }

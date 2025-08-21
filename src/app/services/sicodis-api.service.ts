@@ -119,9 +119,23 @@ export interface ResumenHistorico {
   variacion_anual: number;
 }
 
+export interface ResumenHistoricoEntidad {
+  anio: number;
+  id_concepto: string,
+  concepto: string,
+  precios_corrientes: number;
+  precios_constantes: number;  
+}
+
 // ========== SGP Request Parameters Interfaces ==========
 export interface ResumenHistoricoParams {
   anios?: string;
+}
+
+export interface ResumenHistoricoEntidadParams {
+  anios?: string;
+  codigoDepto?: string;
+  codigoMunicipio?: string;
 }
 
 export interface VigenciaPresupuesto {
@@ -377,6 +391,28 @@ export class SicodisApiService {
     }
 
     return this.http.get<ResumenHistorico[]>(url, { params: httpParams });
+  }
+
+  /**
+   * Obtiene el resumen histórico de precios corrientes y constantes del SGP por entidad
+   * @param params - Parámetros opcionales incluyendo años, código de departamento y municipio
+   * @returns Observable con el array de datos históricos por entidad
+   */
+  getSgpResumenHistoricoEntidad(params?: ResumenHistoricoEntidadParams): Observable<ResumenHistoricoEntidad[]> {
+    const url = `${this.baseUrl}/sgp/resumen_historico_corrientes_constantes_entidad`;
+    let httpParams = new HttpParams();
+
+    if (params?.anios) {
+      httpParams = httpParams.set('anios', params.anios);
+    }
+    if (params?.codigoDepto) {
+      httpParams = httpParams.set('codigoDepto', params.codigoDepto);
+    }
+    if (params?.codigoMunicipio) {
+      httpParams = httpParams.set('codigoMunicipio', params.codigoMunicipio);
+    }
+
+    return this.http.get<ResumenHistoricoEntidad[]>(url, { params: httpParams });
   }
 
   /**

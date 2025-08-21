@@ -53,8 +53,8 @@
             inputId="municipioSelect"
             [(ngModel)]="townSelected"
             (onChange)="onTownChange($event)"
-            optionValue="name"
-            optionLabel="name" 
+            optionValue="codigo_municipio"
+            optionLabel="nombre_municipio" 
             placeholder="Municipio">
           </p-select>
           <label for="municipioSelect">Municipio</label>
@@ -81,7 +81,7 @@
 
   <!-- Título de sección -->
   <div class="section-title">
-    <h3>Distribución del presupuesto</h3>
+    <h3>{{ getDistributionTitle() }}</h3>
   </div>
 
   <!-- Sección principal con resumen y tabla -->
@@ -159,7 +159,7 @@
 
     <!-- Botón Descargar Excel centrado -->
     <div class="button-export-center">
-      <button pButton type="button" icon="pi pi-download" label="ExportarExcel" class="p-button-primary"></button>
+      <button pButton type="button" icon="pi pi-download" label="Exportar Excel" class="p-button-primary"></button>
     </div>
   </div>
 

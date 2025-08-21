@@ -161,8 +161,7 @@
         <p-card class="chart-card">
           <ng-template pTemplate="header">
             <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
-              <h3 class="chart-title">Conceptos Principales SGP</h3>
-              <p class="chart-subtitle">{{ getSelectedMunicipalityName(1) }} - Distribución por conceptos principales</p>
+              <h3 class="chart-title">{{ getSelectedMunicipalityName(1) }} - Distribución por conceptos principales</h3>
             </div>
           </ng-template>
           <div class="chart-container" style="position: relative; height: 400px; width: 100%;">
@@ -176,8 +175,7 @@
         <p-card class="chart-card">
           <ng-template pTemplate="header">
             <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
-              <h3 class="chart-title">Conceptos Principales SGP</h3>
-              <p class="chart-subtitle">{{ getSelectedMunicipalityName(2) }} - Distribución por conceptos principales</p>
+              <h3 class="chart-title">{{ getSelectedMunicipalityName(2) }} - Distribución por conceptos principales</h3>
             </div>
           </ng-template>
           <div class="chart-container" style="position: relative; height: 400px; width: 100%;">
@@ -196,8 +194,7 @@
         <p-card class="table-card">
           <ng-template pTemplate="header">
             <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
-              <h3 class="table-title">Datos SGP</h3>
-              <p class="table-subtitle">{{ getSelectedMunicipalityName(1) }} - Vigencia {{ getSelectedVigenciaName() }}</p>
+              <h3 class="table-title">{{ getSelectedMunicipalityName(1) }} - Vigencia {{ getSelectedVigenciaName() }}</h3>              
             </div>
           </ng-template>
           <p-treetable #treeTable
@@ -210,8 +207,8 @@
                        *ngIf="treeTableData.length > 0">
             <ng-template pTemplate="header">
               <tr>
-                <th class="table-header concept-header">Concepto</th>
-                <th class="table-header vigencia-header" style="text-align: right;">
+                <th class="table-header concept-header" style="width: 70%;">Concepto</th>
+                <th class="table-header vigencia-header" style="width: 30%; text-align: right;">
                   Valor
                 </th>
               </tr>
@@ -254,8 +251,7 @@
         <p-card class="table-card">
           <ng-template pTemplate="header">
             <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
-              <h3 class="table-title">Datos SGP</h3>
-              <p class="table-subtitle">{{ getSelectedMunicipalityName(2) }} - Vigencia {{ getSelectedVigenciaName() }}</p>
+              <h3 class="table-title">{{ getSelectedMunicipalityName(2) }} - Vigencia {{ getSelectedVigenciaName() }}</h3>              
             </div>
           </ng-template>
           <p-treetable #treeTable2
@@ -268,8 +264,8 @@
                        *ngIf="treeTableData2.length > 0">
             <ng-template pTemplate="header">
               <tr>
-                <th class="table-header concept-header">Concepto</th>
-                <th class="table-header vigencia-header" style="text-align: right;">
+                <th class="table-header concept-header" style="width: 70%;">Concepto</th>
+                <th class="table-header vigencia-header" style="width: 30%; text-align: right;">
                   Valor
                 </th>
               </tr>

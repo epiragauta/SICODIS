@@ -435,9 +435,18 @@ export class SgpComparativaComponent {
     
     const result = mainConcepts.map(concept => {
       // Buscar el concepto en los datos de la ficha comparativa
-      const foundItem = this.fichaComparativaData.find(item => 
-        item.Concepto.includes(concept.id) || item.Concepto.toLowerCase().includes(concept.name.toLowerCase())
-      );
+      // Extraer la parte antes del guión y comparar exactamente
+      const foundItem = this.fichaComparativaData.find(item => {
+        const conceptoText = item.Concepto.trim();
+        const dashIndex = conceptoText.indexOf(' - ');
+        
+        if (dashIndex === -1) {
+          return false;
+        }
+        
+        const conceptCode = conceptoText.substring(0, dashIndex).trim();
+        return conceptCode === concept.id;
+      });
       
       return {
         concepto: `${concept.id} - ${concept.name}`,
@@ -468,9 +477,18 @@ export class SgpComparativaComponent {
     
     const result = mainConcepts.map(concept => {
       // Buscar el concepto en los datos de la ficha comparativa
-      const foundItem = this.fichaComparativaData.find(item => 
-        item.Concepto.includes(concept.id) || item.Concepto.toLowerCase().includes(concept.name.toLowerCase())
-      );
+      // Extraer la parte antes del guión y comparar exactamente
+      const foundItem = this.fichaComparativaData.find(item => {
+        const conceptoText = item.Concepto.trim();
+        const dashIndex = conceptoText.indexOf(' - ');
+        
+        if (dashIndex === -1) {
+          return false;
+        }
+        
+        const conceptCode = conceptoText.substring(0, dashIndex).trim();
+        return conceptCode === concept.id;
+      });
       
       return {
         concepto: `${concept.id} - ${concept.name}`,
