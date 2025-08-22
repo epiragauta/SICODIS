@@ -18,6 +18,7 @@ import { Select, SelectChangeEvent } from 'primeng/select';
 import { Chart, registerables } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { SicodisApiService } from '../../services/sicodis-api.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sgp-inicio',
@@ -43,7 +44,7 @@ import { SicodisApiService } from '../../services/sicodis-api.service';
 })
 export class SgpInicioComponent implements OnInit, AfterViewInit {
 
-  constructor(private sicodisApiService: SicodisApiService) {
+  constructor(private sicodisApiService: SicodisApiService, private router: Router) {
     Chart.register(...registerables, ChartDataLabels);
   }
 
@@ -81,58 +82,59 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
   recursos = [
     {
       titulo: 'Histórico SGP',
-      descripcion: 'Histórico del sistema',
+      descripcion: 'Consulta el histórico de distribuciones por vigencia y entidad territorial',
       boton: 'Consultar',
-      link: '/comparador',
+      link: 'sgp-historico',
       icon: 'timeline'
     },
     {
-      titulo: 'SGP Documentos y anexos',
-      descripcion: 'Documentos y anexos',
+      titulo: 'Documentos y Anexos',
+      descripcion: 'Accede a documentos oficiales y anexos',
       boton: 'Consultar',
-      link: '/detalle-entidad',
+      link: 'sgp-documentos-anexos',
       icon: 'description'
     },
     {
-      titulo: 'Presupuesto',
-      descripcion: 'Información presupuestal',
+      titulo: 'Detalle Presupuestal',
+      descripcion: 'Consulta el detalle de la información presupuestal por municipio',
       boton: 'Consultar',
-      link: '/documentos',
+      link: 'sgp-detalle-presupuestal',
       icon: 'account_balance_wallet'
     },
     {
-      titulo: 'Comparativa',
-      descripcion: 'Ficha Comparativa',
+      titulo: 'Ficha Comparativa',
+      descripcion: 'Compara la información financiera entre diferentes entidades territoriales',
       boton: 'Consultar',
-      link: '/reportes',
+      link: 'sgp-comparativa',
       icon: 'compare_arrows'
-    },{
-      titulo: 'Consulta de eficiencia',
-      descripcion: 'Eficiencias fiscal y administrativa',
-      boton: 'Consultar',
-      link: '/reportes',
-      icon: 'trending_up'
     },
     {
-      titulo: 'Resguardos indígenas',
-      descripcion: 'Resguardos indígenas',
+      titulo: 'Resguardos Indígenas',
+      descripcion: 'Información específica de las transferencias a resguardos indígenas',
       boton: 'Consultar',
-      link: '/reportes',
+      link: 'sgp-resguardos',
       icon: 'groups'
     },
     {
-      titulo: 'Proyecciones SGP',
-      descripcion: 'Proyecciones del sistema',
+      titulo: 'Distribuciones SGP',
+      descripcion: 'Consulta las distribuciones realizadas',
       boton: 'Consultar',
-      link: '/reportes',
-      icon: 'insights'
+      link: 'reports-sgp-dist',
+      icon: 'account_tree'
     },
     {
-      titulo: 'Proyecciones SGP',
-      descripcion: 'Variables del sistema',
+      titulo: 'Presupuesto SGP',
+      descripcion: 'Información detallada del presupuesto',
       boton: 'Consultar',
-      link: '/reportes',
-      icon: 'insights'
+      link: 'reports-sgp-budget',
+      icon: 'pie_chart'
+    },
+    {
+      titulo: 'Gráficos SGP',
+      descripcion: 'Visualizaciones gráficas de los datos',
+      boton: 'Consultar',
+      link: 'graphics-sgp',
+      icon: 'bar_chart'
     }
   ];
 
@@ -337,5 +339,15 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
     this.selectedVigencia = event.value;
     // Reload data for the selected year
     this.loadSgpData();
+  }
+
+  navigateToResource(link: string): void {
+    console.log('Navigating to:', link);
+    this.router.navigate([link]).then(() => {
+      // Scroll to top after successful navigation
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
+    });
   }
 }

@@ -53,15 +53,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
         label: 'SGP',
         items: [
           {
-            label: 'Distribución Doce Doceavas y Anexos'
+            label: 'Distribución Doce Doceavas y Anexos',
+            command: () => this.redirectUrl("sgp-documentos-anexos")
           },
           {
             label: 'Ficha SGP, información Presupuestal',
-            // command: () => this.redirectSGP()
+            command: () => this.redirectUrl("sgp-detalle-presupuestal")
           },
           {
             label: 'Ficha comparativa de distribución SGP',
-            // command: () => this.redirectUrl("reports-sgp-dist")
+            command: () => this.redirectUrl("sgp-comparativa")
           },
           {
             label: 'Distribución SGP para los Resguardos Indígenas',
