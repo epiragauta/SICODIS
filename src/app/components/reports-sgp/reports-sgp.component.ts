@@ -254,15 +254,7 @@ export class ReportsSgpComponent implements OnInit {
                }
             },
             y: {
-                             title: {
-                 display: true,
-                 text: 'Pesos',
-                 font: {
-                   size: 12,
-                   weight: 'bold'
-                 }
-               },
-               beginAtZero: true,
+                beginAtZero: true,
                ticks: {
                  callback: function(value: any) {
                    return new Intl.NumberFormat('es-CO', {

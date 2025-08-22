@@ -189,7 +189,7 @@
             <div class="metric-item">
               <div class="metric-value">{{formatMillions2(ejecucionData.recursoComprometer)}}</div>
               <div class="metric-label">Saldo sin afectación</div>
-            </div>
+            </div>            
           </div>
         </mat-card-content>
       </mat-card>
@@ -341,6 +341,12 @@
                 <strong>Saldo sin afectación:</strong> 
                 <div style="text-align:right;">
                   {{formatMillions2(registro.saldo_sin_afectacion, {}) || 'N/A'}}
+                </div>            
+              </div>
+              <div class="detail-item">
+                <strong>Avance de ejecución:</strong> 
+                <div style="text-align:right;">
+                  {{(registro.compromisos / registro.apropiacion_vigente_disponible)  | percentFormat:2 }}
                 </div>            
               </div>
             </div>
