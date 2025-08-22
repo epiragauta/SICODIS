@@ -413,14 +413,14 @@
 
 .sicodis-item{
   cursor: pointer;
-  padding: 2px;
+  padding: 8px;
 }
 .sicodis-item:hover{
-  background-color: #44464a;
+  background-color: #2797ce;
   color: #fff;
   cursor: pointer;
   border-radius: 18px;
-  padding: 2px;
+  padding: 8px;
 }
 
 
@@ -494,6 +494,117 @@
   }
 }
 
+// Estilos mejorados para las tarjetas SGP y SGR
+:host ::ng-deep .sgp-card,
+:host ::ng-deep .sgr-card {
+  height: 100%;
+  width: 100%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .p-card-body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+  }
+
+  .p-card-footer {
+    padding: 1rem 1.5rem;
+    margin-top: auto;
+    border-top: 1px solid #f0f0f0;
+  }
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  
+  .img-icon {
+    height: 4rem;
+    margin-right: 1rem;
+  }
+
+  .sicodis-large-title {
+    color: #004583;
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+    padding-left: 0;
+  }
+}
+
+.card-description {
+  margin-bottom: 1.5rem;
+  
+  p {
+    color: rgba(0, 0, 0, 0.8);
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+    min-height: 60px;
+  }
+}
+
+.card-menu {
+  flex-grow: 1;
+  
+  .sicodis-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 8px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    
+    p {
+      margin: 0;
+      font-size: 14px;
+      color: #333;
+      flex: 1;
+    }
+    
+    .pi-angle-right {
+      color: #666;
+      font-size: 12px;
+      transition: transform 0.2s ease;
+    }
+    
+    &:hover {
+      background-color: #2797ce;
+      color: #fff;
+      
+      p {
+        color: #fff;
+      }
+      
+      .pi-angle-right {
+        color: #fff;
+        transform: translateX(3px);
+      }
+    }
+  }
+}
+
+.card-footer {
+  text-align: center;
+  
+  .unified-button {
+    width: 100%;
+    font-size: 14px;
+    font-weight: 600;
+  }
+}
+
 .text-center {
   text-align: center;
 }
@@ -512,13 +623,13 @@
 }
 
 .filter-panel {
-  margin: 1rem 0;
-
+    
   .filter-controls {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
     align-items: flex-end;
+    padding: 1rem;
 
     .filter-item {
       flex: 1;
@@ -553,11 +664,13 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    padding: 0 10px 0 10px;
 
     .table-row-left {
       display: flex;
       padding: 0.3em 0;
       border-bottom: 1px solid #eee;
+      
 
       &:nth-child(even) {
         background-color: #f9f9f9;
@@ -648,7 +761,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-
+    padding: 0 10px 0 10px;
     .table-row-left {
       display: flex;
       padding: 0.3em 0;

@@ -277,7 +277,7 @@ export class ReportsSgpComponent implements OnInit {
             legend: {
               display: false
             },
-                         tooltip: {
+            tooltip: {
                callbacks: {
                  label: function(context: any) {
                    const index = context.dataIndex;
@@ -292,7 +292,10 @@ export class ReportsSgpComponent implements OnInit {
                    ];
                  }
                }
-             }
+             },
+            datalabels: {
+              display: false
+            }
           }
         }
       });
