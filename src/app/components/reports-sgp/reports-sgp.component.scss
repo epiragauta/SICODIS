@@ -489,4 +489,32 @@
       font-size: 0.8rem;
     }
   }
+
+  // Estilos para mejorar el posicionamiento de los diálogos
+  .p-dialog-mask {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 1001 !important;
+  }
+
+  .p-dialog {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    margin: 0 !important;
+    transform: none !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+  }
+
+  .p-dialog-content {
+    max-height: calc(90vh - 120px) !important;
+    overflow-y: auto !important;
+  }
 }

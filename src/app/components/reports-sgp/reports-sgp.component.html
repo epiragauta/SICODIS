@@ -175,7 +175,7 @@
           <th class="table-header">Fecha Distribución</th>
           <th class="table-header">Nombre</th>
           <th class="table-header">Año</th>
-          <th class="table-header">Monto Total</th>
+          <th class="table-header" style="text-align: right;">Monto Total</th>
           <th class="table-header">Descripción</th>          
           <th class="table-header">Anexos</th>
         </tr>
@@ -185,7 +185,7 @@
           <td>{{ data.fecha_distribucion | date}}</td>
           <td [innerHTML]="data.nombre | sgpBold"></td>
           <td>{{ data.anio }}</td>
-          <td>{{ data.total_distribucion | numberFormat }}</td>
+          <td style="text-align: right;">{{ data.total_distribucion | numberFormat }}</td>
           <td [pTooltip]="data.descripcion" tooltipPosition="top" showDelay="500" hideDelay="200">
             {{ truncateText(data.descripcion, 177) }}
           </td>          
@@ -206,7 +206,10 @@
             [(visible)]="visibleDlgDetail" 
             [modal]="true" 
             [style]="{ width: '50vw' }" 
-            [dismissableMask]="true">
+            [dismissableMask]="true"
+            [appendTo]="'body'"
+            [position]="'center'"
+            [blockScroll]="true">
     <div class="dialog-content">
       <p><strong>Nombre:</strong> {{ distributionName }}</p>
       <p><strong>Fecha:</strong> {{ distributionDate }}</p>
@@ -223,7 +226,10 @@
             [(visible)]="visibleDlgFiles" 
             [modal]="true" 
             [style]="{ width: '60vw' }" 
-            [dismissableMask]="true">
+            [dismissableMask]="true"
+            [appendTo]="'body'"
+            [position]="'center'"
+            [blockScroll]="true">
     <div class="dialog-content">
       <p><strong>Distribución:</strong> {{ distributionName }}</p>
       <p><strong>Fecha:</strong> {{ distributionDate }}</p>

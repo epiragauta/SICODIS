@@ -24,7 +24,7 @@ export class NumberFormatPipe implements PipeTransform {
       minimumFractionDigits: decimals,
       maximumFractionDigits: decimals,
       useGrouping: true
-    }).replace(/,/g, '.').replace(/\.([0-9]+)$/, ',$1');
+    }).replace(/,/g, '.');
 
     return formatted;
   }

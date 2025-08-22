@@ -204,22 +204,25 @@ export class SgpComparativaComponent {
             legend: {
               display: false
             },
-                          tooltip: {
-                callbacks: {
-                  label: function(context: any) {
-                    const index = context.dataIndex;
-                    const value = new Intl.NumberFormat('es-CO', {
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 1
-                    }).format(context.parsed.y);
-                    const percentage = parseFloat(percentages[index]).toFixed(1);
-                    return [
-                      `Valor: ${value} pesos`,
-                      `Porcentaje: ${percentage}% del total`
-                    ];
-                  }
+            datalabels: {
+              display: false
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context: any) {
+                  const index = context.dataIndex;
+                  const value = new Intl.NumberFormat('es-CO', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 1
+                  }).format(context.parsed.y);
+                  const percentage = parseFloat(percentages[index]).toFixed(1);
+                  return [
+                    `Valor: ${value} pesos`,
+                    `Porcentaje: ${percentage}% del total`
+                  ];
                 }
               }
+            }
           }
         }
       });
@@ -316,6 +319,9 @@ export class SgpComparativaComponent {
           },
           plugins: {
             legend: {
+              display: false
+            },
+            datalabels: {
               display: false
             },
             tooltip: {
