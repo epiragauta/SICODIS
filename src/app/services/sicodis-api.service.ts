@@ -100,6 +100,14 @@ export interface ResumenParticipaciones {
   total: number;
 }
 
+export interface ResumenParticipacionesUltimaOnce {
+  IdConcepto: string;
+  Concepto: string;  
+  UltimaDoceava: number;
+  OnceDoceavas: number;
+  Total: number;
+}
+
 export interface ResumenDistribuciones {
   anio: number;
   id_distribucion: number;
@@ -144,13 +152,9 @@ export interface VigenciaPresupuesto {
 }
 
 export interface ResumenUltimaOnce {
-  anio: number;
-  total_distribuido: number;
-  total_presupuesto: number;
-  porcentaje_ejecucion: number;
-  porcentaje_avance: number;
-  porcentaje_avance_str: string;
-  fecha_ultima_actualizacion: Date;
+  UltimaDoceava: number;
+  OnceDoceavas: number;
+  Total: number;  
 }
 
 export interface FichaComparativaEntidad {
@@ -453,9 +457,9 @@ export class SicodisApiService {
    * @param codigoMunicipio - Código del municipio
    * @returns Observable con el resumen de participaciones de la última once
    */
-  getSgpResumenParticipacionesUltimaOnce(idVigencia: number, codigoDepto: string, codigoMunicipio: string): Observable<ResumenParticipaciones> {
+  getSgpResumenParticipacionesUltimaOnce(idVigencia: number, codigoDepto: string, codigoMunicipio: string): Observable<ResumenParticipacionesUltimaOnce> {
     const url = `${this.baseUrl}/sgp/resumen_participaciones_ultima_once/${idVigencia}/${codigoDepto}/${codigoMunicipio}`;
-    return this.http.get<ResumenParticipaciones>(url);
+    return this.http.get<ResumenParticipacionesUltimaOnce>(url);
   }
 
   /**

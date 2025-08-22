@@ -54,6 +54,8 @@
               inputId="municipioSelect"
               [(ngModel)]="selectedMunicipio"
               (onChange)="onMunicipioChange($event)"
+              [disabled]="isLoadingMunicipios || !selectedDepartamento"
+              [loading]="isLoadingMunicipios"
               optionLabel="label"
               optionValue="value">
             </p-select>
@@ -101,7 +103,7 @@
   <!-- Tabla de asignación SGP -->
   <div class="table-section">
     <div class="card">
-      <h3 class="table-title">Asignación SGP: Última Doceava {{ getUltimaDoceavaYear() }} + Once Doceavas {{ getOnceDoceavasYear() }}</h3>
+      <h3 class="table-title">Asignación SGP: Última Doceava + Once Doceavas</h3>
       
       <!-- Loading indicator -->
       <div *ngIf="isLoadingTable" style="padding: 1rem; text-align: center;">
@@ -124,9 +126,9 @@
         <ng-template pTemplate="header">
           <tr>
             <th class="table-header concept-header">Concepto</th>
-            <th class="table-header">Última Doceava</th>
-            <th class="table-header">Once Doceavas</th>
-            <th class="table-header">Total</th>
+            <th class="table-header" style="text-align: right;">Última Doceava</th>
+            <th class="table-header" style="text-align: right;">Once Doceavas</th>
+            <th class="table-header" style="text-align: right;">Total</th>
           </tr>
         </ng-template>
         
@@ -136,18 +138,18 @@
               <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
               <strong>{{ rowData.concepto }}</strong>
             </td>
-            <td class="value-cell">{{ formatNumber(rowData.ultimaDoceava) }}</td>
-            <td class="value-cell">{{ formatNumber(rowData.onceDoceavas) }}</td>
-            <td class="value-cell">{{ formatNumber(rowData.total) }}</td>
+            <td class="value-cell" style="text-align: right;">{{ formatNumber(rowData.ultimaDoceava) }}</td>
+            <td class="value-cell" style="text-align: right;">{{ formatNumber(rowData.onceDoceavas) }}</td>
+            <td class="value-cell" style="text-align: right;">{{ formatNumber(rowData.total) }}</td>
           </tr>
         </ng-template>
         
         <ng-template pTemplate="footer">
           <tr class="total-row">
             <td class="concept-cell"><strong>Total General</strong></td>
-            <td class="value-cell"><strong>{{ formatNumber(getColumnTotal('ultimaDoceava')) }}</strong></td>
-            <td class="value-cell"><strong>{{ formatNumber(getColumnTotal('onceDoceavas')) }}</strong></td>
-            <td class="value-cell"><strong>{{ formatNumber(getColumnTotal('total')) }}</strong></td>
+            <td class="value-cell" style="text-align: right;"><strong>{{ formatNumber(getColumnTotal('ultimaDoceava')) }}</strong></td>
+            <td class="value-cell" style="text-align: right;"><strong>{{ formatNumber(getColumnTotal('onceDoceavas')) }}</strong></td>
+            <td class="value-cell" style="text-align: right;"><strong>{{ formatNumber(getColumnTotal('total')) }}</strong></td>
           </tr>
         </ng-template>
       </p-treetable>
@@ -180,7 +182,7 @@
              </div>
              <div class="download-row">
                <div class="download-cell">Once Doceavas</div>
-               <div class="download-cell">{{ getOnceDoceavasYear() }}</div>
+               <div class="download-cell">{{ selectedVigencia.label }}</div>
                <div class="download-cell">
                  <button pButton type="button" 
                          icon="pi pi-download" 
@@ -192,7 +194,7 @@
              </div>
              <div class="download-row">
                <div class="download-cell">Última Doceava</div>
-               <div class="download-cell">{{ getUltimaDoceavaYear() }}</div>
+               <div class="download-cell">{{ yearUltimaDoceava }}</div>
                <div class="download-cell">
                  <button pButton type="button" 
                          icon="pi pi-download" 

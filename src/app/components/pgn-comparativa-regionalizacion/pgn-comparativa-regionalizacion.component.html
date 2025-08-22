@@ -1,0 +1,284 @@
+<div class="pgn-comparativa-container">
+  
+  <!-- Banner -->
+  <div class="gradient-banner">    
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h2>Ficha comparativa regionalización</h2>
+      <p>Este módulo presenta el reporte histórico del Presupuesto General de la Nación, desde el año 2002 hasta la vigencia actual. 
+         Puede seleccionar dos o más años por consulta.</p>
+    </div>
+  </div>
+
+  <!-- Filters Panel -->
+  <div class="filters-panel">
+    <div class="filters-row">
+      
+      <!-- Departamento Filter -->
+      <div class="p-field departamento-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select 
+            id="departamento" 
+            [options]="departamentos" 
+            inputId="departamentoSelect"
+            [(ngModel)]="selectedDepartamento" 
+            (onChange)="onDepartamentoChange($event)"
+            optionLabel="label" 
+            placeholder="Departamento"
+            [showClear]="true">
+          </p-select>
+          <label for="departamentoSelect">Departamento</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Vigencias Filter (Multiple) -->
+      <div class="p-field vigencias-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-multiselect 
+            id="vigencias" 
+            [options]="vigencias" 
+            inputId="vigenciasSelect"
+            [(ngModel)]="selectedVigencias" 
+            (onChange)="onVigenciasChange($event)"
+            optionLabel="label" 
+            placeholder="Vigencias"
+            [showClear]="true"
+            [filter]="true"
+            filterPlaceHolder="Buscar año...">
+          </p-multiselect>
+          <label for="vigenciasSelect">Vigencias</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="buttons-group">
+        <p-button 
+          label="Actualizar" 
+          icon="pi pi-refresh" 
+          (onClick)="onActualizar()"
+          [loading]="isLoading"
+          severity="primary">
+        </p-button>
+        
+        <p-button 
+          label="Limpiar" 
+          icon="pi pi-filter-slash" 
+          (onClick)="clearFilters()"
+          severity="secondary">
+        </p-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="charts-section">
+    <div class="charts-row">
+      
+      <!-- Gráfico 1 -->
+      <div class="chart-card">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Gráfico 1</mat-card-title>
+            <mat-card-subtitle>Avance Porcentual - 76.9%</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="chart-container">
+              <p-chart 
+                type="doughnut" 
+                [data]="chartData1" 
+                [options]="{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  circumference: 180,
+                  rotation: 270,
+                  plugins: {
+                    legend: {
+                      display: false
+                    }
+                  }
+                }">
+              </p-chart>
+              <div class="chart-percentage">76.9%</div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <!-- Gráfico 2 -->
+      <div class="chart-card">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Gráfico 2</mat-card-title>
+            <mat-card-subtitle>Avance Porcentual - 68.4%</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="chart-container">
+              <p-chart 
+                type="doughnut" 
+                [data]="chartData2" 
+                [options]="{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  circumference: 180,
+                  rotation: 270,
+                  plugins: {
+                    legend: {
+                      display: false
+                    }
+                  }
+                }">
+              </p-chart>
+              <div class="chart-percentage">68.4%</div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bar Chart and Table Section - Two Columns Layout -->
+  <div class="chart-table-section">
+    <div class="chart-table-row">
+      
+      <!-- Bar Chart Column -->
+      <div class="bar-chart-column">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>{{ getBarChartTitle() }}</mat-card-title>
+            <mat-card-subtitle>Avance por Departamentos</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="bar-chart-container">
+              <p-chart 
+                type="bar" 
+                [data]="barChartData" 
+                [options]="barChartOptions">
+              </p-chart>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <!-- Table Column -->
+      <div class="table-column">
+        <mat-card>
+          <mat-card-header>
+            <div class="table-header">
+              <div>
+                <mat-card-title>Tabla Comparativa por Vigencias</mat-card-title>
+                <mat-card-subtitle>Comparación de presupuesto y variación porcentual</mat-card-subtitle>
+              </div>
+              <p-button 
+                label="Exportar Excel" 
+                icon="pi pi-file-excel" 
+                (onClick)="exportToExcel()"
+                class="primary-button">
+              </p-button>
+            </div>
+          </mat-card-header>
+          <mat-card-content>
+            <!-- Scroll horizontal indicator -->
+            <div *ngIf="getTotalColumns() > 4 && comparativaData.length > 0" 
+                 style="padding: 0.5rem; background: #e3f2fd; border-radius: 4px; margin-bottom: 0.5rem; text-align: center;">
+              <i class="pi pi-arrow-right-arrow-left" style="color: #1976d2; margin-right: 0.5rem;"></i>
+              <span style="color: #1976d2; font-size: 0.85rem;">Desliza horizontalmente para ver todas las columnas ({{ getTotalColumns() }} total)</span>
+            </div>
+
+            <div class="table-container">
+              <p-table 
+                [value]="comparativaData" 
+                [scrollable]="true" 
+                [scrollHeight]="'780px'"
+                [tableStyle]="{'min-width': getTotalColumns() > 4 ? '1200px' : 'auto'}"
+                [styleClass]="getTableStyleClass()"
+                size="small">                
+                <!-- Departamento Column -->
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th pFrozenColumn class="concept-header" style="min-width: 180px;">
+                      <div class="flex align-items-center">
+                        <mat-icon>location_on</mat-icon>
+                        <span class="ml-2">Departamento</span>
+                      </div>
+                    </th>
+                    
+                    <!-- Dynamic Year Columns -->
+                    <ng-container *ngFor="let year of getSelectedYearsColumns(); let i = index">
+                      <th class="vigencia-header" style="min-width: 140px; text-align: right;">
+                        <div class="flex align-items-center justify-content-end">
+                          <mat-icon>calendar_today</mat-icon>
+                          <span class="ml-2">{{ year }}</span>
+                        </div>
+                      </th>
+                      
+                      <!-- Variation Column (after every pair of years) -->
+                      <th *ngIf="i % 2 === 1 && i < getSelectedYearsColumns().length" 
+                          class="variation-header"
+                          style="min-width: 140px; text-align: right;">
+                        <div class="flex align-items-center justify-content-end">
+                          <mat-icon>trending_up</mat-icon>
+                          <span class="ml-2">Variación</span>
+                        </div>
+                      </th>
+                    </ng-container>
+                  </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+                  <tr [class.total-row]="rowData.isTotal">
+                    <td pFrozenColumn class="concept-cell" [style.font-weight]="rowData.isTotal ? 'bold' : '500'">
+                      {{ rowData.departamento }}
+                    </td>
+                    
+                    <!-- Dynamic Year Data -->
+                    <ng-container *ngFor="let year of getSelectedYearsColumns(); let i = index">
+                      <td class="vigencia-cell" style="text-align: right;">
+                        <span class="currency-value" [style.font-weight]="rowData.isTotal ? 'bold' : 'normal'">
+                          {{ formatCurrency(rowData[year]) }}
+                        </span>
+                      </td>
+                      
+                      <!-- Variation Data (after every pair of years) -->
+                      <td *ngIf="i % 2 === 1 && i < getSelectedYearsColumns().length" 
+                          class="variation-cell"
+                          style="text-align: right;">
+                        <span *ngIf="rowData['variacion_' + getSelectedYearsColumns()[i-1] + '_' + getSelectedYearsColumns()[i]] !== undefined"
+                              [class]="getVariationClass(rowData['variacion_' + getSelectedYearsColumns()[i-1] + '_' + getSelectedYearsColumns()[i]])" 
+                              [style.font-weight]="rowData.isTotal ? 'bold' : 'normal'">
+                          {{ formatPercentage(rowData['variacion_' + getSelectedYearsColumns()[i-1] + '_' + getSelectedYearsColumns()[i]]) }}
+                        </span>
+                        <span *ngIf="rowData['variacion_' + getSelectedYearsColumns()[i-1] + '_' + getSelectedYearsColumns()[i]] === undefined"
+                              [style.font-weight]="rowData.isTotal ? 'bold' : 'normal'">
+                          N/A
+                        </span>
+                      </td>
+                    </ng-container>
+                  </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                  <tr>
+                    <td [attr.colspan]="3 + getSelectedYearsColumns().length">
+                      <div class="empty-message">
+                        <mat-icon>info</mat-icon>
+                        <span>No hay datos disponibles para mostrar</span>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div *ngIf="isLoading" class="loading-overlay">
+    <p-progressspinner strokeWidth="3" animationDuration="1s"></p-progressspinner>
+    <p>Cargando datos...</p>
+  </div>
+
+</div>

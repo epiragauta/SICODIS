@@ -10,6 +10,8 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { SelectChangeEvent } from 'primeng/select';
 import { TreeTableModule } from 'primeng/treetable';
 import { TreeNode } from 'primeng/api';
+import { SicodisApiService } from '../../services/sicodis-api.service';
+import { departamentos } from '../../data/departamentos';
 
 @Component({
   selector: 'app-sgp-detalle-presupuestal',
@@ -34,68 +36,9 @@ export class SgpDetallePresupuestalComponent implements OnInit {
   selectedMunicipio: any = null;
 
   // Opciones para los filtros
-  vigencias: any[] = [
-    { label: '2025', value: '2025' },
-    { label: '2024', value: '2024' },
-    { label: '2023', value: '2023' },
-    { label: '2022', value: '2022' },
-    { label: '2021', value: '2021' },
-    { label: '2020', value: '2020' },
-    { label: '2019', value: '2019' },
-    { label: '2018', value: '2018' },
-    { label: '2017', value: '2017' },
-    { label: '2016', value: '2016' },
-    { label: '2015', value: '2015' },
-    { label: '2014', value: '2014' },
-    { label: '2013', value: '2013' },
-    { label: '2012', value: '2012' },
-    { label: '2011', value: '2011' },
-    { label: '2010', value: '2010' },
-    { label: '2009', value: '2009' },
-    { label: '2008', value: '2008' },
-    { label: '2007', value: '2007' },
-    { label: '2006', value: '2006' },
-    { label: '2005', value: '2005' },
-    { label: '2004', value: '2004' },
-    { label: '2003', value: '2003' },
-    { label: '2002', value: '2002' }
-  ];
+  vigencias: any[] = [];
 
-  departamentos: any[] = [
-    { label: 'Antioquia', value: '05' },
-    { label: 'Atlántico', value: '08' },
-    { label: 'Bogotá D.C.', value: '11' },
-    { label: 'Bolívar', value: '13' },
-    { label: 'Boyacá', value: '15' },
-    { label: 'Caldas', value: '17' },
-    { label: 'Caquetá', value: '18' },
-    { label: 'Cauca', value: '19' },
-    { label: 'Cesar', value: '20' },
-    { label: 'Córdoba', value: '23' },
-    { label: 'Cundinamarca', value: '25' },
-    { label: 'Chocó', value: '27' },
-    { label: 'Huila', value: '41' },
-    { label: 'La Guajira', value: '44' },
-    { label: 'Magdalena', value: '47' },
-    { label: 'Meta', value: '50' },
-    { label: 'Nariño', value: '52' },
-    { label: 'Norte de Santander', value: '54' },
-    { label: 'Quindío', value: '63' },
-    { label: 'Risaralda', value: '66' },
-    { label: 'Santander', value: '68' },
-    { label: 'Sucre', value: '70' },
-    { label: 'Tolima', value: '73' },
-    { label: 'Valle del Cauca', value: '76' },
-    { label: 'Arauca', value: '81' },
-    { label: 'Casanare', value: '85' },
-    { label: 'Putumayo', value: '86' },
-    { label: 'San Andrés y Providencia', value: '88' },
-    { label: 'Amazonas', value: '91' },
-    { label: 'Guainía', value: '94' },
-    { label: 'Guaviare', value: '95' },
-    { label: 'Vaupés', value: '97' },
-    { label: 'Vichada', value: '99' }
-  ];
+  departamentos: any[] = [];
 
   municipios: any[] = [];
 
@@ -104,42 +47,113 @@ export class SgpDetallePresupuestalComponent implements OnInit {
   ultimaDoceava: number = 473931829;
   onceDoceava: number = 521325011;
 
+  yearUltimaDoceava: string = '2024';
+
   // Datos de la tabla
   treeTableData: TreeNode[] = [];
   isLoadingTable: boolean = false;
+  
+  // Estado de carga para municipios
+  isLoadingMunicipios: boolean = false;
 
-  constructor() { }
+  constructor(private sicodisApiService: SicodisApiService) { }
 
   ngOnInit(): void {
-    // Inicializar con valores por defecto
-    this.selectedVigencia = this.vigencias[1]; // 2025
-    this.loadTableData();
+    this.initializeDepartamentos();
+    this.loadVigenciasFromAPI();
+  }
+
+  private initializeDepartamentos(): void {
+    this.departamentos = departamentos.map(dept => ({
+      label: dept.nombre,
+      value: dept.codigo
+    }));
   }
 
   onVigenciaChange(event: SelectChangeEvent): void {
     console.log('Vigencia seleccionada:', event.value);
     this.loadTableData();
+    this.yearUltimaDoceava = (parseInt(event.value.label  ) - 1).toString();
+    // Si ya hay un municipio seleccionado, actualizar las métricas
+    if (this.selectedMunicipio && this.selectedDepartamento) {
+      this.loadMunicipioData();
+    }
   }
 
   onDepartamentoChange(event: SelectChangeEvent): void {
     console.log('Departamento seleccionado:', event.value);
     this.selectedMunicipio = null;
+    this.municipios = [];
     
-    // Simular carga de municipios según el departamento seleccionado
+    // Reset metrics to default values when department changes
+    this.resetMetricsToDefault();
+    
     if (event.value) {
-      this.municipios = [
-        { label: 'Municipio 1', value: '001' },
-        { label: 'Municipio 2', value: '002' },
-        { label: 'Municipio 3', value: '003' }
-      ];
-    } else {
-      this.municipios = [];
+      this.isLoadingMunicipios = true;
+      
+      this.sicodisApiService.getMunicipiosPorDepartamento(event.value).subscribe({
+        next: (municipios) => {
+          console.log('Municipios cargados:', municipios);
+          this.municipios = municipios.map(municipio => ({
+            label: municipio.nombre_municipio || 'Municipio sin nombre',
+            value: municipio.codigo_municipio
+          }));
+          this.isLoadingMunicipios = false;
+        },
+        error: (error) => {
+          console.error('Error cargando municipios:', error);
+          this.municipios = [];
+          this.isLoadingMunicipios = false;
+        }
+      });
     }
+  }
+
+  private resetMetricsToDefault(): void {
+    this.totalAsignado = 5687181948;
+    this.ultimaDoceava = 473931829;
+    this.onceDoceava = 521325011;
   }
 
   onMunicipioChange(event: SelectChangeEvent): void {
     console.log('Municipio seleccionado:', event.value);
-    // Aquí se puede agregar lógica para cargar datos específicos del municipio
+    this.loadMunicipioData();
+    this.loadTableData();
+  }
+
+  private loadMunicipioData(): void {
+    if (!this.selectedMunicipio || !this.selectedDepartamento || !this.selectedVigencia) {
+      return;
+    }
+
+    const idVigencia = parseInt(this.selectedVigencia.value);
+    
+    this.sicodisApiService.getSgpResumenGeneralUltimaOnce(
+      idVigencia, 
+      this.selectedDepartamento, 
+      this.selectedMunicipio
+    ).subscribe({
+      next: (resumen: any) => {
+        console.log('Resumen cargado para municipio:', resumen);
+        this.updateMetricsFromApi(resumen[0]);
+      },
+      error: (error) => {
+        console.error('Error cargando resumen del municipio:', error);
+        // Mantener valores por defecto en caso de error
+      }
+    });
+  }
+
+  private updateMetricsFromApi(resumen: any): void {
+    // Calcular métricas basadas en los datos del API
+    this.totalAsignado = resumen.Total || 0;
+    
+    
+    // Última doceava (del año anterior)
+    this.ultimaDoceava = resumen.UltimaDoceava || 0;
+    
+    // Once doceavas (del año actual)
+    this.onceDoceava = resumen.OnceDoceavas || 0;
   }
 
   applyFilters(): void {
@@ -151,14 +165,48 @@ export class SgpDetallePresupuestalComponent implements OnInit {
     // Aquí se puede agregar lógica para aplicar los filtros y cargar datos
   }
 
+  private loadVigenciasFromAPI(): void {
+    this.sicodisApiService.getSgpVigenciasPresupuestoUltimaOnce().subscribe({
+      next: (vigencias: any[]) => {
+        console.log('Vigencias cargadas desde API:', vigencias);
+        this.vigencias = vigencias.map(vigencia => ({
+          label: vigencia.vigencia,
+          value: vigencia.id_vigencia.toString()
+        }));
+        
+        // Set default value (first year or 2025)
+        if (this.vigencias.length > 0) {
+          this.selectedVigencia = this.vigencias[0];
+        }
+        
+        this.loadTableData();
+      },
+      error: (error) => {
+        console.error('Error cargando vigencias desde API:', error);
+        // Fallback to default years
+        this.vigencias = [
+          { label: '2025', value: '2025' },
+          { label: '2024', value: '2024' },
+          { label: '2023', value: '2023' },
+          { label: '2022', value: '2022' },
+          { label: '2021', value: '2021' },
+          { label: '2020', value: '2020' }
+        ];
+        this.selectedVigencia = this.vigencias[0];
+        this.loadTableData();
+      }
+    });
+  }
+
   clearFilters(): void {
     console.log('Limpiando filtros...');
-    this.selectedVigencia = this.vigencias[1]; // Mantener 2025 como default
+    this.selectedVigencia = this.vigencias.length > 0 ? this.vigencias[0] : null;
     this.selectedDepartamento = null;
     this.selectedMunicipio = null;
     this.municipios = [];
     
-    // Aquí se puede agregar lógica para limpiar datos y cargar valores por defecto
+    // Reset metrics to default values
+    this.resetMetricsToDefault();
   }
 
   // Función para formatear números con separadores de miles
@@ -180,7 +228,85 @@ export class SgpDetallePresupuestalComponent implements OnInit {
   loadTableData(): void {
     this.isLoadingTable = true;
     
-    // Simular carga de datos
+    // Si hay municipio seleccionado, usar API
+    if (this.selectedMunicipio && this.selectedDepartamento && this.selectedVigencia) {
+      this.loadTableDataFromApi();
+    } else {
+      // Datos por defecto si no hay municipio seleccionado
+      this.loadDefaultTableData();
+    }
+  }
+
+  private loadTableDataFromApi(): void {
+    const idVigencia = parseInt(this.selectedVigencia.value);
+    
+    this.sicodisApiService.getSgpResumenParticipacionesUltimaOnce(
+      idVigencia,
+      this.selectedDepartamento,
+      this.selectedMunicipio
+    ).subscribe({
+      next: (data: any) => {
+        console.log('Datos de participaciones cargados:', data);
+        this.buildTreeTableFromApi(data);
+        this.isLoadingTable = false;
+      },
+      error: (error) => {
+        console.error('Error cargando datos de participaciones:', error);
+        this.loadDefaultTableData();
+      }
+    });
+  }
+
+  private buildTreeTableFromApi(apiData: any[]): void {
+    if (!apiData || apiData.length === 0) {
+      this.treeTableData = [];
+      return;
+    }
+
+    // Separar elementos principales (4 dígitos) y hijos (más de 4 dígitos)
+    // Excluir IdConcepto = 99 para evitar duplicación con Total General del footer
+    const mainConcepts = apiData.filter(item => 
+      item.IdConcepto && item.IdConcepto.length === 4 && item.IdConcepto !== '99'
+    );
+    const childConcepts = apiData.filter(item => 
+      item.IdConcepto && item.IdConcepto.length > 4
+    );
+
+    // Construir jerarquía
+    const treeData: TreeNode[] = [];
+
+    mainConcepts.forEach(mainConcept => {
+      // Buscar hijos que empiecen con el código del concepto principal
+      const children = childConcepts
+        .filter(child => child.IdConcepto.startsWith(mainConcept.IdConcepto))
+        .map(child => ({
+          data: {
+            concepto: child.Concepto,
+            ultimaDoceava: child.UltimaDoceava || 0,
+            onceDoceavas: child.OnceDoceavas || 0,
+            total: child.Total || 0
+          },
+          leaf: true
+        }));
+
+      const mainNode: TreeNode = {
+        data: {
+          concepto: mainConcept.Concepto,
+          ultimaDoceava: mainConcept.UltimaDoceava || 0,
+          onceDoceavas: mainConcept.OnceDoceavas || 0,
+          total: mainConcept.Total || 0
+        },
+        children: children.length > 0 ? children : undefined,
+        expanded: false
+      };
+
+      treeData.push(mainNode);
+    });
+
+    this.treeTableData = treeData;
+  }
+
+  private loadDefaultTableData(): void {
     setTimeout(() => {
       this.treeTableData = [
         {
@@ -258,22 +384,16 @@ export class SgpDetallePresupuestalComponent implements OnInit {
 
   // Función para obtener el total de una columna
   getColumnTotal(column: string): number {
+    // Calcular el total sumando solo los conceptos principales (no los hijos)
     let total = 0;
-    this.calculateTotal(this.treeTableData, column, total);
+    this.treeTableData.forEach(node => {
+      if (node.data && node.data[column] && !node.data.isTotal) {
+        total += node.data[column];
+      }
+    });
     return total;
   }
 
-  // Función recursiva para calcular totales
-  private calculateTotal(nodes: TreeNode[], column: string, total: number): void {
-    nodes.forEach(node => {
-      if (node.data && node.data[column]) {
-        total += node.data[column];
-      }
-      if (node.children) {
-        this.calculateTotal(node.children, column, total);
-      }
-    });
-  }
 
   // Métodos para descargas
   downloadData(): void {
