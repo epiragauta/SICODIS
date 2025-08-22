@@ -500,7 +500,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
           display: true,
           title: {
             display: true,
-            text: 'Millones de pesos',
+            text: 'Pesos',
             font: {
               size: 12,
               weight: 'bold'
@@ -1012,7 +1012,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
         y: {
           beginAtZero: true,
           position: 'left',
-          title: { display: true, text: 'Millones de pesos' },
+          title: { display: true, text: 'Pesos' },
           ticks: {
             callback: function(value: any) {
               return new Intl.NumberFormat('es-CO', {
@@ -1062,7 +1062,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
         y: {
           title: {
             display: true,
-            text: 'Millones de pesos'
+            text: 'Pesos'
           },
           ticks: {
             callback: function(value: any) {
@@ -1103,7 +1103,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
               if (context.dataset.yAxisID === 'y1') {
                 return label + ': ' + context.parsed.y + '%';
               } else {
-                return label + ': ' + new Intl.NumberFormat('es-CO').format(context.parsed.y) + ' Millones de pesos';
+                return label + ': ' + new Intl.NumberFormat('es-CO').format(context.parsed.y) + ' Pesos';
               }
             }
           }

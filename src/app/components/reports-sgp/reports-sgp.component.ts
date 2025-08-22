@@ -221,7 +221,7 @@ export class ReportsSgpComponent implements OnInit {
           labels: labels,
           datasets: [
             {
-              label: 'Valor (Millones de pesos)',
+              label: 'Valor (Pesos)',
               data: data,
               backgroundColor: greenColors,
               /*borderColor: greenColors.map(color => this.darkenColor(color, 20)),*/
@@ -256,7 +256,7 @@ export class ReportsSgpComponent implements OnInit {
             y: {
                              title: {
                  display: true,
-                 text: 'Millones',
+                 text: 'Pesos',
                  font: {
                    size: 12,
                    weight: 'bold'
