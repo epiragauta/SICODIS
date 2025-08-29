@@ -1,0 +1,396 @@
+<div class="pgn-variables-container">
+  
+  <!-- Banner -->
+  <div class="gradient-banner">    
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h2>Variables - Sistema General de Participaciones (SGP)</h2>
+      <p>Consulta el detalle de las variables certificadas del Sistema General de Participaciones</p>
+    </div>
+  </div>
+
+  <!-- Last Updated Label -->
+  <div class="last-updated-section">
+    <div class="last-updated-label">
+      <mat-icon>update</mat-icon>
+      <span>Última actualización: {{lastUpdated}}</span>
+    </div>
+  </div>
+
+  <!-- Filters Panel -->
+  <div class="filters-panel">
+    <div class="filters-row">
+      
+      <!-- Vigencia Filter -->
+      <div class="p-field vigencia-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select 
+            id="vigencia" 
+            [options]="vigencias" 
+            inputId="vigenciaSelect"
+            [(ngModel)]="selectedVigencia" 
+            (onChange)="onVigenciaChange($event)"
+            optionLabel="label" 
+            placeholder="Vigencia"
+            [showClear]="true">
+          </p-select>
+          <label for="vigenciaSelect">Vigencia</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Departamento Filter -->
+      <div class="p-field departamento-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select 
+            id="departamento" 
+            [options]="departamentos" 
+            inputId="departamentoSelect"
+            [(ngModel)]="selectedDepartamento" 
+            (onChange)="onDepartamentoChange($event)"
+            optionLabel="label" 
+            placeholder="Departamento"
+            [showClear]="true">
+          </p-select>
+          <label for="departamentoSelect">Departamento</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Municipio Filter -->
+      <div class="p-field municipio-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select 
+            id="municipio" 
+            [options]="municipios" 
+            inputId="municipioSelect"
+            [(ngModel)]="selectedMunicipio" 
+            (onChange)="onMunicipioChange($event)"
+            optionLabel="label" 
+            placeholder="Municipio"
+            [showClear]="true"
+            [disabled]="!selectedDepartamento">
+          </p-select>
+          <label for="municipioSelect">Municipio</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="buttons-group">
+        <p-button 
+          label="Aplicar" 
+          icon="pi pi-check" 
+          (onClick)="onAplicar()"
+          [loading]="isLoading"
+          severity="primary">
+        </p-button>
+        
+        <p-button 
+          label="Limpiar" 
+          icon="pi pi-filter-slash" 
+          (onClick)="clearFilters()"
+          severity="secondary">
+        </p-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cards Section -->
+  <div class="cards-section">
+    
+    <!-- Eficiencia Fiscal Card -->
+    <div class="efficiency-card">
+      <mat-card>
+        <mat-card-header>
+          <div class="card-header-content">
+            <mat-icon class="card-icon fiscal-icon">account_balance</mat-icon>
+            <mat-card-title>Eficiencia Fiscal</mat-card-title>
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          <!-- Horizontal Tables Container -->
+          <div class="horizontal-tables-container">
+            <!-- Left Table -->
+            <div class="table-section left-table">
+              <p-table [value]="eficienciaFiscalTable1" [scrollable]="true" size="small">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Vigencia</th>
+                    <th>Año Refrendado</th>
+                    <th>Ingresos Tributarios</th>
+                    <th>Población</th>
+                    <th>Per Cápita</th>
+                    <th>Crecimiento per cápita</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-row>
+                  <tr>
+                    <td>{{row.vigencia}}</td>
+                    <td>{{row.anoRefrendado}}</td>
+                    <td class="text-right">{{formatCurrency(row.ingresosTributarios)}}</td>
+                    <td class="text-right">{{formatCurrency(row.poblacion)}}</td>
+                    <td class="text-right">{{formatCurrency(row.perCapita)}}</td>
+                    <td class="text-right">{{formatPercentage(row.crecimientoPerCapita)}}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+
+            <!-- Right Table -->
+            <div class="table-section right-table">
+              <p-table [value]="eficienciaFiscalTable2" [scrollable]="true" size="small">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Vigencia</th>
+                    <th>Año Refrendado</th>
+                    <th>Ingresos Tributarios</th>
+                    <th>Población</th>
+                    <th>Per Cápita</th>
+                    <th>Crecimiento per cápita</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-row>
+                  <tr>
+                    <td>{{row.vigencia}}</td>
+                    <td>{{row.anoRefrendado}}</td>
+                    <td class="text-right">{{formatCurrency(row.ingresosTributarios)}}</td>
+                    <td class="text-right">{{formatCurrency(row.poblacion)}}</td>
+                    <td class="text-right">{{formatCurrency(row.perCapita)}}</td>
+                    <td class="text-right">{{formatPercentage(row.crecimientoPerCapita)}}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Eficiencia Administrativa Card -->
+    <div class="efficiency-card">
+      <mat-card>
+        <mat-card-header>
+          <div class="card-header-content">
+            <mat-icon class="card-icon admin-icon">business</mat-icon>
+            <mat-card-title>Eficiencia Administrativa</mat-card-title>
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          <!-- Tablas originales de Eficiencia Administrativa -->
+          <div class="horizontal-tables-container">
+            <!-- Left Table -->
+            <div class="table-section left-table">
+              <p-table [value]="eficienciaAdministrativaTable1" [scrollable]="true" size="small">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Año Certificado</th>
+                    <th>ICLD</th>
+                    <th>GF</th>
+                    <th>LG</th>
+                    <th>Razón=GF/ICLD</th>
+                    <th>Holgura=LG-Razón</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-row>
+                  <tr>
+                    <td>{{row.anoCertificado}}</td>
+                    <td class="text-right">{{formatPercentage(row.icld)}}</td>
+                    <td class="text-right">{{formatPercentage(row.gf)}}</td>
+                    <td class="text-right">{{formatPercentage(row.lg)}}</td>
+                    <td class="text-right">{{formatDecimal(row.razon)}}</td>
+                    <td class="text-right">{{formatPercentage(row.holgura)}}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+
+            <!-- Right Table -->
+            <div class="table-section right-table">
+              <p-table [value]="eficienciaAdministrativaTable2" [scrollable]="true" size="small">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Año Certificado</th>
+                    <th>ICLD</th>
+                    <th>GF</th>
+                    <th>LG</th>
+                    <th>Razón=GF/ICLD</th>
+                    <th>Holgura=LG-Razón</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-row>
+                  <tr>
+                    <td>{{row.anoCertificado}}</td>
+                    <td class="text-right">{{formatPercentage(row.icld)}}</td>
+                    <td class="text-right">{{formatPercentage(row.gf)}}</td>
+                    <td class="text-right">{{formatPercentage(row.lg)}}</td>
+                    <td class="text-right">{{formatDecimal(row.razon)}}</td>
+                    <td class="text-right">{{formatPercentage(row.holgura)}}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </div>
+
+          <!-- Subtarjetas adicionales -->
+          <!-- Subtarjeta 1: Once Doceavas -->
+          <div class="sub-card">
+            <div class="sub-card-header" (click)="toggleSubCard('onceDoceavas')">
+              <div class="sub-card-title">
+                <mat-icon class="toggle-icon">{{subCardStates.onceDoceavas ? 'remove' : 'add'}}</mat-icon>
+                <span>Once Doceavas (Bolsa 83%)</span>
+              </div>
+            </div>
+            <div class="sub-card-content" [class.collapsed]="!subCardStates.onceDoceavas">
+              <div class="horizontal-tables-container">
+                <!-- Left Table -->
+                <div class="table-section left-table">
+                  <h4 class="table-title">Bolsa del 83% - Todos los municipios</h4>
+                  <p-table [value]="onceDoceavasTable1" [scrollable]="true" size="small">
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th>Variable</th>
+                        <th>Valor</th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-row>
+                      <tr [class.total-row]="row.isTotal">
+                        <td [style.font-weight]="row.isTotal ? 'bold' : 'normal'">{{row.variable}}</td>
+                        <td class="text-right" [style.font-weight]="row.isTotal ? 'bold' : 'normal'">{{row.valor}}</td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </div>
+
+                <!-- Right Table -->
+                <div class="table-section right-table">
+                  <h4 class="table-title">Bolsa del 83% - Todos los municipios</h4>
+                  <p-table [value]="onceDoceavasTable2" [scrollable]="true" size="small">
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th>Variable</th>
+                        <th>Valor</th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-row>
+                      <tr [class.total-row]="row.isTotal">
+                        <td [style.font-weight]="row.isTotal ? 'bold' : 'normal'">{{row.variable}}</td>
+                        <td class="text-right" [style.font-weight]="row.isTotal ? 'bold' : 'normal'">{{row.valor}}</td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subtarjeta 2: Restricción del 50% -->
+          <div class="sub-card">
+            <div class="sub-card-header" (click)="toggleSubCard('restriccion50')">
+              <div class="sub-card-title">
+                <mat-icon class="toggle-icon">{{subCardStates.restriccion50 ? 'remove' : 'add'}}</mat-icon>
+                <span>Restricción del 50% - art 79 Ley 715 de 2001 y art 23 Ley 1176 de 2007</span>
+              </div>
+            </div>
+            <div class="sub-card-content" [class.collapsed]="!subCardStates.restriccion50">
+              <div class="horizontal-tables-container">
+                <!-- Left Table -->
+                <div class="table-section left-table">
+                  <h4 class="table-title">Vigencia Anterior ({{getPreviousYear()}})</h4>
+                  <p-table [value]="restriccion50Table1" [scrollable]="true" size="small">
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th>Variable</th>
+                        <th>Valor</th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-row>
+                      <tr>
+                        <td>{{row.variable}}</td>
+                        <td class="text-right">{{row.valor}}</td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </div>
+
+                <!-- Right Table -->
+                <div class="table-section right-table">
+                  <h4 class="table-title">Vigencia Seleccionada ({{getCurrentYear()}})</h4>
+                  <p-table [value]="restriccion50Table2" [scrollable]="true" size="small">
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th>Variable</th>
+                        <th>Valor</th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-row>
+                      <tr>
+                        <td>{{row.variable}}</td>
+                        <td class="text-right">{{row.valor}}</td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subtarjeta 3: Variables Censales -->
+          <div class="sub-card">
+            <div class="sub-card-header" (click)="toggleSubCard('variablesCensales')">
+              <div class="sub-card-title">
+                <mat-icon class="toggle-icon">{{subCardStates.variablesCensales ? 'remove' : 'add'}}</mat-icon>
+                <span>Variables Censales</span>
+              </div>
+            </div>
+            <div class="sub-card-content" [class.collapsed]="!subCardStates.variablesCensales">
+              <div class="horizontal-tables-container">
+                <!-- Left Table -->
+                <div class="table-section left-table">
+                  <h4 class="table-title">Vigencia Anterior ({{getPreviousYear()}})</h4>
+                  <p-table [value]="variablesCensalesTable1" [scrollable]="true" size="small">
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th>Variable</th>
+                        <th>Valor</th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-row>
+                      <tr>
+                        <td>{{row.variable}}</td>
+                        <td class="text-right">{{row.valor}}</td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </div>
+
+                <!-- Right Table -->
+                <div class="table-section right-table">
+                  <h4 class="table-title">Vigencia Seleccionada ({{getCurrentYear()}})</h4>
+                  <p-table [value]="variablesCensalesTable2" [scrollable]="true" size="small">
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th>Variable</th>
+                        <th>Valor</th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-row>
+                      <tr>
+                        <td>{{row.variable}}</td>
+                        <td class="text-right">{{row.valor}}</td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div *ngIf="isLoading" class="loading-overlay">
+    <p-progressSpinner strokeWidth="3" animationDuration="1s"></p-progressSpinner>
+    <p>Cargando datos...</p>
+  </div>
+
+</div>
