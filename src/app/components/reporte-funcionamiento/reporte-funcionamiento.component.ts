@@ -2262,9 +2262,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         intersect: false,
         axis: 'r'
       }
-    };
-
-    
+    };   
 
     // Inicializar gráficos con datos por defecto si hay registro actual
     if (this.registroActual) {

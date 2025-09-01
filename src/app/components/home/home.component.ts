@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ReportsTargetComponent } from '../reports-target/reports-target.component';
 import { CommonModule  } from '@angular/common';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { Card, CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
+import { TableModule } from 'primeng/table';
+import { ChartModule } from 'primeng/chart';
 import { MatIconModule } from '@angular/material/icon';
 // Material Modules
 import { MatCardModule } from '@angular/material/card';
@@ -18,6 +20,8 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { SafeGaugeComponent } from './safe-gauge.component';
+import { SicodisApiService, ResumenParticipaciones } from '../../services/sicodis-api.service';
+import Chart from 'chart.js/auto';
 
 @Component({
   selector: 'app-home',
@@ -35,12 +39,14 @@ import { SafeGaugeComponent } from './safe-gauge.component';
     CarouselModule,
     TagModule,
     NumberFormatPipe,
-    SafeGaugeComponent
+    SafeGaugeComponent,
+    TableModule,
+    ChartModule
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
 
   cards: MyCard[] = [
     {
@@ -234,37 +240,28 @@ export class HomeComponent {
 
   selectedDepartment: number | null = null;
 
-  sgpItems = [
-    { concept: 'Educación', amount: 1000000000, isTotal: false },
-    { concept: 'Salud', amount: 800000000, isTotal: false },
-    { concept: 'Agua Potable', amount: 500000000, isTotal: false },
-    { concept: 'Propósito General', amount: 700000000, isTotal: false },
-    { concept: 'Alimentación Escolar', amount: 300000000, isTotal: false },
-    { concept: 'Ribereños', amount: 200000000, isTotal: false },
-    { concept: 'Resguardos Indígenas', amount: 150000000, isTotal: false },
-    { concept: 'Fonpet Asignaciones Especiales', amount: 100000000, isTotal: false },
-    { concept: 'Primera Infancia', amount: 250000000, isTotal: false },
-    { concept: 'Total SGP', amount: 4000000000, isTotal: true }
-  ];
+  sgpItems: { concept: string; amount: number; isTotal: boolean; avanceDistribucion?: number }[] = [];
+
+  // Datos para el gráfico donut SGP
+  donutSgpData: any;
+  donutSgpOptions: any;
+  sgpPorcentajeEjecucion: string = '0,0';
+
+  // Datos para los gráficos donut SGR
+  donutSgrCorrientesData: any;
+  donutSgrCorrientesOptions: any;
+  sgrPorcentajeCorrientes: string = '0,0';
+  
+  donutSgrOtrosData: any;
+  donutSgrOtrosOptions: any;
+  sgrPorcentajeOtros: string = '0,0';
 
   sgrItems = [
-    { concept: 'Total Inversión', amount: 2000000000, isFirst: true, isTotal: false },
-    { concept: 'Asignaciones Directas', amount: 500000000, isFirst: false, isTotal: false },
-    { concept: 'Asignación para la Inversión Regional', amount: 400000000, isFirst: false, isTotal: false },
-    { concept: 'Asignación para la Inversión Local', amount: 300000000, isFirst: false, isTotal: false },
-    { concept: 'Asignación para Ciencia, Tecnología e Innovación', amount: 200000000, isFirst: false, isTotal: false },
-    { concept: 'Asignación para la Paz', amount: 150000000, isFirst: false, isTotal: false },
-    { concept: 'Asignación Ambiental', amount: 100000000, isFirst: false, isTotal: false },
-    { concept: 'Municipios Río Magdalena y Canal Dique', amount: 50000000, isFirst: false, isTotal: false },
-    { concept: 'Total Ahorro', amount: 3700000000, isFirst: false, isTotal: true }
+    { concept: 'Inversión', amount: 2000000000, progress: 67.65, isFirst: true, isTotal: false },
+    { concept: 'Ahorro', amount: 500000000, progress: 56.73, isFirst: false, isTotal: false },
+    { concept: 'Administración y SSEC', amount: 400000000, progress: 73.69,isFirst: false, isTotal: false },    
+    { concept: 'Total Ahorro', amount: 3700000000, progress: 83.2, isFirst: false, isTotal: true }
   ];
-
-  adminSgrItems = [
-    { concept: 'Funcionamiento', amount: 2000000000, isFirst: true, isTotal: false },
-    { concept: 'Fiscalización', amount: 500000000, isFirst: false, isTotal: false },
-    { concept: 'Sistema de Seguimiento Evaluación y Control (SSEC)', amount: 400000000, isFirst: false, isTotal: false },
-    { concept: 'Total Administración', amount: 300000000, isFirst: false, isTotal: true },
-  ]
 
   isBrowser: boolean = false;
   showGauges: boolean = false;
@@ -286,7 +283,8 @@ export class HomeComponent {
   }
 
   constructor(private route: Router,
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    private sicodisApiService: SicodisApiService
   ) {
     this.breakpointObserver.observe([
       Breakpoints.XSmall,
@@ -326,7 +324,8 @@ export class HomeComponent {
   }
 
   ngOnInit() {
-
+    this.initializeDonutChart();
+    this.initializeSgrDonutCharts();
     this.responsiveOptions = [
         {
             breakpoint: '1400px',
@@ -348,7 +347,293 @@ export class HomeComponent {
             numVisible: 1,
             numScroll: 1
         }
-    ]    
+    ];
+    
+    this.loadSgpData();
+    this.initializeSgrData();
+  }
+
+  private initializeDonutChart() {
+    // Register custom plugin for center text in donut charts
+    const centerTextPlugin = {
+      id: 'centerText',
+      beforeDraw: (chart: any) => {
+        if (chart.config.options.plugins?.centerText?.display) {
+          const ctx = chart.ctx;
+          const centerX = (chart.chartArea.left + chart.chartArea.right) / 2;
+          const centerY = (chart.chartArea.top + chart.chartArea.bottom) / 1.42;
+          
+          ctx.save();
+          ctx.font = 'bold 22px Arial';
+          ctx.fillStyle = '#aaa4a2ff';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          
+          const text = chart.config.options.plugins.centerText.text();
+          ctx.fillText(text, centerX, centerY);
+          ctx.restore();
+        }
+      }
+    };
+
+    // Register the plugin globally
+    if (typeof Chart !== 'undefined') {
+      Chart.register(centerTextPlugin);
+    }
+
+    const documentStyle = getComputedStyle(document.documentElement);
+    const textColor = documentStyle.getPropertyValue('--text-color') || '#333';
+    
+    this.donutSgpOptions = {
+      cutout: '60%',
+      rotation: -90,
+      circumference: 180,
+      maintainAspectRatio: false,
+      aspectRatio: 1.5,
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'right',
+          labels: {
+            color: textColor,
+            font: { size: 14 }
+          }
+        },
+        title: {
+          display: true,
+          text: 'Avance de Ejecución',
+          color: textColor,
+          font: { size: 18, weight: 'bold' }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(tooltipItem: any) {
+              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')}`;
+            }
+          },
+          xAlign: 'left',
+          yAlign: 'bottom'
+        },
+        centerText: {
+          display: true,
+          text: () => {
+            const value = this.sgpPorcentajeEjecucion;
+            if (!value || value === 'Infinity' || value === 'NaN' || isNaN(parseFloat(value.replace(',', '.')))) {
+              return '0,0%';
+            }
+            return value + '%';
+          }
+        }
+      }
+    };
+  }
+
+  private initializeSgrDonutCharts() {
+    const documentStyle = getComputedStyle(document.documentElement);
+    const textColor = documentStyle.getPropertyValue('--text-color') || '#333';
+    
+    // Opciones para gráfico corrientes (naranja)
+    this.donutSgrCorrientesOptions = {
+      cutout: '60%',
+      rotation: -90,
+      circumference: 180,
+      maintainAspectRatio: false,
+      aspectRatio: 1.5,
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'right',
+          labels: {
+            color: textColor,
+            font: { size: 14 }
+          }
+        },
+        title: {
+          display: true,
+          text: 'Avance de distribución corrientes',
+          color: textColor,
+          font: { size: 18, weight: 'bold' }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(tooltipItem: any) {
+              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')}`;
+            }
+          },
+          xAlign: 'left',
+          yAlign: 'bottom'
+        },
+        centerText: {
+          display: true,
+          text: () => {
+            const value = this.sgrPorcentajeCorrientes;
+            if (!value || value === 'Infinity' || value === 'NaN' || isNaN(parseFloat(value.replace(',', '.')))) {
+              return '0,0%';
+            }
+            return value + '%';
+          }
+        }
+      }
+    };
+
+    // Opciones para gráfico otros (verde agua)
+    this.donutSgrOtrosOptions = {
+      cutout: '60%',
+      rotation: -90,
+      circumference: 180,
+      maintainAspectRatio: false,
+      aspectRatio: 1.5,
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'right',
+          labels: {
+            color: textColor,
+            font: { size: 14 }
+          }
+        },
+        title: {
+          display: true,
+          text: 'Avance de distribución otros',
+          color: textColor,
+          font: { size: 18, weight: 'bold' }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(tooltipItem: any) {
+              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')}`;
+            }
+          },
+          xAlign: 'left',
+          yAlign: 'bottom'
+        },
+        centerText: {
+          display: true,
+          text: () => {
+            const value = this.sgrPorcentajeOtros;
+            if (!value || value === 'Infinity' || value === 'NaN' || isNaN(parseFloat(value.replace(',', '.')))) {
+              return '0,0%';
+            }
+            return value + '%';
+          }
+        }
+      }
+    };
+  }
+
+  private initializeSgrData() {
+    // Datos de ejemplo para corrientes (naranja)
+    const corrientesDistribuido = 1350000000;
+    const corrientesTotal = 2000000000;
+    const corrientesRestante = corrientesTotal - corrientesDistribuido;
+    const corrientesPorcentaje = (corrientesDistribuido / corrientesTotal) * 100;
+    
+    this.sgrPorcentajeCorrientes = corrientesPorcentaje.toFixed(1).replace('.', ',');
+    
+    this.donutSgrCorrientesData = {
+      labels: ['Distribuido', 'Restante'],
+      datasets: [
+        {
+          data: [corrientesDistribuido, corrientesRestante],
+          backgroundColor: ['#ee825a', '#eceae9'],
+          hoverBackgroundColor: ['#e85c16', '#dee2e6'],
+          borderColor: '#CCCCCC',
+          borderWidth: 1,
+        }
+      ]
+    };
+
+    // Datos de ejemplo para otros (verde agua)
+    const otrosDistribuido = 285000000;
+    const otrosTotal = 500000000;
+    const otrosRestante = otrosTotal - otrosDistribuido;
+    const otrosPorcentaje = (otrosDistribuido / otrosTotal) * 100;
+    
+    this.sgrPorcentajeOtros = otrosPorcentaje.toFixed(1).replace('.', ',');
+    
+    this.donutSgrOtrosData = {
+      labels: ['Distribuido', 'Restante'],
+      datasets: [
+        {
+          data: [otrosDistribuido, otrosRestante],
+          backgroundColor: ['#77d6ba', '#eceae9'],
+          hoverBackgroundColor: ['#5bc4a7', '#dee2e6'],
+          borderColor: '#CCCCCC',
+          borderWidth: 1,
+        }
+      ]
+    };
+  }
+
+  loadSgpData() {
+    this.sicodisApiService.getSgpResumenParticipaciones(2025, 'TODOS', 'TODOS').subscribe({
+      next: (response: any) => {
+        if (Array.isArray(response)) {
+          this.processSgpData(response);
+        } else {
+          console.error('La respuesta no es un array:', response);
+        }
+      },
+      error: (error) => {
+        console.error('Error al obtener datos SGP:', error);
+      }
+    });
+  }
+
+  private processSgpData(data: any[]) {
+    // Buscar el registro con id_concepto = 99 (total)
+    const totalRecord = data.find(item => item.id_concepto == 99);
+    const totalAmount = totalRecord ? totalRecord.total : 1;
+    
+    // Filtrar solo conceptos principales (4 dígitos) excluyendo el total
+    const principalRecords = data.filter(item => 
+      item.id_concepto != 99 && 
+      item.id_concepto.toString().length === 4
+    );
+    
+    // Calcular sumatoria de conceptos principales
+    const sumaConcepts = principalRecords.reduce((sum, item) => sum + (item.total || 0), 0);
+    
+    // Procesar registros principales y calcular avance distribución
+    this.sgpItems = principalRecords.map(item => ({
+      concept: item.concepto,
+      amount: item.total,
+      isTotal: false,
+      avanceDistribucion: totalAmount > 0 ? (item.total / totalAmount) * 100 : 0
+    }));
+    
+    // Agregar el registro total al final
+    if (totalRecord) {
+      this.sgpItems.push({
+        concept: totalRecord.concepto,
+        amount: totalRecord.total,
+        isTotal: true,
+        avanceDistribucion: 100
+      });
+    }
+    
+    // Calcular datos para el gráfico donut
+    this.updateDonutChart(sumaConcepts, totalAmount);
+  }
+
+  private updateDonutChart(sumaConceptos: number, totalAmount: number) {
+    const restante = totalAmount - sumaConceptos;
+    const porcentaje = totalAmount > 0 ? (sumaConceptos / totalAmount) * 100 : 0;
+    
+    this.sgpPorcentajeEjecucion = porcentaje.toFixed(1).replace('.', ',');
+    
+    this.donutSgpData = {
+      labels: ['Distribución', 'Restante'],
+      datasets: [
+        {
+          data: [sumaConceptos, restante],
+          backgroundColor: ['#78b9bfff', '#eceae9'],
+          hoverBackgroundColor: ['#6fa0beff', '#dee2e6'],
+          borderColor: '#CCCCCC',
+          borderWidth: 1,
+        }
+      ]
+    };
   }
 
   redirectSGR() {

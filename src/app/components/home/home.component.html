@@ -7,7 +7,7 @@
         <p>El Sistema de información y consulta de distribuciones de recursos territoriales "SICODIS", presenta información agregada y detallada, 
           correspondiente a las distribuciones de los recursos del Sistema General de Participaciones (SGP) y el Sistema General de Regalías (SGR) realizadas por el DNP.
  	 	 	 	</p>
-        <p-button label="Sobre SICODIS" [rounded]="true" class="banner-button"></p-button>
+        <button pButton type="button" label="Sobre SICODIS" class="p-button-primary"></button>
       </div>
     </div>
     <!-- <div class="banner">
@@ -53,7 +53,7 @@
                 </div>
                 <ng-template pTemplate="footer">
                   <div class="card-footer">
-                    <p-button label="Ver todos los reportes del SGP" (click)="redirectSGP()" [rounded]="true" class="unified-button" />
+                    <button pButton type="button" label="Ver todos los reportes del SGP" (click)="redirectSGP()" class="p-button-primary"></button>
                   </div>
                 </ng-template>
               </p-card>
@@ -85,7 +85,7 @@
                 </div>
                 <ng-template pTemplate="footer">
                   <div class="card-footer">
-                    <p-button label="Ver todos los reportes del SGR" (click)="redirectSGR()" [rounded]="true" class="unified-button" />
+                    <button pButton type="button" label="Ver todos los reportes del SGR" (click)="redirectSGR()" class="p-button-primary"></button>
                   </div>
                 </ng-template>
               </p-card>
@@ -93,9 +93,10 @@
           </mat-grid-list>
         </div>
 
-    <h1 class="sicodis sicodis-subtitle">Consulta de asignaciones en la vigencia actual para los dos sistemas</h1>
+    <h1 class="sicodis sicodis-subtitle">Consulta a continuación la información vigente de los dos sistemas</h1>
+    <h5 class="sicodis-h5">Cifras en pesos corrientes</h5>
     
-    <div class="filter-panel">
+    <div class="filter-panel" style="display:none;">
       <mat-card class="card-container">
         <h2 class="sicodis sicodis-subtitle-2">Entidad a consultar</h2>
         <div class="filter-controls">
@@ -114,82 +115,131 @@
             </select>
           </div>
           <div class="filter-buttons">
-            <p-button label="Actualizar" [rounded]="true" class="unified-button"></p-button>
-            <p-button label="Borrar filtros" [rounded]="true" class="unified-button-outlined"></p-button>
+            <button pButton type="button" label="Actualizar" class="p-button-primary"></button>
+            <button pButton type="button" label="Borrar filtros" class="p-button-secondary"></button>
           </div>
         </div>
       </mat-card>
     </div>
 
     <div class="assignment-cards">
-      <mat-grid-list [cols]="2" rowHeight="450px" gutterSize="8">
-        <mat-grid-tile>
-          <mat-card class="card-container">
+      <mat-grid-list [cols]="2" rowHeight="870px" gutterSize="8">
+        <mat-grid-tile style="align-items: flex-start;">
+          <mat-card class="card-container" style="height: 100%; display: flex; flex-direction: column;">
             <h2 class="sicodis-subtitle">SGP</h2>
-            <div class="assignment-table">
-              <div class="table-row-left header">
-                <div class="table-cell">Concepto</div>
-                <div class="table-cell">Total Distribuido</div>
-              </div>
-              <div class="table-row-left" *ngFor="let item of sgpItems">
-                <div class="table-cell">{{item.concept}}</div>
-                <div class="table-cell" [ngClass]="{'bold': item.isTotal}">{{item.amount | numberFormat}}</div>
-              </div>
-            </div>
+            <p-table [value]="sgpItems" 
+                     [tableStyle]="{ 'min-width': '100%' }"
+                     styleClass="home-sgp-table">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th class="table-header">Concepto</th>
+                  <th class="table-header">Total Presupuesto</th>
+                  <th class="table-header">Avance Distribución</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item>
+                <tr [ngClass]="{'total-row': item.isTotal}">
+                  <td [ngClass]="{'bold': item.isTotal}"><strong *ngIf="item.isTotal">{{item.concept}}</strong><span *ngIf="!item.isTotal">{{item.concept}}</span></td>
+                  <td [ngClass]="{'bold': item.isTotal}" style="text-align: right;"><strong *ngIf="item.isTotal">{{item.amount | numberFormat}}</strong><span *ngIf="!item.isTotal">{{item.amount | numberFormat}}</span></td>
+                  <td [ngClass]="{'bold': item.isTotal}" style="text-align: right;"><strong *ngIf="item.isTotal">{{item.avanceDistribucion | number:'1.2-2'}}%</strong><span *ngIf="!item.isTotal">{{item.avanceDistribucion | number:'1.2-2'}}%</span></td>
+                </tr>
+              </ng-template>
+            </p-table>
+
             <div style="text-align: center; padding-top: 1rem;padding-bottom: 1rem;">              
-              <p-button label="Más información" [rounded]="true" (click)="redirectSGP()" class="unified-button"></p-button>              
+              <button pButton type="button" 
+                      label="Más información" 
+                      class="p-button-primary" 
+                      (click)="redirectSGP()">
+              </button>              
             </div>
+            
+            <!-- Gráfico donut de avance -->
+            <div style="padding: 1rem; text-align: center;">
+              <div style="position: relative; height: 200px; margin: 0 auto;">
+                <p-chart type="doughnut" 
+                         [data]="donutSgpData" 
+                         [options]="donutSgpOptions" 
+                         [style]="{'height': '200px'}"
+                         *ngIf="donutSgpData">
+                </p-chart>
+              </div>
+            </div>            
+            
           </mat-card>
         </mat-grid-tile>
-        <mat-grid-tile>
-          <mat-card class="card-container">
+        <mat-grid-tile style="align-items: flex-start;">
+          <mat-card class="card-container" style="height: 100%; display: flex; flex-direction: column;">
             <h2 class="sicodis-subtitle">SGR</h2>
-            <div class="assignment-table">
-              <div class="table-row-right header">
-                <div class="table-cell">Concepto</div>
-                <div class="table-cell">Presupuesto Total</div>
-              </div>
-              <div class="table-row-right" *ngFor="let item of sgrItems">
-                <div class="table-cell">{{item.concept}}</div>
-                <div class="table-cell" [ngClass]="{'bold': item.isTotal || item.isFirst}">{{item.amount | numberFormat}}</div>
-              </div>
-            </div>
+            <p-table [value]="sgrItems" 
+                     [tableStyle]="{ 'min-width': '100%' }"
+                     styleClass="home-sgr-table">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th class="table-header">Concepto</th>
+                  <th class="table-header">Presupuesto Total</th>
+                  <th class="table-header">Avance Distribución</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item>
+                <tr [ngClass]="{'total-row': item.isTotal}">
+                  <td [ngClass]="{'bold': item.isTotal || item.isFirst}">
+                    <strong *ngIf="item.isTotal || item.isFirst">{{item.concept}}</strong>
+                    <span *ngIf="!item.isTotal && !item.isFirst">{{item.concept}}</span>
+                  </td>
+                  <td [ngClass]="{'bold': item.isTotal || item.isFirst}" style="text-align: right;">
+                    <strong *ngIf="item.isTotal || item.isFirst">{{item.amount | numberFormat}}</strong>
+                    <span *ngIf="!item.isTotal && !item.isFirst">{{item.amount | numberFormat}}</span>
+                  </td>
+                  <td [ngClass]="{'bold': item.isTotal}" style="text-align: right;">
+                    <strong *ngIf="item.isTotal">{{item.progress | number:'1.2-2'}}%</strong>
+                    <span *ngIf="!item.isTotal">{{item.progress | number:'1.2-2'}}%</span>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+            
             <div style="text-align: center; padding-top: 1rem;padding-bottom: 1rem;">              
-              <p-button label="Más información" [rounded]="true" class="unified-button"></p-button>              
+              <button pButton type="button" 
+                      label="Detalle Inversión" 
+                      class="p-button-primary">
+              </button>
+              <button pButton type="button" style="margin-left: 1rem;"
+                      label="Detalle Administración"
+                      class="p-button-primary">
+              </button>
+              
+            </div>
+            
+            <!-- Gráficos donut SGR - Vertical -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; padding: 1rem;">
+              <!-- Gráfico corrientes (naranja) -->
+              <div style="text-align: center;">
+                <div style="position: relative; height: 180px; margin: 0 auto;">
+                  <p-chart type="doughnut" 
+                           [data]="donutSgrCorrientesData" 
+                           [options]="donutSgrCorrientesOptions" 
+                           [style]="{'height': '180px'}"
+                           *ngIf="donutSgrCorrientesData">
+                  </p-chart>
+                </div>
+              </div>
+              
+              <!-- Gráfico otros (verde agua) -->
+              <div style="text-align: center;padding-top: 5.5rem;">
+                <div style="position: relative; height: 180px; margin: 0 auto;">
+                  <p-chart type="doughnut" 
+                           [data]="donutSgrOtrosData" 
+                           [options]="donutSgrOtrosOptions" 
+                           [style]="{'height': '180px'}"
+                           *ngIf="donutSgrOtrosData">
+                  </p-chart>
+                </div>
+              </div>
             </div>
           </mat-card>
         </mat-grid-tile>
       </mat-grid-list>
-    </div>
-
-    <div>
-      <div style="width: 40%; margin: auto;">
-        <mat-card>
-          <h2 class="sicodis-subtitle">Administración SGR</h2>
-          <div class="admin-sgr-table">
-            <div class="table-row-left header">
-              <div class="table-cell">Concepto</div>
-              <div class="table-cell ">Presupuesto Total</div>
-            </div>
-            <div class="table-row-left" *ngFor="let item of adminSgrItems">
-              <div class="table-cell">{{item.concept}}</div>
-              <div class="table-cell" [ngClass]="{'bold': item.isTotal}">{{item.amount | numberFormat}}</div>
-            </div>  
-          </div>
-        </mat-card>
-      </div>
-    </div>
-
-    <div>
-      <div style="width: 20%; margin: auto; padding-top: 1em;">
-        <app-safe-gauge
-          [value]="75"
-          [max]="100"
-          [append]="'%'"
-          [foregroundColor]="'#10b981'"
-          [size]="200">
-        </app-safe-gauge>
-      </div>
     </div>
 
     <h1 class="reports-title">Últimos reportes</h1>
@@ -238,7 +288,7 @@
         </ul>
       </div>
       <div>
-        <p-button label="Ir a preguntas frecuentes" [rounded]="true" class="unified-button" (click)="redirectToFAQ()"></p-button>
+        <button pButton type="button" label="Ir a preguntas frecuentes" class="p-button-primary" (click)="redirectToFAQ()"></button>
       </div>
     </div>
 
