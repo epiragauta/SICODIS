@@ -1,8 +1,129 @@
 <div class="sicodis-container">
+  
+  <!-- Popups para Diccionario y Siglas -->
+  <app-info-popup 
+    [infoText]="diccionarioContent" 
+    contentTitle="Diccionario de Conceptos"
+    [showPopup]="showDiccionarioPopup"
+    (onClose)="closeDiccionarioPopup()">
+  </app-info-popup>
+  
+  <app-info-popup 
+    [infoText]="siglasContent" 
+    contentTitle="Siglas y Abreviaciones"
+    [showPopup]="showSiglasPopup"
+    (onClose)="closeSiglasPopup()">
+  </app-info-popup>
+
   <app-info-popup [infoText]="infoPopupContent" contentTitle="Información Detallada del Reporte"></app-info-popup>
+
+  <!-- Banner -->
+  <div class="gradient-banner">    
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h2>Recaudo frente a presupuesto SGR</h2>
+        <p>Consulta el avance del recaudo dentre al presupuesto durante el bienio seleccionado.</p>
+    </div>
+  </div>
+
+  <!-- Sección de botones Diccionario y Siglas -->
+  <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0;">
+    <div style="width: 83%;">
+      <p class="date-update">Fecha de actualización: junio 30 de 2025</p>
+      <p class="date-update">Fecha de corte de recaudo: mayo 30 de 2025</p>
+    </div>
+    <div style="position: relative; padding-bottom: .25rem;">
+      <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 2rem; width: 90px;"
+          (click)="showPopupDiccionario()">
+      </button>
+      <button pButton type="button" label="Siglas" class="p-button-secondary" style="width: 90px;"
+          (click)="showPopupSiglas()">
+      </button>
+    </div> 
+  </div>
+
+  <!-- Panel de filtros -->
+  <div class="filters-panel">
+    <div class="filters-row">
+      <div class="p-field vigencia-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="vigencia" [options]="vigencia" inputId="vigenciaSelect" [(ngModel)]="selectedVigencia"
+          optionLabel="label" [showClear]="false" placeholder="Seleccione Vigencia"></p-select>
+          <label for="vigenciaSelect">Vigencia</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field tipo-ingreso-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="tipoIngreso" [options]="tiposIngreso" inputId="tipoIngresoSelect" [(ngModel)]="selectedTipoIngreso"
+          optionLabel="label" [showClear]="false" placeholder="Seleccione Tipo"></p-select>
+          <label for="tipoIngresoSelect">Tipo de ingreso</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field asignaciones-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-multiselect id="asignaciones" [options]="asignaciones" inputId="asignacionesSelect" [(ngModel)]="selectedAsignaciones"
+            (onChange)="onAsignacionesChange($event)" optionLabel="label" [maxSelectedLabels]="3">
+          </p-multiselect>
+          <label for="asignacionesSelect">Asignaciones</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field search-type-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="searchType" inputId="searchType" [options]="searchTypes" [(ngModel)]="selectedSearchType" fluid="true"
+          placeholder="Seleccione Por" optionLabel="label" [showClear]="false" (onChange)="updateSelectedSearchType($event)"></p-select>
+          <label for="searchType">Beneficiario</label>
+        </p-floatlabel>
+      </div>
+
+      <div *ngIf="selectedSearchType.id == 2" class="p-field dpto-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="dpto" inputId="dptoSelect" [options]="dptos" [(ngModel)]="selectedDpto" optionLabel="nombre" fluid="true"
+          placeholder="Departamento" [showClear]="false" (onChange)="updateSelectedDpto($event)"></p-select>
+          <label for="dptoSelect">Seleccionar departamento</label>
+        </p-floatlabel>
+      </div>
+
+      <div *ngIf="selectedSearchType.id == 3 || selectedSearchType.id == -1" class="p-field entity-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="entity" inputId="entitySelect" [options]="entities" [(ngModel)]="selectedEntity" fluid="true"
+          placeholder="Entidad" optionLabel="dpto" [showClear]="false" (onChange)="updateSelectedEntity($event)"></p-select>
+          <label for="entitySelect">Seleccionar entidad</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field detail-entity-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="detailEntity" inputId="detailEntitySelect" [options]="detailEntitiesFiltered" fluid="true"
+          placeholder="Seleccione detalle" [(ngModel)]="selectedDetailEntity" optionLabel="entidad" [showClear]="false"></p-select>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field apply-filters">
+        <button pButton type="button"
+            icon="pi pi-check"
+            label="Aplicar filtros"
+            class="p-button-primary"
+            (click)="applyFilters()">
+        </button>
+      </div>
+
+      <div class="p-field clear-filters">
+        <button pButton type="button"
+            icon="pi pi-eraser"
+            label="Limpiar filtros"
+            class="p-button-secondary"
+            (click)="clearFilters()">
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Sección principal con dos columnas -->
   <div class="main-content">
-    <mat-grid-list [cols]="cardCols" rowHeight="500px" gutterSize="16">
+    <mat-grid-list [cols]="cardCols" rowHeight="435px" gutterSize="16">
       
       <!-- Columna izquierda: Tarjetas financieras -->
       <mat-grid-tile>
@@ -17,7 +138,7 @@
               <div class="financial-card">
                 <h4 class="card-title">Presupuesto Total Vigente</h4>
                 <div class="card-value">
-                  {{ formatCurrency(financialData.presupuesto_total_vigente) }}
+                  {{ formatMillions2(financialData.presupuesto_total_vigente) }}
                 </div>
               </div>
             </mat-grid-tile>
@@ -26,7 +147,7 @@
               <div class="financial-card">
                 <h4 class="card-title">Recaudo Total</h4>
                 <div class="card-value">
-                  {{ formatCurrency(financialData.caja_total) }}
+                  {{ formatMillions2(financialData.caja_total) }}
                 </div>
               </div>
             </mat-grid-tile>
@@ -36,7 +157,7 @@
               <div class="financial-card">
                 <h4 class="card-title">Presupuesto Corriente</h4>
                 <div class="card-value">
-                  {{ formatCurrency(financialData.presupuesto_corriente) }}
+                  {{ formatMillions2(financialData.presupuesto_corriente) }}
                 </div>
               </div>
             </mat-grid-tile>
@@ -45,7 +166,7 @@
               <div class="financial-card">
                 <h4 class="card-title">Recaudo Corriente Informado</h4>
                 <div class="card-value">
-                  {{ formatCurrency(financialData.caja_corriente_informada) }}
+                  {{ formatMillions2(financialData.caja_corriente_informada) }}
                 </div>
               </div>
             </mat-grid-tile>
@@ -55,7 +176,7 @@
               <div class="financial-card">
                 <h4 class="card-title">Presupuesto Otros</h4>
                 <div class="card-value">
-                  {{ formatCurrency(financialData.presupuesto_otros) }}
+                  {{ formatMillions2(financialData.presupuesto_otros) }}
                 </div>
               </div>
             </mat-grid-tile>
@@ -64,15 +185,12 @@
               <div class="financial-card">
                 <h4 class="card-title">Recaudo Total</h4>
                 <div class="card-value">
-                  {{ formatCurrency(financialData.caja_total) }}
+                  {{ formatMillions2(financialData.caja_total) }}
                 </div>
               </div>
             </mat-grid-tile>
             
-          </mat-grid-list>
-          <div>
-            <p class="note">* Valores expresados en billones de pesos</p>
-          </div>
+          </mat-grid-list>          
         </div>        
       </mat-grid-tile>
       
@@ -85,13 +203,46 @@
               type="bar" 
               [data]="chartData" 
               [options]="chartOptions"
-              height="400px">
+              height="350px">
             </p-chart>
           </div>
         </div>
       </mat-grid-tile>
       
     </mat-grid-list>
+  </div>
+
+  <!-- Sección de gráficos de dona -->
+  <div class="donuts-section">    
+    <div class="donuts-container">
+      <!-- Gráfico 1: Avance recaudo corriente -->
+      <div class="donut-card">
+        <h3 class="donut-title">Avance recaudo corriente</h3>
+        <div class="donut-chart">
+          <p-chart 
+            type="doughnut" 
+            [data]="donutRecaudoCorrienteData" 
+            [options]="donutRecaudoCorrienteOptions"
+            width="400px"
+            height="180px">
+          </p-chart>
+        </div>
+      </div>
+
+      <!-- Gráfico 2: Avance recaudo otros -->
+      <div class="donut-card">
+        <h3 class="donut-title">Avance recaudo otros</h3>
+        <div class="donut-chart">
+          <p-chart 
+            type="doughnut" 
+            [data]="donutRecaudoOtrosData" 
+            [options]="donutRecaudoOtrosOptions"
+            width="400px"
+            height="180px">
+          </p-chart>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Separador -->
@@ -115,72 +266,6 @@
             <ng-template pTemplate="caption">
               <div class="caption-container">
                 <h2 class="reports-title">Propuesta Resumen SGR</h2>
-                <div class="options-years">
-
-                  <div class="p-field vigencia-select">
-                    <p-floatlabel class="w-full md:w-56" variant="on">
-                      <p-select id="vigencia" [options]="vigencia" inputId="vigenciaSelect" [(ngModel)]="selectedVigencia"
-                      optionLabel="label" [showClear]="false" placeholder="Seleccione Vigencia"></p-select>
-                      <label for="vigenciaSelect">Vigencia</label>
-                    </p-floatlabel>
-                  </div>
-
-                  <div class="p-field search-type-select">
-                    <p-floatlabel class="w-full md:w-56" variant="on">
-                      <p-select id="searchType" inputId="searchType" [options]="searchTypes" [(ngModel)]="selectedSearchType" fluid="true"
-                      placeholder="Seleccione Por" optionLabel="label" [showClear]="false" (onChange)="updateSelectedSearchType($event)"></p-select>
-                      <label for="searchType">Buscar por</label>
-                    </p-floatlabel>
-                  </div>
-
-                  <div *ngIf="selectedSearchType.id == 2" class="p-field dpto-select">
-                    <p-floatlabel class="w-full md:w-56" variant="on">
-                      <p-select id="dpto" inputId="dptoSelect" [options]="dptos" [(ngModel)]="selectedDpto" optionLabel="nombre" fluid="true"
-                      placeholder="Seleccionar departamento" [showClear]="false" (onChange)="updateSelectedDpto($event)"></p-select>
-                      <label for="dptoSelect">Seleccionar departamento</label>
-                    </p-floatlabel>
-                  </div>
-
-                  <div *ngIf="selectedSearchType.id == 3 || selectedSearchType.id == -1" class="p-field entity-select">
-                    <p-floatlabel class="w-full md:w-56" variant="on">
-                      <p-select id="entity" inputId="entitySelect" [options]="entities" [(ngModel)]="selectedEntity" fluid="true"
-                      placeholder="Seleccionar entidad" optionLabel="dpto" [showClear]="false" (onChange)="updateSelectedEntity($event)"></p-select>
-                      <label for="entitySelect">Seleccionar entidad</label>
-                    </p-floatlabel>
-                  </div>
-
-                  <div class="p-field detail-entity-select">
-                    <p-floatlabel class="w-full md:w-56" variant="on">
-                      <p-select id="detailEntity" inputId="detailEntitySelect" [options]="detailEntitiesFiltered" fluid="true"
-                      placeholder="Seleccione detalle" [(ngModel)]="selectedDetailEntity" optionLabel="entidad" [showClear]="false"></p-select>
-                    </p-floatlabel>
-                  </div>
-
-                  <div class="p-field">
-                    <button pButton type="button"
-                        label="Consultar"
-                        class="p-button-primary"
-                        (click)="queryData()">
-                    </button>
-                  </div>
-
-                  <div class="p-field">
-                    <p-splitButton label="Exportar"
-                        class="p-button-primary"
-                        (onClick)="exportData('excel')"
-                        [model]="menuItems">
-                    </p-splitButton>
-                  </div>
-
-                  <div class="p-field clear-filters">
-                    <button pButton type="button"
-                        icon="pi pi-eraser"
-                        label="Limpiar filtros"
-                        class="p-button-secondary"
-                        (click)="clearFilters()">
-                    </button>
-                  </div>
-                </div>
                 <p class="instruction-text">
                     Haga clic en el encabezado "Presupuesto Otros" para ver el detalle de las fuentes
                   </p>
@@ -202,9 +287,8 @@
                     (click)="col.field === 'presupuesto_otros' ? toggleColumns() : null"
                     [pTooltip]="col.tooltip" tooltipPosition="top">
                   {{col.header}}
-                  <span *ngIf="col.field === 'presupuesto_otros'" class="toggle-icon" 
-                      style="border-radius: 3px;background-color: #566cbb;padding-left: 3px;padding-right: 3px;color: #fff;">
-                    {{isExpanded ? '(-)' : '(+)'}}
+                  <span *ngIf="col.field === 'presupuesto_otros'" class="toggle-icon" style="padding-left: 3px;padding-right: 3px;color: #fff;">
+                      <mat-icon style="color: #fff;background-color: #566cbb;" class="mr-2 sgp-icon">pinch</mat-icon>
                   </span>
                 </th>
               </tr>

@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-//import { HttpClient } from '@angular/common/http';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
-
+import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
@@ -23,12 +22,11 @@ import { territorialEntities } from '../../data/territorial-entities';
 import { map } from 'rxjs/operators';
 import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
-// import { SicodisService, FetchBasedService, ProxyAwareSicodisService } from '../../services/sicodis.service';
-// import { SicodisImprovedService } from '../../services/sicodis-improved.service';
-// import { SicodisApiFixedService } from '../../services/sicodis-api-fixed.service';
-// import { SicodisFinalService } from '../../services/sicodis-final.service';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { TooltipModule } from 'primeng/tooltip';
+import { SicodisApiService } from '../../services/sicodis-api.service';
+import { MultiSelectModule } from 'primeng/multiselect';
+import Chart from 'chart.js/auto';
 
 
 interface FinancialData {
@@ -46,6 +44,7 @@ interface FinancialData {
     CommonModule,
     MatGridListModule,
     MatCardModule,
+    MatIconModule,
     CardModule,
     ChartModule,
     TreeTableModule,
@@ -59,6 +58,7 @@ interface FinancialData {
     InfoPopupComponent,
     TooltipModule,
     NumberFormatPipe,
+    MultiSelectModule,
   ],
   templateUrl: './presupuesto-y-recaudo.component.html',
   styleUrl: './presupuesto-y-recaudo.component.scss'
@@ -82,6 +82,12 @@ export class PresupuestoYRecaudoComponent implements OnInit {
   chartData: any;
   chartOptions: any;
 
+  // Configuración de gráficos de dona
+  donutRecaudoCorrienteData: any;
+  donutRecaudoCorrienteOptions: any;
+  donutRecaudoOtrosData: any;
+  donutRecaudoOtrosOptions: any;
+
   // Configuración de la tabla
   // treeTableData: TreeNode[] = [];  
   data: TreeNode[] = [];
@@ -89,35 +95,44 @@ export class PresupuestoYRecaudoComponent implements OnInit {
   selectedNode: TreeNode | null = null;
 
   // Filtros
-  selectedVigencia: any = { id: 1, label: 'Vigencia Bienio 2025 - 2026' };
+  selectedVigencia: any = { id: 1, label: '2025 - 2026' };
+  selectedTipoIngreso: any = { id: 1, label: 'Total' };
+  tiposIngreso = [
+    { id: 1, label: 'Total' },
+    { id: 2, label: 'Corrientes' },
+    { id: 3, label: 'Presupuesto Otros' }
+  ];
+  selectedAsignaciones: any[] = [];
+  asignaciones: any[] = [];
+  private fuentesAsignacionesAPI: any[] = [];
   vigencia = [
       {
           "id": 1,
-          "label": "Vigencia Bienio 2025 - 2026"
+          "label": "2025 - 2026"
       },
       {
           "id": 2,
-          "label": "Vigencia Bienio 2023 - 2024"
+          "label": "2023 - 2024"
       },
       {
           "id": 3,
-          "label": "Vigencia Bienio 2021 - 2022"
+          "label": "2021 - 2022"
       },
       {
           "id": 4,
-          "label": "Vigencia Bienio 2019 - 2020"
+          "label": "2019 - 2020"
       },
       {
           "id": 5,
-          "label": "Vigencia Bienio 2017 - 2018"
+          "label": "2017 - 2018"
       },
       {
           "id": 6,
-          "label": "Vigencia Bienio 2015 - 2016"
+          "label": "2015 - 2016"
       },
       {
           "id": 7,
-          "label": "Vigencia Bienio 2013 - 2014"
+          "label": "2013 - 2014"
       },
       {
           "id": 8,
@@ -127,6 +142,12 @@ export class PresupuestoYRecaudoComponent implements OnInit {
   dptos = departamentos;
   entities = territorialEntities;
   infoPopupContent: string = '';
+
+  // Propiedades para popups de Diccionario y Siglas
+  showDiccionarioPopup: boolean = false;
+  showSiglasPopup: boolean = false;
+  diccionarioContent: string = '';
+  siglasContent: string = '';
   
   cols: any[] = [];
   colsA: any[] = [];
@@ -158,12 +179,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
   selectedDetailEntity: any;
 
   constructor(private breakpointObserver: BreakpointObserver,
-              // private sicodisFinalService: SicodisFinalService,
-              // private sicodisApiFixedService: SicodisApiFixedService,
-              // private sicodisImprovedService: SicodisImprovedService,
-              // private sicodisService: SicodisService,
-              // private fetchBasedService: FetchBasedService,
-              // private http: HttpClient
+              private sicodisApiService: SicodisApiService,
   ) {
     
     this.breakpointObserver.observe([
@@ -191,9 +207,11 @@ export class PresupuestoYRecaudoComponent implements OnInit {
 
   ngOnInit() {
     this.initializeMenuItems();
+    this.initializeCharts();
     //this.initializeTreeTableColumns();
     this.loadFinancialData();
     this.initializeChart();
+    this.initializeDonutCharts();
     //this.loadTreeTableData();
     this.colsA = [
         { field: 'concepto', header: 'Concepto', width: '20%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Descripción de la categoría presupuestal' },
@@ -230,6 +248,9 @@ export class PresupuestoYRecaudoComponent implements OnInit {
         // this.queryData(); // Load initial data with default filters
         console.log('Data loaded and ready for querying.');
       });
+
+      // Cargar asignaciones desde API
+      this.cargarAsignaciones();
 
       this.infoPopupContent = `
       <div style="font-size: 11px;">
@@ -270,6 +291,35 @@ export class PresupuestoYRecaudoComponent implements OnInit {
     ];
   }
 
+  private initializeCharts(): void {
+    // Register custom plugin for center text in donut charts
+    const centerTextPlugin = {
+      id: 'centerText',
+      beforeDraw: (chart: any) => {
+        if (chart.config.options.plugins?.centerText?.display) {
+          const ctx = chart.ctx;
+          const centerX = (chart.chartArea.left + chart.chartArea.right) / 2;
+          const centerY = (chart.chartArea.top + chart.chartArea.bottom) / 1.42;
+          
+          ctx.save();
+          ctx.font = 'bold 22px Arial';
+          ctx.fillStyle = '#47454';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          
+          const text = chart.config.options.plugins.centerText.text();
+          ctx.fillText(text, centerX, centerY);
+          ctx.restore();
+        }
+      }
+    };
+
+    // Register the plugin globally
+    if (typeof Chart !== 'undefined') {
+      Chart.register(centerTextPlugin);
+    }
+  }
+
   async loadData(): Promise<void> {
     console.log('Loading base data...');
     try {
@@ -283,16 +333,6 @@ export class PresupuestoYRecaudoComponent implements OnInit {
     }
   }
 
-  // private initializeTreeTableColumns() {
-  //   this.treeTableCols = [
-  //     { field: 'concepto', header: 'Concepto' },
-  //     { field: 'presupuesto_total_vigente', header: 'Presupuesto Total Vigente' },
-  //     { field: 'caja_total', header: 'Recaudo Total' },
-  //     { field: 'presupuesto_corriente', header: 'Presupuesto Corriente' },
-  //     { field: 'caja_corriente_informada', header: 'Recaudo Corriente Informada' }
-  //   ];
-  // }
-
   private loadFinancialData() {
     // Simulando datos - en un caso real estos vendrían de un servicio
     this.financialData = {
@@ -300,7 +340,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
       caja_total: 41832989623504.40,
       presupuesto_corriente: 25536162427940.00,
       caja_corriente_informada: 2995629703785.00,
-      presupuesto_otros: 38161571183915.4
+      presupuesto_otros: 48161571183915.4
     };
   }
 
@@ -337,6 +377,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
       indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
+      aspectRatio: 1.5,
       plugins: {
         legend: {
           position: 'bottom',
@@ -351,7 +392,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
         tooltip: {
           callbacks: {
             label: (context: any) => {
-              return `${context.dataset.label}: ${new Intl.NumberFormat('es-CO').format(context.parsed.x)} Pesos`;
+              return `${context.dataset.label}: ${new Intl.NumberFormat('es-CO').format(context.parsed.x)}`;
             }
           }
         }
@@ -389,38 +430,117 @@ export class PresupuestoYRecaudoComponent implements OnInit {
     };
   }
 
-  // async loadTreeTableData(): Promise<void> {
+  private initializeDonutCharts(): void {
+    const documentStyle = getComputedStyle(document.documentElement);
     
-  //   try{
-  //     const response = await fetch(this.detailedDataUrl);
-  //     let detailedData = await response.json();
-  //     this.treeTableData = organizeCategoryData(detailedData);
-  //   }catch (error) {
-  //     console.error('Error loading tree table data:', error);
-  //     const sampleData = [
-  //     {
-  //       categoria: "1",
-  //       concepto: "TOTAL SGR",
-  //       presupuesto_total_vigente: 63697733611855.4,
-  //       caja_total: 41832989623504.40,
-  //       presupuesto_corriente: 25536162427940.00,
-  //       caja_corriente_informada: 2995629703785.00,
-  //       presupuesto_otros: 38161571183915.4
-  //     },
-  //     {
-  //       categoria: "1.1",
-  //       concepto: "INVERSIÓN",
-  //       presupuesto_total_vigente: 58529252929140.4,
-  //       caja_total: 37675313076056.40,
-  //       presupuesto_corriente: 23620950245846.00,
-  //       caja_corriente_informada: 2767010392762.00,
-  //       presupuesto_otros: 34908302683294.4
-  //     }
-  //   ];
+    // Configuración común para ambos gráficos de dona
+    const commonDonutOptions = {
+      cutout: '60%',    
+      rotation: -90,
+      circumference: 180,
+      responsive: true,
+      maintainAspectRatio: false,
+      aspectRatio: 1.5,
+      plugins: {
+        legend: {
+          position: 'right',
+          labels: {
+            usePointStyle: true,
+            font: {
+              family: '"Work Sans", sans-serif',
+              size: 11
+            },
+            color: '#374151'
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: (context: any) => {
+              const label = context.label || '';
+              const value = context.parsed || 0;
+              const formatted = this.formatMillions2(value);
+              return `${label}: ${formatted}`;
+            }
+          },
+          xAlign: 'left',
+          yAlign: 'bottom'
+        }
+      },
+      elements: {
+        arc: {
+          borderWidth: 2,
+          borderColor: '#BBBBBB',
+          hoverBorderWidth: 3
+        }
+      }      
+    };
 
-  //   this.treeTableData = organizeCategoryData(sampleData);
-  //   } 
-  // }
+    // Gráfico 1: Avance recaudo corriente
+    this.donutRecaudoCorrienteData = {
+      labels: ['Recaudo', 'Pendiente'],
+      datasets: [{
+        data: [
+          this.financialData.caja_corriente_informada,
+          this.financialData.presupuesto_corriente - this.financialData.caja_corriente_informada
+        ],
+        backgroundColor: ['#3b82f6', '#e2e8f0'],
+        borderColor: ['#1e40af', '#cbd5e1'],
+        borderWidth: 2
+      }]
+    };
+
+    this.donutRecaudoCorrienteOptions = {
+      ...commonDonutOptions,
+      plugins: {
+        ...commonDonutOptions.plugins,
+        centerText: {
+          display: true,
+          text: () => {
+            console.log('Calculating center text for Recaudo Corriente');
+            const recaudo = this.financialData.caja_corriente_informada;
+            const presupuesto = this.financialData.presupuesto_corriente;
+            if (presupuesto === 0) return '0.00%';
+            const percentage = (recaudo / presupuesto * 100);
+            return percentage.toFixed(2).replace('.', ',') + '%';
+          }
+        }
+      }
+    };
+
+    // Gráfico 2: Avance recaudo otros
+    const recaudoOtros = this.financialData.caja_total - this.financialData.caja_corriente_informada;
+    
+    this.donutRecaudoOtrosData = {
+      labels: ['Recaudo', 'Pendiente'],
+      datasets: [{
+        data: [
+          recaudoOtros,
+          this.financialData.presupuesto_otros - recaudoOtros
+        ],
+        backgroundColor: ['#10b981', '#e2e8f0'],
+        borderColor: ['#059669', '#cbd5e1'],
+        borderWidth: 2
+      }]
+    };
+
+    this.donutRecaudoOtrosOptions = {
+      ...commonDonutOptions,
+      plugins: {
+        ...commonDonutOptions.plugins,
+        centerText: {
+          display: true,
+          text: () => {
+            const recaudo = this.financialData.caja_total - this.financialData.caja_corriente_informada;
+            const presupuesto = this.financialData.presupuesto_otros;
+            if (presupuesto === 0) return '0.00%';
+            const percentage = (recaudo / presupuesto * 100);
+            return percentage.toFixed(2).replace('.', ',') + '%';
+          }
+        }
+      }
+    };
+  }
+
 
   updateSelectedSearchType(event: any) {
     console.log('Selected search type:', event.value);
@@ -477,9 +597,27 @@ export class PresupuestoYRecaudoComponent implements OnInit {
     // this.queryData();
   }
 
+  applyFilters() {
+    console.log('Applying filters...');
+    console.log('Selected filters:', {
+      vigencia: this.selectedVigencia,
+      tipoIngreso: this.selectedTipoIngreso,
+      asignaciones: this.selectedAsignaciones,
+      searchType: this.selectedSearchType,
+      dpto: this.selectedDpto,
+      entity: this.selectedEntity,
+      detailEntity: this.selectedDetailEntity
+    });
+    
+    // Call the query data method with current filters
+    this.queryData();
+  }
+
   clearFilters() {
     console.log('Clearing filters...');
     this.selectedVigencia = this.vigencia[0]; // Reset to first vigencia
+    this.selectedTipoIngreso = this.tiposIngreso[0]; // Reset to first tipo ingreso
+    this.selectedAsignaciones = []; // Reset asignaciones selection
     this.selectedSearchType = this.searchTypes[0]; // Reset to first search type
     this.selectedDpto = { codigo: '-1', nombre: 'Por departamento' }; // Reset to default department
     this.selectedEntity = undefined; // Reset entity selection
@@ -488,13 +626,43 @@ export class PresupuestoYRecaudoComponent implements OnInit {
     this.data = organizeCategoryData(this.detailedData)
   }
 
-  formatToBillions(value: number): number {
-    return value; // Return full peso values
-  }
+  /**
+   * Formats a number to a localized format with proper Spanish thousands separators.
+   * 
+   * @param {number} num - The number to format
+   * @param {Object} [options] - Formatting options
+   * @param {boolean} [options.includeSymbol=true] - Include currency symbol
+   * @param {number} [options.decimalPlaces=1] - Decimal places to display
+   * @returns {string} Formatted number string
+   */
+  formatMillions2(
+    num: number,
+    options: {
+      includeSymbol?: boolean;
+      decimalPlaces?: number;      
+    } = {}
+  ) {
+    // Default options
+    const {
+      includeSymbol = false,
+      decimalPlaces = 0,      
+    } = options;
 
-  formatCurrency(value: number): string {
-    const billions = this.formatToBillions(value);
-    return `${billions.toFixed(2).replace(",",".")}`;
+    // Convert to miles of millions
+    const valueInMilesOfMillions = num;
+
+    // Format the number
+    const formattedValue = valueInMilesOfMillions.toLocaleString('en-US', {
+      minimumFractionDigits: decimalPlaces,
+      maximumFractionDigits: decimalPlaces
+    }).replaceAll(',', 'temp').replaceAll('.', ',').replaceAll('temp', '.');
+
+    // Build the result string
+    let result = '';
+    if (includeSymbol) result += '$ ';
+    result += formattedValue;
+    
+    return result;
   }
 
   toggleColumns() {
@@ -570,6 +738,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
     });
     this.data = organizeCategoryData(filteredData);
     this.initializeChart();
+    this.initializeDonutCharts();
 
   }
   
@@ -583,6 +752,134 @@ export class PresupuestoYRecaudoComponent implements OnInit {
       // Formatear como porcentaje
       return (numValue * 100).toFixed(2) + '%';
     }
+
+  /**
+   * Mostrar popup del diccionario
+   */
+  showPopupDiccionario(): void {
+    console.log('Mostrando diccionario de datos');
+    this.diccionarioContent = this.generarContenidoDiccionario();
+    this.showDiccionarioPopup = true;
+  }
+
+  /**
+   * Mostrar popup de siglas
+   */
+  showPopupSiglas(): void {
+    console.log('Mostrando siglas');
+    this.siglasContent = this.generarContenidoSiglas();
+    this.showSiglasPopup = true;
+  }
+
+  /**
+   * Cerrar popup del diccionario
+   */
+  closeDiccionarioPopup(): void {
+    this.showDiccionarioPopup = false;
+  }
+
+  /**
+   * Cerrar popup de siglas
+   */
+  closeSiglasPopup(): void {
+    this.showSiglasPopup = false;
+  }
+
+  /**
+   * Generar contenido del diccionario
+   */
+  private generarContenidoDiccionario(): string {
+    return `
+      <div style="font-size: 11px; line-height: 1.6;">
+        <h4 style="margin-bottom: 1rem; color: #333;">Diccionario de Conceptos</h4>
+        <ul style="list-style-type: none; padding: 0;">
+          <li style="margin-bottom: 0.5rem;"><strong>Presupuesto Total Vigente:</strong> Suma total del presupuesto vigente (corriente + otros)</li>
+          <li style="margin-bottom: 0.5rem;"><strong>Recaudo Total:</strong> Monto total de recaudo efectivamente recaudado</li>
+          <li style="margin-bottom: 0.5rem;"><strong>Presupuesto Corriente:</strong> Monto presupuestado para ingresos corrientes del SGR</li>
+          <li style="margin-bottom: 0.5rem;"><strong>Recaudo Corriente Informado:</strong> Valores de recaudo reportados para los ingresos corrientes</li>
+          <li style="margin-bottom: 0.5rem;"><strong>Presupuesto Otros:</strong> Montos presupuestados para otras fuentes de ingreso (rendimientos financieros, reintegros, etc.)</li>
+          <li style="margin-bottom: 0.5rem;"><strong>Rendimientos Financieros:</strong> Ingresos generados por rendimientos de inversiones</li>
+          <li style="margin-bottom: 0.5rem;"><strong>Reintegros:</strong> Devoluciones o retornos de recursos al SGR</li>
+          <li style="margin-bottom: 0.5rem;"><strong>Excedentes FAEP FONPET:</strong> Excedentes provenientes del Fondo de Ahorro y Estabilización y del Fondo de Pensiones Territoriales</li>
+          <li style="margin-bottom: 0.5rem;"><strong>Multas:</strong> Ingresos provenientes de sanciones o penalidades</li>
+          <li style="margin-bottom: 0.5rem;"><strong>Mineral Sin Identificación:</strong> Ingresos provenientes de minerales cuyo origen no está identificado</li>
+          <li style="margin-bottom: 0.5rem;"><strong>Porcentaje (%):</strong> Indicadores que miden la proporción del recaudo respecto al presupuesto</li>
+        </ul>
+      </div>
+    `;
+  }
+
+  /**
+   * Generar contenido de siglas
+   */
+  private generarContenidoSiglas(): string {
+    return `
+      <div style="font-size: 11px; line-height: 1.6;">
+        <h4 style="margin-bottom: 1rem; color: #333;">Siglas y Abreviaciones</h4>
+        <ul style="list-style-type: none; padding: 0;">
+          <li style="margin-bottom: 0.5rem;"><strong>SGR:</strong> Sistema General de Regalías</li>
+          <li style="margin-bottom: 0.5rem;"><strong>DNP:</strong> Departamento Nacional de Planeación</li>
+          <li style="margin-bottom: 0.5rem;"><strong>FAEP:</strong> Fondo de Ahorro y Estabilización Petrolera</li>
+          <li style="margin-bottom: 0.5rem;"><strong>FONPET:</strong> Fondo Nacional de Pensiones de las Entidades Territoriales</li>
+          <li style="margin-bottom: 0.5rem;"><strong>MR:</strong> Mayor Recaudo</li>
+          <li style="margin-bottom: 0.5rem;"><strong>SICODIS:</strong> Sistema de Consulta y Distribución</li>
+          <li style="margin-bottom: 0.5rem;"><strong>SSEC:</strong> Sistema de Seguimiento, Evaluación y Control</li>
+        </ul>
+      </div>
+    `;
+  }
+
+  /**
+   * Cargar asignaciones desde API
+   */
+  private async cargarAsignaciones(): Promise<void> {
+    try {
+      this.fuentesAsignacionesAPI = await this.sicodisApiService.getFuentesAsignaciones().toPromise() || [];
+      console.log('Fuentes API cargadas:', this.fuentesAsignacionesAPI);
+      this.inicializarAsignaciones();
+    } catch (error) {
+      console.warn('Error cargando fuentes desde API:', error);
+      this.fuentesAsignacionesAPI = [];
+      this.asignaciones = [];
+    }
+  }
+
+  /**
+   * Inicializar las opciones de asignaciones
+   */
+  private inicializarAsignaciones(): void {
+    try {
+      if (this.fuentesAsignacionesAPI && this.fuentesAsignacionesAPI.length > 0) {
+        // Usar las fuentes de asignaciones del API ya cargadas
+        const fuentesOrdenadas = this.fuentesAsignacionesAPI.sort((a, b) => a.fuente.localeCompare(b.fuente));
+        this.asignaciones = [
+          ...fuentesOrdenadas.map((fuente: any) => ({
+            value: fuente.id_fuente,
+            label: fuente.fuente
+          }))
+        ];
+        
+        console.log('Asignaciones inicializadas desde API (ordenadas):', this.asignaciones);
+      } else {
+        console.warn('No hay fuentes disponibles desde la API');
+        this.asignaciones = [];
+      }
+    } catch (error) {
+      console.error('Error inicializando asignaciones:', error);
+      this.asignaciones = [];
+    }
+  }
+
+  /**
+   * Evento cuando cambian las asignaciones seleccionadas
+   */
+  onAsignacionesChange(event: any): void {
+    console.log('Asignaciones seleccionadas:', event.value);
+    this.selectedAsignaciones = event.value || [];
+    
+    // Aquí podrías agregar lógica adicional si es necesaria
+    // como filtrar otros datos basados en las asignaciones seleccionadas
+  }
 
   // async testDiagnostic() {
   //   const service = new ProxyAwareSicodisService(this.http);

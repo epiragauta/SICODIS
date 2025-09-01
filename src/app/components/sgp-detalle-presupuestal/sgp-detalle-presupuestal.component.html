@@ -170,43 +170,7 @@
                  (click)="downloadData()">
          </button>
        </div>
-
-       <!-- Tarjeta de descargas -->
-       <div class="download-card-container">
-         <p-card class="download-card">
-           <div class="download-table">
-             <div class="download-row header-row">
-               <div class="download-cell header-cell">Concepto</div>
-               <div class="download-cell header-cell">Vigencia</div>
-               <div class="download-cell header-cell">Acción</div>
-             </div>
-             <div class="download-row">
-               <div class="download-cell">Once Doceavas</div>
-               <div class="download-cell">{{ selectedVigencia.label }}</div>
-               <div class="download-cell">
-                 <button pButton type="button" 
-                         icon="pi pi-download" 
-                         label="Descargar" 
-                         class="p-button-primary p-button-sm"
-                         (click)="downloadOnceDoceavas()">
-                 </button>
-               </div>
-             </div>
-             <div class="download-row">
-               <div class="download-cell">Última Doceava</div>
-               <div class="download-cell">{{ yearUltimaDoceava }}</div>
-               <div class="download-cell">
-                 <button pButton type="button" 
-                         icon="pi pi-download" 
-                         label="Descargar" 
-                         class="p-button-primary p-button-sm"
-                         (click)="downloadUltimaDoceava()">
-                 </button>
-               </div>
-             </div>
-           </div>
-         </p-card>
-       </div>
+       
      </div>
    </div>
 </div>
