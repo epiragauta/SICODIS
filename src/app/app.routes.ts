@@ -56,7 +56,7 @@ export const routes: Routes = [
     { path: 'sgp-comparativa', component: SgpComparativaComponent },
     { path: 'pgn-regionalizacion', component: PgnRegionalizacionPresupuestoProgramacionComponent },
     { path: 'pgn-comparativa-regionalizacion', component: PgnComparativaRegionalizacionComponent },
-    { path: 'pgn-variables', component: PgnVariablesComponent }
+    { path: 'sgp-eficiencia', component: PgnVariablesComponent }
     
 
 ];
