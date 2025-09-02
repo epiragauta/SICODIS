@@ -123,7 +123,7 @@
 
     .p-datatable-tbody > tr > td,
     .p-treetable-tbody > tr > td {
-      padding: 0.5rem 0.75rem !important;
+      padding: 0.25rem 0.2rem !important;
       font-size: 0.8rem;
       vertical-align: middle;
       
@@ -236,8 +236,12 @@
       
       // Estilos generales para todas las tablas
       .p-treetable-thead > tr > th {
-        &.vigencia-header {
-          text-align: right;
+        // Alineación a la derecha para todos los headers excepto el concepto
+        text-align: right !important;
+        
+        // Excepción: mantener concepto a la izquierda
+        &.concept-header {
+          text-align: left !important;
         }
       }
       
@@ -715,6 +719,78 @@
       }
 
 
+    }
+  }
+}
+
+// Estilos específicos para las nuevas columnas de variación
+:host ::ng-deep {
+  .sgp-treetable {
+    // Headers para las columnas de periodo anterior y variación
+    .periodo-anterior-header,
+    .variation-pesos-header,
+    .variation-percent-header {
+      background-color: #f1f5f9 !important;
+      font-weight: 600 !important;
+      color: #334155 !important;
+      // text-align ya está manejado por la regla general
+    }
+    
+    // Células para Periodo Anterior
+    .periodo-anterior-cell {
+      text-align: right !important;
+      font-family: inherit; // Usar la misma fuente que vigencia-cell
+      color: inherit; // Usar el mismo color que vigencia-cell
+      font-weight: inherit; // Usar el mismo peso de fuente
+    }
+    
+    // Células para Variación ($)
+    .variation-pesos-cell {
+      text-align: right !important;
+      font-family: inherit; // Usar la misma fuente que vigencia-cell
+      /*color: #059669; // Verde para valores positivos por defecto*/
+      font-weight: inherit; // Usar el mismo peso de fuente
+      
+      // Condicional para valores negativos (si los hay)
+      &.negative {
+        color: #dc2626; // Rojo para valores negativos
+      }
+    }
+    
+    // Células para Variación (%)
+    .variation-percent-cell {
+      text-align: right !important;
+      font-family: inherit; // Usar la misma fuente que vigencia-cell
+      /*color: #059669; // Azul para porcentajes*/
+      font-weight: inherit; // Usar el mismo peso de fuente
+      
+      // Estilo para porcentajes negativos
+      &.negative {
+        color: #dc2626; // Rojo para porcentajes negativos
+      }
+    }
+    
+    
+  }
+  
+  // Responsive adjustments for new columns
+  @media (max-width: 1200px) {
+    .dual-table-container {
+      .sgp-treetable {
+        .periodo-anterior-header,
+        .variation-pesos-header,
+        .variation-percent-header {
+          font-size: 0.75rem;
+          padding: 0.375rem 0.25rem !important;
+        }
+        
+        .periodo-anterior-cell,
+        .variation-pesos-cell,
+        .variation-percent-cell {
+          font-size: 0.75rem;
+          padding: 0.375rem 0.25rem !important;
+        }
+      }
     }
   }
 }

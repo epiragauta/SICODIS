@@ -544,6 +544,128 @@ export class SgpComparativaComponent {
   }
 
   /**
+   * Obtiene el total de diferencias para la primera entidad
+   */
+  getTreeTableDifferenciaTotal(): number {
+    const totalRecord = this.fichaComparativaData.find(item => item.IdConcepto.trim() === '99');
+    if (totalRecord) {
+      return totalRecord.Diferencias_Entidad1 || 0;
+    }
+    
+    // Fallback: sumar todos los nodos del árbol si no existe el total
+    let total = 0;
+    this.treeTableData.forEach((node: TreeNode) => {
+      total += node.data.diferencia || 0;
+    });
+    return total;
+  }
+
+  /**
+   * Obtiene el total porcentual para la primera entidad
+   */
+  getTreeTablePorcentualTotal(): string {
+    const totalRecord = this.fichaComparativaData.find(item => item.IdConcepto.trim() === '99');
+    if (totalRecord) {
+      const porcentual = totalRecord.Porcentual_Entidad1;
+      return (porcentual && isFinite(porcentual)) ? (porcentual * 100).toFixed(2) : '-';
+    }
+    
+    // Fallback: calcular promedio ponderado
+    let totalPorcentual = 0;
+    let count = 0;
+    this.treeTableData.forEach((node: TreeNode) => {
+      if (node.data.porcentual !== undefined && isFinite(node.data.porcentual)) {
+        totalPorcentual += node.data.porcentual || 0;
+        count++;
+      }
+    });
+    return count > 0 ? (totalPorcentual / count * 100).toFixed(2) : '-';
+  }
+
+  /**
+   * Obtiene el total de diferencias para la segunda entidad
+   */
+  getTreeTableDifferenciaTotal2(): number {
+    const totalRecord = this.fichaComparativaData.find(item => item.IdConcepto.trim() === '99');
+    if (totalRecord) {
+      return totalRecord.Diferencias_Entidad2 || 0;
+    }
+    
+    // Fallback: sumar todos los nodos del árbol si no existe el total
+    let total = 0;
+    this.treeTableData2.forEach((node: TreeNode) => {
+      total += node.data.diferencia || 0;
+    });
+    return total;
+  }
+
+  /**
+   * Obtiene el total porcentual para la segunda entidad
+   */
+  getTreeTablePorcentualTotal2(): string {
+    const totalRecord = this.fichaComparativaData.find(item => item.IdConcepto.trim() === '99');
+    if (totalRecord) {
+      const porcentual = totalRecord.Porcentual_Entidad2;
+      return (porcentual && isFinite(porcentual)) ? (porcentual * 100).toFixed(2) : '-';
+    }
+    
+    // Fallback: calcular promedio ponderado
+    let totalPorcentual = 0;
+    let count = 0;
+    this.treeTableData2.forEach((node: TreeNode) => {
+      if (node.data.porcentual !== undefined && isFinite(node.data.porcentual)) {
+        totalPorcentual += node.data.porcentual || 0;
+        count++;
+      }
+    });
+    return count > 0 ? (totalPorcentual / count * 100).toFixed(2) : '-';
+  }
+
+  /**
+   * Obtiene el total del periodo anterior para la primera entidad
+   */
+  getTreeTablePeriodoAnteriorTotal(): number {
+    const totalRecord = this.fichaComparativaData.find(item => item.IdConcepto.trim() === '99');
+    if (totalRecord) {
+      return totalRecord.PeriodoAnterior_Entidad1 || 0;
+    }
+    
+    // Fallback: sumar todos los nodos del árbol si no existe el total
+    let total = 0;
+    this.treeTableData.forEach((node: TreeNode) => {
+      total += node.data.periodo_anterior || 0;
+    });
+    return total;
+  }
+
+  /**
+   * Obtiene el total del periodo anterior para la segunda entidad
+   */
+  getTreeTablePeriodoAnteriorTotal2(): number {
+    const totalRecord = this.fichaComparativaData.find(item => item.IdConcepto.trim() === '99');
+    if (totalRecord) {
+      return totalRecord.PeriodoAnterior_Entidad2 || 0;
+    }
+    
+    // Fallback: sumar todos los nodos del árbol si no existe el total
+    let total = 0;
+    this.treeTableData2.forEach((node: TreeNode) => {
+      total += node.data.periodo_anterior || 0;
+    });
+    return total;
+  }
+
+  /**
+   * Formatea el valor porcentual, retorna "-" si es NaN, Infinity o null/undefined
+   */
+  formatPercentage(value: any): string {
+    if (value === null || value === undefined || !isFinite(value)) {
+      return '-';
+    }
+    return (value * 100).toFixed(2) + '%';
+  }
+
+  /**
    * Exporta los datos a Excel
    */
   exportToExcel(): void {
@@ -1054,7 +1176,7 @@ export class SgpComparativaComponent {
           conceptsMap.set(parentKey, {
             key: `${entityNumber}_${parentKey}`,
             data: {
-              concepto: conceptoText,
+              concepto: conceptName,
               id_concepto: conceptCode,
               ...entityData
             },
@@ -1065,7 +1187,7 @@ export class SgpComparativaComponent {
           // Actualizar datos del concepto padre si ya existe
           const existingNode = conceptsMap.get(parentKey)!;
           existingNode.data = {
-            concepto: conceptoText,
+            concepto: conceptName,
             id_concepto: conceptCode,
             ...entityData
           };
@@ -1079,7 +1201,7 @@ export class SgpComparativaComponent {
           conceptsMap.set(parentKey, {
             key: `${entityNumber}_${parentKey}`,
             data: {
-              concepto: `${parentKey} - ${parentName}`,
+              concepto: `${parentName}`,
               id_concepto: parentKey,
               vigencia: 0,
               periodo_anterior: 0,
@@ -1096,7 +1218,7 @@ export class SgpComparativaComponent {
         parentNode.children!.push({
           key: `${entityNumber}_${conceptCode}`,
           data: {
-            concepto: conceptoText,
+            concepto: conceptName,
             id_concepto: conceptCode,
             ...entityData
           },
@@ -1173,6 +1295,31 @@ export class SgpComparativaComponent {
   getSelectedVigenciaName(): string {
     if (!this.selected || !this.infoToResume) return '';
     return this.infoToResume.vigencia || this.selected.toString();
+  }
+
+  /**
+   * Obtiene el nombre de la vigencia anterior basada en la vigencia seleccionada
+   */
+  getPreviousVigenciaName(): string {
+    if (!this.selected || !this.infoToResume) return 'Vigencia Anterior';
+    
+    const currentVigencia = this.infoToResume.vigencia;
+    if (!currentVigencia) return 'Vigencia Anterior';
+    
+    // Intentar extraer el año de inicio de la vigencia actual
+    // Puede ser formato "2025 - 2026" o simplemente "2025"
+    const match = currentVigencia.match(/(\d{4})/);
+    if (match) {
+      const currentYear = parseInt(match[1]);
+      
+      // Calcular la vigencia anterior (restando 1 año)
+      const prevYear = currentYear - 1;
+      
+      return prevYear.toString();
+    }
+    
+    // Fallback si no se puede parsear el formato
+    return 'Vigencia Anterior';
   }
 
   /**
