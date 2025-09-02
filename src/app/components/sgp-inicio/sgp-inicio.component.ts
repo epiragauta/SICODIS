@@ -82,60 +82,60 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
   recursos = [
     {
       titulo: 'Histórico SGP',
-      descripcion: 'Consulta el histórico de distribuciones por vigencia y entidad territorial',
+      descripcion: 'Consulta y explora el detalle histórico del sistema',
       boton: 'Consultar',
       link: 'sgp-historico',
-      icon: 'timeline'
+      icon: 'assets/img/sgp/analysis.png'
     },
     {
       titulo: 'Documentos y Anexos',
-      descripcion: 'Accede a documentos oficiales y anexos',
+      descripcion: 'Consulta dos documentos y anexos publicados',
       boton: 'Consultar',
       link: 'sgp-documentos-anexos',
-      icon: 'description'
+      icon: 'assets/img/sgp/licensing.png'
     },
     {
       titulo: 'Detalle Presupuestal',
-      descripcion: 'Consulta el detalle de la información presupuestal por municipio',
+      descripcion: 'Consulta el detalle de la información presupuestal',
       boton: 'Consultar',
       link: 'sgp-detalle-presupuestal',
-      icon: 'account_balance_wallet'
+      icon: 'assets/img/sgp/budgeting.png'
     },
     {
       titulo: 'Ficha Comparativa',
-      descripcion: 'Compara la información financiera entre diferentes entidades territoriales',
+      descripcion: 'Compara vigencias y entidades',
       boton: 'Consultar',
       link: 'sgp-comparativa',
-      icon: 'compare_arrows'
-    },
-    {
-      titulo: 'Resguardos Indígenas',
-      descripcion: 'Información específica de las transferencias a resguardos indígenas',
-      boton: 'Consultar',
-      link: 'sgp-resguardos',
-      icon: 'groups'
-    },
-    {
-      titulo: 'Distribuciones SGP',
-      descripcion: 'Consulta las distribuciones realizadas',
-      boton: 'Consultar',
-      link: 'reports-sgp-dist',
-      icon: 'account_tree'
-    },
-    {
-      titulo: 'Presupuesto SGP',
-      descripcion: 'Información detallada del presupuesto',
-      boton: 'Consultar',
-      link: 'reports-sgp-budget',
-      icon: 'pie_chart'
+      icon: 'assets/img/sgp/compare.png'
     },
     {
       titulo: 'Gráficos SGP',
-      descripcion: 'Visualizaciones gráficas de los datos',
+      descripcion: 'Consulta de eficiencia',
       boton: 'Consultar',
-      link: 'graphics-sgp',
-      icon: 'bar_chart'
-    }
+      link: 'sgp-eficiencia',
+      icon: 'assets/img/sgp/efficiency.png'
+    },
+    {
+      titulo: 'Resguardos Indígenas',
+      descripcion: 'Consulta resguardos indígenas',
+      boton: 'Consultar',
+      link: 'sgp-resguardos',
+      icon: 'assets/img/sgp/indigenous.png'
+    },
+    {
+      titulo: 'Distribuciones SGP',
+      descripcion: 'Consulta las proyecciones del sistema',
+      boton: 'Consultar',
+      link: 'reports-sgp-dist',
+      icon: 'assets/img/sgp/forecast.png'
+    },
+    {
+      titulo: 'Presupuesto SGP',
+      descripcion: 'Consulta variables del sistema',
+      boton: 'Consultar',
+      link: 'reports-sgp-budget',
+      icon: 'assets/img/sgp/segmentation.png'
+    },    
   ];
 
   ngOnInit(): void {

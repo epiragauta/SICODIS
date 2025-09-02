@@ -111,10 +111,9 @@
            (click)="navigateToResource(recurso.link)"
            style="cursor: pointer;">
         <div class="card-icon-placeholder">
-          <mat-icon style="color: #fff;" class="mr-2 sgp-icon">{{ recurso.icon }}</mat-icon>
+          <img [src]="recurso.icon" alt="{{ recurso.titulo }}" class="mr-2 sgp-icon">
         </div>
         <div class="card-content">
-          <h3>{{ recurso.titulo }}</h3>
           <p>{{ recurso.descripcion }}</p>
         </div>
         <mat-icon style="font-size: 32px; color: #156082;">chevron_right</mat-icon>        
