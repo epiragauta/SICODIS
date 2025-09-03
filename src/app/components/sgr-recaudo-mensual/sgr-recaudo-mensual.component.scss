@@ -1,0 +1,707 @@
+.sicodis-container {
+  padding: 1rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  font-family: "Work Sans", sans-serif;
+
+  // Banner styles (from presupuesto-y-recaudo)
+  .gradient-banner {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    background-image: url('/assets/img/banner-funcionamiento.jpg');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    display: flex;
+    margin-bottom: .5rem;
+    border-radius: 8px;         
+    
+    .gradient-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 95%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        #e5e6e8b5 0%,
+        rgba(255, 255, 255, 0.01) 100%
+      );
+      z-index: 1;
+    }
+
+    .banner-content {
+      position: relative;
+      margin-top: 1rem;
+      z-index: 2;
+      padding: 1rem;
+      max-width: 70%;      
+      width: 1210px;
+      color: white;
+      
+      h2 {
+        font-size: 2rem;
+        margin-top: 2.25rem;
+        margin-bottom: 2.5rem;
+        color: #1a408c;
+        font-weight: bold;
+      }
+      
+      p {
+        font-size: 1.35rem;
+        margin-bottom: 2rem;
+        color: #264a70;        
+        width: 80%;
+        font-weight: 500;
+      }
+    }
+  }
+
+  // Date update styles
+  .date-update {
+    font-size: 0.65rem;
+    font-weight: bold;
+    color: #3366cc;
+    text-align: left;
+    margin-bottom: 0.125rem;
+  }
+
+  // Panel de filtros (from presupuesto-y-recaudo)
+  .filters-panel {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #dee2e6;
+    width: 100%;
+
+    .filters-row {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      font-size: 12px;
+      
+      .p-field {
+        flex: 1;
+        min-width: 140px;
+
+        &.periodo-desde-select {
+          min-width: 180px;
+        }
+
+        &.periodo-hasta-select {
+          min-width: 180px;
+        }
+
+        &.apply-filters {
+          flex: 0 0 auto;
+          min-width: auto;
+        }
+
+        &.clear-filters {
+          flex: 0 0 auto;
+          min-width: auto;
+        }
+      }
+    }
+  }
+}
+
+// Sección de botones de vista
+.view-buttons-section {
+  margin-bottom: 1rem;
+
+  .view-buttons-container {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-start;
+
+    button {
+      min-width: 120px;
+      transition: all 0.2s ease;
+
+      &.p-button-primary {
+        background-color: #004583;
+        border-color: #004583;
+        
+        &:hover {
+          background-color: #003366;
+          border-color: #003366;
+        }
+      }
+
+      &.p-button-secondary {
+        background-color: transparent;
+        border-color: #004583;
+        color: #004583;
+
+        &:hover {
+          background-color: #f1f5f9;
+          border-color: #003366;
+          color: #003366;
+        }
+      }
+    }
+  }
+}
+
+// Estilos para botones
+:host ::ng-deep {
+  .p-button {
+    font-family: "Work Sans", sans-serif;
+    font-weight: normal;
+    border-radius: 8px;
+    padding: 0.5rem 0.5rem;    
+  }
+
+  .p-select {
+    width: 150px;
+
+    .p-select-label {
+      font-size: 0.875rem;
+      font-weight: normal;
+    }
+  }
+
+  .p-floatlabel {
+    label {
+      font-family: "Work Sans", sans-serif;
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+  }
+}
+
+// Sección de gráficos (similar a donuts-section)
+.charts-section {
+  width: 100%;
+  margin-bottom: 2rem;
+
+  .charts-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    .chart-card {
+      flex: 1;
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+
+      .chart-title {
+        color: #004583;
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 0 0 1rem 0;
+        text-align: center;
+        line-height: 1.2;
+      }
+
+      .chart-content {
+        width: 100%;
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        :host ::ng-deep {
+          .p-chart {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            
+            canvas {
+              width: 100% !important;
+            }
+          }
+        }
+      }
+
+      .chart-footer {
+        border-top: 1px solid #e2e8f0;
+        padding-top: 0.75rem;
+
+        .source-note {
+          font-size: 0.75rem;
+          font-style: italic;
+          color: #6b7280;
+          margin: 0;
+          text-align: right;
+        }
+      }
+    }
+  }
+}
+
+// Responsive design para gráficos (similar a donuts responsive)
+@media (max-width: 768px) {
+  .charts-section {
+    .charts-container {
+      flex-direction: column;
+      gap: 1rem;
+
+      .chart-card {
+        .chart-title {
+          font-size: 0.9rem;
+        }
+
+        .chart-footer {
+          .source-note {
+            font-size: 0.7rem;
+            text-align: center;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Sección de tabla
+.table-section {
+  margin-top: 2rem;
+
+  .table-header {
+    margin-bottom: 1rem;
+
+    .table-title {
+      color: #004583;
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin: 0;
+      text-align: left;
+    }
+  }
+}
+
+// Estilos para tabla con encabezados agrupados
+:host ::ng-deep {
+  .p-datatable {
+    .p-datatable-thead > tr > th {
+      background-color: #f8fafc;
+      color: #374151;
+      font-weight: 600;
+      font-size: 0.875rem;
+      font-family: "Work Sans", sans-serif;
+      text-align: center;
+      padding: 0.75rem 0.5rem;
+      border-bottom: 2px solid #004583;
+
+      // Encabezado de mes (rowspan)
+      &.month-header {
+        background-color: #004583;
+        color: white;
+        font-weight: 700;
+        vertical-align: middle;
+      }
+
+      // Encabezados de grupo
+      &.group-header {
+        font-weight: 700;
+        font-size: 1rem;
+        
+        &.pbc-header {
+          background-color: #3b82f6;
+          color: white;
+        }
+        
+        &.recaudo-header {
+          background-color: #10b981;
+          color: white;
+        }
+        
+        &.variacion-header {
+          background-color: #c0bfbf;
+          color: white;
+        }
+      }
+
+      // Sub-encabezados
+      &.sub-header {
+        font-size: 0.8rem;
+        
+        &.pbc-sub {
+          background-color: #dbeafe;
+          color: #1e40af;
+        }
+        
+        &.recaudo-sub {
+          background-color: #d1fae5;
+          color: #065f46;
+        }
+        
+        &.variacion-sub {
+          background-color: #f1f1ef;
+          color: #92400e;
+        }
+      }
+    }
+
+    // Estilos para celdas del cuerpo
+    .p-datatable-tbody > tr {
+      &:hover {
+        background-color: #f1f5f9;
+      }
+
+      td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.875rem;
+        font-family: "Work Sans", sans-serif;
+        border-bottom: 1px solid #e2e8f0;
+
+        &.month-cell {
+          font-weight: 600;
+          background-color: #f8fafc;
+          color: #374151;
+        }
+
+        &.number-cell {
+          text-align: right;
+          font-family: "Work Sans", sans-serif;
+
+          &.total-cell {
+            font-weight: 600;
+            background-color: #f9fafb;
+          }
+        }
+
+        &.percentage-cell {
+          text-align: right;
+          font-weight: 600;
+          
+          &.positive {
+            color: #059669;
+          }
+          
+          &.negative {
+            color: #dc2626;
+          }
+
+          &.total-cell {
+            background-color: #f9fafb;
+          }
+        }
+
+        &.empty-message {
+          text-align: center;
+          font-style: italic;
+          color: #6b7280;
+          padding: 2rem;
+        }
+      }
+    }
+  }
+
+  // Responsive para tabla
+  @media (max-width: 768px) {
+    .p-datatable {
+      .p-datatable-thead > tr > th {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.75rem;
+
+        &.group-header {
+          font-size: 0.875rem;
+        }
+      }
+
+      .p-datatable-tbody > tr td {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
+
+// Estilos para acciones de tabla
+.table-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+
+  .download-excel-btn {
+    font-family: "Work Sans", sans-serif;
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+  }
+}
+
+// Responsive para acciones de tabla
+@media (max-width: 768px) {
+  .table-actions {
+    justify-content: center;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+
+    .download-excel-btn {
+      width: 100%;
+      max-width: 200px;
+    }
+  }
+}
+
+// Sección de tabla de comportamiento
+.behavior-table-section {
+  margin-top: 2rem;
+
+  .table-header {
+    margin-bottom: 1rem;
+
+    .table-title {
+      color: #004583;
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin: 0;
+      text-align: left;
+    }
+  }
+}
+
+// Estilos para tabla de comportamiento
+:host ::ng-deep {
+  .behavior-table {
+    .p-datatable-thead > tr > th {
+      background-color: #f8fafc;
+      color: #374151;
+      font-weight: 600;
+      font-size: 0.875rem;
+      font-family: "Work Sans", sans-serif;
+      text-align: center;
+      padding: 0.75rem 0.5rem;
+      border-bottom: 2px solid #004583;
+
+      &.concept-header {
+        background-color: #004583;
+        color: white;
+        font-weight: 700;
+        text-align: left;
+        width: 25%;
+      }
+
+      &.data-header {
+        background-color: #3b82f6;
+        color: white;
+        font-weight: 700;
+        width: 15%;
+      }
+    }
+
+    .p-datatable-tbody > tr {
+      &:hover {
+        background-color: #f1f5f9;
+      }
+
+      td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.875rem;
+        font-family: "Work Sans", sans-serif;
+        border-bottom: 1px solid #e2e8f0;
+
+        &.concept-cell {
+          font-weight: 600;
+          background-color: #f8fafc;
+          color: #374151;
+          text-align: left;
+        }
+
+        &.number-cell {
+          text-align: right;
+          font-weight: 600;
+          color: #004583;
+        }
+      }
+    }
+  }
+
+  // Responsive para tabla de comportamiento
+  @media (max-width: 768px) {
+    .behavior-table {
+      .p-datatable-thead > tr > th {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.75rem;
+      }
+
+      .p-datatable-tbody > tr td {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
+
+// Sección de tabla detallada con scroll horizontal
+.detailed-table-section {
+  margin-top: 2rem;
+
+  .table-header {
+    margin-bottom: 1rem;
+
+    .table-title {
+      color: #004583;
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin: 0;
+      text-align: left;
+    }
+  }
+}
+
+// Estilos para tabla detallada con encabezados agrupados
+:host ::ng-deep {
+  .detailed-table {
+    // Forzar scroll horizontal
+    .p-datatable-wrapper {
+      overflow-x: auto;
+    }
+    
+    .p-datatable-thead > tr > th {
+      background-color: #f8fafc;
+      color: #374151;
+      font-weight: 600;
+      font-size: 0.875rem;
+      font-family: "Work Sans", sans-serif;
+      text-align: center;
+      padding: 0.75rem 0.5rem;
+      border-bottom: 2px solid #004583;
+      white-space: nowrap;
+      min-width: 120px;
+
+      // Encabezado de período (rowspan)
+      &.period-header {
+        background-color: #004583;
+        color: white;
+        font-weight: 700;
+        vertical-align: middle;
+        min-width: 140px;
+      }
+
+      // Encabezados de grupo
+      &.group-header {
+        font-weight: 700;
+        font-size: 1rem;
+        
+        &.rc-header {
+          background-color: #3b82f6;
+          color: white;
+        }
+        
+        &.ro-header {
+          background-color: #10b981;
+          color: white;
+        }
+      }
+
+      // Encabezados individuales
+      &.individual-header {
+        background-color: #6b7280;
+        color: white;
+        font-weight: 700;
+        font-size: 0.9rem;
+        vertical-align: middle;
+      }
+
+      // Sub-encabezados
+      &.sub-header {
+        font-size: 0.8rem;
+        
+        &.rc-sub {
+          background-color: #dbeafe;
+          color: #1e40af;
+        }
+        
+        &.ro-sub {
+          background-color: #d1fae5;
+          color: #065f46;
+        }
+      }
+    }
+
+    // Estilos para celdas del cuerpo
+    .p-datatable-tbody > tr {
+      &:hover {
+        background-color: #f1f5f9;
+      }
+
+      td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.875rem;
+        font-family: "Work Sans", sans-serif;
+        border-bottom: 1px solid #e2e8f0;
+        white-space: nowrap;
+        min-width: 120px;
+
+        &.period-cell {
+          font-weight: 600;
+          background-color: #f8fafc;
+          color: #374151;
+          min-width: 140px;
+        }
+
+        &.number-cell {
+          text-align: right;
+          font-family: "Work Sans", sans-serif;
+
+          &.total-cell {
+            font-weight: 600;
+            background-color: #f9fafb;
+          }
+        }
+
+        &.percentage-cell {
+          text-align: right;
+          font-weight: 600;
+          color: #059669;
+        }
+
+        &.empty-message {
+          text-align: center;
+          font-style: italic;
+          color: #6b7280;
+          padding: 2rem;
+          min-width: auto;
+        }
+      }
+    }
+  }
+
+  // Responsive para tabla detallada
+  @media (max-width: 768px) {
+    .detailed-table {
+      .p-datatable-thead > tr > th {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.75rem;
+        min-width: 100px;
+
+        &.group-header {
+          font-size: 0.8rem;
+        }
+
+        &.period-header {
+          min-width: 120px;
+        }
+      }
+
+      .p-datatable-tbody > tr td {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.75rem;
+        min-width: 100px;
+
+        &.period-cell {
+          min-width: 120px;
+        }
+      }
+    }
+  }
+}

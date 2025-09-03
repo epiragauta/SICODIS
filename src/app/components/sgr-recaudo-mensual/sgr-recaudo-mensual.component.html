@@ -1,0 +1,380 @@
+<div class="sicodis-container">
+  
+  <!-- Popups para Diccionario y Siglas -->
+  <app-info-popup 
+    [infoText]="diccionarioContent" 
+    contentTitle="Diccionario de Conceptos"
+    [showPopup]="showDiccionarioPopup"
+    (onClose)="closeDiccionarioPopup()">
+  </app-info-popup>
+  
+  <app-info-popup 
+    [infoText]="siglasContent" 
+    contentTitle="Siglas y Abreviaciones"
+    [showPopup]="showSiglasPopup"
+    (onClose)="closeSiglasPopup()">
+  </app-info-popup>
+
+  <!-- Banner -->
+  <div class="gradient-banner">    
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h2>Recaudo mensual SGR</h2>
+        <p>Consulte el recaudo de regalías de ingresos corrientes y otros ingresos, distribuido por los conceptos de inversión, ahorro y administración. También, por tipo de recurso.</p>
+    </div>
+  </div>
+
+  <!-- Sección de botones Diccionario y Siglas -->
+  <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0;">
+    <div style="width: 83%;">
+      <p class="date-update">Fecha de actualización: junio 30 de 2025</p>
+      <p class="date-update">Fecha de corte de recaudo: mayo 30 de 2025</p>
+    </div>
+    <div style="position: relative; padding-bottom: .25rem;">
+      <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 2rem; width: 90px;"
+          (click)="showPopupDiccionario()">
+      </button>
+      <button pButton type="button" label="Siglas" class="p-button-secondary" style="width: 90px;"
+          (click)="showPopupSiglas()">
+      </button>
+    </div> 
+  </div>
+
+  <!-- Botones Recaudo y Tipo de recurso -->
+  <div class="view-buttons-section">
+    <div class="view-buttons-container">
+      <button pButton type="button" 
+              [class]="showRecaudoView ? 'p-button-primary' : 'p-button-secondary'" 
+              label="Recaudo" 
+              (click)="showRecaudo()">
+      </button>
+      <button pButton type="button" 
+              [class]="showTipoRecursoView ? 'p-button-primary' : 'p-button-secondary'" 
+              label="Tipo de recurso" 
+              (click)="showTipoRecurso()">
+      </button>
+    </div>
+  </div>
+
+  <!-- Panel de filtros -->
+  <div class="filters-panel">
+    <div class="filters-row">
+      <div class="p-field periodo-desde-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-datepicker id="periodoDesde" inputId="periodoDesdeSelect" [(ngModel)]="selectedPeriodoDesde"
+            view="month" dateFormat="mm/yy" [showIcon]="true" placeholder="Seleccione período desde">
+          </p-datepicker>
+          <label for="periodoDesdeSelect">Período desde</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field periodo-hasta-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-datepicker id="periodoHasta" inputId="periodoHastaSelect" [(ngModel)]="selectedPeriodoHasta"
+            view="month" dateFormat="mm/yy" [showIcon]="true" placeholder="Seleccione período hasta">
+          </p-datepicker>
+          <label for="periodoHastaSelect">Período hasta</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field apply-filters">
+        <button pButton type="button"
+            icon="pi pi-check"
+            label="Aplicar filtros"
+            class="p-button-primary"
+            (click)="applyFilters()">
+        </button>
+      </div>
+
+      <div class="p-field clear-filters">
+        <button pButton type="button"
+            icon="pi pi-eraser"
+            label="Limpiar filtros"
+            class="p-button-secondary"
+            (click)="clearFilters()">
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección de gráficos - Solo visible cuando está seleccionado Recaudo -->
+  <div *ngIf="showRecaudoView" class="charts-section">
+    <div class="charts-container">
+      <!-- Gráfico de Minería -->
+      <div class="chart-card">
+        <h3 class="chart-title">Recaudo y PBC Minería</h3>
+        <div class="chart-content">
+          <p-chart 
+            type="bar" 
+            [data]="miningChartData" 
+            [options]="miningChartOptions"
+            width="570px"
+            height="300px">
+          </p-chart>
+        </div>
+        <div class="chart-footer">
+          <p class="source-note">Fuente de información: Agencia Nacional de Minería</p>
+        </div>
+      </div>
+
+      <!-- Gráfico de Hidrocarburos -->
+      <div class="chart-card">
+        <h3 class="chart-title">Recaudo y PBC Hidrocarburos</h3>
+        <div class="chart-content">
+          <p-chart 
+            type="bar" 
+            [data]="hydrocarbonChartData" 
+            [options]="hydrocarbonChartOptions"
+            width="570px"
+            height="300px">
+          </p-chart>
+        </div>
+        <div class="chart-footer">
+          <p class="source-note">Fuente de información: Agencia Nacional de Hidrocarburos</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección de gráficos - Solo visible cuando está seleccionado Tipo de Recurso -->
+  <div *ngIf="showTipoRecursoView" class="charts-section">
+    <div class="charts-container">
+      <!-- Gráfico de Conceptos de Gasto -->
+      <div class="chart-card">
+        <h3 class="chart-title">PBC frente al recaudo por concepto de gasto</h3>
+        <div class="chart-content">
+          <p-chart 
+            type="bar" 
+            [data]="conceptChartData" 
+            [options]="conceptChartOptions"
+            width="570px"
+            height="300px">
+          </p-chart>
+        </div>
+        <div class="chart-footer">
+          <p class="source-note">Fuente de información: Sistema General de Regalías</p>
+        </div>
+      </div>
+
+      <!-- Gráfico de Tendencia Mensual -->
+      <div class="chart-card">
+        <h3 class="chart-title">Tendencia mensual del PBC frente al recaudo</h3>
+        <div class="chart-content">
+          <p-chart 
+            type="line" 
+            [data]="trendChartData" 
+            [options]="trendChartOptions"
+            width="570px"
+            height="300px">
+          </p-chart>
+        </div>
+        <div class="chart-footer">
+          <p class="source-note">Fuente de información: Sistema General de Regalías</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de comportamiento - Solo visible cuando está seleccionado Tipo de Recurso -->
+  <div *ngIf="showTipoRecursoView" class="behavior-table-section">
+    <div class="table-header">
+      <h2 class="table-title">Comportamiento del recaudo corriente y otras distribuciones</h2>
+    </div>
+    
+    <p-table [value]="behaviorTableData" 
+             styleClass="p-datatable-sm behavior-table">
+             
+      <!-- Encabezados -->
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="concept-header">{{behaviorTableColumns[0].header}}</th>
+          <th class="data-header" *ngFor="let col of behaviorTableColumns.slice(1)">{{col.header}}</th>
+        </tr>
+      </ng-template>
+      
+      <!-- Fila de datos -->
+      <ng-template pTemplate="body" let-rowData>
+        <tr>
+          <td class="concept-cell">{{rowData.concepto}}</td>
+          <td class="number-cell" *ngFor="let col of behaviorTableColumns.slice(1)">
+            {{rowData[col.field] | numberFormat}}
+          </td>
+        </tr>
+      </ng-template>
+      
+    </p-table>
+  </div>
+
+  <!-- Tabla detallada con scroll horizontal - Solo visible cuando está seleccionado Tipo de Recurso -->
+  <div *ngIf="showTipoRecursoView" class="detailed-table-section">
+    <div class="table-header">
+      <h2 class="table-title">Detalle del recaudo mensual por conceptos de distribución</h2>
+    </div>
+    
+    <p-table [value]="detailedTableData" 
+             [paginator]="true" 
+             [rows]="12" 
+             [showCurrentPageReport]="true" 
+             currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+             [scrollable]="true" 
+             scrollHeight="400px"
+             styleClass="p-datatable-sm detailed-table">
+             
+      <!-- Encabezados agrupados -->
+      <ng-template pTemplate="header">
+        <tr>
+          <th rowspan="2" class="period-header">Periodo de recaudo</th>
+          <th colspan="5" class="group-header rc-header">Recaudo Corriente</th>
+          <th rowspan="2" class="individual-header">Total PBC</th>
+          <th rowspan="2" class="individual-header">Avance</th>
+          <th colspan="4" class="group-header ro-header">Recaudo Otros</th>
+          <th rowspan="2" class="individual-header">Total distribuido</th>
+        </tr>
+        <tr>
+          <!-- Sub-encabezados Recaudo Corriente -->
+          <th class="sub-header rc-sub">Inversión aforada</th>
+          <th class="sub-header rc-sub">Ahorro</th>
+          <th class="sub-header rc-sub">Administración y SSEC</th>
+          <th class="sub-header rc-sub">No aforado</th>
+          <th class="sub-header rc-sub">Total Recaudo</th>
+          <!-- Sub-encabezados Recaudo Otros -->
+          <th class="sub-header ro-sub">Inversión</th>
+          <th class="sub-header ro-sub">Ahorro</th>
+          <th class="sub-header ro-sub">Administración y SSEC</th>
+          <th class="sub-header ro-sub">Total recaudo otros</th>
+        </tr>
+      </ng-template>
+      
+      <!-- Filas de datos -->
+      <ng-template pTemplate="body" let-rowData>
+        <tr>
+          <td class="period-cell">{{rowData.periodo}}</td>
+          <!-- Recaudo Corriente data -->
+          <td class="number-cell">{{rowData.rc_inversion_aforada | numberFormat}}</td>
+          <td class="number-cell">{{rowData.rc_ahorro | numberFormat}}</td>
+          <td class="number-cell">{{rowData.rc_administracion | numberFormat}}</td>
+          <td class="number-cell">{{rowData.rc_no_aforado | numberFormat}}</td>
+          <td class="number-cell total-cell">{{rowData.rc_total | numberFormat}}</td>
+          <!-- Individual columns -->
+          <td class="number-cell">{{rowData.total_pbc | numberFormat}}</td>
+          <td class="percentage-cell">{{formatPercentage(rowData.avance)}}</td>
+          <!-- Recaudo Otros data -->
+          <td class="number-cell">{{rowData.ro_inversion | numberFormat}}</td>
+          <td class="number-cell">{{rowData.ro_ahorro | numberFormat}}</td>
+          <td class="number-cell">{{rowData.ro_administracion | numberFormat}}</td>
+          <td class="number-cell total-cell">{{rowData.ro_total | numberFormat}}</td>
+          <!-- Final total -->
+          <td class="number-cell total-cell">{{rowData.total_distribuido | numberFormat}}</td>
+        </tr>
+      </ng-template>
+      
+      <!-- Template cuando no hay datos -->
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="13" class="empty-message">
+            Seleccione un rango de fechas válido para ver los datos
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+    
+    <!-- Botón Descargar Excel para tabla detallada -->
+    <div class="table-actions">
+      <button pButton type="button" 
+              icon="pi pi-file-excel" 
+              label="Descargar Excel" 
+              class="p-button-success download-excel-btn"
+              (click)="downloadDetailedExcel()">
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabla de datos - Solo visible cuando está seleccionado Recaudo -->
+  <div *ngIf="showRecaudoView" class="table-section">
+    <div class="table-header">
+      <h2 class="table-title">Comparativo del recaudo por tipo de recurso frente al PBC</h2>
+    </div>
+    
+    <p-table [value]="tableData" 
+             [paginator]="true" 
+             [rows]="12" 
+             [showCurrentPageReport]="true" 
+             currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+             [scrollable]="true" 
+             scrollHeight="400px"
+             styleClass="p-datatable-sm">
+             
+      <!-- Encabezados agrupados -->
+      <ng-template pTemplate="header">
+        <tr>
+          <th rowspan="2" class="month-header">Mes</th>
+          <th colspan="3" class="group-header pbc-header">PBC</th>
+          <th colspan="3" class="group-header recaudo-header">Recaudo</th>
+          <th colspan="3" class="group-header variacion-header">Variación</th>
+        </tr>
+        <tr>
+          <!-- PBC columns -->
+          <th class="sub-header pbc-sub">Minería</th>
+          <th class="sub-header pbc-sub">Hidrocarburos</th>
+          <th class="sub-header pbc-sub">Total</th>
+          <!-- Recaudo columns -->
+          <th class="sub-header recaudo-sub">Minería</th>
+          <th class="sub-header recaudo-sub">Hidrocarburos</th>
+          <th class="sub-header recaudo-sub">Total</th>
+          <!-- Variación columns -->
+          <th class="sub-header variacion-sub">Minería</th>
+          <th class="sub-header variacion-sub">Hidrocarburos</th>
+          <th class="sub-header variacion-sub">Total</th>
+        </tr>
+      </ng-template>
+      
+      <!-- Filas de datos -->
+      <ng-template pTemplate="body" let-rowData>
+        <tr>
+          <td class="month-cell">{{rowData.mes}}</td>
+          <!-- PBC data -->
+          <td class="number-cell">{{rowData.pbc_mineria | numberFormat}}</td>
+          <td class="number-cell">{{rowData.pbc_hidrocarburos | numberFormat}}</td>
+          <td class="number-cell total-cell">{{rowData.pbc_total | numberFormat}}</td>
+          <!-- Recaudo data -->
+          <td class="number-cell">{{rowData.recaudo_mineria | numberFormat}}</td>
+          <td class="number-cell">{{rowData.recaudo_hidrocarburos | numberFormat}}</td>
+          <td class="number-cell total-cell">{{rowData.recaudo_total | numberFormat}}</td>
+          <!-- Variación data -->
+          <td class="percentage-cell" [ngClass]="{
+            'positive': rowData.variacion_mineria >= 0,
+            'negative': rowData.variacion_mineria < 0
+          }">{{formatPercentage(rowData.variacion_mineria)}}</td>
+          <td class="percentage-cell" [ngClass]="{
+            'positive': rowData.variacion_hidrocarburos >= 0,
+            'negative': rowData.variacion_hidrocarburos < 0
+          }">{{formatPercentage(rowData.variacion_hidrocarburos)}}</td>
+          <td class="percentage-cell total-cell" [ngClass]="{
+            'positive': rowData.variacion_total >= 0,
+            'negative': rowData.variacion_total < 0
+          }">{{formatPercentage(rowData.variacion_total)}}</td>
+        </tr>
+      </ng-template>
+      
+      <!-- Template cuando no hay datos -->
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="10" class="empty-message">
+            Seleccione un rango de fechas válido para ver los datos
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+    
+    <!-- Botón Descargar Excel -->
+    <div class="table-actions">
+      <button pButton type="button" 
+              icon="pi pi-file-excel" 
+              label="Descargar Excel" 
+              class="p-button-success download-excel-btn"
+              (click)="downloadExcel()">
+      </button>
+    </div>
+  </div>
+
+</div>
