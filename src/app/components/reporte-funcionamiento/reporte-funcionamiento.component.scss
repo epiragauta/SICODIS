@@ -1,6 +1,6 @@
 .reporte-funcionamiento-container {
-  padding: .1rem;
-  max-width: 1260px;
+  padding: 1rem;
+  max-width: 1320px;
   margin: 0 auto;
   font-family: 'Work Sans', sans-serif;
 
@@ -213,14 +213,14 @@
   .dates-buttons-container {
     display: flex;
     width: 100%;
-    max-width: 1260px;
+    max-width: 1320px;
     margin-left: auto;
     margin-right: auto;
   }
 
   // Contenedor de notas finales
   .final-notes-container {
-    max-width: 1260px;
+    max-width: 1320px;
     margin-left: auto;
     margin-right: auto;
     width: 100%;
@@ -231,7 +231,7 @@
     display: flex;
     gap: 1rem;
     margin-bottom: .5rem;
-    max-width: 1260px;
+    max-width: 1320px;
     margin-left: auto;
     margin-right: auto;
     width: 100%;
@@ -338,7 +338,7 @@
 
     // Columna derecha (40%)
     .right-column {
-      flex: 0 0 38%;
+      flex: 0 0 39%;
       display: flex;
       flex-direction: column;
       gap: 1rem;
@@ -424,7 +424,7 @@
   // Detalle del registro seleccionado
   .registro-detalle {
     margin-bottom: 2rem;
-    max-width: 1260px;
+    max-width: 1320px;
     margin-left: auto;
     margin-right: auto;
     width: 100%;
@@ -467,7 +467,7 @@
     margin-bottom: 2rem;
     flex-wrap: wrap;
     justify-content: center;
-    max-width: 1260px;
+    max-width: 1320px;
     margin-left: auto;
     margin-right: auto;
     width: 100%;
@@ -500,7 +500,7 @@
     border-radius: 8px;
     padding: 1.5rem;
     border: 1px solid #dee2e6;
-    max-width: 1260px;
+    max-width: 1320px;
     margin-left: auto;
     margin-right: auto;
     width: 100%;

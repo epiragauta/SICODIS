@@ -26,22 +26,6 @@
     </div>
   </div>
 
-  <!-- Sección de botones Diccionario y Siglas -->
-  <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0;">
-    <div style="width: 83%;">
-      <p class="date-update">Fecha de actualización: junio 30 de 2025</p>
-      <p class="date-update">Fecha de corte de recaudo: mayo 30 de 2025</p>
-    </div>
-    <div style="position: relative; padding-bottom: .25rem;">
-      <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 2rem; width: 90px;"
-          (click)="showPopupDiccionario()">
-      </button>
-      <button pButton type="button" label="Siglas" class="p-button-secondary" style="width: 90px;"
-          (click)="showPopupSiglas()">
-      </button>
-    </div> 
-  </div>
-
   <!-- Panel de filtros -->
   <div class="filters-panel">
     <div class="filters-row">
@@ -120,6 +104,7 @@
       </div>
     </div>
   </div>
+
 
   <!-- Sección principal con dos columnas -->
   <div class="main-content">
@@ -252,9 +237,7 @@
   <div class="table-section">
     <p-treetable [value]="data"
                         [columns]="cols"
-                        [paginator]="true"
                         showGridlines
-                        [rows]="20"
                         [scrollable]="true"
                         scrollHeight="510spx"
                         selectionMode="single"
@@ -334,6 +317,33 @@
               </ng-template>
 
           </p-treetable>
+
+          <!-- Botones centrados -->
+          <div class="table-actions-centered">
+            <button pButton type="button" 
+                    icon="pi pi-file-excel" 
+                    label="Exportar Excel" 
+                    class="p-button-success export-excel-btn"
+                    (click)="exportExcel()">
+            </button>
+            
+            <p-splitbutton 
+              label="Informes de recaudo" 
+              icon="pi pi-history"
+              class="p-button-secondary historic-split-btn"
+              [model]="historicMenuItems"
+              (onClick)="handleHistoricClick()">
+            </p-splitbutton>
+          </div>
+
+          <!-- Sección de notas -->
+          <div class="notes-section">
+            <h3 class="notes-title">NOTAS</h3>
+            <div class="notes-content">
+              <p class="note-item">(1) Cifras en pesos corrientes.</p>
+              <p class="note-item">(2) Ley 2441 de 2024 – Decretos 379 y 380 del 2025</p>
+            </div>
+          </div>
   </div>
 
 </div>

@@ -1,6 +1,30 @@
+// Sobrescribir estilos de PrimeNG
+:host ::ng-deep {
+
+  .p-dialog-header{
+    padding: .5rem;
+  }
+
+  .p-multiselect-label {
+    padding: .425rem !important;
+  }
+  .p-select-label {
+    padding: .425rem !important;
+  }
+  .p-button {
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-size: 0.75rem;
+
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
+}
 .sicodis-container {
   padding: 1rem;
-  max-width: 1280px;
+  max-width: 1320px;
   margin: 0 auto;
   font-family: "Work Sans", sans-serif;
 
@@ -72,7 +96,7 @@
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     border-radius: 8px;
     padding: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: .25rem;
     border: 1px solid #dee2e6;
     width: 100%;
 
@@ -503,6 +527,126 @@ clear-filters{
       font-size: 0.9em;
       color: #555;
       font-weight: normal;      
+  }
+}
+
+// Estilos para botones centrados debajo de la tabla
+.table-actions-centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+
+  .export-excel-btn {
+    font-family: "Work Sans", sans-serif;
+    font-weight: 500;
+    border-radius: 8px;
+        
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+  }
+
+  .historic-split-btn {
+    font-family: "Work Sans", sans-serif;
+    font-weight: 500;
+    border-radius: 8px;
+    
+    :host ::ng-deep {
+      .p-splitbutton-defaultbutton,
+      .p-splitbutton-menubutton {
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-family: "Work Sans", sans-serif;
+        
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+        }
+      }
+      
+      .p-splitbutton-defaultbutton {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+      
+      .p-splitbutton-menubutton {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+    }
+  }
+}
+
+// Responsive para botones centrados
+@media (max-width: 768px) {
+  .table-actions-centered {
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    
+    .export-excel-btn,
+    .historic-split-btn {
+      width: 100%;
+      max-width: 250px;
+    }
+  }
+}
+
+// Sección de notas
+.notes-section {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+
+  .notes-title {
+    color: #004583;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+    text-align: left;
+    font-family: "Work Sans", sans-serif;
+  }
+
+  .notes-content {
+    .note-item {
+      color: #374151;
+      font-size: 0.9rem;
+      font-family: "Work Sans", sans-serif;
+      font-weight: 400;
+      line-height: 1.5;
+      margin: 0 0 0.5rem 0;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+// Responsive para sección de notas
+@media (max-width: 768px) {
+  .notes-section {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    
+    .notes-title {
+      font-size: 1rem;
+    }
+    
+    .notes-content {
+      .note-item {
+        font-size: 0.85rem;
+      }
+    }
   }
 }
 

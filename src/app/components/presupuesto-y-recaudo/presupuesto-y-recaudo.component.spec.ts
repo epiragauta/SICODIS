@@ -19,7 +19,7 @@ describe('PresupuestoYRecaudoComponent', () => {
         '(max-width: 599.98px)': false,
         '(min-width: 600px) and (max-width: 959.98px)': false,
         '(min-width: 960px) and (max-width: 1279.98px)': true,
-        '(min-width: 1280px)': false
+        '(min-width: 1320px)': false
       }
     }));
 

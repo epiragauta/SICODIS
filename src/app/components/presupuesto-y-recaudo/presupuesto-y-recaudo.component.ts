@@ -94,6 +94,9 @@ export class PresupuestoYRecaudoComponent implements OnInit {
   treeTableCols: any[] = [];
   selectedNode: TreeNode | null = null;
 
+  // Configuración para split button histórico
+  historicMenuItems: MenuItem[] = [];
+
   // Filtros
   selectedVigencia: any = { id: 1, label: '2025 - 2026' };
   selectedTipoIngreso: any = { id: 1, label: 'Total' };
@@ -142,12 +145,6 @@ export class PresupuestoYRecaudoComponent implements OnInit {
   dptos = departamentos;
   entities = territorialEntities;
   infoPopupContent: string = '';
-
-  // Propiedades para popups de Diccionario y Siglas
-  showDiccionarioPopup: boolean = false;
-  showSiglasPopup: boolean = false;
-  diccionarioContent: string = '';
-  siglasContent: string = '';
   
   cols: any[] = [];
   colsA: any[] = [];
@@ -207,6 +204,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
 
   ngOnInit() {
     this.initializeMenuItems();
+    this.initializeHistoricMenu();
     this.initializeCharts();
     //this.initializeTreeTableColumns();
     this.loadFinancialData();
@@ -754,36 +752,84 @@ export class PresupuestoYRecaudoComponent implements OnInit {
     }
 
   /**
-   * Mostrar popup del diccionario
+   * Inicializar menú para split button histórico
    */
-  showPopupDiccionario(): void {
-    console.log('Mostrando diccionario de datos');
-    this.diccionarioContent = this.generarContenidoDiccionario();
-    this.showDiccionarioPopup = true;
+  initializeHistoricMenu(): void {
+    this.historicMenuItems = [
+      {
+        label: 'Histórico',
+        icon: 'pi pi-calendar',
+        command: () => {
+          this.showHistoric();
+        }
+      }
+    ];
   }
 
   /**
-   * Mostrar popup de siglas
+   * Manejar click principal del split button histórico
    */
-  showPopupSiglas(): void {
-    console.log('Mostrando siglas');
-    this.siglasContent = this.generarContenidoSiglas();
-    this.showSiglasPopup = true;
+  handleHistoricClick(): void {
+    console.log('Histórico button clicked');
+    this.showHistoric();
   }
 
   /**
-   * Cerrar popup del diccionario
+   * Mostrar histórico
    */
-  closeDiccionarioPopup(): void {
-    this.showDiccionarioPopup = false;
+  private showHistoric(): void {
+    console.log('Mostrando histórico...');
+    // Aquí se implementaría la lógica para mostrar datos históricos
+    alert('Funcionalidad de histórico pendiente de implementación');
   }
 
   /**
-   * Cerrar popup de siglas
+   * Exportar datos a Excel
    */
-  closeSiglasPopup(): void {
-    this.showSiglasPopup = false;
+  exportExcel(): void {
+    console.log('Exportando a Excel...');
+    
+    if (!this.data || this.data.length === 0) {
+      console.warn('No hay datos para exportar');
+      alert('No hay datos disponibles para exportar');
+      return;
+    }
+
+    // Preparar datos para Excel (aplanar la estructura de árbol)
+    const flattenTreeData = (nodes: TreeNode[], level: number = 0): any[] => {
+      let result: any[] = [];
+      
+      nodes.forEach(node => {
+        if (node.data) {
+          const rowData = {
+            'Concepto': '  '.repeat(level) + node.data.concepto,
+            'Presupuesto Total Vigente': node.data.presupuesto_total_vigente || 0,
+            'Presupuesto Corriente': node.data.presupuesto_corriente || 0,
+            'Recaudo Corriente Informado': node.data.caja_corriente_informada || 0,
+            'Porcentaje Corriente': this.formatPercentage(node.data.porcentaje_1),
+            'Presupuesto Otros': node.data.presupuesto_otros || 0,
+            'Recaudo Total': node.data.caja_total || 0,
+            'Porcentaje Total': this.formatPercentage(node.data.porcentaje_2)
+          };
+          result.push(rowData);
+        }
+        
+        if (node.children && node.children.length > 0) {
+          result = result.concat(flattenTreeData(node.children, level + 1));
+        }
+      });
+      
+      return result;
+    };
+
+    const excelData = flattenTreeData(this.data);
+    console.log('Datos preparados para Excel:', excelData);
+    
+    // Aquí se implementaría la lógica real de descarga Excel
+    // Por ejemplo, usando una librería como SheetJS o similar
+    alert('Función de exportación Excel pendiente de implementación. Ver consola para datos.');
   }
+
 
   /**
    * Generar contenido del diccionario
