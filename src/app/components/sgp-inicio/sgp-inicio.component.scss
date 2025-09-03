@@ -16,12 +16,21 @@
   margin-bottom: .5rem;
   border-radius: 8px;
   
+  .gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; 
+    height: 100%;
+    background: linear-gradient(90deg, #f9fbfccc 0%, rgb(53 95 147 / 31%) 100%);      
+  }
+
   .banner-content {
     position: relative;
     margin-top: 1rem;
     z-index: 2;
     padding: 1rem;
-    max-width: 80%;
+    max-width: 80%;    
         
     h2 {
       font-size: 2rem;
@@ -36,9 +45,10 @@
     p {
         font-size: 1.35rem;
         margin-bottom: 1rem;
-        color: #cbdbec;     
-        width: 100%;
+        color: #264a70;     
+        width: 80%;
         font-weight: 500;
+        text-shadow: 1px 1px 3px rgba(245, 245, 247, 0.92);
       }
   }
 }
