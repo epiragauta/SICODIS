@@ -41,15 +41,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         command: () => this.redirectHome()
       },
       {
-        label: 'Sobre SICODIS',
-        items: [
-          {
-            label: 'Variables de distribución Sistema General de Participaciones y Sistema General de Regalias',
-            command: () => this.redirectHome()
-          }
-        ]
-      },
-      {
         label: 'SGP',
         items: [
           {
@@ -103,7 +94,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         ]
       },
       {
-        label: 'Histórico',
+        label: 'PGN',
         items: [
           {
             label: 'Histórico Situado – Fiscal y  PICN 199 a 2001 (entidades y conceptos)'

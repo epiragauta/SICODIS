@@ -531,7 +531,7 @@ export class HomeComponent implements OnInit {
     this.sgrPorcentajeCorrientes = corrientesPorcentaje.toFixed(1).replace('.', ',');
     
     this.donutSgrCorrientesData = {
-      labels: ['Distribuido', 'Restante'],
+      labels: ['Distribución', 'Presupuesto'],
       datasets: [
         {
           data: [corrientesDistribuido, corrientesRestante],
@@ -552,7 +552,7 @@ export class HomeComponent implements OnInit {
     this.sgrPorcentajeOtros = otrosPorcentaje.toFixed(1).replace('.', ',');
     
     this.donutSgrOtrosData = {
-      labels: ['Distribuido', 'Restante'],
+      labels: ['Distribución', 'Presupuesto'],
       datasets: [
         {
           data: [otrosDistribuido, otrosRestante],

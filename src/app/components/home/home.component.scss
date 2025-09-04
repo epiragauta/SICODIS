@@ -19,6 +19,8 @@
   overflow: hidden;
   display: flex;
   align-items: center;
+  margin-bottom: 1rem;
+  border-radius: 8px;
   
   .gradient-overlay {
     position: absolute;
@@ -62,6 +64,7 @@
   .gradient-banner {
     height: 300px;
     text-align: center;
+    padding-bottom: 1rem;
     
     .gradient-overlay {
       width: 100%; /* En móvil cubre toda la imagen */

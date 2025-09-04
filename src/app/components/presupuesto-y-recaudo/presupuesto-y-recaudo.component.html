@@ -128,7 +128,7 @@
       <!-- Columna izquierda: Tarjetas financieras -->
       <mat-grid-tile>
         <div class="cards-section">
-          <h2 class="section-title">Resumen Financiero</h2>
+          <h2 class="section-title">Resumen Presupuesto y Recaudo</h2>
           
           <!-- Grid de tarjetas 3x2 (3 filas, 2 columnas) -->
           <mat-grid-list cols="2" rowHeight="120px" gutterSize="12" class="cards-grid">
@@ -197,7 +197,7 @@
       <!-- Columna derecha: Gráfico de barras horizontales -->
       <mat-grid-tile>
         <div class="chart-section">
-          <h2 class="section-title">Comparativo Presupuesto vs Recaudo</h2>
+          <h2 class="section-title">Recaudo Frente al Presupuesto</h2>
           <div class="chart-container">
             <p-chart 
               type="bar" 
@@ -261,15 +261,7 @@
                         [resizableColumns]="true"
                         columnResizeMode="expand">
 
-            <ng-template pTemplate="caption">
-              <div class="caption-container">
-                <h2 class="reports-title">Propuesta Resumen SGR</h2>
-                <p class="instruction-text">
-                    Haga clic en el encabezado "Presupuesto Otros" para ver el detalle de las fuentes
-                  </p>
-              </div>
-            </ng-template>
-
+            
             <ng-template pTemplate="colgroup" let-columns>
               <colgroup>
                 <col *ngFor="let col of columns" [style.width]="col.width">

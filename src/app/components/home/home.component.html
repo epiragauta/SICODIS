@@ -4,26 +4,15 @@
       <!-- Contenido opcional sobre el banner -->
       <div class="banner-content">
         <h2>Bienvenido a SICODIS</h2>
-        <p>El Sistema de información y consulta de distribuciones de recursos territoriales "SICODIS", presenta información agregada y detallada, 
+        <p>El Sistema de información y consulta de distribuciones de recursos "SICODIS", presenta información agregada y detallada, 
           correspondiente a las distribuciones de los recursos del Sistema General de Participaciones (SGP) y el Sistema General de Regalías (SGR) realizadas por el DNP.
- 	 	 	 	</p>
-        <button pButton type="button" label="Sobre SICODIS" class="p-button-primary"></button>
+ 	 	 	 	</p>        
       </div>
     </div>
     <!-- <div class="banner">
         <img src="/assets/img/banner_welcome.svg" alt="banner-welcome">
     </div> -->
     <div class="reports">
-
-
-        <!-- <mat-grid-list class="grid-styles" cols="4">
-            <mat-grid-tile class="grid-title-styles" *ngFor="let reportsItem of reports">
-                <app-reports-target [reports]="reportsItem"></app-reports-target>
-            </mat-grid-tile>
-        </mat-grid-list> -->
-
-        <h1 class="sicodis sicodis-title">¿Qué encontrará en SICODIS?</h1>
-        <p class="desc-sicodis">En SICODIS encontrará información detallada sobre la distribución de recursos asociada a:</p>
         <div class="grid-container">
           <mat-grid-list [cols]="cols2" rowHeight="500" gutterSize="16">
             <mat-grid-tile>
@@ -93,7 +82,7 @@
           </mat-grid-list>
         </div>
 
-    <h1 class="sicodis sicodis-subtitle">Consulta a continuación la información vigente de los dos sistemas</h1>
+    <h1 class="sicodis sicodis-subtitle">Consulte a continuación la información vigente de los dos sistemas</h1>
     <h5 class="sicodis-h5">Cifras en pesos corrientes</h5>
     
     <div class="filter-panel" style="display:none;">
@@ -177,7 +166,7 @@
               <ng-template pTemplate="header">
                 <tr>
                   <th class="table-header">Concepto</th>
-                  <th class="table-header">Presupuesto Total</th>
+                  <th class="table-header">Total Presupuesto</th>
                   <th class="table-header">Avance Distribución</th>
                 </tr>
               </ng-template>
@@ -242,7 +231,7 @@
       </mat-grid-list>
     </div>
 
-    <h1 class="reports-title">Últimos reportes</h1>
+    <h1 class="reports-title">Información de Interés</h1>
 
         <div class="grid-container">
           <mat-grid-list [cols]="cols" rowHeight="300px" gutterSize="16">
