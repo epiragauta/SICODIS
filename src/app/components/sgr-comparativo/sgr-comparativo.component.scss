@@ -294,6 +294,16 @@
   max-width: 100%;
   overflow: visible;
 
+  .charts-main-title {
+    font-family: "Work Sans", sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #004583;
+    text-align: center;
+    margin: 0 0 1.5rem 0;
+    padding: 0;
+  }
+
   .single-chart-container {
     width: 100%;
 
@@ -455,6 +465,168 @@
         li {
           margin-bottom: 0.25rem;
         }
+      }
+    }
+  }
+}
+
+// Table section styles
+.table-section {
+  margin-bottom: 2rem;
+
+  .table-header {
+    margin-bottom: 1rem;
+
+    .table-title {
+      font-family: "Work Sans", sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #004583;
+      text-align: center;
+      margin: 0;
+    }
+  }
+}
+
+// PrimeNG table overrides with :host ::ng-deep
+:host ::ng-deep {
+  .comparative-table {
+    font-family: "Work Sans", sans-serif;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    .p-datatable-table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    .p-datatable-thead > tr > th {
+      border: 1px solid #e2e8f0;
+      padding: 0.75rem;
+      font-family: "Work Sans", sans-serif;
+      font-weight: 700;
+      text-align: center;
+
+      // Entity header (rowspan)
+      &.entity-header {
+        background-color: #004583 !important;
+        color: white !important;
+        font-size: 0.9rem;
+        padding: 1rem 0.5rem;
+        vertical-align: middle;
+      }
+
+      // Group headers (colspan)
+      &.group-header {
+        background-color: #f8fafc !important;
+        color: #004583 !important;
+        font-size: 0.85rem;
+        padding: 0.75rem 0.5rem;
+        border-bottom: 1px solid #e2e8f0;
+
+        &.directas-header {
+          background-color: #447721 !important;
+          color: white !important;
+        }
+
+        &.local-header {
+          background-color: #0f4987 !important;
+          color: white !important;
+        }
+      }
+
+      // Sub headers
+      &.sub-header {
+        font-weight: 600;
+        font-size: 0.8rem;
+        padding: 0.5rem;
+        
+        &.directas-sub {
+          background-color: #e8f5e8 !important;
+          color: #447721 !important;
+          border-right: 1px solid #d1e7dd;
+        }
+
+        &.local-sub {
+          background-color: #e3f2fd !important;
+          color: #0f4987 !important;
+          border-right: 1px solid #bbdefb;
+        }
+      }
+    }
+
+    .p-datatable-tbody > tr > td {
+      border: 1px solid #f1f5f9;
+      padding: 0.75rem;
+      font-family: "Work Sans", sans-serif;
+
+      // Entity cells
+      &.entity-cell {
+        background-color: #f8fafc !important;
+        color: #004583 !important;
+        font-weight: 600;
+        text-align: left;
+        border-right: 2px solid #e2e8f0;
+      }
+
+      // Number cells
+      &.number-cell {
+        text-align: right;
+        font-weight: 500;
+        color: #374151;
+      }
+    }
+
+    // Row styling
+    .p-datatable-tbody > tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+
+    .p-datatable-tbody > tr:hover {
+      background-color: #f1f5f9 !important;
+    }
+  }
+
+  .table-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+
+    .export-btn {
+      min-width: 180px;
+      font-family: "Work Sans", sans-serif;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+
+      &.p-button-success {
+        
+        &:hover {
+          background-color: #047857;
+          border-color: #047857;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 8px rgba(5, 150, 105, 0.3);
+        }
+      }
+
+      &.p-button-primary {
+        
+        &:hover {
+          background-color: #003366;
+          border-color: #003366;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 8px rgba(0, 69, 131, 0.3);
+        }
+      }
+
+      .pi {
+        margin-right: 0.5rem;
       }
     }
   }

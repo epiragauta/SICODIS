@@ -54,7 +54,7 @@
       <div class="p-field departamento-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="departamento" [options]="departamentos" inputId="departamentoSelect" [(ngModel)]="selectedDepartamento"
-            optionLabel="label" [showClear]="false" placeholder="Departamento"></p-select>
+            (onChange)="onDepartmentChange($event)" optionLabel="nombre" [showClear]="false" placeholder="Departamento"></p-select>
           <label for="departamentoSelect">Departamento</label>
         </p-floatlabel>
       </div>
@@ -62,15 +62,15 @@
       <div class="p-field municipio-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="municipio" [options]="municipios" inputId="municipioSelect" [(ngModel)]="selectedMunicipio"
-            optionLabel="label" [showClear]="false" placeholder="Municipio"></p-select>
+            (onChange)="onMunicipioChange($event)" optionLabel="nombre_municipio" [showClear]="false" placeholder="Municipio" [disabled]="!selectedDepartamento"></p-select>
           <label for="municipioSelect">Municipio</label>
         </p-floatlabel>
       </div>
 
       <div class="p-field departamento2-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-select id="departamento2" [options]="departamentos2" inputId="departamento2Select" [(ngModel)]="selectedDepartamento2"
-            optionLabel="label" [showClear]="false" placeholder="Departamento 2"></p-select>
+          <p-select id="departamento2" [options]="departamentos" inputId="departamento2Select" [(ngModel)]="selectedDepartamento2"
+            (onChange)="onDepartment2Change($event)" optionLabel="nombre" [showClear]="false" placeholder="Departamento 2"></p-select>
           <label for="departamento2Select">Departamento 2</label>
         </p-floatlabel>
       </div>
@@ -78,7 +78,7 @@
       <div class="p-field municipio2-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="municipio2" [options]="municipios2" inputId="municipio2Select" [(ngModel)]="selectedMunicipio2"
-            optionLabel="label" [showClear]="false" placeholder="Municipio 2"></p-select>
+            (onChange)="onMunicipio2Change($event)" optionLabel="nombre_municipio" [showClear]="false" placeholder="Municipio 2" [disabled]="!selectedDepartamento2"></p-select>
           <label for="municipio2Select">Municipio 2</label>
         </p-floatlabel>
       </div>
@@ -101,7 +101,7 @@
       <p class="date-update">Fecha de corte de recaudo: mayo 30 de 2025</p>
     </div>
     <div style="position: relative; padding-bottom: .25rem;">
-      <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 2rem; width: 90px;"
+      <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 1.8rem; width: 96px;"
           (click)="showPopupDiccionario()">
       </button>
       <button pButton type="button" label="Siglas" class="p-button-secondary" style="width: 90px;"
@@ -128,7 +128,8 @@
   </div>
 
   <!-- Charts section - Solo visible cuando se seleccionan todos los filtros -->
-   <div class="graphics-section" *ngIf="selectedMunicipio && selectedMunicipio2">
+   <div class="graphics-section" *ngIf="showPresupuestoRecaudoView && selectedMunicipio && selectedMunicipio2">
+    <h2 class="charts-main-title">Avance del recaudo frente al Plan Bienal de Caja Bienio</h2>
     <div class="dual-chart-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%;">
       <!-- First Chart - Municipality 1 -->
       <div class="chart-column">
@@ -171,6 +172,111 @@
       </div>
     </div>
   </div>  
+
+  <!-- Plan Bienal Charts section - Solo visible cuando se selecciona Plan Bienal view -->
+  <div class="graphics-section" *ngIf="showPlanBienalView && selectedMunicipio && selectedMunicipio2">
+    <h2 class="charts-main-title">Plan Bienal de Caja y Recaudo</h2>
+    <div class="dual-chart-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%;">
+      <!-- First Chart - Municipality 1 -->
+      <div class="chart-column">
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
+              <h3 class="chart-title">{{ getSelectedMunicipalityName(1) }}</h3>
+            </div>
+          </ng-template>
+          <div class="chart-container" style="position: relative; height: 320px; width: 100%;">
+            <p-chart 
+            type="bar" 
+            [data]="planBienalMunicipio1ChartData" 
+            [options]="planBienalMunicipio1ChartOptions"
+            width="570px"
+            height="300px">
+          </p-chart>
+          </div>
+        </p-card>
+      </div>
+
+      <!-- Second Chart - Municipality 2 -->
+      <div class="chart-column">
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
+              <h3 class="chart-title">{{ getSelectedMunicipalityName(2) }}</h3>
+            </div>
+          </ng-template>
+          <div class="chart-container" style="position: relative; height: 320px; width: 100%;">
+            <p-chart 
+            type="bar" 
+            [data]="planBienalMunicipio2ChartData" 
+            [options]="planBienalMunicipio2ChartOptions"
+            width="570px"
+            height="300px">
+          </p-chart>
+          </div>
+        </p-card>
+      </div>
+    </div>
+  </div>  
+
+  <!-- Comparative table section -->
+  <div class="table-section" *ngIf="showPresupuestoRecaudoView && selectedMunicipio && selectedMunicipio2">
+    <div class="table-header">
+      <h2 class="table-title">Comparativo de Asignaciones por Entidad Territorial</h2>
+    </div>
+    
+    <p-table [value]="comparativeTableData" 
+             styleClass="p-datatable-sm comparative-table">
+             
+      <!-- Grouped headers -->
+      <ng-template pTemplate="header">
+        <tr>
+          <th rowspan="2" class="entity-header">Entidad</th>
+          <th colspan="2" class="group-header directas-header">Asignaciones Directas 20%</th>
+          <th colspan="2" class="group-header local-header">Asignación para la Inversión Local</th>
+        </tr>
+        <tr>
+          <!-- Directas 20% sub-headers -->
+          <th class="sub-header directas-sub">PBC</th>
+          <th class="sub-header directas-sub">Recaudo</th>
+          <!-- Local sub-headers -->
+          <th class="sub-header local-sub">PBC</th>
+          <th class="sub-header local-sub">Recaudo</th>
+        </tr>
+      </ng-template>
+      
+      <!-- Data rows -->
+      <ng-template pTemplate="body" let-rowData>
+        <tr>
+          <td class="entity-cell">{{rowData.entidad}}</td>
+          <!-- Directas 20% data -->
+          <td class="number-cell">{{rowData.directas_pbc | numberFormat}}</td>
+          <td class="number-cell">{{rowData.directas_recaudo | numberFormat}}</td>
+          <!-- Local data -->
+          <td class="number-cell">{{rowData.local_pbc | numberFormat}}</td>
+          <td class="number-cell">{{rowData.local_recaudo | numberFormat}}</td>
+        </tr>
+      </ng-template>
+      
+    </p-table>
+
+    <!-- Export buttons -->
+    <div class="table-actions">
+      <button pButton type="button" 
+              icon="pi pi-file-excel" 
+              label="Descargar Consolidado" 
+              class="p-button-primary export-btn"
+              (click)="downloadConsolidated()">
+      </button>
+      
+      <button pButton type="button" 
+              icon="pi pi-calendar" 
+              label="Descargar Detalle por Mes" 
+              class="p-button-primary export-btn"
+              (click)="downloadMonthlyDetail()">
+      </button>
+    </div>
+  </div>
 
   <!-- Contenido principal condicional -->
   <div *ngIf="showPresupuestoRecaudoView && selectedMunicipio && selectedMunicipio2" class="content-section">
