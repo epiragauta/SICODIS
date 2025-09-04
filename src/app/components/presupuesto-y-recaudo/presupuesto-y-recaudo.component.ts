@@ -68,6 +68,12 @@ export class PresupuestoYRecaudoComponent implements OnInit {
   // Configuración de columnas responsivas
   //cols: number = 2;
   cardCols: number = 2;
+
+  // Popups
+  showDiccionarioPopup: boolean = false;
+  showSiglasPopup: boolean = false;
+  diccionarioContent: string = '';
+  siglasContent: string = '';
   
   // Datos financieros
   financialData: FinancialData = {
@@ -927,14 +933,35 @@ export class PresupuestoYRecaudoComponent implements OnInit {
     // como filtrar otros datos basados en las asignaciones seleccionadas
   }
 
-  // async testDiagnostic() {
-  //   const service = new ProxyAwareSicodisService(this.http);
-  //   await service.diagnosticProxy();
-  // }
+  /**
+   * Mostrar popup del diccionario
+   */
+  showPopupDiccionario(): void {
+    console.log('Mostrando diccionario de datos');
+    this.diccionarioContent = this.generarContenidoDiccionario();
+    this.showDiccionarioPopup = true;
+  }
 
-  // async testImproved() {
-  //   const service = new SicodisFinalService(this.http);
-  //   const result = await service.getVigenciasComplete();
-  //   console.log('Resultado final:', result);
-  // }
+  /**
+   * Mostrar popup de siglas
+   */
+  showPopupSiglas(): void {
+    console.log('Mostrando siglas');
+    this.siglasContent = this.generarContenidoSiglas();
+    this.showSiglasPopup = true;
+  }
+
+  /**
+   * Cerrar popup del diccionario
+   */
+  closeDiccionarioPopup(): void {
+    this.showDiccionarioPopup = false;
+  }
+
+  /**
+   * Cerrar popup de siglas
+   */
+  closeSiglasPopup(): void {
+    this.showSiglasPopup = false;
+  }
 }

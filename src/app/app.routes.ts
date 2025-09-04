@@ -27,6 +27,8 @@ import { SgpComparativaComponent } from './components/sgp-comparativa/sgp-compar
 import { PgnRegionalizacionPresupuestoProgramacionComponent } from './components/pgn-regionalizacion-presupuesto-programacion/pgn-regionalizacion-presupuesto-programacion.component';
 import { PgnComparativaRegionalizacionComponent } from './components/pgn-comparativa-regionalizacion/pgn-comparativa-regionalizacion.component';
 import { PgnVariablesComponent } from './components/pgn-variables/pgn-variables.component';
+import { SgrRecaudoMensualComponent } from './components/sgr-recaudo-mensual/sgr-recaudo-mensual.component';
+import { SgrComparativoComponent } from './components/sgr-comparativo/sgr-comparativo.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -43,8 +45,7 @@ export const routes: Routes = [
     { path: 'tools', component: ToolsComponent },
     { path: 'dashboard', component: DashboardComponent },
     { path: 'dashboard2', component: HighchartsDashboardComponent },
-    { path: 'propuesta-resumen-sgr', component: PropuestaResumenSgrComponent }, // Redirect to home for any unknown routes
-    { path: 'presupuesto-y-recaudo', component: PresupuestoYRecaudoComponent },
+    { path: 'propuesta-resumen-sgr', component: PropuestaResumenSgrComponent }, // Redirect to home for any unknown routes    
     { path: 'graphics-sgp', component: GraphicsSgpComponent},
     { path: 'reporte-funcionamiento', component: ReporteFuncionamientoComponent },
     { path: 'home-sgp', component: HomeSgpComponent},
@@ -53,10 +54,11 @@ export const routes: Routes = [
     { path: 'sgp-historico', component: HistoricoSgpComponent},
     { path: 'sgp-documentos-anexos', component: ReportsSgpComponent },
     { path: 'sgp-detalle-presupuestal', component: SgpDetallePresupuestalComponent },
-    { path: 'sgp-comparativa', component: SgpComparativaComponent },
+    { path: 'sgp-comparativa', component: SgpComparativaComponent },    
+    { path: 'sgp-eficiencia', component: PgnVariablesComponent },
     { path: 'pgn-regionalizacion', component: PgnRegionalizacionPresupuestoProgramacionComponent },
-    { path: 'pgn-comparativa-regionalizacion', component: PgnComparativaRegionalizacionComponent },
-    { path: 'sgp-eficiencia', component: PgnVariablesComponent }
-    
-
+    { path: 'pgn-comparativa-regionalizacion', component: PgnComparativaRegionalizacionComponent },    
+    { path: 'presupuesto-y-recaudo', component: PresupuestoYRecaudoComponent },
+    { path: 'sgr-recaudo-mensual', component: SgrRecaudoMensualComponent },
+    { path: 'sgr-comparativo', component: SgrComparativoComponent },
 ];

@@ -105,6 +105,21 @@
     </div>
   </div>
 
+  <!-- Sección de botones Diccionario y Siglas -->
+  <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0;">
+    <div style="width: 83%;">
+      <p class="date-update">Fecha de actualización: junio 30 de 2025</p>
+      <p class="date-update">Fecha de corte de recaudo: mayo 30 de 2025</p>
+    </div>
+    <div style="position: relative; padding-bottom: .25rem;">
+      <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 2rem; width: 90px;"
+          (click)="showPopupDiccionario()">
+      </button>
+      <button pButton type="button" label="Siglas" class="p-button-secondary" style="width: 90px;"
+          (click)="showPopupSiglas()">
+      </button>
+    </div> 
+  </div>
 
   <!-- Sección principal con dos columnas -->
   <div class="main-content">

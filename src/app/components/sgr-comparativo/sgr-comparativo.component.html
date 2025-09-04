@@ -1,0 +1,186 @@
+<div class="sicodis-container">
+  
+  <!-- Popups para Diccionario y Siglas -->
+  <app-info-popup 
+    [infoText]="diccionarioContent" 
+    contentTitle="Diccionario de Conceptos"
+    [showPopup]="showDiccionarioPopup"
+    (onClose)="closeDiccionarioPopup()">
+  </app-info-popup>
+  
+  <app-info-popup 
+    [infoText]="siglasContent" 
+    contentTitle="Siglas y Abreviaciones"
+    [showPopup]="showSiglasPopup"
+    (onClose)="closeSiglasPopup()">
+  </app-info-popup>
+
+  <!-- Banner -->
+  <div class="gradient-banner">    
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h2>SGR Comparativo</h2>
+        <p>Consulte y compare información presupuestal y de recaudo entre diferentes entidades territoriales del Sistema General de Regalías.</p>
+    </div>
+  </div>
+  
+  <!-- Botones Presupuesto y Recaudo / Plan Bienal de Caja y Recaudo -->
+  <div class="view-buttons-section">
+    <div class="view-buttons-container">
+      <button pButton type="button" 
+              [class]="showPresupuestoRecaudoView ? 'p-button-primary' : 'p-button-secondary'" 
+              label="Presupuesto y Recaudo" 
+              (click)="showPresupuestoRecaudo()">
+      </button>
+      <button pButton type="button" 
+              [class]="showPlanBienalView ? 'p-button-primary' : 'p-button-secondary'" 
+              label="Plan Bienal de Caja y Recaudo" 
+              (click)="showPlanBienal()">
+      </button>
+    </div>
+  </div>
+
+  <!-- Panel de filtros -->
+  <div class="filters-panel">
+    <div class="filters-row">
+      <div class="p-field bienio-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="bienio" [options]="bienios" inputId="bienioSelect" [(ngModel)]="selectedBienio"
+            optionLabel="label" [showClear]="false" placeholder="Bienio"></p-select>
+          <label for="bienioSelect">Bienio</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field departamento-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="departamento" [options]="departamentos" inputId="departamentoSelect" [(ngModel)]="selectedDepartamento"
+            optionLabel="label" [showClear]="false" placeholder="Departamento"></p-select>
+          <label for="departamentoSelect">Departamento</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field municipio-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="municipio" [options]="municipios" inputId="municipioSelect" [(ngModel)]="selectedMunicipio"
+            optionLabel="label" [showClear]="false" placeholder="Municipio"></p-select>
+          <label for="municipioSelect">Municipio</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field departamento2-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="departamento2" [options]="departamentos2" inputId="departamento2Select" [(ngModel)]="selectedDepartamento2"
+            optionLabel="label" [showClear]="false" placeholder="Departamento 2"></p-select>
+          <label for="departamento2Select">Departamento 2</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field municipio2-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="municipio2" [options]="municipios2" inputId="municipio2Select" [(ngModel)]="selectedMunicipio2"
+            optionLabel="label" [showClear]="false" placeholder="Municipio 2"></p-select>
+          <label for="municipio2Select">Municipio 2</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field clear-filters">
+        <button pButton type="button"
+            icon="pi pi-eraser"
+            label="Limpiar filtros"
+            class="p-button-secondary"
+            (click)="clearFilters()">
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección de botones Diccionario y Siglas -->
+  <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0;">
+    <div style="width: 83%;">
+      <p class="date-update">Fecha de actualización: junio 30 de 2025</p>
+      <p class="date-update">Fecha de corte de recaudo: mayo 30 de 2025</p>
+    </div>
+    <div style="position: relative; padding-bottom: .25rem;">
+      <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 2rem; width: 90px;"
+          (click)="showPopupDiccionario()">
+      </button>
+      <button pButton type="button" label="Siglas" class="p-button-secondary" style="width: 90px;"
+          (click)="showPopupSiglas()">
+      </button>
+    </div> 
+  </div>
+
+  <!-- Informative message when no entities are selected -->
+  <div class="info-message-section" *ngIf="!selectedMunicipio || !selectedMunicipio2">
+    <p-card class="info-card">
+      <div class="info-content" style="text-align: center; padding: 2rem;">
+        <i class="pi pi-info-circle" style="font-size: 3rem; color: #2196F3; margin-bottom: 1rem;"></i>
+        <h3>Seleccione las entidades territoriales a comparar</h3>
+        <p>Para visualizar la comparativa entre entidades territoriales, por favor seleccione:</p>
+        <ul style="text-align: left; margin: 1rem 0; display: inline-block;">
+          <li>Un bienio</li>
+          <li>Los departamentos de las entidades</li>
+          <li>Las dos entidades territoriales que desea comparar</li>
+        </ul>
+        <p><strong>Nota:</strong> Los gráficos y tablas comparativas se mostrarán una vez realice las selecciones.</p>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Charts section - Solo visible cuando se seleccionan todos los filtros -->
+   <div class="graphics-section" *ngIf="selectedMunicipio && selectedMunicipio2">
+    <div class="dual-chart-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%;">
+      <!-- First Chart - Municipality 1 -->
+      <div class="chart-column">
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
+              <h3 class="chart-title">{{ getSelectedMunicipalityName(1) }} </h3>
+            </div>
+          </ng-template>
+          <div class="chart-container" style="position: relative; height: 320px; width: 100%;">
+            <p-chart 
+            type="bar" 
+            [data]="municipio1ChartData" 
+            [options]="municipio1ChartOptions"
+            width="570px"
+            height="300px">
+          </p-chart>
+          </div>
+        </p-card>
+      </div>
+
+      <!-- Second Chart - Municipality 2 -->
+      <div class="chart-column">
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
+              <h3 class="chart-title">{{ getSelectedMunicipalityName(2) }}</h3>
+            </div>
+          </ng-template>
+          <div class="chart-container" style="position: relative; height: 320px; width: 100%;">
+            <p-chart 
+            type="bar" 
+            [data]="municipio2ChartData" 
+            [options]="municipio2ChartOptions"
+            width="570px"
+            height="300px">
+          </p-chart>
+          </div>
+        </p-card>
+      </div>
+    </div>
+  </div>  
+
+  <!-- Contenido principal condicional -->
+  <div *ngIf="showPresupuestoRecaudoView && selectedMunicipio && selectedMunicipio2" class="content-section">
+    <h3>Vista de Presupuesto y Recaudo</h3>
+    <p>Contenido para la comparación de presupuesto y recaudo entre entidades territoriales.</p>
+  </div>
+
+  <div *ngIf="showPlanBienalView && selectedMunicipio && selectedMunicipio2" class="content-section">
+    <h3>Vista de Plan Bienal de Caja y Recaudo</h3>
+    <p>Contenido para la comparación del plan bienal de caja y recaudo entre entidades territoriales.</p>
+  </div>
+
+</div>
