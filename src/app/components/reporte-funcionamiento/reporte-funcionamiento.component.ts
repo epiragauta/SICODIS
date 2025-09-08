@@ -2045,16 +2045,29 @@ export class ReporteFuncionamientoComponent implements OnInit {
           font: { size: 12, weight: 'bold' }
         },
         tooltip: {
+          enabled: true,
+          mode: 'point',
+          intersect: true,
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          titleColor: '#ffffff',
+          bodyColor: '#ffffff',
+          borderColor: textColor,
+          borderWidth: 1,
           callbacks: {
             label: function(tooltipItem: any) {
-              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')}`;
+              const label = tooltipItem.dataset.label || '';
+              const value = Math.ceil(tooltipItem.raw).toLocaleString('es-CO');
+              return `${label}: $${value}`;
             }
           }
         }
       },
       scales: {
         x: {
-          ticks: { color: textColor, font: { size: 8 } },
+          ticks: { 
+            maxTicksLimit: 6,
+            color: textColor, font: { size: 8 } 
+          },
           grid: { color: surfaceBorder },
           stacked: true
         },
@@ -2108,16 +2121,29 @@ export class ReporteFuncionamientoComponent implements OnInit {
           font: { size: 12, weight: 'bold' }
         },
         tooltip: {
+          enabled: true,
+          mode: 'point',
+          intersect: true,
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          titleColor: '#ffffff',
+          bodyColor: '#ffffff',
+          borderColor: textColor,
+          borderWidth: 1,
           callbacks: {
             label: function(tooltipItem: any) {
-              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')}`;
+              const label = tooltipItem.dataset.label || '';
+              const value = Math.ceil(tooltipItem.raw).toLocaleString('es-CO');
+              return `${label}: $${value}`;
             }
           }
         }
       },
       scales: {
         x: {
-          ticks: { color: textColor, font: { size: 8 } },
+          ticks: { 
+            maxTicksLimit: 6,
+            color: textColor, font: { size: 8 } 
+          },
           grid: { color: surfaceBorder },
           stacked: true
         },
