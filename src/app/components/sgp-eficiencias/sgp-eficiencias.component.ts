@@ -12,9 +12,11 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TableModule } from 'primeng/table';
 
 import { departamentos } from '../../data/departamentos';
+import { Breadcrumb } from 'primeng/breadcrumb';
+import { MenuItem } from 'primeng/api';
 
 @Component({
-  selector: 'app-pgn-variables',
+  selector: 'app-sgp-eficiencias',
   standalone: true,
   imports: [
     CommonModule,
@@ -25,12 +27,16 @@ import { departamentos } from '../../data/departamentos';
     Select,
     FloatLabel,
     ProgressSpinnerModule,
-    TableModule
+    TableModule,
+    Breadcrumb
   ],
-  templateUrl: './pgn-variables.component.html',
-  styleUrl: './pgn-variables.component.scss'
+  templateUrl: './sgp-eficiencias.component.html',
+  styleUrl: './sgp-eficiencias.component.scss'
 })
-export class PgnVariablesComponent implements OnInit {
+export class SgpEficienciasComponent implements OnInit {
+
+  items: MenuItem[] | undefined;
+  home: MenuItem | undefined;
 
   // Filter properties
   selectedVigencia: any;
@@ -78,6 +84,13 @@ export class PgnVariablesComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
+    this.items = [
+        { label: 'SGP', routerLink: '/sgp-inicio' },
+        { label: 'Eficiencias' }        
+    ];
+
+    this.home = { icon: 'pi pi-home', routerLink: '/' };
+    
     this.initializeFilters();
     this.initializeData();
   }

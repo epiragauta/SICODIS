@@ -35,6 +35,8 @@ import { ChartModule } from 'primeng/chart';
 import { DividerModule } from 'primeng/divider';
 import { ReportsSgrStatsComponent } from './reports-sgr-stats.component';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
+import { Breadcrumb } from 'primeng/breadcrumb';
+import { MenuItem } from 'primeng/api';
 
 @Component({
     selector: 'app-reports-sgr',
@@ -62,7 +64,8 @@ import { NumberFormatPipe } from '../../utils/numberFormatPipe';
         ChartModule,
         DividerModule,
         ReportsSgrStatsComponent,
-        NumberFormatPipe
+        NumberFormatPipe,
+        Breadcrumb
     ],
     templateUrl: './reports-sgr.component.html',
     styleUrl: './reports-sgr.component.scss'
@@ -225,6 +228,9 @@ export class ReportsSgrComponent implements AfterViewInit, OnInit {
   selectedRow!: any;
   loading: boolean = true;
 
+  items: MenuItem[] | undefined;
+  home: MenuItem | undefined;
+
   constructor(
     @Inject(PLATFORM_ID) platformId: Object,
     @Inject(LOCALE_ID) public locale: string,
@@ -245,6 +251,12 @@ export class ReportsSgrComponent implements AfterViewInit, OnInit {
   }
 
   ngOnInit(): void {
+    this.items = [
+        { label: 'Reports SGR' }        
+    ];
+
+    this.home = { icon: 'pi pi-home', routerLink: '/' };
+    
     this.infoToResume = this.infoResume.filter(
       (item: any) => item.year === this.selected
     )[0];

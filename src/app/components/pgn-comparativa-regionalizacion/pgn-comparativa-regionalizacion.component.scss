@@ -94,7 +94,7 @@
         ::ng-deep .p-button {
           height: 42px;
           padding: 0 20px;
-          border-radius: 8px;
+          border-radius: 24px;
           font-weight: 500;
         }
       }
@@ -205,7 +205,7 @@
             
             p-button {
               ::ng-deep .p-button {
-                border-radius: 8px;
+                border-radius: 24px;
                 font-weight: 500;
                 padding: 10px 20px;
               }

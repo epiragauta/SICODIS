@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Renderer2 } from '@angular/core';
+import { Component, Renderer2, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -14,6 +14,8 @@ import { TableRowCollapseEvent, TableRowExpandEvent } from 'primeng/table';
 import { Dialog } from 'primeng/dialog';
 
 import Chart from 'chart.js/auto';
+import { Breadcrumb } from 'primeng/breadcrumb';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-reports-sgp-budget',
@@ -29,12 +31,17 @@ import Chart from 'chart.js/auto';
     MatTooltipModule,
     TableModule,
     ButtonModule,
-    Dialog
+    Dialog,
+    Breadcrumb
   ],
   templateUrl: './reports-sgp-budget.component.html',
   styleUrl: './reports-sgp-budget.component.scss',
 })
-export class ReportsSgpBudgetComponent {
+export class ReportsSgpBudgetComponent implements OnInit {
+  
+  items: MenuItem[] | undefined;
+  home: MenuItem | undefined;
+  
   color1 = 'lightblue';
   color2 = 'lightgreen';
   color3 = 'lightpink';
@@ -273,6 +280,13 @@ export class ReportsSgpBudgetComponent {
   constructor(private renderer: Renderer2,) {}
 
   ngOnInit(): void {
+    this.items = [
+        { label: 'SGP', routerLink: '/sgp-inicio' },
+        { label: 'Presupuesto SGP' }        
+    ];
+
+    this.home = { icon: 'pi pi-home', routerLink: '/' };
+    
     this.infoToResume = this.infoResume.filter(
       (item: any) => item.year === this.selected
     )[0];

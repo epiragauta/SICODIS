@@ -12,6 +12,8 @@ import { TreeTableModule } from 'primeng/treetable';
 import { TreeNode } from 'primeng/api';
 import { SicodisApiService } from '../../services/sicodis-api.service';
 import { departamentos } from '../../data/departamentos';
+import { Breadcrumb } from 'primeng/breadcrumb';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-sgp-detalle-presupuestal',
@@ -23,12 +25,16 @@ import { departamentos } from '../../data/departamentos';
     CardModule,
     SelectModule,
     FloatLabel,
-    TreeTableModule
+    TreeTableModule,
+    Breadcrumb
   ],
   templateUrl: './sgp-detalle-presupuestal.component.html',
   styleUrl: './sgp-detalle-presupuestal.component.scss'
 })
 export class SgpDetallePresupuestalComponent implements OnInit {
+
+  items: MenuItem[] | undefined;
+  home: MenuItem | undefined;
 
   // Filtros
   selectedVigencia: any = null;
@@ -59,6 +65,13 @@ export class SgpDetallePresupuestalComponent implements OnInit {
   constructor(private sicodisApiService: SicodisApiService) { }
 
   ngOnInit(): void {
+    this.items = [
+        { label: 'SGP', routerLink: '/sgp-inicio' },
+        { label: 'Detalle Presupuestal' }        
+    ];
+
+    this.home = { icon: 'pi pi-home', routerLink: '/' };
+    
     this.initializeDepartamentos();
     this.loadVigenciasFromAPI();
   }

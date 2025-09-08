@@ -19,6 +19,8 @@ import { Chart, registerables } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { SicodisApiService } from '../../services/sicodis-api.service';
 import { Router } from '@angular/router';
+import { Breadcrumb } from 'primeng/breadcrumb';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-sgp-inicio',
@@ -38,7 +40,8 @@ import { Router } from '@angular/router';
       InfoPopupComponent,
       SplitButtonModule,
       CardModule,
-      Select],
+      Select,
+      Breadcrumb],
   templateUrl: './sgp-inicio.component.html',
   styleUrl: './sgp-inicio.component.scss'
 })
@@ -47,6 +50,9 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
   constructor(private sicodisApiService: SicodisApiService, private router: Router) {
     Chart.register(...registerables, ChartDataLabels);
   }
+
+  items: MenuItem[] | undefined;
+  home: MenuItem | undefined;
 
   fechaActualizacion = '10 de julio de 2025';
 
@@ -67,7 +73,6 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
 
   donutData: any;
   donutOptions: any;
-
 
   // Select options and selected value
   vigencias: any[] = [
@@ -109,7 +114,7 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
       icon: 'assets/img/sgp/compare.png'
     },
     {
-      titulo: 'Gráficos SGP',
+      titulo: 'Consulta de eficiencia',
       descripcion: 'Consulta de eficiencia',
       boton: 'Consultar',
       link: 'sgp-eficiencia',
@@ -139,6 +144,11 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
   ];
 
   ngOnInit(): void {
+    this.items = [
+        { label: 'SGP Inicio' }        
+    ];
+
+    this.home = { icon: 'pi pi-home', routerLink: '/' };
     this.loadSgpData();
 
   }

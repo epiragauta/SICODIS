@@ -43,7 +43,7 @@
     max-width: 60%; /* Ajustado para contenido dentro del 75% */
     color: white;   /* Texto blanco para mejor contraste */
     
-    h2 {
+    h1 {
       font-size: 2.5rem;
       margin-bottom: 1rem;
       text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
@@ -137,7 +137,7 @@
       font-weight: normal;   
       font-weight: 800;   
     }
-    .sicodis-h5{
+    .sicodis-p{
       color: #242424;
       font-size: 13px;
       font-weight: normal;   
@@ -236,6 +236,7 @@
   color: #fff;
   padding: 1rem 1rem 1rem 1rem;
   position: relative;
+  margin-top: 2.5rem;
   .title-questions{
     font-size: 24px;
     font-weight: 800;
@@ -295,8 +296,8 @@
 // Estilos unificados para todos los botones
 :host ::ng-deep .unified-button,
 :host ::ng-deep .banner-button {
-  background-color: #3366cc !important;
-  border-color: #3366cc !important;
+  background-color: #0743b5 !important;
+  border-color: #0743b5 !important;
   color: white !important;
   font-weight: bold !important;
   border-radius: 25px !important;
@@ -321,8 +322,8 @@
 
 :host ::ng-deep .unified-button-outlined {
   background-color: transparent !important;
-  border-color: #3366cc !important;
-  color: #3366cc !important;
+  border-color: #0743b5 !important;
+  color: #0743b5 !important;
   font-weight: bold !important;
   border-radius: 25px !important;
   transition: all 0.3s ease !important;
@@ -346,6 +347,7 @@
 
 :host ::ng-deep .p-button{
   font-weight: bold;
+  border-radius: 24px;
 }
 
 .sicodis-historic-panel{
@@ -388,7 +390,7 @@
 }
 
 :host ::ng-deep .p-button-contrast:hover{
-  background-color: #3366CC !important;
+  background-color: #0743b5 !important;
 }
 
 :host ::ng-deep .p-carousel-next-button{

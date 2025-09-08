@@ -18,6 +18,8 @@ import { sgpComparativaDistribucionPorEntidad } from '../../data/sgp-comparativa
 import { departamentos } from '../../data/departamentos';
 import { TreeTableModule } from 'primeng/treetable';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
+import { Breadcrumb } from 'primeng/breadcrumb';
+import { MenuItem } from 'primeng/api';
 
 interface NodeEvent {
   originalEvent: Event;
@@ -38,12 +40,16 @@ interface NodeEvent {
     ButtonModule,
     TreeTableModule,
     Dialog,
-    NumberFormatPipe
+    NumberFormatPipe,
+    Breadcrumb
   ],
   templateUrl: './reports-sgp-dist.component.html',
   styleUrl: './reports-sgp-dist.component.scss',
 })
 export class ReportsSgpDistComponent {
+  items: MenuItem[] | undefined;
+  home: MenuItem | undefined;
+  
   color1 = 'lightblue';
   color2 = 'lightgreen';
   color3 = 'lightpink';
@@ -75,6 +81,13 @@ export class ReportsSgpDistComponent {
   constructor() {}
 
   ngOnInit(): void {
+    this.items = [
+        { label: 'SGP', routerLink: '/sgp-inicio' },
+        { label: 'Distribuciones SGP' }        
+    ];
+
+    this.home = { icon: 'pi pi-home', routerLink: '/' };
+    
     this.cols = [
       { field: 'concepto', header: 'Concepto' },
       { field: '2024', header: '2024' },

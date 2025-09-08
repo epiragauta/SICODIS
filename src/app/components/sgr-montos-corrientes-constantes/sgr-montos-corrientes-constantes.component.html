@@ -1,0 +1,89 @@
+<div class="sicodis-container">
+  
+  <!-- Popups para Diccionario y Siglas -->
+  <app-info-popup 
+    [infoText]="diccionarioContent" 
+    contentTitle="Diccionario de Conceptos"
+    [showPopup]="showDiccionarioPopup"
+    (onClose)="closeDiccionarioPopup()">
+  </app-info-popup>
+  
+  <app-info-popup 
+    [infoText]="siglasContent" 
+    contentTitle="Siglas y Abreviaciones"
+    [showPopup]="showSiglasPopup"
+    (onClose)="closeSiglasPopup()">
+  </app-info-popup>
+
+  <!-- Banner -->
+  <div class="gradient-banner">    
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h2>SGR Montos Corrientes y Constantes</h2>
+        <p>Consulte información sobre los montos presupuestales y de recaudo del Sistema General de Regalías en valores corrientes y constantes a través del tiempo.</p>
+    </div>
+  </div>
+
+  <!-- Sección de botones Diccionario y Siglas -->
+  <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0;">
+    <div style="width: 83%;">
+      <p class="date-update">Fecha de actualización: junio 30 de 2025</p>
+      <p class="date-update">Fecha de corte de recaudo: mayo 30 de 2025</p>
+    </div>
+    <div style="position: relative; padding-bottom: .25rem;">
+      <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 1.8rem; width: 96px;"
+          (click)="showPopupDiccionario()">
+      </button>
+      <button pButton type="button" label="Siglas" class="p-button-secondary" style="width: 90px;"
+          (click)="showPopupSiglas()">
+      </button>
+    </div> 
+  </div>
+
+  <!-- Charts section -->
+  <div class="graphics-section">
+    <h2 class="charts-main-title">Evolución histórica de Presupuesto y Recaudo SGR</h2>
+    <div class="dual-chart-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%;">
+      <!-- First Chart - Valores Corrientes -->
+      <div class="chart-column">
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
+              <h3 class="chart-title">Presupuesto y Recaudo en valores corrientes</h3>
+            </div>
+          </ng-template>
+          <div class="chart-container" style="position: relative; height: 320px; width: 100%;">
+            <p-chart 
+            type="bar" 
+            [data]="valoresCorrientesChartData" 
+            [options]="valoresCorrientesChartOptions"
+            width="570px"
+            height="300px">
+          </p-chart>
+          </div>
+        </p-card>
+      </div>
+
+      <!-- Second Chart - Valores Constantes -->
+      <div class="chart-column">
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
+              <h3 class="chart-title">Presupuesto y Recaudo en valores constantes</h3>
+            </div>
+          </ng-template>
+          <div class="chart-container" style="position: relative; height: 320px; width: 100%;">
+            <p-chart 
+            type="bar" 
+            [data]="valoresConstantesChartData" 
+            [options]="valoresConstantesChartOptions"
+            width="570px"
+            height="300px">
+          </p-chart>
+          </div>
+        </p-card>
+      </div>
+    </div>
+  </div>
+
+</div>

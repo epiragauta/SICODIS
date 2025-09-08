@@ -92,6 +92,7 @@
           
           button {
             height: 40px;
+            border-radius: 24px;
           }
         }
       }
@@ -257,6 +258,10 @@
           .export-section {
             margin-top: 1rem;
             text-align: right;
+
+            .p-button {
+              border-radius: 24px;
+            } 
           }
         }
       }

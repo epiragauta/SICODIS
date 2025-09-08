@@ -25,6 +25,7 @@ import { departamentos } from '../../data/departamentos';
 import { HttpClient } from '@angular/common/http';
 import { SicodisApiService } from '../../services/sicodis-api.service';
 import { forkJoin } from 'rxjs';
+import { Breadcrumb } from 'primeng/breadcrumb';
 
 @Component({
   selector: 'app-historico-sgp',
@@ -43,13 +44,17 @@ import { forkJoin } from 'rxjs';
     ChartModule,
     CardModule,
     ProgressSpinnerModule,
-    NumberFormatPipe
+    NumberFormatPipe,
+    Breadcrumb
   ],
   templateUrl: './historico-sgp.component.html',
   styleUrl: './historico-sgp.component.scss'
 })
 export class HistoricoSgpComponent implements OnInit, AfterViewInit {
   
+  items: MenuItem[] | undefined;
+  home: MenuItem | undefined;
+
   // Configuración responsiva para gráficos
   cols: number = 2;
   
@@ -131,6 +136,13 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.items = [
+        { label: 'SGP', routerLink: '/sgp-inicio' },
+        { label: 'Histórico SGP' }        
+    ];
+
+    this.home = { icon: 'pi pi-home', routerLink: '/' };
+    
     this.generateAvailableYears();
     this.initializeDefaultSelection();
     this.loadSgpData();

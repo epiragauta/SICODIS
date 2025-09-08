@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AccordionModule } from 'primeng/accordion';
@@ -6,6 +6,8 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { MatIconModule } from '@angular/material/icon';
 import { FaqItem, FaqItemComponent } from '../faq-item/faq-item.component';
+import { Breadcrumb } from 'primeng/breadcrumb';
+import { MenuItem } from 'primeng/api';
 
 interface FaqSection {
   title: string;
@@ -21,12 +23,16 @@ interface FaqSection {
     AccordionModule,
     ButtonModule,
     CardModule,
-    MatIconModule
+    MatIconModule,
+    Breadcrumb
   ],
   templateUrl: './faq.component.html',
   styleUrl: './faq.component.scss'
 })
-export class FaqComponent {
+export class FaqComponent implements OnInit {
+
+  items: MenuItem[] | undefined;
+  home: MenuItem | undefined;
 
   faqSections: FaqSection[] = [
     {
@@ -186,6 +192,14 @@ export class FaqComponent {
   ];
 
   constructor(private router: Router) {}
+
+  ngOnInit() {
+    this.items = [
+        { label: 'Preguntas Frecuentes' }        
+    ];
+
+    this.home = { icon: 'pi pi-home', routerLink: '/' };
+  }
 
   navigateToRoute(route: string) {
     if (route) {

@@ -1,0 +1,460 @@
+.sicodis-container {
+  padding: 1rem;
+  max-width: 1320px;
+  margin: 0 auto;
+  font-family: "Work Sans", sans-serif;
+
+  // Banner styles (from sgr-recaudo-mensual)
+  .gradient-banner {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    background-image: url('/assets/img/banner-funcionamiento.jpg');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    display: flex;
+    margin-bottom: .5rem;
+    border-radius: 8px;         
+    
+    .gradient-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 95%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        #e5e6e8b5 0%,
+        rgba(255, 255, 255, 0.01) 100%
+      );
+      z-index: 1;
+    }
+
+    .banner-content {
+      position: relative;
+      margin-top: 1rem;
+      z-index: 2;
+      padding: 1rem;
+      max-width: 70%;      
+      width: 1210px;
+      color: white;
+      
+      h2 {
+        font-size: 2rem;
+        margin-top: 2.25rem;
+        margin-bottom: 2.5rem;
+        color: #1a408c;
+        font-weight: bold;
+      }
+      
+      p {
+        font-size: 1.35rem;
+        margin-bottom: 2rem;
+        color: #264a70;        
+        width: 80%;
+        font-weight: 500;
+      }
+    }
+  }
+
+  // Date update styles
+  .date-update {
+    font-size: 0.65rem;
+    font-weight: bold;
+    color: #0743b5;
+    text-align: left;
+    margin-bottom: 0.125rem;
+  }
+
+  // Panel de filtros (from sgr-recaudo-mensual)
+  .filters-panel {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #dee2e6;
+    width: 100%;
+
+    .filters-row {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      font-size: 12px;
+      
+      .p-field {
+        flex: 1;
+        min-width: 140px;
+
+        &.bienio-select {
+          min-width: 140px;
+        }
+
+        &.beneficiarios-select {
+          min-width: 180px;
+        }
+
+        &.departamento-select {
+          min-width: 180px;
+        }
+
+        &.apply-filters {
+          flex: 0 0 auto;
+          min-width: auto;
+        }
+
+        &.clear-filters {
+          flex: 0 0 auto;
+          min-width: auto;
+        }
+      }
+    }
+  }
+}
+
+// Sección de botones de vista
+.view-buttons-section {
+  margin-bottom: 1rem;
+
+  .view-buttons-container {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-start;
+
+    button {
+      min-width: 200px;
+      transition: all 0.2s ease;
+
+      &.p-button-primary {
+        background-color: #004583;
+        border-color: #004583;
+        
+        &:hover {
+          background-color: #003366;
+          border-color: #003366;
+        }
+      }
+
+      &.p-button-secondary {
+        background-color: transparent;
+        border-color: #004583;
+        color: #004583;
+
+        &:hover {
+          background-color: #f1f5f9;
+          border-color: #003366;
+          color: #003366;
+        }
+      }
+    }
+  }
+}
+
+// Estilos para botones
+:host ::ng-deep {
+  .p-button {
+    font-family: "Work Sans", sans-serif;
+    font-weight: normal;
+    border-radius: 8px;
+    padding: 0.5rem 0.5rem;    
+  }
+
+  .p-select {
+    width: 150px;
+
+    .p-select-label {
+      font-size: 0.875rem;
+      font-weight: normal;
+    }
+  }
+
+  .p-floatlabel {
+    label {
+      font-family: "Work Sans", sans-serif;
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+  }
+
+  // Estilos específicos para PrimeNG Cards
+  .p-card {
+    width: 100% !important;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .p-card-header {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      padding: .25rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .p-card-body {
+      flex: 1;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .p-card-content {
+      flex: 1;
+      padding: 0;
+    }
+  }
+}
+
+// Info message styles
+.info-message-section {
+  margin-bottom: 2rem;
+
+  .info-card {
+    border: 1px solid #e3f2fd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+    .info-content {
+      font-family: "Work Sans", sans-serif;
+
+      h3 {
+        color: #004583;
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+
+      p {
+        color: #374151;
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+      }
+
+      ul {
+        color: #374151;
+        font-size: 1rem;
+        line-height: 1.6;
+
+        li {
+          margin-bottom: 0.25rem;
+        }
+      }
+    }
+  }
+}
+
+// Plan de recursos section
+.plan-recursos-section {
+  margin-bottom: 2rem;
+
+  .chart-section {
+    margin-bottom: 2rem;
+
+    .chart-card {
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      overflow: hidden;
+
+      .chart-container {
+        padding: 2rem;
+      }
+    }
+  }
+
+  .concept-table-section {
+    margin-bottom: 2rem;
+
+    .table-header {
+      margin-bottom: 1rem;
+
+      .table-title {
+        font-family: "Work Sans", sans-serif;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #004583;
+        text-align: center;
+        margin: 0;
+      }
+    }
+  }
+
+  .notes-section {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1.5rem;
+
+    .notes-content {
+      font-family: "Work Sans", sans-serif;
+
+      .notes-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #004583;
+        margin: 0 0 0.75rem 0;
+      }
+
+      .notes-list {
+        margin: 0;
+        padding-left: 1.2rem;
+        color: #374151;
+
+        li {
+          font-size: 0.9rem;
+          line-height: 1.4;
+          margin-bottom: 0.25rem;
+        }
+      }
+    }
+  }
+}
+
+// Plan Bienal de Caja section
+.plan-bienal-section {
+  margin-bottom: 2rem;
+
+  .chart-section {
+    margin-bottom: 2rem;
+
+    .chart-card {
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      overflow: hidden;
+
+      .chart-container {
+        padding: 2rem;
+      }
+    }
+  }
+}
+
+// Concept table styles with :host ::ng-deep
+:host ::ng-deep {
+  .concept-table {
+    font-family: "Work Sans", sans-serif;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    .p-datatable-table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    .p-datatable-thead > tr > th {
+      border: 1px solid #e2e8f0;
+      padding: 0.75rem 0.5rem;
+      font-family: "Work Sans", sans-serif;
+      font-weight: 700;
+      text-align: center;
+      font-size: 0.85rem;
+      background-color: #f8fafc !important;
+      color: #374151 !important;
+
+      &.concepto-header {
+        width: 15%;
+        background-color: #004583 !important;
+        color: white !important;
+      }
+
+      &.year-header {
+        width: 8.5%;
+      }
+    }
+
+    .p-datatable-tbody > tr > td {
+      border: 1px solid #f1f5f9;
+      padding: 0.75rem 0.5rem;
+      font-family: "Work Sans", sans-serif;
+      font-size: 0.8rem;
+
+      &.concepto-cell {
+        background-color: #f8fafc !important;
+        color: #374151 !important;
+        font-weight: 600;
+        text-align: left;
+        border-right: 2px solid #e2e8f0;
+      }
+
+      &.number-cell {
+        text-align: right;
+        font-weight: 500;
+        color: #374151;
+      }
+
+      &.total-cell {
+        background-color: #004583 !important;
+        color: white !important;
+        font-weight: 700;
+      }
+    }
+
+    .p-datatable-tbody > tr:nth-child(even) {
+      background-color: #fafbfc;
+
+      &.total-row {
+        background-color: #004583 !important;
+
+        td {
+          background-color: #004583 !important;
+          color: white !important;
+          font-weight: 700;
+        }
+      }
+    }
+
+    .p-datatable-tbody > tr:hover {
+      background-color: #f1f5f9 !important;
+
+      &.total-row {
+        background-color: #003366 !important;
+
+        td {
+          background-color: #003366 !important;
+          color: white !important;
+        }
+      }
+    }
+
+    .total-row {
+      background-color: #004583 !important;
+
+      td {
+        background-color: #004583 !important;
+        color: white !important;
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .sicodis-container {
+    padding: 1rem;
+  }
+
+  .view-buttons-section {
+    .view-buttons-container {
+      flex-direction: column;
+      gap: 0.75rem;
+
+      button {
+        width: 100%;
+        min-width: auto;
+      }
+    }
+  }
+}

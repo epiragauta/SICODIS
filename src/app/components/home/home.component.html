@@ -3,7 +3,7 @@
       <div class="gradient-overlay"></div>
       <!-- Contenido opcional sobre el banner -->
       <div class="banner-content">
-        <h2>Bienvenido a SICODIS</h2>
+        <h1>Bienvenido a SICODIS</h1>
         <p>El Sistema de información y consulta de distribuciones de recursos "SICODIS", presenta información agregada y detallada, 
           correspondiente a las distribuciones de los recursos del Sistema General de Participaciones (SGP) y el Sistema General de Regalías (SGR) realizadas por el DNP.
  	 	 	 	</p>        
@@ -18,7 +18,7 @@
             <mat-grid-tile>
               <p-card class="card-container sgp-card">
                 <div class="card-header">
-                  <img class="img-icon" src="/assets/img/icon-sgp.png" alt="SGP">
+                  <img class="img-icon" src="/assets/img/icon-sgp.png" alt="Icono del Sistema General de Participaciones">
                   <h2 class="sicodis-large-title">{{titleSGP}}</h2>
                 </div>
                 <div class="card-description">
@@ -50,7 +50,7 @@
             <mat-grid-tile>
               <p-card class="card-container sgr-card">
                 <div class="card-header">
-                  <img class="img-icon" src="/assets/img/icon-sgr.png" alt="SGR">
+                  <img class="img-icon" src="/assets/img/icon-sgr.png" alt="Icono del Sistema General de Regalías">
                   <h2 class="sicodis-large-title">{{titleSGR}}</h2>
                 </div>
                 <div class="card-description">
@@ -82,8 +82,8 @@
           </mat-grid-list>
         </div>
 
-    <h1 class="sicodis sicodis-subtitle">Consulte a continuación la información vigente de los dos sistemas</h1>
-    <h5 class="sicodis-h5">Cifras en pesos corrientes</h5>
+    <h2 class="sicodis sicodis-subtitle">Consulte a continuación la información vigente de los dos sistemas</h2>
+    <p class="sicodis-p">Cifras en pesos corrientes</p>
     
     <div class="filter-panel" style="display:none;">
       <mat-card class="card-container">
@@ -231,32 +231,27 @@
       </mat-grid-list>
     </div>
 
-    <h1 class="reports-title">Información de Interés</h1>
+    <h2 class="reports-title">Información de Interés</h2>
 
         <div class="grid-container">
           <mat-grid-list [cols]="cols" rowHeight="300px" gutterSize="16">
             <mat-grid-tile *ngFor="let card of cards">
               <mat-card class="card-container">
-                <img mat-card-image [src]="card.imageUrl" [alt]="card.title">
+                <img mat-card-image [src]="card.imageUrl" [alt]="card.title + ' - Imagen ilustrativa'">
                 <p class="description">{{card.description}}</p>
                 <mat-card-header>
-                  <h1 class="sicodis-title">{{card.title}}</h1>
-                </mat-card-header>
-                <!-- <mat-card-actions>
-                  <p-button severity="contrast" [rounded]="true">
-                    {{card.buttonLabel}}
-                  </p-button>
-                </mat-card-actions> -->
+                  <h3 class="sicodis-title">{{card.title}}</h3>
+                </mat-card-header>                
               </mat-card>
             </mat-grid-tile>
           </mat-grid-list>
         </div>
-    <p-divider />
+    <p-divider/>
 
     <div class="sicodis-questions">
-      <img class="overlay-questions" src="/assets/img/overlay-questions.svg" alt="overlay-questions">
+      <img class="overlay-questions" src="/assets/img/overlay-questions.svg" alt="Imagen decorativa de preguntas frecuentes">
       <div>
-        <h1 class="title-questions">¿Tiene Preguntas acerca de SICODIS?</h1>
+        <h2 class="title-questions">¿Tiene Preguntas acerca de SICODIS?</h2>
       </div>
       <div>
         <p>

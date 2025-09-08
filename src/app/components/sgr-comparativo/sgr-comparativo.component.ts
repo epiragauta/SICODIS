@@ -72,8 +72,17 @@ export class SgrComparativoComponent implements OnInit {
   planBienalMunicipio2ChartData: any = {};
   planBienalMunicipio2ChartOptions: any = {};
 
+  // Donut chart data for Plan Bienal view
+  planBienalMunicipio1DirectasDonutData: any = {};
+  planBienalMunicipio1LocalDonutData: any = {};
+  planBienalMunicipio2DirectasDonutData: any = {};
+  planBienalMunicipio2LocalDonutData: any = {};
+  donutChartOptions: any = {};
+
   // Table data
   comparativeTableData: any[] = [];
+  municipality1TableData: any[] = [];
+  municipality2TableData: any[] = [];
 
   constructor(private sicodisApiService: SicodisApiService) { }
 
@@ -81,7 +90,9 @@ export class SgrComparativoComponent implements OnInit {
     // Inicialización del componente
     this.initializeCharts();
     this.initializePlanBienalCharts();
+    this.initializeDonutCharts();
     this.initializeTableData();
+    this.initializeMunicipalityTables();
   }
 
   /**
@@ -213,6 +224,73 @@ export class SgrComparativoComponent implements OnInit {
   }
 
   /**
+   * Inicializar datos y opciones de gráficos donut
+   */
+  private initializeDonutCharts(): void {
+    // Datos para gráficos donut de Asignaciones Directas (25%)
+    const directasDonutData = {
+      labels: ['Presupuesto', 'Recaudo'],
+      datasets: [{
+        data: [87500000000, 72100000000], // Valores simulados
+        backgroundColor: ['#f33aafff', '#7991e8ff'],
+        borderColor: ['#b11049ff', '#3d4d7a'],
+        borderWidth: 2
+      }]
+    };
+
+    // Datos para gráficos donut de Asignación para la Inversión Local
+    const localDonutData = {
+      labels: ['Presupuesto', 'Recaudo'],
+      datasets: [{
+        data: [125000000000, 98750000000], // Valores simulados
+        backgroundColor: ['#f38135ff', '#edb87cff'],
+        borderColor: ['#be480eff', '#8c5516'],
+        borderWidth: 2
+      }]
+    };
+
+    // Opciones para gráficos donut horizontales
+    this.donutChartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'right',
+          labels: {
+            usePointStyle: true,
+            padding: 20,
+            font: {
+              size: 12
+            }
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: (context: any) => {
+              const label = context.label || '';
+              const value = context.parsed;
+              const formatted = new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+              }).format(value);
+              return `${label}: ${formatted}`;
+            }
+          }
+        }
+      }
+    };
+
+    // Asignar los mismos datos a todos los municipios
+    this.planBienalMunicipio1DirectasDonutData = { ...directasDonutData };
+    this.planBienalMunicipio1LocalDonutData = { ...localDonutData };
+    this.planBienalMunicipio2DirectasDonutData = { ...directasDonutData };
+    this.planBienalMunicipio2LocalDonutData = { ...localDonutData };
+  }
+
+  /**
    * Inicializar datos de la tabla comparativa
    */
   private initializeTableData(): void {
@@ -232,6 +310,37 @@ export class SgrComparativoComponent implements OnInit {
         local_recaudo: 72100000000
       }
     ];
+  }
+
+  /**
+   * Inicializar datos de las tablas de municipios
+   */
+  private initializeMunicipalityTables(): void {
+    // Datos base para las tablas de municipios
+    const baseTableData = [
+      {
+        asignacion: 'Asignaciones Directas 25%',
+        presupuesto_total: 87500000000,
+        presupuesto_corriente: 72100000000,
+        presupuesto_otros: 15400000000
+      },
+      {
+        asignacion: 'Asignación para la Inversión Local Municipios más pobres',
+        presupuesto_total: 125000000000,
+        presupuesto_corriente: 98750000000,
+        presupuesto_otros: 26250000000
+      },
+      {
+        asignacion: 'Incentivo producción Acto Legislativo 04 de 2017 (30% RF)',
+        presupuesto_total: 42500000000,
+        presupuesto_corriente: 35000000000,
+        presupuesto_otros: 7500000000
+      }
+    ];
+
+    // Asignar los mismos datos a ambos municipios (se pueden personalizar después)
+    this.municipality1TableData = [...baseTableData];
+    this.municipality2TableData = [...baseTableData];
   }
 
   /**

@@ -28,6 +28,7 @@ import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { departamentos } from '../../data/departamentos';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { MenuItem } from 'primeng/api';
+import { Breadcrumb } from 'primeng/breadcrumb';
 
 interface SelectOption {
   value: string;
@@ -69,13 +70,17 @@ interface SelectOption {
     Select,
     MultiSelect,
     InfoPopupComponent,
-    SplitButtonModule
+    SplitButtonModule,
+    Breadcrumb
   ],
   templateUrl: './reporte-funcionamiento.component.html',
   styleUrl: './reporte-funcionamiento.component.scss'
 })
 export class ReporteFuncionamientoComponent implements OnInit {
   platformId = inject(PLATFORM_ID);
+
+  items: MenuItem[] | undefined;
+  home: MenuItem | undefined;
 
   // Datos originales cargados desde el JSON
   private funcionamientoData: any[] = [];
@@ -247,6 +252,12 @@ export class ReporteFuncionamientoComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.items = [
+        { label: 'Reporte de Funcionamiento' }        
+    ];
+
+    this.home = { icon: 'pi pi-home', routerLink: '/' };
+    
     this.cargarDatos().then(async () => {
       this.generarRegistroTotales();    
       this.cargarDatosTotalesInicial();

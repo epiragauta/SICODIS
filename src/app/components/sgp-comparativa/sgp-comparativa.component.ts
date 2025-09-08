@@ -15,6 +15,8 @@ import { departamentos } from '../../data/departamentos';
 import { SicodisApiService, FichaComparativaEntidad } from '../../services/sicodis-api.service';
 import { TreeNode } from 'primeng/api';
 import { Chart } from 'chart.js';
+import { Breadcrumb } from 'primeng/breadcrumb';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-sgp-comparativa',
@@ -31,12 +33,16 @@ import { Chart } from 'chart.js';
     ChartModule,
     CardModule,
     ProgressSpinnerModule,
-    NumberFormatPipe
+    NumberFormatPipe,
+    Breadcrumb
   ],
   templateUrl: './sgp-comparativa.component.html',
   styleUrl: './sgp-comparativa.component.scss'
 })
 export class SgpComparativaComponent {
+
+  items: MenuItem[] | undefined;
+  home: MenuItem | undefined;
 
   selected: number = 0; // Changed to number for id_vigencia
   selectedYears: string[] = [];
@@ -74,6 +80,13 @@ export class SgpComparativaComponent {
   constructor(private renderer: Renderer2, private sicodisApiService: SicodisApiService) {}
   
   ngOnInit(): void {
+    this.items = [
+        { label: 'SGP', routerLink: '/sgp-inicio' },
+        { label: 'Ficha Comparativa' }        
+    ];
+
+    this.home = { icon: 'pi pi-home', routerLink: '/' };
+    
     this.loadVigencias();
     // Don't load any charts or data initially
     console.log('Component initialized');

@@ -40,7 +40,7 @@
 
 // Barra superior del gobierno (siempre visible)
 .barra-superior-govco {
-  background-color: #3366cc;
+  background-color: #0743b5;
   width: 100%;
   height: 2.45rem;
   padding-left: .9rem;
@@ -85,7 +85,7 @@
 .barra-superior-govco .idioma-icon-barra-superior-govco::before {
   font-family: "govco-font";
   content: '\ec56';
-  color: #3366CC;
+  color: #0743b5;
   font-size: 14px;
 }
 
@@ -94,11 +94,11 @@
 }
 
 // Sección de logos (NO sticky)
-.logos-section {
+.logos-section-container {
   background-color: white;
   position: relative;
   z-index: 998;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease;  
 }
 
 // Contenedor del menú (SÍ sticky)
@@ -151,9 +151,7 @@
 
 // Estados de scroll para efectos adicionales
 .header-container.scrolled {
-  .logos-section {
-    // Opcional: puedes agregar efectos a los logos cuando hay scroll
-    // Por ejemplo, reducir el padding
+  .logos-section-container {    
     padding-top: 0;
     padding-bottom: 0;
   }
@@ -223,19 +221,21 @@ body {
 }
 
 :host ::ng-deep .p-menubar-item-link:focus {
-  outline: 2px solid #3366CC;
+  outline: 2px solid #0743b5;
   outline-offset: 2px;
   border-radius: 4px;
 }
 
-#header-logos-container {
+#header-logos-container {  
   height: 90px !important; // Altura fija
+  width: 1320px;
   min-height: 90px;
   max-height: 90px;
   display: flex;
   align-items: center;
-  padding: 15px 30px;
+  padding: 15px 10px;
   overflow: hidden; // Evita desbordamientos
+  margin: 0 auto; // Centra el contenedor
 }
 
 // Tablet

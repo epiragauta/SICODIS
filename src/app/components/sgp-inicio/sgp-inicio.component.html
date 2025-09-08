@@ -1,5 +1,10 @@
 <!-- prototipo-sgp.component.html -->
 <div class="container">
+  <div class="card flex justify-center">
+    <div class="card flex justify-center">
+    <p-breadcrumb [model]="items" [home]="home" />
+</div>
+  </div>
   <!-- Sección A: Banner con título -->
   <div class="gradient-banner">
     <div class="gradient-overlay"></div>
@@ -115,9 +120,10 @@
           <img [src]="recurso.icon" alt="{{ recurso.titulo }}" class="mr-2 sgp-icon">
         </div>
         <div class="card-content">
+          <h3>{{ recurso.titulo }}</h3>
           <p>{{ recurso.descripcion }}</p>
         </div>
-        <mat-icon style="font-size: 32px; color: #156082;">chevron_right</mat-icon>        
+        <mat-icon style="font-size: 32px; color: #403a3a;">chevron_right</mat-icon>        
       </div>
     </div>
   </div>

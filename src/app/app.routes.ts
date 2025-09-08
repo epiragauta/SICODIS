@@ -26,9 +26,11 @@ import { SgpDetallePresupuestalComponent } from './components/sgp-detalle-presup
 import { SgpComparativaComponent } from './components/sgp-comparativa/sgp-comparativa.component';
 import { PgnRegionalizacionPresupuestoProgramacionComponent } from './components/pgn-regionalizacion-presupuesto-programacion/pgn-regionalizacion-presupuesto-programacion.component';
 import { PgnComparativaRegionalizacionComponent } from './components/pgn-comparativa-regionalizacion/pgn-comparativa-regionalizacion.component';
-import { PgnVariablesComponent } from './components/pgn-variables/pgn-variables.component';
+import { SgpEficienciasComponent } from './components/sgp-eficiencias/sgp-eficiencias.component';
 import { SgrRecaudoMensualComponent } from './components/sgr-recaudo-mensual/sgr-recaudo-mensual.component';
 import { SgrComparativoComponent } from './components/sgr-comparativo/sgr-comparativo.component';
+import { SgrProgramacionComponent } from './components/sgr-programacion/sgr-programacion.component';
+import { SgrRecaudoDirectasComponent } from './components/sgr-recaudo-directas/sgr-recaudo-directas.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -55,10 +57,12 @@ export const routes: Routes = [
     { path: 'sgp-documentos-anexos', component: ReportsSgpComponent },
     { path: 'sgp-detalle-presupuestal', component: SgpDetallePresupuestalComponent },
     { path: 'sgp-comparativa', component: SgpComparativaComponent },    
-    { path: 'sgp-eficiencia', component: PgnVariablesComponent },
+    { path: 'sgp-eficiencia', component: SgpEficienciasComponent },
     { path: 'pgn-regionalizacion', component: PgnRegionalizacionPresupuestoProgramacionComponent },
     { path: 'pgn-comparativa-regionalizacion', component: PgnComparativaRegionalizacionComponent },    
     { path: 'presupuesto-y-recaudo', component: PresupuestoYRecaudoComponent },
     { path: 'sgr-recaudo-mensual', component: SgrRecaudoMensualComponent },
     { path: 'sgr-comparativo', component: SgrComparativoComponent },
+    { path: 'sgr-programacion', component: SgrProgramacionComponent },
+    { path: 'sgr-recaudo-directas', component: SgrRecaudoDirectasComponent },
 ];

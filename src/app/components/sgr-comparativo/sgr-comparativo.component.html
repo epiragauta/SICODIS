@@ -129,7 +129,7 @@
 
   <!-- Charts section - Solo visible cuando se seleccionan todos los filtros -->
    <div class="graphics-section" *ngIf="showPresupuestoRecaudoView && selectedMunicipio && selectedMunicipio2">
-    <h2 class="charts-main-title">Avance del recaudo frente al Plan Bienal de Caja Bienio</h2>
+    <h2 class="charts-main-title">Avance del recaudo frente al Presupuesto Bienio  {{selectedBienio}}</h2>
     <div class="dual-chart-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%;">
       <!-- First Chart - Municipality 1 -->
       <div class="chart-column">
@@ -141,60 +141,49 @@
           </ng-template>
           <div class="chart-container" style="position: relative; height: 320px; width: 100%;">
             <p-chart 
-            type="bar" 
-            [data]="municipio1ChartData" 
-            [options]="municipio1ChartOptions"
-            width="570px"
-            height="300px">
-          </p-chart>
+              type="bar" 
+              [data]="planBienalMunicipio1ChartData" 
+              [options]="planBienalMunicipio1ChartOptions"
+              width="570px"
+              height="300px">
+            </p-chart>
           </div>
-        </p-card>
-      </div>
-
-      <!-- Second Chart - Municipality 2 -->
-      <div class="chart-column">
-        <p-card class="chart-card">
-          <ng-template pTemplate="header">
-            <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
-              <h3 class="chart-title">{{ getSelectedMunicipalityName(2) }}</h3>
+          <!-- Detalle ingresos corrientes for Presupuesto y recaudo Municipality 1 -->
+        <div class="detalle-ingresos-section">
+          <h3 class="detalle-title">Detalle ingresos corrientes</h3>
+          
+          <div class="donut-charts-container">
+            <!-- First donut chart -->
+            <div class="donut-chart-item">
+              <h4 class="donut-chart-title">Presupuesto y recaudo corrientes Asignaciones Directas (25%)</h4>
+              <div class="donut-chart-wrapper">
+                <p-chart 
+                  type="doughnut" 
+                  [data]="planBienalMunicipio1DirectasDonutData" 
+                  [options]="donutChartOptions"
+                  width="265px"
+                  height="150px">
+                </p-chart>
+              </div>
             </div>
-          </ng-template>
-          <div class="chart-container" style="position: relative; height: 320px; width: 100%;">
-            <p-chart 
-            type="bar" 
-            [data]="municipio2ChartData" 
-            [options]="municipio2ChartOptions"
-            width="570px"
-            height="300px">
-          </p-chart>
-          </div>
-        </p-card>
-      </div>
-    </div>
-  </div>  
-
-  <!-- Plan Bienal Charts section - Solo visible cuando se selecciona Plan Bienal view -->
-  <div class="graphics-section" *ngIf="showPlanBienalView && selectedMunicipio && selectedMunicipio2">
-    <h2 class="charts-main-title">Plan Bienal de Caja y Recaudo</h2>
-    <div class="dual-chart-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%;">
-      <!-- First Chart - Municipality 1 -->
-      <div class="chart-column">
-        <p-card class="chart-card">
-          <ng-template pTemplate="header">
-            <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
-              <h3 class="chart-title">{{ getSelectedMunicipalityName(1) }}</h3>
+            
+            <!-- Second donut chart -->
+            <div class="donut-chart-item">
+              <h4 class="donut-chart-title">Presupuesto y recaudo corrientes Asignación para la Inversión Local</h4>
+              <div class="donut-chart-wrapper">
+                <p-chart 
+                  type="doughnut" 
+                  [data]="planBienalMunicipio1LocalDonutData" 
+                  [options]="donutChartOptions"
+                  width="265px"
+                  height="150px">
+                </p-chart>
+              </div>
             </div>
-          </ng-template>
-          <div class="chart-container" style="position: relative; height: 320px; width: 100%;">
-            <p-chart 
-            type="bar" 
-            [data]="planBienalMunicipio1ChartData" 
-            [options]="planBienalMunicipio1ChartOptions"
-            width="570px"
-            height="300px">
-          </p-chart>
           </div>
-        </p-card>
+        </div>
+        </p-card>        
+
       </div>
 
       <!-- Second Chart - Municipality 2 -->
@@ -214,13 +203,158 @@
             height="300px">
           </p-chart>
           </div>
+          <!-- Detalle ingresos corrientes for Plan Bienal Municipality 2 -->
+        <div class="detalle-ingresos-section">
+          <h3 class="detalle-title">Detalle ingresos corrientes</h3>
+          
+          <div class="donut-charts-container">
+            <!-- First donut chart -->
+            <div class="donut-chart-item">
+              <h4 class="donut-chart-title">Presupuesto y recaudo corrientes Asignaciones Directas (25%)</h4>
+              <div class="donut-chart-wrapper">
+                <p-chart 
+                  type="doughnut" 
+                  [data]="planBienalMunicipio2DirectasDonutData" 
+                  [options]="donutChartOptions"
+                  width="265px"
+                  height="150px">
+                </p-chart>
+              </div>
+            </div>
+            
+            <!-- Second donut chart -->
+            <div class="donut-chart-item">
+              <h4 class="donut-chart-title">Presupuesto y recaudo corrientes Asignación para la Inversión Local</h4>
+              <div class="donut-chart-wrapper">
+                <p-chart 
+                  type="doughnut" 
+                  [data]="planBienalMunicipio2LocalDonutData" 
+                  [options]="donutChartOptions"
+                  width="265px"
+                  height="150px">
+                </p-chart>
+              </div>
+            </div>
+          </div>
+        </div>
         </p-card>
+
+        
+      </div>
+    </div>
+
+    <!-- Individual Municipality Tables for Presupuesto y Recaudo -->
+    <div class="municipality-tables-section">
+      <div class="tables-container">
+        <!-- Table for Municipality 1 -->
+        <div class="municipality-table-wrapper">
+          <div class="table-header">
+            <h3 class="municipality-table-title">{{ getSelectedMunicipalityName(1) }}</h3>
+          </div>
+          
+          <p-table [value]="municipality1TableData" 
+                   styleClass="p-datatable-sm municipality-table">
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="asignacion-header">Asignación</th>
+                <th class="presupuesto-header">Presupuesto Total</th>
+                <th class="corriente-header">Presupuesto Corriente</th>
+                <th class="otros-header">Presupuesto Otros</th>
+              </tr>
+            </ng-template>
+            
+            <ng-template pTemplate="body" let-rowData>
+              <tr>
+                <td class="asignacion-cell">{{rowData.asignacion}}</td>
+                <td class="number-cell">{{rowData.presupuesto_total | numberFormat}}</td>
+                <td class="number-cell">{{rowData.presupuesto_corriente | numberFormat}}</td>
+                <td class="number-cell">{{rowData.presupuesto_otros | numberFormat}}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+
+        <!-- Table for Municipality 2 -->
+        <div class="municipality-table-wrapper">
+          <div class="table-header">
+            <h3 class="municipality-table-title">{{ getSelectedMunicipalityName(2) }}</h3>
+          </div>
+          
+          <p-table [value]="municipality2TableData" 
+                   styleClass="p-datatable-sm municipality-table">
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="asignacion-header">Asignación</th>
+                <th class="presupuesto-header">Presupuesto Total</th>
+                <th class="corriente-header">Presupuesto Corriente</th>
+                <th class="otros-header">Presupuesto Otros</th>
+              </tr>
+            </ng-template>
+            
+            <ng-template pTemplate="body" let-rowData>
+              <tr>
+                <td class="asignacion-cell">{{rowData.asignacion}}</td>
+                <td class="number-cell">{{rowData.presupuesto_total | numberFormat}}</td>
+                <td class="number-cell">{{rowData.presupuesto_corriente | numberFormat}}</td>
+                <td class="number-cell">{{rowData.presupuesto_otros | numberFormat}}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </div>
+  </div>  
+
+  <!-- Plan Bienal Charts section - Solo visible cuando se selecciona Plan Bienal view -->
+  <div class="graphics-section" *ngIf="showPlanBienalView && selectedMunicipio && selectedMunicipio2">
+    <h2 class="charts-main-title">Avance del recaudo frente al Plan Bienal de Caja Bienio {{selectedBienio}}</h2>
+    <div class="dual-chart-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%;">
+      <!-- First Chart - Municipality 1 -->
+      <div class="chart-column">
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
+              <h3 class="chart-title">{{ getSelectedMunicipalityName(1) }}</h3>
+            </div>
+          </ng-template>
+          <div class="chart-container" style="position: relative; height: 320px; width: 100%;">
+            <p-chart 
+            type="bar" 
+            [data]="municipio1ChartData" 
+            [options]="municipio1ChartOptions"
+            width="570px"
+            height="300px">
+          </p-chart>
+          </div>
+        </p-card>        
+        
+      </div>
+
+      <!-- Second Chart - Municipality 2 -->
+      <div class="chart-column">
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
+              <h3 class="chart-title">{{ getSelectedMunicipalityName(2) }}</h3>
+            </div>
+          </ng-template>
+          <div class="chart-container" style="position: relative; height: 320px; width: 100%;">
+            <p-chart 
+            type="bar" 
+            [data]="municipio2ChartData" 
+            [options]="municipio2ChartOptions"            
+            width="570px"
+            height="300px">
+          </p-chart>
+          </div>
+        </p-card>        
+        
       </div>
     </div>
   </div>  
 
   <!-- Comparative table section -->
-  <div class="table-section" *ngIf="showPresupuestoRecaudoView && selectedMunicipio && selectedMunicipio2">
+  <div class="table-section" *ngIf="showPlanBienalView && selectedMunicipio && selectedMunicipio2">
     <div class="table-header">
       <h2 class="table-title">Comparativo de Asignaciones por Entidad Territorial</h2>
     </div>
@@ -276,17 +410,6 @@
               (click)="downloadMonthlyDetail()">
       </button>
     </div>
-  </div>
-
-  <!-- Contenido principal condicional -->
-  <div *ngIf="showPresupuestoRecaudoView && selectedMunicipio && selectedMunicipio2" class="content-section">
-    <h3>Vista de Presupuesto y Recaudo</h3>
-    <p>Contenido para la comparación de presupuesto y recaudo entre entidades territoriales.</p>
-  </div>
-
-  <div *ngIf="showPlanBienalView && selectedMunicipio && selectedMunicipio2" class="content-section">
-    <h3>Vista de Plan Bienal de Caja y Recaudo</h3>
-    <p>Contenido para la comparación del plan bienal de caja y recaudo entre entidades territoriales.</p>
   </div>
 
 </div>

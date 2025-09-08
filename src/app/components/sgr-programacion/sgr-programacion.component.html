@@ -1,0 +1,210 @@
+<div class="sicodis-container">
+  
+  <!-- Popups para Diccionario y Siglas -->
+  <app-info-popup 
+    [infoText]="diccionarioContent" 
+    contentTitle="Diccionario de Conceptos"
+    [showPopup]="showDiccionarioPopup"
+    (onClose)="closeDiccionarioPopup()">
+  </app-info-popup>
+  
+  <app-info-popup 
+    [infoText]="siglasContent" 
+    contentTitle="Siglas y Abreviaciones"
+    [showPopup]="showSiglasPopup"
+    (onClose)="closeSiglasPopup()">
+  </app-info-popup>
+
+  <!-- Banner -->
+  <div class="gradient-banner">    
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h2>SGR Programación</h2>
+        <p>Consulte información sobre la programación de recursos del Sistema General de Regalías para diferentes beneficiarios y entidades territoriales.</p>
+    </div>
+  </div>
+  
+  <!-- Botones Plan de recursos / Plan Bienal de Caja y Recaudo -->
+  <div class="view-buttons-section">
+    <div class="view-buttons-container">
+      <button pButton type="button" 
+              [class]="showPlanRecursosView ? 'p-button-primary' : 'p-button-secondary'" 
+              label="Plan de recursos" 
+              (click)="showPlanRecursos()">
+      </button>
+      <button pButton type="button" 
+              [class]="showPlanBienalView ? 'p-button-primary' : 'p-button-secondary'" 
+              label="Plan Bienal de Caja y Recaudo" 
+              (click)="showPlanBienal()">
+      </button>
+    </div>
+  </div>
+
+  <!-- Panel de filtros -->
+  <div class="filters-panel">
+    <div class="filters-row">
+      <div class="p-field bienio-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="bienio" [options]="bienios" inputId="bienioSelect" [(ngModel)]="selectedBienio"
+            optionLabel="label" [showClear]="false" placeholder="Bienio"></p-select>
+          <label for="bienioSelect">Bienio</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field beneficiarios-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="beneficiarios" [options]="beneficiarios" inputId="beneficiariosSelect" [(ngModel)]="selectedBeneficiario"
+            optionLabel="nombre" [showClear]="false" placeholder="Beneficiarios"></p-select>
+          <label for="beneficiariosSelect">Beneficiarios</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field departamento-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="departamento" [options]="departamentos" inputId="departamentoSelect" [(ngModel)]="selectedDepartamento"
+            optionLabel="nombre" [showClear]="false" placeholder="Departamento"></p-select>
+          <label for="departamentoSelect">Departamento</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field apply-filters">
+        <button pButton type="button"
+            icon="pi pi-search"
+            label="Aplicar Filtros"
+            class="p-button-primary"
+            (click)="applyFilters()">
+        </button>
+      </div>
+
+      <div class="p-field clear-filters">
+        <button pButton type="button"
+            icon="pi pi-eraser"
+            label="Limpiar filtros"
+            class="p-button-secondary"
+            (click)="clearFilters()">
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección de botones Diccionario y Siglas -->
+  <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0;">
+    <div style="width: 83%;">
+      <p class="date-update">Fecha de actualización: junio 30 de 2025</p>
+      <p class="date-update">Fecha de corte de recaudo: mayo 30 de 2025</p>
+    </div>
+    <div style="position: relative; padding-bottom: .25rem;">
+      <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 1.8rem; width: 96px;"
+          (click)="showPopupDiccionario()">
+      </button>
+      <button pButton type="button" label="Siglas" class="p-button-secondary" style="width: 90px;"
+          (click)="showPopupSiglas()">
+      </button>
+    </div> 
+  </div>
+
+  <!-- Informative message when no filters are applied -->
+  <div class="info-message-section" *ngIf="!filtersApplied">
+    <p-card class="info-card">
+      <div class="info-content" style="text-align: center; padding: 2rem;">
+        <i class="pi pi-info-circle" style="font-size: 3rem; color: #2196F3; margin-bottom: 1rem;"></i>
+        <h3>Seleccione los filtros para consultar la programación</h3>
+        <p>Para visualizar la información de programación de recursos del SGR, por favor seleccione:</p>
+        <ul style="text-align: left; margin: 1rem 0; display: inline-block;">
+          <li>Un bienio</li>
+          <li>El tipo de beneficiarios</li>
+          <li>El departamento de interés</li>
+        </ul>
+        <p><strong>Nota:</strong> Haga clic en "Aplicar Filtros" para mostrar los resultados.</p>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Plan de recursos content - Solo visible cuando se selecciona Plan de recursos y hay un bienio -->
+  <div class="plan-recursos-section" *ngIf="showPlanRecursosView && selectedBienio">
+    <!-- Chart section -->
+    <div class="chart-section">
+      <p-card class="chart-card">
+        <div class="chart-container" style="position: relative; height: 520px; width: 100%;">
+          <p-chart 
+            type="bar" 
+            [data]="tenYearChartData" 
+            [options]="tenYearChartOptions"
+            width="100%"
+            height="490px">
+          </p-chart>
+        </div>
+      </p-card>
+    </div>
+
+    <!-- Table section -->
+    <div class="concept-table-section">
+      <div class="table-header">
+        <h3 class="table-title">Plan de recursos 2025 – 2034</h3>
+      </div>
+      <p-table [value]="conceptTableData" 
+               styleClass="p-datatable-sm concept-table">
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="concepto-header">Concepto</th>
+            <th class="year-header">2025</th>
+            <th class="year-header">2026</th>
+            <th class="year-header">2027</th>
+            <th class="year-header">2028</th>
+            <th class="year-header">2029</th>
+            <th class="year-header">2030</th>
+            <th class="year-header">2031</th>
+            <th class="year-header">2032</th>
+            <th class="year-header">2033</th>
+            <th class="year-header">2034</th>
+          </tr>
+        </ng-template>
+        
+        <ng-template pTemplate="body" let-rowData>
+          <tr [ngClass]="{'total-row': rowData.isTotal}">
+            <td class="concepto-cell" [ngClass]="{'total-cell': rowData.isTotal}">{{rowData.concepto}}</td>
+            <td class="number-cell" [ngClass]="{'total-cell': rowData.isTotal}">{{rowData['2025'] | numberFormat}}</td>
+            <td class="number-cell" [ngClass]="{'total-cell': rowData.isTotal}">{{rowData['2026'] | numberFormat}}</td>
+            <td class="number-cell" [ngClass]="{'total-cell': rowData.isTotal}">{{rowData['2027'] | numberFormat}}</td>
+            <td class="number-cell" [ngClass]="{'total-cell': rowData.isTotal}">{{rowData['2028'] | numberFormat}}</td>
+            <td class="number-cell" [ngClass]="{'total-cell': rowData.isTotal}">{{rowData['2029'] | numberFormat}}</td>
+            <td class="number-cell" [ngClass]="{'total-cell': rowData.isTotal}">{{rowData['2030'] | numberFormat}}</td>
+            <td class="number-cell" [ngClass]="{'total-cell': rowData.isTotal}">{{rowData['2031'] | numberFormat}}</td>
+            <td class="number-cell" [ngClass]="{'total-cell': rowData.isTotal}">{{rowData['2032'] | numberFormat}}</td>
+            <td class="number-cell" [ngClass]="{'total-cell': rowData.isTotal}">{{rowData['2033'] | numberFormat}}</td>
+            <td class="number-cell" [ngClass]="{'total-cell': rowData.isTotal}">{{rowData['2034'] | numberFormat}}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <!-- Notes section -->
+    <div class="notes-section">
+      <div class="notes-content">
+        <h4 class="notes-title">Notas:</h4>
+        <ul class="notes-list">
+          <li>Cifras en pesos corrientes</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plan Bienal de Caja content - Solo visible cuando se selecciona Plan Bienal -->
+  <div class="plan-bienal-section" *ngIf="showPlanBienalView && selectedBienio">
+    <!-- Chart section -->
+    <div class="chart-section">
+      <p-card class="chart-card">
+        <div class="chart-container" style="position: relative; height: 520px; width: 100%;">
+          <p-chart 
+            type="bar" 
+            [data]="planBienalChartData" 
+            [options]="planBienalChartOptions"
+            width="100%"
+            height="490px">
+          </p-chart>
+        </div>
+      </p-card>
+    </div>
+  </div>
+
+</div>

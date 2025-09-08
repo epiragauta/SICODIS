@@ -228,6 +228,7 @@
         .p-button {
           height: 42px; // Alinear con la altura de los selects
           padding: 0 1.5rem;
+          border-radius: 24px;
         }
 
         .btn-apply-filters{
@@ -370,11 +371,10 @@
       font-size: 0.9rem;
       font-weight: 600;
       min-width: 180px;
+      border-radius: 24px;
     }
   }
 }
-
-
 
 // Estilos específicos para datos expandidos
 :host ::ng-deep {

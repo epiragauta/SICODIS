@@ -20,6 +20,8 @@ import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { SgpBoldPipe } from '../../utils/sgpBoldPipe';
 import { departamentos } from '../../data/departamentos';
 import { SicodisApiService } from '../../services/sicodis-api.service';
+import { Breadcrumb } from 'primeng/breadcrumb';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-reports-sgp',
@@ -38,12 +40,17 @@ import { SicodisApiService } from '../../services/sicodis-api.service';
     Dialog,
     TooltipModule,
     NumberFormatPipe,
-    SgpBoldPipe
+    SgpBoldPipe,
+    Breadcrumb
   ],
   templateUrl: './reports-sgp.component.html',
   styleUrl: './reports-sgp.component.scss',
 })
 export class ReportsSgpComponent implements OnInit {
+  
+  items: MenuItem[] | undefined;
+  home: MenuItem | undefined;
+  
   color1 = 'lightblue';
   color2 = 'lightgreen';
   color3 = 'lightpink';
@@ -169,6 +176,13 @@ export class ReportsSgpComponent implements OnInit {
   constructor(private renderer: Renderer2, private sicodisApiService: SicodisApiService) {}
 
   ngOnInit(): void {
+    this.items = [
+        { label: 'SGP', routerLink: '/sgp-inicio' },
+        { label: 'Documentos y Anexos' }        
+    ];
+
+    this.home = { icon: 'pi pi-home', routerLink: '/' };
+    
     this.infoToResume = this.infoResume.filter(
       (item: any) => item.year === this.selected
     )[0];
