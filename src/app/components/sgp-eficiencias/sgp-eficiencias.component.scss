@@ -1,3 +1,19 @@
+// Contenedor de fechas y botones
+.dates-buttons-container {
+  display: flex;
+  width: 100%;
+  max-width: 1320px;
+  margin-left: auto;
+  margin-right: auto;
+  .date-update {
+    font-size: 0.65rem;
+    font-weight: bold;
+    color: #0743b5;
+    text-align: left;
+    margin: .25rem 0;
+  }
+}
+
 .sgp-eficiencias-container {
   padding: 1rem;
   max-width: 1320px;
@@ -126,7 +142,7 @@
 
 /* Cards Section */
 .cards-section {
-  margin: 2rem 0;
+  margin: 1rem 0;
 
   .efficiency-card {
     margin-bottom: 2rem;
@@ -496,10 +512,7 @@
 
     }
   }
-
-  .last-updated-section {
-    padding: 0.75rem 1rem;
-  }
+  
 }
 
 

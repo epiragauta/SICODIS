@@ -325,8 +325,7 @@
   width: 100%;
 
   .filters-panel {
-    margin-bottom: 1.5rem;
-
+    
     .filters-row {
       display: flex;
       flex-wrap: wrap;
@@ -365,6 +364,23 @@
   }
 
 }
+
+// Contenedor de fechas y botones
+.dates-buttons-container {
+  display: flex;
+  width: 100%;
+  max-width: 1320px;
+  margin-left: auto;
+  margin-right: auto;
+  .date-update {
+    font-size: 0.65rem;
+    font-weight: bold;
+    color: #0743b5;
+    text-align: left;
+    margin-bottom: 0.125rem;
+  }
+}
+
 
 // Sección de tabla - Segunda fila completa
 .table-section {

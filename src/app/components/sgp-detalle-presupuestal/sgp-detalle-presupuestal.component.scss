@@ -1,3 +1,19 @@
+// Contenedor de fechas y botones
+.dates-buttons-container {
+  display: flex;
+  width: 100%;
+  max-width: 1320px;
+  margin-left: auto;
+  margin-right: auto;
+  .date-update {
+    font-size: 0.65rem;
+    font-weight: bold;
+    color: #0743b5;
+    text-align: left;
+    margin: .25rem 0;
+  }
+}
+
 // Estilos del componente sgp-detalle-presupuestal
 :host ::ng-deep {
   // Estilos para los componentes de PrimeNG
@@ -155,12 +171,11 @@
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 1.5rem;
+  margin-bottom: .5rem;
   width: 100%;
 
   .filters-panel {
-    margin-bottom: 1.5rem;
-
+    
     .filters-row {
       display: flex;
       flex-wrap: wrap;
