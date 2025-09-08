@@ -381,8 +381,8 @@ export class HomeComponent implements OnInit {
       Chart.register(centerTextPlugin);
     }
 
-    const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--text-color') || '#333';
+    //const documentStyle = getComputedStyle(document.documentElement);
+    //const textColor = documentStyle.getPropertyValue('--text-color') || '#333';
     
     this.donutSgpOptions = {
       cutout: '60%',
@@ -395,14 +395,14 @@ export class HomeComponent implements OnInit {
         legend: {
           position: 'right',
           labels: {
-            color: textColor,
+            color: "#333",
             font: { size: 14 }
           }
         },
         title: {
           display: true,
           text: 'Avance de Ejecución',
-          color: textColor,
+          color: "#333",
           font: { size: 18, weight: 'bold' }
         },
         tooltip: {
@@ -429,8 +429,8 @@ export class HomeComponent implements OnInit {
   }
 
   private initializeSgrDonutCharts() {
-    const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--text-color') || '#333';
+    //const documentStyle = getComputedStyle(document.documentElement);
+    //const textColor = documentStyle.getPropertyValue('--text-color') || '#333';
     
     // Opciones para gráfico corrientes (naranja)
     this.donutSgrCorrientesOptions = {
@@ -444,14 +444,14 @@ export class HomeComponent implements OnInit {
         legend: {
           position: 'right',
           labels: {
-            color: textColor,
+            color: "#333",
             font: { size: 14 }
           }
         },
         title: {
           display: true,
           text: 'Avance de distribución corrientes',
-          color: textColor,
+          color: "#333",
           font: { size: 18, weight: 'bold' }
         },
         tooltip: {
@@ -488,14 +488,14 @@ export class HomeComponent implements OnInit {
         legend: {
           position: 'right',
           labels: {
-            color: textColor,
+            color: "#333",
             font: { size: 14 }
           }
         },
         title: {
           display: true,
           text: 'Avance de distribución otros',
-          color: textColor,
+          color: "#333",
           font: { size: 18, weight: 'bold' }
         },
         tooltip: {

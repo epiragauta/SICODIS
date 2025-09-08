@@ -19,7 +19,7 @@
   <div class="gradient-banner">    
     <div class="gradient-overlay"></div>
     <div class="banner-content">
-      <h2>SGR Comparativo</h2>
+      <h1>SGR Comparativo</h1>
         <p>Consulte y compare información presupuestal y de recaudo entre diferentes entidades territoriales del Sistema General de Regalías.</p>
     </div>
   </div>
@@ -95,7 +95,7 @@
   </div>
 
   <!-- Sección de botones Diccionario y Siglas -->
-  <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0;">
+  <div style="display: flex; justify-content: space-between; align-items: center; padding: .1rem 0;">
     <div style="width: 83%;">
       <p class="date-update">Fecha de actualización: junio 30 de 2025</p>
       <p class="date-update">Fecha de corte de recaudo: mayo 30 de 2025</p>
@@ -129,7 +129,7 @@
 
   <!-- Charts section - Solo visible cuando se seleccionan todos los filtros -->
    <div class="graphics-section" *ngIf="showPresupuestoRecaudoView && selectedMunicipio && selectedMunicipio2">
-    <h2 class="charts-main-title">Avance del recaudo frente al Presupuesto Bienio  {{selectedBienio}}</h2>
+    <h2 class="charts-main-title">Avance del recaudo frente al Presupuesto Bienio  {{selectedBienio.label}}</h2>
     <div class="dual-chart-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%;">
       <!-- First Chart - Municipality 1 -->
       <div class="chart-column">

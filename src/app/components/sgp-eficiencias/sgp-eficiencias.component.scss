@@ -58,7 +58,7 @@
   width: 1210px;
   color: white;
 
-  h2 {
+  h1 {
     font-size: 2rem;
     margin-top: 2.25rem;
     margin-bottom: 2.5rem;
@@ -445,7 +445,7 @@
     .banner-content {
       max-width: 90%;
 
-      h2 {
+      h1 {
         font-size: 1.5rem;
         margin-top: 2rem;
         margin-bottom: 1.5rem;
@@ -511,10 +511,8 @@
       }
 
     }
-  }
-  
+  }  
 }
-
 
 // Desktop media query to ensure horizontal layout on larger screens
 @media (min-width: 769px) {

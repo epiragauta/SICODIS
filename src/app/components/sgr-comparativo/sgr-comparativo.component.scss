@@ -99,7 +99,7 @@
       width: 1210px;
       color: white;
       
-      h2 {
+      h1 {
         font-size: 2rem;
         margin-top: 2.25rem;
         margin-bottom: 2.5rem;
@@ -217,7 +217,7 @@
   .p-button {
     font-family: "Work Sans", sans-serif;
     font-weight: normal;
-    border-radius: 8px;
+    border-radius: 24px;
     padding: 0.5rem 0.5rem;    
   }
 
@@ -791,7 +791,7 @@
       font-family: "Work Sans", sans-serif;
       font-weight: 600;
       padding: 0.75rem 1.5rem;
-      border-radius: 8px;
+      border-radius: 24px;
       transition: all 0.2s ease;
 
       &.p-button-success {
