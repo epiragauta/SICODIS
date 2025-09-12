@@ -252,14 +252,19 @@
             <h3 class="municipality-table-title">{{ getSelectedMunicipalityName(1) }}</h3>
           </div>
           
-          <p-table [value]="municipality1TableData" 
-                   styleClass="p-datatable-sm municipality-table">
+          <div style="overflow-x: auto;">
+            <p-table [value]="municipality1TableData" 
+                     styleClass="p-datatable-sm municipality-table">
             <ng-template pTemplate="header">
               <tr>
                 <th class="asignacion-header">Asignación</th>
                 <th class="presupuesto-header">Presupuesto Total</th>
                 <th class="corriente-header">Presupuesto Corriente</th>
                 <th class="otros-header">Presupuesto Otros</th>
+                <th class="recaudo-corriente-header">Recaudo Corriente</th>
+                <th class="recaudo-otros-header">Recaudo Otros</th>
+                <th class="recaudo-total-header">Recaudo Total</th>
+                <th class="avance-iac-header">Avance IAC frente a presupuesto</th>
               </tr>
             </ng-template>
             
@@ -269,9 +274,14 @@
                 <td class="number-cell">{{rowData.presupuesto_total | numberFormat}}</td>
                 <td class="number-cell">{{rowData.presupuesto_corriente | numberFormat}}</td>
                 <td class="number-cell">{{rowData.presupuesto_otros | numberFormat}}</td>
+                <td class="number-cell">{{rowData.recaudo_corriente | numberFormat}}</td>
+                <td class="number-cell">{{rowData.recaudo_otros | numberFormat}}</td>
+                <td class="number-cell">{{rowData.recaudo_total | numberFormat}}</td>
+                <td class="number-cell">{{rowData.avance_iac | numberFormat}}</td>
               </tr>
             </ng-template>
-          </p-table>
+            </p-table>
+          </div>
         </div>
 
         <!-- Table for Municipality 2 -->
@@ -280,14 +290,19 @@
             <h3 class="municipality-table-title">{{ getSelectedMunicipalityName(2) }}</h3>
           </div>
           
-          <p-table [value]="municipality2TableData" 
-                   styleClass="p-datatable-sm municipality-table">
+          <div style="overflow-x: auto;">
+            <p-table [value]="municipality2TableData" 
+                     styleClass="p-datatable-sm municipality-table">
             <ng-template pTemplate="header">
               <tr>
                 <th class="asignacion-header">Asignación</th>
                 <th class="presupuesto-header">Presupuesto Total</th>
                 <th class="corriente-header">Presupuesto Corriente</th>
                 <th class="otros-header">Presupuesto Otros</th>
+                <th class="recaudo-corriente-header">Recaudo Corriente</th>
+                <th class="recaudo-otros-header">Recaudo Otros</th>
+                <th class="recaudo-total-header">Recaudo Total</th>
+                <th class="avance-iac-header">Avance IAC frente a presupuesto</th>
               </tr>
             </ng-template>
             
@@ -297,9 +312,14 @@
                 <td class="number-cell">{{rowData.presupuesto_total | numberFormat}}</td>
                 <td class="number-cell">{{rowData.presupuesto_corriente | numberFormat}}</td>
                 <td class="number-cell">{{rowData.presupuesto_otros | numberFormat}}</td>
+                <td class="number-cell">{{rowData.recaudo_corriente | numberFormat}}</td>
+                <td class="number-cell">{{rowData.recaudo_otros | numberFormat}}</td>
+                <td class="number-cell">{{rowData.recaudo_total | numberFormat}}</td>
+                <td class="number-cell">{{rowData.avance_iac | numberFormat}}</td>
               </tr>
             </ng-template>
-          </p-table>
+            </p-table>
+          </div>
         </div>
       </div>
     </div>
@@ -359,8 +379,9 @@
       <h2 class="table-title">Comparativo de Asignaciones por Entidad Territorial</h2>
     </div>
     
-    <p-table [value]="comparativeTableData" 
-             styleClass="p-datatable-sm comparative-table">
+    <div style="overflow-x: auto;">
+      <p-table [value]="comparativeTableData" 
+               styleClass="p-datatable-sm comparative-table">
              
       <!-- Grouped headers -->
       <ng-template pTemplate="header">
@@ -392,7 +413,8 @@
         </tr>
       </ng-template>
       
-    </p-table>
+      </p-table>
+    </div>
 
     <!-- Export buttons -->
     <div class="table-actions">

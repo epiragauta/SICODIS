@@ -31,6 +31,7 @@ import { SgrRecaudoMensualComponent } from './components/sgr-recaudo-mensual/sgr
 import { SgrComparativoComponent } from './components/sgr-comparativo/sgr-comparativo.component';
 import { SgrProgramacionComponent } from './components/sgr-programacion/sgr-programacion.component';
 import { SgrRecaudoDirectasComponent } from './components/sgr-recaudo-directas/sgr-recaudo-directas.component';
+import { SgrMontosCorrientesConstantesComponent } from './components/sgr-montos-corrientes-constantes/sgr-montos-corrientes-constantes.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -65,4 +66,5 @@ export const routes: Routes = [
     { path: 'sgr-comparativo', component: SgrComparativoComponent },
     { path: 'sgr-programacion', component: SgrProgramacionComponent },
     { path: 'sgr-recaudo-directas', component: SgrRecaudoDirectasComponent },
+    { path: 'sgr-montos-corrientes-constantes', component: SgrMontosCorrientesConstantesComponent },
 ];

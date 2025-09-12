@@ -43,11 +43,15 @@ export class SgrMontosCorrientesConstantesComponent implements OnInit {
   valoresConstantesChartData: any = {};
   valoresConstantesChartOptions: any = {};
 
+  // Table data
+  presupuestoRecaudoTableData: any[] = [];
+
   constructor(private sicodisApiService: SicodisApiService) { }
 
   ngOnInit(): void {
     // Inicialización del componente
     this.initializeBarCharts();
+    this.initializeTableData();
   }
 
   /**
@@ -68,23 +72,47 @@ export class SgrMontosCorrientesConstantesComponent implements OnInit {
     const constantesPresupuestoData = [35, 38, 47, 58, 61, 65, 74, 85];
     const constantesRecaudoData = [28, 33, 40, 49, 53, 57, 66, 72];
 
+    // Datos de variación porcentual corrientes-constantes
+    const variacionData = [5.2, 28.0, 40.6, 28.9, 15.5, 16.4, 17.9, 35.9];
+
     // Configuración para gráfico de Valores Corrientes
     this.valoresCorrientesChartData = {
       labels: periodLabels,
       datasets: [
         {
+          label: '% Variación corrientes-constantes',
+          data: variacionData,
+          borderColor: '#ff6b35',
+          backgroundColor: 'rgba(255, 107, 53, 0.1)',
+          borderWidth: 3,
+          type: 'line',
+          fill: false,
+          tension: 0.4,
+          yAxisID: 'y1',
+          pointBackgroundColor: '#ff6b35',
+          pointBorderColor: '#ff6b35',
+          pointRadius: 5,
+          order: 0
+        },
+        {
           label: 'Presupuesto',
           data: corrientesPresupuestoData,
           backgroundColor: '#f38135ff',
           borderColor: '#be480eff',
-          borderWidth: 1
+          borderWidth: 1,
+          type: 'bar',
+          yAxisID: 'y',
+          order: 1
         },
         {
           label: 'Recaudo',
           data: corrientesRecaudoData,
           backgroundColor: '#7991e8ff',
           borderColor: '#3d4d7a',
-          borderWidth: 1
+          borderWidth: 1,
+          type: 'bar',
+          yAxisID: 'y',
+          order: 2
         }
       ]
     };
@@ -94,18 +122,39 @@ export class SgrMontosCorrientesConstantesComponent implements OnInit {
       labels: periodLabels,
       datasets: [
         {
+          label: '% Variación corrientes-constantes',
+          data: variacionData,
+          borderColor: '#ff6b35',
+          backgroundColor: 'rgba(255, 107, 53, 0.1)',
+          borderWidth: 3,
+          type: 'line',
+          fill: false,
+          tension: 0.4,
+          yAxisID: 'y1',
+          pointBackgroundColor: '#ff6b35',
+          pointBorderColor: '#ff6b35',
+          pointRadius: 5,
+          order: 0
+        },
+        {
           label: 'Presupuesto',
           data: constantesPresupuestoData,
           backgroundColor: '#f38135ff',
           borderColor: '#be480eff',
-          borderWidth: 1
+          borderWidth: 1,
+          type: 'bar',
+          yAxisID: 'y',
+          order: 1
         },
         {
           label: 'Recaudo',
           data: constantesRecaudoData,
           backgroundColor: '#7991e8ff',
           borderColor: '#3d4d7a',
-          borderWidth: 1
+          borderWidth: 1,
+          type: 'bar',
+          yAxisID: 'y',
+          order: 2
         }
       ]
     };
@@ -130,6 +179,9 @@ export class SgrMontosCorrientesConstantesComponent implements OnInit {
       },
       scales: {
         y: {
+          type: 'linear',
+          display: true,
+          position: 'left',
           beginAtZero: true,
           title: {
             display: true,
@@ -150,6 +202,34 @@ export class SgrMontosCorrientesConstantesComponent implements OnInit {
               return '$' + value + 'B';
             }
           }
+        },
+        y1: {
+          type: 'linear',
+          display: true,
+          position: 'right',
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: '% Variación',
+            font: {
+              size: 11,
+              family: 'Work Sans'
+            },
+            color: '#ff6b35'
+          },
+          ticks: {
+            font: {
+              family: 'Work Sans',
+              size: 10
+            },
+            color: '#ff6b35',
+            callback: (value: any) => {
+              return value + '%';
+            }
+          },
+          grid: {
+            drawOnChartArea: false,
+          },
         },
         x: {
           title: {
@@ -176,6 +256,86 @@ export class SgrMontosCorrientesConstantesComponent implements OnInit {
 
     this.valoresCorrientesChartOptions = { ...commonOptions };
     this.valoresConstantesChartOptions = { ...commonOptions };
+  }
+
+  /**
+   * Inicializar datos de la tabla de presupuesto y recaudo
+   */
+  private initializeTableData(): void {
+    this.presupuestoRecaudoTableData = [
+      {
+        vigencia: '2012',
+        presupuesto_corrientes: 25000000000000, // 25 billones
+        presupuesto_constantes: 35000000000000, // 35 billones
+        presupuesto_variacion: 5.2,
+        recaudo_corrientes: 20000000000000, // 20 billones
+        recaudo_constantes: 28000000000000, // 28 billones
+        recaudo_variacion: 4.8
+      },
+      {
+        vigencia: '2013-2014',
+        presupuesto_corrientes: 32000000000000, // 32 billones
+        presupuesto_constantes: 38000000000000, // 38 billones
+        presupuesto_variacion: 28.0,
+        recaudo_corrientes: 28000000000000, // 28 billones
+        recaudo_constantes: 33000000000000, // 33 billones
+        recaudo_variacion: 40.0
+      },
+      {
+        vigencia: '2015-2016',
+        presupuesto_corrientes: 45000000000000, // 45 billones
+        presupuesto_constantes: 47000000000000, // 47 billones
+        presupuesto_variacion: 40.6,
+        recaudo_corrientes: 38000000000000, // 38 billones
+        recaudo_constantes: 40000000000000, // 40 billones
+        recaudo_variacion: 35.7
+      },
+      {
+        vigencia: '2017-2018',
+        presupuesto_corrientes: 58000000000000, // 58 billones
+        presupuesto_constantes: 58000000000000, // 58 billones (año base)
+        presupuesto_variacion: 28.9,
+        recaudo_corrientes: 49000000000000, // 49 billones
+        recaudo_constantes: 49000000000000, // 49 billones (año base)
+        recaudo_variacion: 28.9
+      },
+      {
+        vigencia: '2019-2020',
+        presupuesto_corrientes: 67000000000000, // 67 billones
+        presupuesto_constantes: 61000000000000, // 61 billones
+        presupuesto_variacion: 15.5,
+        recaudo_corrientes: 58000000000000, // 58 billones
+        recaudo_constantes: 53000000000000, // 53 billones
+        recaudo_variacion: 18.4
+      },
+      {
+        vigencia: '2021-2022',
+        presupuesto_corrientes: 78000000000000, // 78 billones
+        presupuesto_constantes: 65000000000000, // 65 billones
+        presupuesto_variacion: 16.4,
+        recaudo_corrientes: 68000000000000, // 68 billones
+        recaudo_constantes: 57000000000000, // 57 billones
+        recaudo_variacion: 17.2
+      },
+      {
+        vigencia: '2023-2024',
+        presupuesto_corrientes: 92000000000000, // 92 billones
+        presupuesto_constantes: 74000000000000, // 74 billones
+        presupuesto_variacion: 17.9,
+        recaudo_corrientes: 82000000000000, // 82 billones
+        recaudo_constantes: 66000000000000, // 66 billones
+        recaudo_variacion: 20.6
+      },
+      {
+        vigencia: '2025-2026',
+        presupuesto_corrientes: 125000000000000, // 125 billones
+        presupuesto_constantes: 85000000000000, // 85 billones
+        presupuesto_variacion: 35.9,
+        recaudo_corrientes: 105000000000000, // 105 billones
+        recaudo_constantes: 72000000000000, // 72 billones
+        recaudo_variacion: 28.0
+      }
+    ];
   }
 
   /**
@@ -208,6 +368,14 @@ export class SgrMontosCorrientesConstantesComponent implements OnInit {
    */
   closeSiglasPopup(): void {
     this.showSiglasPopup = false;
+  }
+
+  /**
+   * Descargar reporte Excel
+   */
+  downloadExcel(): void {
+    console.log('Descargando reporte Excel de montos corrientes y constantes');
+    // Aquí se implementaría la lógica de descarga del Excel
   }
 
   /**

@@ -322,19 +322,31 @@ export class SgrComparativoComponent implements OnInit {
         asignacion: 'Asignaciones Directas 25%',
         presupuesto_total: 87500000000,
         presupuesto_corriente: 72100000000,
-        presupuesto_otros: 15400000000
+        presupuesto_otros: 15400000000,
+        recaudo_corriente: 65800000000,
+        recaudo_otros: 12300000000,
+        recaudo_total: 78100000000,
+        avance_iac: 89.2
       },
       {
         asignacion: 'Asignación para la Inversión Local Municipios más pobres',
         presupuesto_total: 125000000000,
         presupuesto_corriente: 98750000000,
-        presupuesto_otros: 26250000000
+        presupuesto_otros: 26250000000,
+        recaudo_corriente: 92600000000,
+        recaudo_otros: 18750000000,
+        recaudo_total: 111350000000,
+        avance_iac: 89.1
       },
       {
         asignacion: 'Incentivo producción Acto Legislativo 04 de 2017 (30% RF)',
         presupuesto_total: 42500000000,
         presupuesto_corriente: 35000000000,
-        presupuesto_otros: 7500000000
+        presupuesto_otros: 7500000000,
+        recaudo_corriente: 31800000000,
+        recaudo_otros: 5900000000,
+        recaudo_total: 37700000000,
+        avance_iac: 88.7
       }
     ];
 

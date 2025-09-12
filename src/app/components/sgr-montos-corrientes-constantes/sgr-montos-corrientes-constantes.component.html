@@ -86,4 +86,68 @@
     </div>
   </div>
 
+  <!-- Table section -->
+  <div class="table-section">
+    <div class="table-header" style="text-align: center; margin-bottom: 1.5rem;">
+      <h2 style="font-family: 'Work Sans', sans-serif; font-size: 1.5rem; font-weight: 700; color: #004583; margin: 0; padding: 0;">Presupuesto y Recaudo en valores corrientes y constantes</h2>
+    </div>
+    
+    <div style="overflow-x: auto;">
+      <p-table [value]="presupuestoRecaudoTableData" 
+               styleClass="p-datatable-sm presupuesto-recaudo-table">
+               
+        <!-- Grouped headers -->
+        <ng-template pTemplate="header">
+          <tr>
+            <th rowspan="2" class="vigencia-header">Vigencia</th>
+            <th colspan="3" class="group-header presupuesto-header" style="text-align: center;">Presupuesto</th>
+            <th colspan="3" class="group-header recaudo-header" style="text-align: center;">Recaudo</th>
+          </tr>
+          <tr>
+            <!-- Presupuesto sub-headers -->
+            <th class="sub-header presupuesto-sub">Valores Corrientes</th>
+            <th class="sub-header presupuesto-sub">Valores Constantes</th>
+            <th class="sub-header presupuesto-sub">% Variación</th>
+            <!-- Recaudo sub-headers -->
+            <th class="sub-header recaudo-sub">Valores Corrientes</th>
+            <th class="sub-header recaudo-sub">Valores Constantes</th>
+            <th class="sub-header recaudo-sub">% Variación</th>
+          </tr>
+        </ng-template>
+        
+        <!-- Data rows -->
+        <ng-template pTemplate="body" let-rowData>
+          <tr>
+            <td class="vigencia-cell">{{rowData.vigencia}}</td>
+            <!-- Presupuesto data -->
+            <td class="number-cell" style="text-align: right;">{{rowData.presupuesto_corrientes | numberFormat}}</td>
+            <td class="number-cell" style="text-align: right;">{{rowData.presupuesto_constantes | numberFormat}}</td>
+            <td class="percentage-cell" style="text-align: right;">{{rowData.presupuesto_variacion | number:'1.1-1'}}%</td>
+            <!-- Recaudo data -->
+            <td class="number-cell" style="text-align: right;">{{rowData.recaudo_corrientes | numberFormat}}</td>
+            <td class="number-cell" style="text-align: right;">{{rowData.recaudo_constantes | numberFormat}}</td>
+            <td class="percentage-cell" style="text-align: right;">{{rowData.recaudo_variacion | number:'1.1-1'}}%</td>
+          </tr>
+        </ng-template>
+        
+      </p-table>
+    </div>
+
+    <!-- Export button -->
+    <div class="table-actions" style="text-align: center; margin: 1.5rem 0;">
+      <button pButton type="button" 
+              icon="pi pi-file-excel" 
+              label="Descargar Excel" 
+              class="p-button-primary export-btn"
+              (click)="downloadExcel()">
+      </button>
+    </div>
+
+    <!-- Notes section -->
+    <div class="notes-section" style="margin-top: 2rem; padding: 1rem; background-color: #f8f9fa; border-radius: 8px; border-left: 4px solid #0056b3;">
+      <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; color: #333;">Notas</h3>
+      <p style="font-size: 0.9rem; margin: 0; color: #555;">Valores de IPC y deflactores – DPIP 2025.</p>
+    </div>
+  </div>
+
 </div>
