@@ -61,7 +61,7 @@ export const routes: Routes = [
     { path: 'sgp-eficiencia', component: SgpEficienciasComponent },
     { path: 'pgn-regionalizacion', component: PgnRegionalizacionPresupuestoProgramacionComponent },
     { path: 'pgn-comparativa-regionalizacion', component: PgnComparativaRegionalizacionComponent },    
-    { path: 'presupuesto-y-recaudo', component: PresupuestoYRecaudoComponent },
+    { path: 'sgr-presupuesto-y-recaudo', component: PresupuestoYRecaudoComponent },
     { path: 'sgr-recaudo-mensual', component: SgrRecaudoMensualComponent },
     { path: 'sgr-comparativo', component: SgrComparativoComponent },
     { path: 'sgr-programacion', component: SgrProgramacionComponent },

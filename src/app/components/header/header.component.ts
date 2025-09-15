@@ -61,7 +61,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
           },
           {
             label: 'Eficiencia Fiscal y Eficiencia Administrativa de la participación para Propósito general',
-            // command: () => this.redirectUrl("dashboard")
+            command: () => this.redirectUrl("sgp-eficiencia")
           },
           {
             label: 'Ficha para la proyección de los recursos del SGP – Vigencia 2024'
@@ -73,7 +73,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         items: [
           {
             label: 'Comparativo Avance vs Presupuesto',
-            command: () => this.redirectUrl("comparativo-iac-presupuesto")
+            command: () => this.redirectUrl("sgr-comparativo")
           },
           {
             label: 'Administración y Sistema de Seguimiento (SSEC)',
@@ -81,11 +81,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
           },          
           {
             label: 'Plan Bienal de Caja',
-            // command: () => this.redirectUrl("reports-sgr-bienal")
-          },          
+            command: () => this.redirectUrl("sgr-programacion")
+          },
           {
-            label: 'Plan de recursos',
-            // command: () => this.redirectUrl("dashboard")
+            label: 'Recaudo directas',
+            command: () => this.redirectUrl("sgr-recaudo-directas")
+          },{
+            label: 'Recaudo mensual',
+            command: () => this.redirectUrl("sgr-recaudo-mensual")
+          },
+          {
+            label: 'Recaudo frente a presupuesto',
+            command: () => this.redirectUrl("sgr-presupuesto-y-recaudo")
           },
           {
             label: 'Visor General de recursos AD hidrocarburos y minería',
@@ -97,16 +104,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
         label: 'PGN',
         items: [
           {
-            label: 'Histórico Situado – Fiscal y  PICN 199 a 2001 (entidades y conceptos)'
+            label: 'Regionalización',
+            command: () => this.redirectUrl("pgn-regionalizacion")
           },
           {
-            label: 'Resumen histórico – Situación fiscal y PICN 1994 – 2001'
-          },
-          {
-            label: 'Detalle histórico SGP'
-          },
-          {
-            label: 'Detalle histórico por entidad y concepto SGP'
+            label: 'Comparativa Regionalización',
+            command: () => this.redirectUrl("pgn-comparativa-regionalizacion")
           }
         ]
       },   

@@ -8,6 +8,8 @@ import { ChartModule } from 'primeng/chart';
 import { TableModule } from 'primeng/table';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
+import { Breadcrumb } from 'primeng/breadcrumb';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-sgr-recaudo-mensual',
@@ -21,13 +23,17 @@ import { NumberFormatPipe } from '../../utils/numberFormatPipe';
     ChartModule,
     TableModule,
     InfoPopupComponent,
-    NumberFormatPipe
+    NumberFormatPipe,
+    Breadcrumb
   ],
   templateUrl: './sgr-recaudo-mensual.component.html',
   styleUrl: './sgr-recaudo-mensual.component.scss'
 })
 export class SgrRecaudoMensualComponent implements OnInit {
-  
+
+  items: MenuItem[] | undefined;
+  home: MenuItem | undefined;
+
   // Propiedades para popups de Diccionario y Siglas
   showDiccionarioPopup: boolean = false;
   showSiglasPopup: boolean = false;
@@ -69,6 +75,13 @@ export class SgrRecaudoMensualComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    this.items = [
+        { label: 'SGR', routerLink: '/sgr-inicio' },
+        { label: 'Recaudo Mensual' }
+    ];
+
+    this.home = { icon: 'pi pi-home', routerLink: '/' };
+
     this.setDefaultPeriods();
     this.initializeCharts();
     this.initializeTable();

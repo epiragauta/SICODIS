@@ -1,5 +1,10 @@
 <div class="pgn-regionalizacion-container">
-  
+
+  <!-- Breadcrumb -->
+  <div class="card flex justify-center">
+    <p-breadcrumb [model]="items" [home]="home" />
+  </div>
+
   <div class="gradient-banner">    
     <div class="gradient-overlay"></div>
     <div class="banner-content">
@@ -194,7 +199,7 @@
             
             <div class="export-section">
               <button pButton type="button" icon="pi pi-file-excel" label="Exportar Excel" 
-                class="p-button-success" (click)="exportToExcel()">
+                class="p-button-primary" (click)="exportToExcel()">
               </button>
             </div>
           </mat-card-content>

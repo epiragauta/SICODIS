@@ -10,6 +10,8 @@ import { FormsModule } from '@angular/forms';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { SicodisApiService } from '../../services/sicodis-api.service';
+import { Breadcrumb } from 'primeng/breadcrumb';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-sgr-montos-corrientes-constantes',
@@ -24,13 +26,17 @@ import { SicodisApiService } from '../../services/sicodis-api.service';
     TableModule,
     FormsModule,
     InfoPopupComponent,
-    NumberFormatPipe
+    NumberFormatPipe,
+    Breadcrumb
   ],
   templateUrl: './sgr-montos-corrientes-constantes.component.html',
   styleUrl: './sgr-montos-corrientes-constantes.component.scss'
 })
 export class SgrMontosCorrientesConstantesComponent implements OnInit {
-  
+
+  items: MenuItem[] | undefined;
+  home: MenuItem | undefined;
+
   // Popups
   showDiccionarioPopup: boolean = false;
   showSiglasPopup: boolean = false;
@@ -49,6 +55,13 @@ export class SgrMontosCorrientesConstantesComponent implements OnInit {
   constructor(private sicodisApiService: SicodisApiService) { }
 
   ngOnInit(): void {
+    this.items = [
+        { label: 'SGR', routerLink: '/sgr-inicio' },
+        { label: 'Montos Corrientes Constantes' }
+    ];
+
+    this.home = { icon: 'pi pi-home', routerLink: '/' };
+
     // Inicialización del componente
     this.initializeBarCharts();
     this.initializeTableData();

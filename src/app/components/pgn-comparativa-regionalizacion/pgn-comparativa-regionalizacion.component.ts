@@ -15,6 +15,8 @@ import { ChartModule } from 'primeng/chart';
 
 import { departamentos } from '../../data/departamentos';
 import Chart from 'chart.js/auto';
+import { Breadcrumb } from 'primeng/breadcrumb';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-pgn-comparativa-regionalizacion',
@@ -30,12 +32,16 @@ import Chart from 'chart.js/auto';
     ProgressSpinnerModule,
     TableModule,
     MultiSelect,
-    ChartModule
+    ChartModule,
+    Breadcrumb
   ],
   templateUrl: './pgn-comparativa-regionalizacion.component.html',
   styleUrl: './pgn-comparativa-regionalizacion.component.scss'
 })
 export class PgnComparativaRegionalizacionComponent implements OnInit {
+
+  items: MenuItem[] | undefined;
+  home: MenuItem | undefined;
 
   // Filter properties
   selectedDepartamento: any;
@@ -65,6 +71,13 @@ export class PgnComparativaRegionalizacionComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
+    this.items = [
+      { label: 'PGN', routerLink: '/pgn-inicio' },
+      { label: 'Comparativa Regionalización' }
+    ];
+
+    this.home = { icon: 'pi pi-home', routerLink: '/' };
+
     this.initializeFilters();
     this.initializeChartData();
     this.initializeComparativaData();

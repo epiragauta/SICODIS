@@ -17,6 +17,7 @@ import { TreeNode } from 'primeng/api';
 import { Chart } from 'chart.js';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { MenuItem } from 'primeng/api';
+import { AccordionModule } from 'primeng/accordion';
 
 @Component({
   selector: 'app-sgp-comparativa',
@@ -34,7 +35,8 @@ import { MenuItem } from 'primeng/api';
     CardModule,
     ProgressSpinnerModule,
     NumberFormatPipe,
-    Breadcrumb
+    Breadcrumb,
+    AccordionModule
   ],
   templateUrl: './sgp-comparativa.component.html',
   styleUrl: './sgp-comparativa.component.scss'
@@ -51,6 +53,9 @@ export class SgpComparativaComponent {
   townSelected: string = '';
   townSelected2: string = '';
   tableClass = "p-datatable-sm";
+
+  // Tab functionality
+  activeTab: string = 'recursos';
   
   // Lista de años disponibles
   availableYears: any[] = [];
@@ -77,6 +82,19 @@ export class SgpComparativaComponent {
 
   distributionData: any = [];
 
+  // Data for new tabs
+  variablesGeneralesData1: any[] = [];
+  variablesGeneralesData2: any[] = [];
+  variablesEducacionData1: any[] = [];
+  variablesEducacionData2: any[] = [];
+  variablesAguaPotableData1: any[] = [];
+  variablesAguaPotableData2: any[] = [];
+  variablesPropositoGeneralData1: any[] = [];
+  variablesPropositoGeneralData2: any[] = [];
+  variablesAsignacionesEspecialesData1: any[] = [];
+  variablesAsignacionesEspecialesData2: any[] = [];
+  informeTrimestraData: any[] = [];
+
   constructor(private renderer: Renderer2, private sicodisApiService: SicodisApiService) {}
   
   ngOnInit(): void {
@@ -86,8 +104,15 @@ export class SgpComparativaComponent {
     ];
 
     this.home = { icon: 'pi pi-home', routerLink: '/' };
-    
+
     this.loadVigencias();
+    this.loadInformeTrimestraldData(); // Load sample data for Informe Trimestral
+    this.loadVariablesGeneralesData(); // Load sample data for Variables Generales
+    this.loadVariablesEducacionData(); // Load sample data for Variables Educacion
+    this.loadVariablesAguaPotableData();
+    this.loadVariablesPropositoGeneralData();
+    this.loadVariablesAsignacionesEspecialesData();
+
     // Don't load any charts or data initially
     console.log('Component initialized');
   }
@@ -692,6 +717,24 @@ export class SgpComparativaComponent {
   exportToExcel2(): void {
     console.log('Exportando datos del segundo municipio a Excel...');
     // Aquí iría la lógica para exportar a Excel del segundo municipio
+  }
+
+  /**
+   * Descarga los datos de detalle de recaudo
+   */
+  downloadDetalleRecaudo(): void {
+    console.log('Descargando datos de detalle de recaudo...');
+    // Aquí iría la lógica para descargar el reporte de detalle de recaudo
+    // Podría incluir las variables generales, educación, agua potable, etc.
+  }
+
+  /**
+   * Descarga el informe trimestral
+   */
+  downloadInformeTrimestral(): void {
+    console.log('Descargando informe trimestral...');
+    // Aquí iría la lógica para descargar el informe trimestral de gestión financiera
+    // con los datos históricos de todos los municipios
   }
 
   /**
@@ -1645,6 +1688,620 @@ export class SgpComparativaComponent {
   }
 
   /**
+   * Sets the active tab
+   */
+  setActiveTab(tab: string): void {
+    this.activeTab = tab;
+
+    // Load data specific to the tab when switching
+    if (tab === 'detalle-recaudo') {
+      this.loadVariablesGeneralesData();
+      this.loadVariablesEducacionData();
+    } else if (tab === 'informe-trimestral') {
+      this.loadInformeTrimestraldData();
+    }
+  }
+
+  /**
+   * Loads the variables generales data for the detalle de recaudo tab
+   */
+  private loadVariablesGeneralesData(): void {
+    // Sample data for Variables generales - Municipality 1
+    this.variablesGeneralesData1 = [
+      {
+        nombre: 'Población total',
+        vigenciaActual: 150000,
+        vigenciaAnterior: 148000,
+        variacion: '+1.35%'
+      },
+      {
+        nombre: 'Población rural',
+        vigenciaActual: 45000,
+        vigenciaAnterior: 44000,
+        variacion: '+2.27%'
+      },
+      {
+        nombre: 'Población urbana',
+        vigenciaActual: 105000,
+        vigenciaAnterior: 104000,
+        variacion: '+0.96%'
+      },
+      {
+        nombre: 'NBI total',
+        vigenciaActual: 25.5,
+        vigenciaAnterior: 26.8,
+        variacion: '-4.85%'
+      },
+      {
+        nombre: 'Categoría Ley 617/00',
+        vigenciaActual: 4,
+        vigenciaAnterior: 4,
+        variacion: 'Sin cambio'
+      },
+      {
+        nombre: 'Área geográfica',
+        vigenciaActual: 1250.5,
+        vigenciaAnterior: 1250.5,
+        variacion: 'Sin cambio'
+      },
+      {
+        nombre: 'Longitud ribera sobre el río Magdalena',
+        vigenciaActual: 35.2,
+        vigenciaAnterior: 35.2,
+        variacion: 'Sin cambio'
+      }
+    ];
+
+    // Sample data for Variables generales - Municipality 2
+    this.variablesGeneralesData2 = [
+      {
+        nombre: 'Población total',
+        vigenciaActual: 85000,
+        vigenciaAnterior: 82000,
+        variacion: '+3.66%'
+      },
+      {
+        nombre: 'Población rural',
+        vigenciaActual: 35000,
+        vigenciaAnterior: 34000,
+        variacion: '+2.94%'
+      },
+      {
+        nombre: 'Población urbana',
+        vigenciaActual: 50000,
+        vigenciaAnterior: 48000,
+        variacion: '+4.17%'
+      },
+      {
+        nombre: 'NBI total',
+        vigenciaActual: 32.1,
+        vigenciaAnterior: 33.5,
+        variacion: '-4.18%'
+      },
+      {
+        nombre: 'Categoría Ley 617/00',
+        vigenciaActual: 5,
+        vigenciaAnterior: 5,
+        variacion: 'Sin cambio'
+      },
+      {
+        nombre: 'Área geográfica',
+        vigenciaActual: 850.3,
+        vigenciaAnterior: 850.3,
+        variacion: 'Sin cambio'
+      },
+      {
+        nombre: 'Longitud ribera sobre el río Magdalena',
+        vigenciaActual: 28.7,
+        vigenciaAnterior: 28.7,
+        variacion: 'Sin cambio'
+      }
+    ];
+  }
+
+  /**
+   * Loads the variables sector educacion data for the detalle de recaudo tab
+   */
+  private loadVariablesEducacionData(): void {
+    // Sample data for Variables Sector Educación - Municipality 1
+    this.variablesEducacionData1 = [
+      {
+        nombre: 'Entidad Territorial Certificada en Educación (ETC)',
+        vigenciaActual: 'Sí',
+        vigenciaAnterior: 'Sí',
+        variacion: 'Sin cambio'
+      },
+      {
+        nombre: 'Matrícula total',
+        vigenciaActual: 35420,
+        vigenciaAnterior: 34850,
+        variacion: '+1.64%'
+      },
+      {
+        nombre: 'Matrícula oficial',
+        vigenciaActual: 28950,
+        vigenciaAnterior: 28500,
+        variacion: '+1.58%'
+      },
+      {
+        nombre: 'Deserción escolar',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      }
+    ];
+
+    // Sample data for Variables Sector Educación - Municipality 2
+    this.variablesEducacionData2 = [
+      {
+        nombre: 'Entidad Territorial Certificada en Educación (ETC)',
+        vigenciaActual: 'No',
+        vigenciaAnterior: 'No',
+        variacion: 'Sin cambio'
+      },
+      {
+        nombre: 'Matrícula total',
+        vigenciaActual: 18650,
+        vigenciaAnterior: 18200,
+        variacion: '+2.47%'
+      },
+      {
+        nombre: 'Matrícula oficial',
+        vigenciaActual: 16850,
+        vigenciaAnterior: 16500,
+        variacion: '+2.12%'
+      },
+      {
+        nombre: 'Deserción escolar',
+        vigenciaActual: 4.5,
+        vigenciaAnterior: 4.8,
+        variacion: '-6.25%'
+      }
+    ];
+  }
+
+  /**
+   * Loads the variables sector agua potable data for the detalle de recaudo tab
+   */
+  private loadVariablesAguaPotableData(): void {
+    // Sample data for Variables Sector agua potable - Municipality 1
+    this.variablesAguaPotableData1 = [
+      {
+        nombre: 'Cobertura de acueducto en área total',
+        vigenciaActual: 'Sí',
+        vigenciaAnterior: 'Sí',
+        variacion: 'Sin cambio'
+      },
+      {
+        nombre: 'Cobertura de alcantarillado en área total',
+        vigenciaActual: 35420,
+        vigenciaAnterior: 34850,
+        variacion: '+1.64%'
+      },
+      {
+        nombre: 'Uso adecuado recursos',
+        vigenciaActual: 28950,
+        vigenciaAnterior: 28500,
+        variacion: '+1.58%'
+      },
+      {
+        nombre: 'Subsidios pagados',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Aplicación estratificación socioeconómica',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Planes sectoriales adoptados (PGIRS)',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Tarifa de prestadores directos AAA',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Avance cobertura alcantarillado',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Avance cobertura rural acueducto',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Avance cobertura rural alcantarillado',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Avance cobertura urbana acueducto',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Avance cobertura urbana aseo',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Avance indicadir calidad de agua (IRCA)',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      }
+    ];
+
+    // Sample data for Variables Sector agua potable - Municipality 2
+    this.variablesAguaPotableData2 = [
+      {
+        nombre: 'Cobertura de acueducto en área total',
+        vigenciaActual: 'Sí',
+        vigenciaAnterior: 'Sí',
+        variacion: 'Sin cambio'
+      },
+      {
+        nombre: 'Cobertura de alcantarillado en área total',
+        vigenciaActual: 35420,
+        vigenciaAnterior: 34850,
+        variacion: '+1.64%'
+      },
+      {
+        nombre: 'Uso adecuado recursos',
+        vigenciaActual: 28950,
+        vigenciaAnterior: 28500,
+        variacion: '+1.58%'
+      },
+      {
+        nombre: 'Subsidios pagados',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Aplicación estratificación socioeconómica',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Planes sectoriales adoptados (PGIRS)',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Tarifa de prestadores directos AAA',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Avance cobertura alcantarillado',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Avance cobertura rural acueducto',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Avance cobertura rural alcantarillado',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Avance cobertura urbana acueducto',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Avance cobertura urbana aseo',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Avance indicadir calidad de agua (IRCA)',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      }
+    ];
+  }
+
+  /**
+   * Loads the variables sector Propósito General data for the detalle de recaudo tab
+   */
+  private loadVariablesPropositoGeneralData(): void {
+    // Sample data for Variables Sector Propósito General - Municipality 1
+    this.variablesPropositoGeneralData1 = [
+      {
+        nombre: 'Reporte oportuno ingresos tributarios en FUT',
+        vigenciaActual: 'Sí',
+        vigenciaAnterior: 'Sí',
+        variacion: 'Sin cambio'
+      },
+      {
+        nombre: 'Ingresos tributarios refrendados',
+        vigenciaActual: 35420,
+        vigenciaAnterior: 34850,
+        variacion: '+1.64%'
+      },
+      {
+        nombre: 'Ingresos tributarios per cápita',
+        vigenciaActual: 28950,
+        vigenciaAnterior: 28500,
+        variacion: '+1.58%'
+      },
+      {
+        nombre: 'Indicador crecimiento ingresos per cápita',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Cumplimiento límite de gastos de funcionamiento Ley 617/00',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Municipio en Ley 550/99 0 617/00 y utiliza recursos del SGP',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Envío actualización SISBÉN',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Ingresos corrientes de libre destinación (ICLD)',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Gastos de funcionamiento (GF)',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Razón',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Holgura',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Límite de gasto',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Utiliza recursos del SGP para financiar acuerdo de restructuración',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      }
+    ];
+
+    // Sample data for Variables Sector Propósito General - Municipality 2
+    this.variablesPropositoGeneralData2 = [
+      {
+        nombre: 'Reporte oportuno ingresos tributarios en FUT',
+        vigenciaActual: 'Sí',
+        vigenciaAnterior: 'Sí',
+        variacion: 'Sin cambio'
+      },
+      {
+        nombre: 'Ingresos tributarios refrendados',
+        vigenciaActual: 35420,
+        vigenciaAnterior: 34850,
+        variacion: '+1.64%'
+      },
+      {
+        nombre: 'Ingresos tributarios per cápita',
+        vigenciaActual: 28950,
+        vigenciaAnterior: 28500,
+        variacion: '+1.58%'
+      },
+      {
+        nombre: 'Indicador crecimiento ingresos per cápita',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Cumplimiento límite de gastos de funcionamiento Ley 617/00',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Municipio en Ley 550/99 0 617/00 y utiliza recursos del SGP',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Envío actualización SISBÉN',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Ingresos corrientes de libre destinación (ICLD)',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Gastos de funcionamiento (GF)',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Razón',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Holgura',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Límite de gasto',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      },
+      {
+        nombre: 'Utiliza recursos del SGP para financiar acuerdo de restructuración',
+        vigenciaActual: 3.8,
+        vigenciaAnterior: 4.2,
+        variacion: '-9.52%'
+      }
+    ];
+  }
+
+  /**
+   * Loads the variables sector Asignaciones Especiales data for the detalle de recaudo tab
+   */
+  private loadVariablesAsignacionesEspecialesData(): void {
+    // Sample data for Variables Sector Asignaciones Especiales - Municipality 1
+    this.variablesAsignacionesEspecialesData1 = [
+      {
+        nombre: 'Población en resguardo indígena',
+        vigenciaActual: 'Sí',
+        vigenciaAnterior: 'Sí',
+        variacion: 'Sin cambio'
+      },
+      {
+        nombre: 'Pasivo pensional total',
+        vigenciaActual: 35420,
+        vigenciaAnterior: 34850,
+        variacion: '+1.64%'
+      }
+    ];
+
+    // Sample data for Variables Sector Asignaciones Especiales - Municipality 2
+    this.variablesAsignacionesEspecialesData2 = [
+      {
+        nombre: 'Población en resguardo indígena',
+        vigenciaActual: 'No',
+        vigenciaAnterior: 'No',
+        variacion: 'Sin cambio'
+      },
+      {
+        nombre: 'Pasivo pensional total',
+        vigenciaActual: 18650,
+        vigenciaAnterior: 18200,
+        variacion: '+2.47%'
+      }
+    ];
+  }
+
+
+  /**
+   * Loads the informe trimestral data
+   */
+  private loadInformeTrimestraldData(): void {
+    // Sample data for Informe Trimestral with 20 sample municipalities
+    const sampleMunicipalities = [
+      { codigo: '05001', nombre: 'Medellín' },
+      { codigo: '11001', nombre: 'Bogotá D.C.' },
+      { codigo: '76001', nombre: 'Cali' },
+      { codigo: '08001', nombre: 'Barranquilla' },
+      { codigo: '13001', nombre: 'Cartagena' },
+      { codigo: '68001', nombre: 'Bucaramanga' },
+      { codigo: '66001', nombre: 'Pereira' },
+      { codigo: '17001', nombre: 'Manizales' },
+      { codigo: '23001', nombre: 'Montería' },
+      { codigo: '15001', nombre: 'Tunja' },
+      { codigo: '50001', nombre: 'Villavicencio' },
+      { codigo: '52001', nombre: 'Pasto' },
+      { codigo: '41001', nombre: 'Neiva' },
+      { codigo: '73001', nombre: 'Ibagué' },
+      { codigo: '54001', nombre: 'Cúcuta' },
+      { codigo: '19001', nombre: 'Popayán' },
+      { codigo: '63001', nombre: 'Armenia' },
+      { codigo: '70001', nombre: 'Sincelejo' },
+      { codigo: '44001', nombre: 'Riohacha' },
+      { codigo: '47001', nombre: 'Santa Marta' }
+    ];
+
+    this.informeTrimestraData = sampleMunicipalities.map((municipality, index) => ({
+      codigoEntidad: municipality.codigo,
+      nombreEntidad: municipality.nombre,
+      years: this.generateYearlyData(0.7 + (index * 0.1)) // Different multiplier for each municipality
+    }));
+  }
+
+  /**
+   * Generates sample yearly data from 2003 to 2024
+   */
+  private generateYearlyData(multiplier: number = 1): { [key: string]: number } {
+    const data: { [key: string]: number } = {};
+    const baseAmount = 50000000000; // 50 billion base amount
+
+    for (let year = 2003; year <= 2024; year++) {
+      // Generate realistic growth pattern with some variation
+      const yearsSince2003 = year - 2003;
+      const growth = Math.pow(1.03, yearsSince2003); // 3% annual growth
+      const variation = 0.8 + (Math.random() * 0.4); // Random variation ±20%
+
+      data[year.toString()] = Math.round(baseAmount * growth * variation * multiplier);
+    }
+
+    return data;
+  }
+
+  /**
+   * Gets the column years for the informe trimestral table
+   */
+  getYearColumns(): string[] {
+    const years: string[] = [];
+    for (let year = 2003; year <= 2024; year++) {
+      years.push(year.toString());
+    }
+    return years;
+  }
+
+  /**
    * Método legacy para compatibilidad (puede ser removido)
    */
   optionChange(evt: any): void {
@@ -1653,7 +2310,7 @@ export class SgpComparativaComponent {
       (item: any) => item.year === evt.value
     )[0];
     this.selected = evt.value;
-    
+
     // Recrear los gráficos con los nuevos datos
     setTimeout(() => {
       this.createBarChart();

@@ -1,5 +1,10 @@
 <div class="sicodis-container">
-  
+
+  <!-- Breadcrumb -->
+  <div class="card flex justify-center">
+    <p-breadcrumb [model]="items" [home]="home" />
+  </div>
+
   <!-- Popups para Diccionario y Siglas -->
   <app-info-popup 
     [infoText]="diccionarioContent" 
@@ -283,7 +288,7 @@
       <button pButton type="button" 
               icon="pi pi-file-excel" 
               label="Descargar Excel" 
-              class="p-button-success download-excel-btn"
+              class="p-button-primary download-excel-btn"
               (click)="downloadDetailedExcel()">
       </button>
     </div>
@@ -371,7 +376,7 @@
       <button pButton type="button" 
               icon="pi pi-file-excel" 
               label="Descargar Excel" 
-              class="p-button-success download-excel-btn"
+              class="p-button-primary download-excel-btn"
               (click)="downloadExcel()">
       </button>
     </div>

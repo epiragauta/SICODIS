@@ -204,7 +204,7 @@
           <td style="white-space: nowrap;">
             <button pButton type="button" icon="pi pi-file-pdf" class="p-button-danger p-button-sm" 
                     (click)="showDetails(data)" pTooltip="Ver detalles PDF"></button>
-            <button pButton type="button" icon="pi pi-file-excel" class="p-button-success p-button-sm" 
+            <button pButton type="button" icon="pi pi-file-excel" class="p-button-primary p-button-sm" 
                     (click)="showFiles(data)" pTooltip="Ver archivos Excel" style="margin-left: 0.5rem;"></button>
           </td>
         </tr>
@@ -262,7 +262,7 @@
               <td>{{ file.value }}</td>
               <td>
                 <button pButton type="button" icon="pi pi-download" 
-                        class="p-button-success p-button-sm" 
+                        class="p-button-primary p-button-sm" 
                         (click)="downloadFiles(file)" 
                         pTooltip="Descargar archivo"></button>
               </td>

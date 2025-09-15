@@ -11,6 +11,8 @@ import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { SicodisApiService } from '../../services/sicodis-api.service';
 import { departamentos } from '../../data/departamentos';
+import { Breadcrumb } from 'primeng/breadcrumb';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-sgr-programacion',
@@ -25,13 +27,17 @@ import { departamentos } from '../../data/departamentos';
     TableModule,
     FormsModule,
     InfoPopupComponent,
-    NumberFormatPipe
+    NumberFormatPipe,
+    Breadcrumb
   ],
   templateUrl: './sgr-programacion.component.html',
   styleUrl: './sgr-programacion.component.scss'
 })
 export class SgrProgramacionComponent implements OnInit {
-  
+
+  items: MenuItem[] | undefined;
+  home: MenuItem | undefined;
+
   // Popups
   showDiccionarioPopup: boolean = false;
   showSiglasPopup: boolean = false;
@@ -79,6 +85,13 @@ export class SgrProgramacionComponent implements OnInit {
   constructor(private sicodisApiService: SicodisApiService) { }
 
   ngOnInit(): void {
+    this.items = [
+        { label: 'SGR', routerLink: '/sgr-inicio' },
+        { label: 'Programación' }
+    ];
+
+    this.home = { icon: 'pi pi-home', routerLink: '/' };
+
     // Inicialización del componente
     this.initializeTenYearChart();
     this.initializePlanBienalChart();

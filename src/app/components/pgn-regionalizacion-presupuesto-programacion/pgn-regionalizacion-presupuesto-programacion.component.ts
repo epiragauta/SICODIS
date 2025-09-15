@@ -12,6 +12,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TableModule } from 'primeng/table';
 
 import { departamentos } from '../../data/departamentos';
+import { Breadcrumb } from 'primeng/breadcrumb';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-pgn-regionalizacion-presupuesto-programacion',
@@ -25,12 +27,16 @@ import { departamentos } from '../../data/departamentos';
     Select,
     FloatLabel,
     ProgressSpinnerModule,
-    TableModule
+    TableModule,
+    Breadcrumb
   ],
   templateUrl: './pgn-regionalizacion-presupuesto-programacion.component.html',
   styleUrl: './pgn-regionalizacion-presupuesto-programacion.component.scss'
 })
 export class PgnRegionalizacionPresupuestoProgramacionComponent implements OnInit {
+
+  items: MenuItem[] | undefined;
+  home: MenuItem | undefined;
 
   // Filter properties
   selectedVigencia: any;
@@ -65,6 +71,13 @@ export class PgnRegionalizacionPresupuestoProgramacionComponent implements OnIni
   constructor() {}
 
   ngOnInit(): void {
+    this.items = [
+        { label: 'PGN', routerLink: '/pgn-inicio' },
+        { label: 'Regionalización Presupuesto Programación' }
+    ];
+
+    this.home = { icon: 'pi pi-home', routerLink: '/' };
+
     this.initializeFilters();
     this.initializeDepartamentosData();
   }
