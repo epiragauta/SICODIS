@@ -213,7 +213,7 @@ export class HomeComponent implements OnInit {
   titleSGP = 'Sistema General de Participaciones - SGP';
 
   descriptionSGP =
-    'Es el conjunto de recursos que la Nación transfiere a las entidades territoriales para la financiación de servicios a su cargo, como para cumplir con las competencias asignadas  en educación, salud ...';
+    'Son los recursos que la Nación transfiere a las entidades territoriales y resguardos indígenas, para la financiación de los servicios a su cargo, conforme con las competencias establecidas en la ley.';
 
   descriptionSGR =
     'Es el conjunto de ingresos, asignaciones, órganos, procedimientos y regulaciones, para el uso eficiente y la destinación de los ingresos provenientes de la explotación de los recursos naturales no renovables.';

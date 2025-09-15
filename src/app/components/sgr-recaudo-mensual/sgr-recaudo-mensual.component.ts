@@ -637,9 +637,9 @@ export class SgrRecaudoMensualComponent implements OnInit {
       labels: periods,
       datasets: [
         {
-          label: 'Inversión PBC',
+          label: 'Total PBC',
           data: inversionPBC,
-          borderColor: '#3b82f6',
+          borderColor: '#4986e9ff',
           backgroundColor: 'rgba(59, 130, 246, 0.1)',
           tension: 0.4,
           fill: false,
@@ -649,15 +649,15 @@ export class SgrRecaudoMensualComponent implements OnInit {
           pointBorderWidth: 2
         },
         {
-          label: 'Inversión Recaudo',
+          label: 'Total Recaudo',
           data: inversionRecaudo,
-          borderColor: '#10b981',
+          borderColor: '#1008ebff',
           backgroundColor: 'rgba(16, 185, 129, 0.1)',
           tension: 0.4,
           fill: false,
           pointRadius: 4,
-          pointBackgroundColor: '#10b981',
-          pointBorderColor: '#059669',
+          pointBackgroundColor: '#502adbff',
+          pointBorderColor: '#3342e9ff',
           pointBorderWidth: 2
         }
       ]

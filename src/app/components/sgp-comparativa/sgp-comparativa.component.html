@@ -6,10 +6,10 @@
   <div class="gradient-banner">    
     <div class="gradient-overlay"></div>
     <div class="banner-content">
-      <h1>Ficha comparativa Sistema General de Participaciones.</h1>
+      <h1>Ficha comparativa Sistema General de Participaciones</h1>
       <p>
-        En este espacio podrá consultar y comparar los recursos distribuidos del SGP entre entidades, mostrando las 
-        variaciones porcentuales y diferencias absolutas que reflejan los cambios en la distribución entre las vigencias.
+        Consulte para una o dos entidades territoriales, los recursos distribuidos del SGP en la vigencia 
+        seleccionada frente a la vigencia anterior.
       </p>
     </div>
   </div>
@@ -247,54 +247,54 @@
                        *ngIf="treeTableData.length > 0">
             <ng-template pTemplate="header">
               <tr>
-                <th class="table-header concept-header" style="width: 33%;">Participación</th>
-                <th class="table-header vigencia-header" style="width: 20%; text-align: right;">
+                <th class="table-header concept-header" style="width: 38%;">Participación</th>
+                <th class="table-header vigencia-header" style="width: 18%; text-align: right;">
                   {{ getSelectedVigenciaName() }}
                 </th>
-                <th class="table-header periodo-anterior-header" style="width: 20%; text-align: right;">
+                <th class="table-header periodo-anterior-header" style="width: 18%; text-align: right;">
                   {{ getPreviousVigenciaName() }}
                 </th>
                 <th class="table-header variation-pesos-header" style="width: 15%; text-align: right;">
                   Variación ($)
                 </th>
-                <th class="table-header variation-percent-header" style="width: 12%; text-align: right;">
+                <th class="table-header variation-percent-header" style="width: 11%; text-align: right;">
                   Variación (%)
                 </th>                
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
               <tr>
-                <td class="concept-cell" style="width: 33%;">
+                <td class="concept-cell" style="width: 38%;">
                   <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
                   <strong>{{ rowData.concepto }}</strong>
                 </td>
-                <td class="vigencia-cell" style="width: 20%;">
+                <td class="vigencia-cell" style="width: 18%;">
                   {{ rowData.vigencia | numberFormat }}
                 </td>
-                <td class="periodo-anterior-cell" style="width: 20%;">
+                <td class="periodo-anterior-cell" style="width: 18%;">
                   {{ rowData.periodo_anterior | numberFormat }}
                 </td>
                 <td class="variation-pesos-cell" style="width: 15%;">
                   {{ rowData.diferencia | numberFormat }}
                 </td>
-                <td class="variation-percent-cell" style="width: 13%;">
+                <td class="variation-percent-cell" style="width: 11%;">
                   {{ formatPercentage(rowData.porcentual) }}
                 </td>
               </tr>
             </ng-template>
             <ng-template pTemplate="footer">
               <tr class="total-row">
-                <td class="concept-cell" style="width: 33%;"><strong>Total General</strong></td>
-                <td class="vigencia-cell" style="width: 20%;">
+                <td class="concept-cell" style="width: 38%;"><strong>Total General</strong></td>
+                <td class="vigencia-cell" style="width: 18%;">
                   <strong>{{ getTreeTableYearTotal() | numberFormat }}</strong>
                 </td>
-                <td class="vigencia-cell" style="width: 20%;">
+                <td class="vigencia-cell" style="width: 18%;">
                   <strong>{{ getTreeTablePeriodoAnteriorTotal() | numberFormat }}</strong>
                 </td>
                 <td class="variation-pesos-cell" style="width: 15%;">
                   <strong>{{ getTreeTableDifferenciaTotal() | numberFormat }}</strong>
                 </td>
-                <td class="variation-percent-cell" style="width: 12%;">
+                <td class="variation-percent-cell" style="width: 11%;">
                   <strong>{{ getTreeTablePorcentualTotal() === '-' ? '-' : getTreeTablePorcentualTotal() + '%' }}</strong>
                 </td>
               </tr>
@@ -331,37 +331,37 @@
                        *ngIf="treeTableData2.length > 0">
             <ng-template pTemplate="header">
               <tr>
-                <th class="table-header concept-header" style="width: 33%;">Participación</th>
-                <th class="table-header vigencia-header" style="width: 20%; text-align: right;">
+                <th class="table-header concept-header" style="width: 38%;">Participación</th>
+                <th class="table-header vigencia-header" style="width: 18%; text-align: right;">
                   {{ getSelectedVigenciaName() }}
                 </th>
-                <th class="table-header periodo-anterior-header" style="width: 20%; text-align: right;">
+                <th class="table-header periodo-anterior-header" style="width: 18%; text-align: right;">
                   {{ getPreviousVigenciaName() }}
                 </th>
                 <th class="table-header variation-pesos-header" style="width: 15%; text-align: right;">
                   Variación ($)
                 </th>
-                <th class="table-header variation-percent-header" style="width: 12%; text-align: right;">
+                <th class="table-header variation-percent-header" style="width: 11%; text-align: right;">
                   Variación (%)
                 </th>                
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
               <tr>
-                <td class="concept-cell" style="width: 33%;">
+                <td class="concept-cell" style="width: 38%;">
                   <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
                   <strong>{{ rowData.concepto }}</strong>
                 </td>
-                <td class="vigencia-cell" style="width: 20%;">
+                <td class="vigencia-cell" style="width: 18%;">
                   {{ rowData.vigencia | numberFormat }}
                 </td>
-                <td class="periodo-anterior-cell" style="width: 20%;">
+                <td class="periodo-anterior-cell" style="width: 18%;">
                   {{ rowData.periodo_anterior | numberFormat }}
                 </td>
                 <td class="variation-pesos-cell" style="width: 15%;">
                   {{ rowData.diferencia | numberFormat }}
                 </td>
-                <td class="variation-percent-cell" style="width: 13%;">
+                <td class="variation-percent-cell" style="width: 11%;">
                   {{ formatPercentage(rowData.porcentual) }}
                 </td>
               </tr>
@@ -401,8 +401,7 @@
       <!-- Shared Notes -->
       <div class="shared-table-notes">
         <h4>NOTAS</h4>
-        <p>(1) Cifras en pesos corrientes.</p>
-        <p>(2) Comparativa entre municipios para la vigencia {{ getSelectedVigenciaName() }}.</p>
+        <p>(1) Cifras en pesos corrientes.</p>        
       </div>
     </div>
   </div>

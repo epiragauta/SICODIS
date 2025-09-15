@@ -496,28 +496,12 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
         intersect: false,
       },
       scales: {
-        x: {
-          title: {
-            display: true,
-            text: 'Años',
-            font: {
-              size: 12,
-              weight: 'bold'
-            }
-          },
+        x: {          
           stacked: true
         },
         y: {
           type: 'linear',
-          display: true,
-          title: {
-            display: true,
-            text: 'Pesos',
-            font: {
-              size: 12,
-              weight: 'bold'
-            }
-          },
+          display: true,          
           beginAtZero: true,
           stacked: true,
           ticks: {
@@ -1024,7 +1008,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
         y: {
           beginAtZero: true,
           position: 'left',
-          title: { display: true, text: 'Pesos' },
           ticks: {
             callback: function(value: any) {
               return new Intl.NumberFormat('es-CO', {
@@ -1065,17 +1048,9 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
       maintainAspectRatio: false,
       aspectRatio: .95,
       scales: {
-        x: {
-          title: {
-            display: true,
-            text: 'Años'
-          }
+        x: {          
         },
-        y: {
-          title: {
-            display: true,
-            text: 'Pesos'
-          },
+        y: {          
           ticks: {
             callback: function(value: any) {
               return new Intl.NumberFormat('es-CO', {
@@ -1115,7 +1090,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
               if (context.dataset.yAxisID === 'y1') {
                 return label + ': ' + context.parsed.y + '%';
               } else {
-                return label + ': ' + new Intl.NumberFormat('es-CO').format(context.parsed.y) + ' Pesos';
+                return label + ': ' + new Intl.NumberFormat('es-CO').format(context.parsed.y);
               }
             }
           }

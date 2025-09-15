@@ -7,9 +7,7 @@
     <div class="gradient-overlay"></div>
     <div class="banner-content">
       <h1>Histórico Sistema General de Participaciones</h1>
-        <p>Acceda a información histórica del Sistema General de Participaciones (SGP) desde el año 2002 hasta la vigencia actual. 
-          Genera reportes detallados por entidad territorial. Así mismo, encontrará la evolución historia del SGP, tanto en precios 
-          corrientes como en precios contantes.
+        <p>Consulte la información histórica de las distribuciones del SGP desde el año 2002 hasta la vigencia actual, desagregada por entidad territorial y concepto.
  	 	 	 	</p>
     </div>
   </div>
@@ -210,25 +208,17 @@
     <div class="chart-container">
       <p-card>
         <ng-template pTemplate="header">
-          <h2 class="chart-title">Evolución SGP - Precios corrientes</h2>
-          <p class="chart-subtitle">
-            El crecimiento promedio anual en términos reales es del 4% anual durante los últimos 20 años (2005 – 2025).
-            La información se presenta en pesos corrientes.
-          </p>
+          <h2 class="chart-title">Evolución SGP - Precios corrientes</h2>          
         </ng-template>
-        <p-chart type="bar" [data]="chartData1" [options]="mixedChartOptions"></p-chart>
+        <p-chart type="bar" [data]="chartData1" [options]="mixedChartOptions" style="width: 100%;"></p-chart>
       </p-card>
     </div>
     <div class="chart-container">
       <p-card>
         <ng-template pTemplate="header">
-          <h2 class="chart-title">Evolución SGP – Precios constantes 2025</h2>
-          <p class="chart-subtitle">
-            El crecimiento promedio anual en términos reales es del 4% anual durante los últimos 20 años (2005 – 2025).
-            La información se presenta en pesos constantes.
-          </p>
+          <h2 class="chart-title">Evolución SGP – Precios constantes 2025</h2>          
         </ng-template>
-        <p-chart type="bar" [data]="chartData3" [options]="barChartOptions"></p-chart>
+        <p-chart type="bar" [data]="chartData3" [options]="barChartOptions" style="width: 100%;"></p-chart>
       </p-card>
     </div>
     
@@ -237,9 +227,6 @@
   <!-- Notas -->
   <div class="table-notes">
     <h4>NOTAS</h4>
-    <p>(1) Cifras en pesos corrientes.</p>
-    <p>(2) Los datos que se presentan para los años 2002-2015, corresponden a las distribuciones efectuadas mediante Documentos CONPES de su respectiva vigencia; para los años 2015 en adelante, corresponden a las distribuciones efectuadas mediante Documentos de Distribución de su respectiva vigencia.</p>
-    <p>(3) El crecimiento promedio anual en términos reales es del 4% anual durante los últimos 20 años (2005 – 2025). Art. 357 de la C.P.</p>
-
+    <p>(1) Los datos que se presentan para los años 2002-2015, corresponden a las distribuciones efectuadas mediante Documentos CONPES de su respectiva vigencia; para los años 2015 en adelante, corresponden a las distribuciones efectuadas mediante Documentos de Distribución de su respectiva vigencia.</p>   
   </div>
 </div>

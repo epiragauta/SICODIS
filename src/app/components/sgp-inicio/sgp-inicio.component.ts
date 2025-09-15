@@ -87,35 +87,35 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
   recursos = [
     {
       titulo: 'Histórico SGP',
-      descripcion: 'Consulta y explora el detalle histórico del sistema',
+      descripcion: 'Histórico Sistema General de Participaciones', //'Consulta y explora el detalle histórico del sistema',
       boton: 'Consultar',
       link: 'sgp-historico',
       icon: 'assets/img/sgp/analysis.png'
     },
     {
       titulo: 'Documentos y Anexos',
-      descripcion: 'Consulta dos documentos y anexos publicados',
+      descripcion: 'Documentos y anexos', //'Consulta dos documentos y anexos publicados',
       boton: 'Consultar',
       link: 'sgp-documentos-anexos',
       icon: 'assets/img/sgp/licensing.png'
     },
     {
       titulo: 'Detalle Presupuestal',
-      descripcion: 'Consulta el detalle de la información presupuestal',
+      descripcion: 'Presupuesto - Sistema General de Participaciones', //'Consulta el detalle de la información presupuestal',
       boton: 'Consultar',
       link: 'sgp-detalle-presupuestal',
       icon: 'assets/img/sgp/budgeting.png'
     },
     {
       titulo: 'Ficha Comparativa',
-      descripcion: 'Compara vigencias y entidades',
+      descripcion: 'Ficha comparativa Sistema General de Participaciones', //'Compara vigencias y entidades',
       boton: 'Consultar',
       link: 'sgp-comparativa',
       icon: 'assets/img/sgp/compare.png'
     },
     {
       titulo: 'Consulta de eficiencia',
-      descripcion: 'Consulta de eficiencia',
+      descripcion: 'Eficiencia Propósito General',
       boton: 'Consultar',
       link: 'sgp-eficiencia',
       icon: 'assets/img/sgp/efficiency.png'
