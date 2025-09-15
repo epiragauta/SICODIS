@@ -73,14 +73,12 @@ footer p {
   -webkit-box-pack: center;
   -webkit-justify-content: center;
   -ms-flex-pack: center;
-  justify-content: center;
+  justify-content: start;
 }
 
 .gov-co-footer-venta-imgs-container {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
+  display: block;
+  text-align: left;
 }
 
 .gov-co-footer-venta-imgs-container img {
@@ -89,7 +87,6 @@ footer p {
 }
 
 .gov-co-logo-pie-blanco-container {
-  border-right: 1px solid #fff;
   height: 48px;
   display: -webkit-box;
   display: -webkit-flex;
@@ -103,7 +100,7 @@ footer p {
 
 .gov-co-logo-pie-blanco {
   width: 134px;
-  height: 48px;
+  height: 100%;
   padding-right: 20px;
 }
 
@@ -116,6 +113,10 @@ footer p {
   -webkit-order: 2;
   -ms-flex-order: 2;
   order: 2;
+}
+
+.gov-co-logo-pie-mesa-container{
+  margin-top: 20px;
 }
 
 /* Seccion Información y redes sociales */
@@ -346,7 +347,7 @@ a.goc-co-link-poli-venta {
       display: -webkit-flex;
       display: -ms-flexbox;
       display: flex;
-      width: 20%;
+      width: 14%;
       -webkit-align-content: space-around;
       -ms-flex-line-pack: distribute;
       align-content: space-around;
@@ -397,7 +398,7 @@ a.goc-co-link-poli-venta {
       width: 48px;
       height: 48px;
       padding-left: 0px;
-      margin-left: 20px;
+      margin-left: 1px;
   }
 
   .gov-co-footer .gov-co-presen-venta .gov-co-social-media-venta {

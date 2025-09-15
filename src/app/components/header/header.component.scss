@@ -49,10 +49,16 @@
   padding-top: .35rem;
 }
 
+.header-govco-container{
+  width: 1320px;
+  margin: 0 auto;
+}
+
+
 .barra-superior-govco a {
-  content: url(https://cdn.www.gov.co/assets/images/logo.svg);
+  content: url(https://cdn.www.gov.co/assets/images/logoGovCO.png);
   height: 1.875rem;
-  width: 8.5rem;
+  width: 6.5rem;
 }
 
 .barra-superior-govco a:focus-visible {
