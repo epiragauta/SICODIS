@@ -296,8 +296,8 @@
 // Estilos unificados para todos los botones
 :host ::ng-deep .unified-button,
 :host ::ng-deep .banner-button {
-  background-color: #0743b5 !important;
-  border-color: #0743b5 !important;
+  background-color: #0943b5 !important;
+  border-color: #0943b5 !important;
   color: white !important;
   font-weight: bold !important;
   border-radius: 25px !important;
@@ -322,8 +322,8 @@
 
 :host ::ng-deep .unified-button-outlined {
   background-color: transparent !important;
-  border-color: #0743b5 !important;
-  color: #0743b5 !important;
+  border-color: #0943b5 !important;
+  color: #0943b5 !important;
   font-weight: bold !important;
   border-radius: 25px !important;
   transition: all 0.3s ease !important;
@@ -390,7 +390,7 @@
 }
 
 :host ::ng-deep .p-button-contrast:hover{
-  background-color: #0743b5 !important;
+  background-color: #0943b5 !important;
 }
 
 :host ::ng-deep .p-carousel-next-button{
