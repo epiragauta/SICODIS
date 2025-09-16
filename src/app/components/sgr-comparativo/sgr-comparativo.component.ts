@@ -121,14 +121,14 @@ export class SgrComparativoComponent implements OnInit {
           data: [125000000000, 87500000000], // Valores simulados en pesos
           backgroundColor: ['#f38135ff', '#f33aafff'], // Verde oscuro y azul oscuro para mejor contraste
           borderColor: ['#be480eff', '#b11049ff'], // Bordes más oscuros
-          borderWidth: 2
+          borderWidth: 1
         },
         {
           label: 'Recaudo',
           data: [98750000000, 72100000000], // Valores simulados en pesos
           backgroundColor: ['#edb87cff', '#7991e8ff'], // Naranja oscuro y azul medio
           borderColor: ['#8c5516', '#3d4d7a'], // Bordes complementarios
-          borderWidth: 2
+          borderWidth: 1
         }
       ]
     };
@@ -185,14 +185,14 @@ export class SgrComparativoComponent implements OnInit {
           data: [125000000000, 87500000000], // Valores simulados en pesos
           backgroundColor: ['#f38135ff', '#f33aafff'], 
           borderColor: ['#be480eff', '#b11049ff'], 
-          borderWidth: 2
+          borderWidth: 1
         },
         {
           label: 'Recaudo Total',
           data: [98750000000, 72100000000], // Valores simulados en pesos
           backgroundColor: ['#edb87cff', '#7991e8ff'], 
           borderColor: ['#8c5516', '#3d4d7a'], 
-          borderWidth: 2
+          borderWidth: 1
         }
       ]
     };
@@ -247,7 +247,7 @@ export class SgrComparativoComponent implements OnInit {
         data: [87500000000, 72100000000], // Valores simulados
         backgroundColor: ['#f33aafff', '#7991e8ff'],
         borderColor: ['#b11049ff', '#3d4d7a'],
-        borderWidth: 2
+        borderWidth: 1
       }]
     };
 
@@ -258,7 +258,7 @@ export class SgrComparativoComponent implements OnInit {
         data: [125000000000, 98750000000], // Valores simulados
         backgroundColor: ['#f38135ff', '#edb87cff'],
         borderColor: ['#be480eff', '#8c5516'],
-        borderWidth: 2
+        borderWidth: 1
       }]
     };
 

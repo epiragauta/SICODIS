@@ -23,11 +23,7 @@
       left: 0;
       width: 95%;
       height: 100%;
-      background: linear-gradient(
-        90deg,
-        #e5e6e8b5 0%,
-        rgba(255, 255, 255, 0.01) 100%
-      );
+      background: linear-gradient(90deg, #283c54 0%, rgb(31 60 95 / 10%) 100%);
       z-index: 1;
     }
 
@@ -44,14 +40,14 @@
         font-size: 2rem;
         margin-top: 2.25rem;
         margin-bottom: 2.5rem;
-        color: #1a408c;
+        color: #fff;
         font-weight: bold;
       }
       
       p {
         font-size: 1.35rem;
         margin-bottom: 2rem;
-        color: #264a70;        
+        color: #ffffff;        
         width: 80%;
         font-weight: 500;
       }
@@ -290,12 +286,12 @@
       font-family: "Work Sans", sans-serif;
       text-align: center;
       padding: 0.75rem 0.5rem;
-      border-bottom: 2px solid #004583;
+      border-bottom: 1px solid #afb1b2;
 
       // Encabezado de mes (rowspan)
       &.month-header {
-        background-color: #004583;
-        color: white;
+        background-color: var(--p-surface-100);
+        color: var(--p-text-color);
         font-weight: 700;
         vertical-align: middle;
       }
@@ -306,18 +302,18 @@
         font-size: 1rem;
         
         &.pbc-header {
-          background-color: #9aa5b5;
-          color: white;
+          background-color: var(--p-surface-100);
+        color: var(--p-text-color);
         }
         
         &.recaudo-header {
-          background-color: #7c9990;
-          color: white;
+          background-color: var(--p-surface-100);
+        color: var(--p-text-color);
         }
         
         &.variacion-header {
-          background-color: #c0bfbf;
-          color: white;
+          background-color: var(--p-surface-100);
+        color: var(--p-text-color);
         }
       }
 
@@ -326,18 +322,18 @@
         font-size: 0.8rem;
         
         &.pbc-sub {
-          background-color: #dbeafe;
-          color: #1e40af;
+          background-color: var(--p-surface-100);
+        color: var(--p-text-color);
         }
         
         &.recaudo-sub {
-          background-color: #d1fae5;
-          color: #065f46;
+          background-color: var(--p-surface-100);
+        color: var(--p-text-color);
         }
         
         &.variacion-sub {
-          background-color: #f1f1ef;
-          color: #242322;
+          background-color: var(--p-surface-100);
+        color: var(--p-text-color);
         }
       }
     }
@@ -480,19 +476,19 @@
       font-family: "Work Sans", sans-serif;
       text-align: center;
       padding: 0.75rem 0.5rem;
-      border-bottom: 2px solid #004583;
+      border-bottom: 1px solid #babcbd;
 
       &.concept-header {
-        background-color: #004583;
-        color: white;
+        background-color: var(--p-surface-100);
+        color: var(--p-text-color);
         font-weight: 700;
         text-align: left;
         width: 25%;
       }
 
       &.data-header {
-        background-color: #3b82f6;
-        color: white;
+        background-color: var(--p-surface-100);
+        color: var(--p-text-color);
         font-weight: 700;
         width: 15%;
       }
@@ -574,14 +570,14 @@
       font-family: "Work Sans", sans-serif;
       text-align: center;
       padding: 0.75rem 0.5rem;
-      border-bottom: 2px solid #004583;
+      border-bottom: 1px solid #babcbd;
       white-space: nowrap;
       min-width: 120px;
 
       // Encabezado de período (rowspan)
       &.period-header {
-        background-color: #004583;
-        color: white;
+        background-color: var(--p-surface-100);
+        color: var(--p-text-color);
         font-weight: 700;
         vertical-align: middle;
         min-width: 140px;
@@ -593,20 +589,20 @@
         font-size: 1rem;
         
         &.rc-header {
-          background-color: #3b82f6;
-          color: white;
+         background-color: var(--p-surface-100);
+        color: var(--p-text-color);
         }
         
         &.ro-header {
-          background-color: #10b981;
-          color: white;
+          background-color: var(--p-surface-100);
+        color: var(--p-text-color);
         }
       }
 
       // Encabezados individuales
       &.individual-header {
-        background-color: #6b7280;
-        color: white;
+        background-color: var(--p-surface-300);
+        color: var(--p-text-color);
         font-weight: 700;
         font-size: 0.9rem;
         vertical-align: middle;
@@ -617,13 +613,13 @@
         font-size: 0.8rem;
         
         &.rc-sub {
-          background-color: #dbeafe;
-          color: #1e40af;
+         background-color: var(--p-surface-100);
+        color: var(--p-text-color);
         }
         
         &.ro-sub {
-          background-color: #d1fae5;
-          color: #065f46;
+          background-color: var(--p-surface-100);
+        color: var(--p-text-color);
         }
       }
     }

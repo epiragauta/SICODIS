@@ -690,7 +690,6 @@ export class SgrRecaudoMensualComponent implements OnInit {
         x: {
           title: {
             display: true,
-            text: 'Período',
             font: {
               family: '"Work Sans", sans-serif',
               size: 12,
@@ -705,7 +704,7 @@ export class SgrRecaudoMensualComponent implements OnInit {
           }
         },
         y: {
-          beginAtZero: true,
+          beginAtZero: false,
           title: {
             display: true,
             font: {
