@@ -505,14 +505,16 @@
   }
 }
 
-// Estilos mejorados para las tarjetas SGP y SGR
+// Estilos mejorados para las tarjetas SGP, SGR, PGN y Geovisor
 :host ::ng-deep .sgp-card,
-:host ::ng-deep .sgr-card {
+:host ::ng-deep .sgr-card,
+:host ::ng-deep .pgn-card,
+:host ::ng-deep .geovisor-card {
   height: 100%;
   width: 100%;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /*box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);*/
   border-radius: 12px;
-  border: 1px solid #e0e0e0;
+  /*border: 1px solid #e0e0e0;*/
   transition: all 0.3s ease;
 
   &:hover {
@@ -531,6 +533,32 @@
     padding: 1rem 1.5rem;
     margin-top: auto;
     border-top: 1px solid #f0f0f0;
+  }
+}
+
+// Estilo específico para la tarjeta PGN de ancho completo
+:host ::ng-deep .pgn-full-width {
+  .card-header {
+    justify-content: center;
+    text-align: center;
+
+    .sicodis-large-title {
+      text-align: center;
+      flex: 1;
+    }
+  }
+
+  .card-description {
+    text-align: center;
+
+    p {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+  }
+
+  .card-footer {
+    text-align: center;
   }
 }
 
@@ -565,7 +593,8 @@
     font-size: 14px;
     line-height: 1.5;
     margin: 0;
-    min-height: 60px;
+    min-height: 45px;
+    text-align: justify;
   }
 }
 
@@ -770,6 +799,12 @@
       }
     }
   }
+}
+
+.geovisor-section{
+  margin-top: 32px;
+  width: 50%;
+  margin: 0 auto;
 }
 
 .admin-sgr-table {

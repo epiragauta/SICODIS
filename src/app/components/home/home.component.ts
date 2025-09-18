@@ -211,6 +211,8 @@ export class HomeComponent implements OnInit {
 
   titleSGR = 'Sistema General de Regalías - SGR';
   titleSGP = 'Sistema General de Participaciones - SGP';
+  titlePGN = 'Presupuesto General de la Nación - PGN';
+  titleGeovisor = 'Geovisor';
 
   descriptionSGP =
     'Son los recursos que la Nación transfiere a las entidades territoriales y resguardos indígenas, para la financiación de los servicios a su cargo, conforme con las competencias establecidas en la ley.';
@@ -218,10 +220,17 @@ export class HomeComponent implements OnInit {
   descriptionSGR =
     'Es el conjunto de ingresos, asignaciones, órganos, procedimientos y regulaciones, para el uso eficiente y la destinación de los ingresos provenientes de la explotación de los recursos naturales no renovables.';
 
+  descriptionPGN =
+    'En esta sección podrá consultar información relacionada con la ejecución presupuestal de las entidades que hacen parte del Presupuesto General de la Nación (PGN).';
+
+  descriptionGeovisor =
+    'Comparativo y valores vigentes de los recursos distribuidos del SGP y SGR por regiones y departamentos.';
+
   responsiveOptions: any[] | undefined;
 
   cols: number = 4;
   cols2: number = 2;
+  cols3: number = 3;
 
   // Add to the component class
   departments = [
@@ -321,6 +330,24 @@ export class HomeComponent implements OnInit {
         return 2;
       })
     ).subscribe(cols2 => this.cols2 = cols2);
+
+    this.breakpointObserver.observe([
+      Breakpoints.XSmall,
+      Breakpoints.Small,
+      Breakpoints.Medium,
+      Breakpoints.Large
+    ]).pipe(
+      map(result => {
+        if (result.breakpoints[Breakpoints.XSmall]) {
+          return 1;
+        } else if (result.breakpoints[Breakpoints.Small]) {
+          return 1;
+        } else if (result.breakpoints[Breakpoints.Medium]) {
+          return 2;
+        }
+        return 3;
+      })
+    ).subscribe(cols3 => this.cols3 = cols3);
   }
 
   ngOnInit() {

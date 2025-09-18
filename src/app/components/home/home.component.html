@@ -82,6 +82,23 @@
           </mat-grid-list>
         </div>
 
+        <div class="grid-container" style="margin-top: 16px;">          
+              <p-card class="card-container pgn-card pgn-full-width">
+                <div class="card-header">
+                  <img class="img-icon" src="/assets/img/icon-pgn.png" alt="Icono del Presupuesto General de la Nación">
+                  <h2 class="sicodis-large-title">{{titlePGN}}</h2>
+                </div>
+                <div class="card-description">
+                  <p>{{descriptionPGN}}</p>
+                </div>
+                <ng-template pTemplate="footer">
+                  <div class="card-footer">
+                    <button pButton type="button" label="Ver información del PGN" (click)="redirectTo('pgn-regionalizacion')" class="p-button-primary"></button>
+                  </div>
+                </ng-template>
+              </p-card>          
+        </div>
+
     <h2 class="sicodis sicodis-subtitle">Consulte a continuación la información vigente de los dos sistemas</h2>
     <p class="sicodis-p">Cifras en pesos corrientes</p>
     
@@ -229,6 +246,23 @@
           </mat-card>
         </mat-grid-tile>
       </mat-grid-list>
+    </div>
+
+    <div class="grid-container geovisor-section">
+      <p-card class="card-container geovisor-card pgn-full-width">
+        <div class="card-header">
+          <img class="img-icon" src="/assets/img/icon-geovisor.svg" alt="Icono del Geovisor">
+          <h2 class="sicodis-large-title">{{titleGeovisor}}</h2>
+        </div>
+        <div class="card-description">
+          <p>{{descriptionGeovisor}}</p>
+        </div>
+        <ng-template pTemplate="footer">
+          <div class="card-footer">
+            <button pButton type="button" label="Ir al Geovisor" (click)="redirectTo('reports-map')" class="p-button-primary"></button>
+          </div>
+        </ng-template>
+      </p-card>
     </div>
 
     <h2 class="reports-title">Información de Interés</h2>
