@@ -25,17 +25,17 @@
                   <p>{{descriptionSGP}}</p>
                 </div>
                 <div class="card-menu">
-                  <div class="sicodis-item" (click)="redirectTo('reports-sgp')">
+                  <div class="sicodis-item" (click)="redirectTo('sgp-documentos-anexos')">
                     <p>Distribución presupuestal, documentos y anexos</p>
                     <span class="pi pi-angle-right"></span>
                   </div>
                   <p-divider/>
-                  <div class="sicodis-item" (click)="redirectTo('reports-sgp-dist')">
+                  <div class="sicodis-item" (click)="redirectTo('sgp-comparativa')">
                     <p>Ficha comparativa de distribución, criterios y variables</p>
                     <span class="pi pi-angle-right"></span>
                   </div>
                   <p-divider />
-                  <div class="sicodis-item" (click)="redirectTo('reports-sgp-budget')">
+                  <div class="sicodis-item" (click)="redirectTo('sgp-detalle-presupuestal')">
                     <p>Ficha SGP - Presupuestal</p>
                     <span class="pi pi-angle-right"></span>
                   </div>
@@ -102,32 +102,6 @@
     <h2 class="sicodis sicodis-subtitle">Consulte a continuación la información vigente de los dos sistemas</h2>
     <p class="sicodis-p">Cifras en pesos corrientes</p>
     
-    <div class="filter-panel" style="display:none;">
-      <mat-card class="card-container">
-        <h2 class="sicodis sicodis-subtitle-2">Entidad a consultar</h2>
-        <div class="filter-controls">
-          <div class="filter-item">
-            <label for="departments">Departamentos</label>
-            <select id="departments" class="form-select">
-              <option value="">Seleccione un departamento</option>
-              <option *ngFor="let dept of departments" [value]="dept.id">{{dept.name}}</option>
-            </select>
-          </div>
-          <div class="filter-item">
-            <label for="municipalities">Municipios</label>
-            <select id="municipalities" class="form-select" [disabled]="!selectedDepartment">
-              <option value="">Seleccione un municipio</option>
-              <option *ngFor="let mun of municipalities" [value]="mun.id">{{mun.name}}</option>
-            </select>
-          </div>
-          <div class="filter-buttons">
-            <button pButton type="button" label="Actualizar" class="p-button-primary"></button>
-            <button pButton type="button" label="Borrar filtros" class="p-button-secondary"></button>
-          </div>
-        </div>
-      </mat-card>
-    </div>
-
     <div class="assignment-cards">
       <mat-grid-list [cols]="2" rowHeight="870px" gutterSize="8">
         <mat-grid-tile style="align-items: flex-start;">
@@ -267,19 +241,19 @@
 
     <h2 class="reports-title">Información de Interés</h2>
 
-        <div class="grid-container">
-          <mat-grid-list [cols]="cols" rowHeight="300px" gutterSize="16">
-            <mat-grid-tile *ngFor="let card of cards">
-              <mat-card class="card-container">
-                <img mat-card-image [src]="card.imageUrl" [alt]="card.title + ' - Imagen ilustrativa'">
-                <p class="description">{{card.description}}</p>
-                <mat-card-header>
-                  <h3 class="sicodis-title">{{card.title}}</h3>
-                </mat-card-header>                
-              </mat-card>
-            </mat-grid-tile>
-          </mat-grid-list>
-        </div>
+    <div class="grid-container" style="margin-bottom: 2.5rem;">
+      <mat-grid-list [cols]="cols" rowHeight="300px" gutterSize="16">
+        <mat-grid-tile *ngFor="let card of cards">
+          <mat-card class="card-container">
+            <img mat-card-image [src]="card.imageUrl" [alt]="card.title + ' - Imagen ilustrativa'">
+            <p class="description">{{card.description}}</p>
+            <mat-card-header>
+              <h3 class="sicodis-title">{{card.title}}</h3>
+            </mat-card-header>                
+          </mat-card>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
     
     <div class="sicodis-questions" style="display:none;">
       <img class="overlay-questions" src="/assets/img/overlay-questions.svg" alt="Imagen decorativa de preguntas frecuentes">
@@ -308,7 +282,6 @@
         <button pButton type="button" label="Ir a preguntas frecuentes" class="p-button-primary" (click)="redirectToFAQ()"></button>
       </div>
     </div>
-
-    <p-divider />    
+   
 
 </div>

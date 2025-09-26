@@ -654,8 +654,8 @@ export class HomeComponent implements OnInit {
       datasets: [
         {
           data: [sumaConceptos, restante],
-          backgroundColor: ['#78b9bfff', '#eceae9'],
-          hoverBackgroundColor: ['#6fa0beff', '#dee2e6'],
+          backgroundColor: ['#259ae7ff', '#eceae9'],
+          hoverBackgroundColor: ['#45ca33ff', '#05720eff'],
           borderColor: '#CCCCCC',
           borderWidth: 1,
         }

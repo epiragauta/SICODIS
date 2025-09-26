@@ -1,0 +1,87 @@
+<div class="png-inversion-container">
+
+    <!-- Banner -->
+  <div class="gradient-banner">    
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h1>Inversión por programa, proyecto, fuente</h1>
+      <p>Este módulo presenta el reporte de inversión por programa, proyecto y fuente</p>
+    </div>
+  </div>
+
+  <!-- Panel superior con filtros -->
+  <div class="filters-panel">
+    <div class="filters-row">
+      <div class="p-field vigencia-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select 
+            id="vigencia" 
+            [options]="vigencias" 
+            inputId="vigenciaSelect" 
+            [(ngModel)]="selectedVigencia"
+            (onChange)="onVigenciaChange($event)"
+            optionLabel="vigencia" 
+            optionValue="id_vigencia"
+            placeholder="Vigencia">
+          </p-select>
+          <label for="vigenciaSelect">Vigencia</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field periodo-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select 
+            id="periodo" 
+            [options]="periodos" 
+            inputId="periodoSelect" 
+            [(ngModel)]="selectedPeriodo"
+            (onChange)="onPeriodoChange($event)"
+            optionLabel="label" 
+            placeholder="Periodo">
+          </p-select>
+          <label for="periodoSelect">Periodo</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field departamento-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select 
+            id="departamento" 
+            [options]="departamentos" 
+            inputId="departamentoSelect"
+            [(ngModel)]="selectedDepartamento" 
+            (onChange)="onDepartamentoChange($event)"
+            optionLabel="label" 
+            placeholder="Departamento">
+          </p-select>
+          <label for="departamentoSelect">Departamento</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field fuente-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select 
+            id="fuente" 
+            [options]="fuentes" 
+            inputId="fuenteSelect"
+            [(ngModel)]="selectedFuente" 
+            (onChange)="onFuenteChange($event)"
+            optionLabel="label" 
+            placeholder="Fuente">
+          </p-select>
+          <label for="fuenteSelect">Fuente</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field action-buttons">
+        <button pButton type="button" icon="pi pi-refresh" label="Actualizar" 
+          class="p-button-primary" (click)="onActualizar()" [disabled]="isLoading">
+        </button>
+        <button pButton type="button" icon="pi pi-eraser" label="Limpiar filtros" 
+          class="p-button-secondary" (click)="clearFilters()">
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
