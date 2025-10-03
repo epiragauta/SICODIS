@@ -6,6 +6,8 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Development server
 
+npm install -g @angular/cli
+
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
 ## Code scaffolding
@@ -45,7 +47,7 @@ src/app/services/README.md (Documentación detallada)
 - `getDistribucionTotal(params?)` - Distribución total con filtros
 
 **SGR General:**
-- `getVigencias()` - Vigencias registradas
+- `getSgrVigencias()` - Vigencias registradas
 
 **SGP (Sistema General de Participaciones):**
 - `getSgpResumenGeneral(anio)` - Resumen general por año
