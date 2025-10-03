@@ -18,7 +18,6 @@ import { HighchartsDashboardComponent } from './components/highcharts-dashboard/
 import { PresupuestoYRecaudoComponent } from './components/presupuesto-y-recaudo/presupuesto-y-recaudo.component';
 import { GraphicsSgpComponent } from './components/graphics-sgp/graphics-sgp.component';
 import { ReporteFuncionamientoComponent } from './components/reporte-funcionamiento/reporte-funcionamiento.component';
-import { HomeSgpComponent } from './components/home-sgp/home-sgp.component';
 import { ReportsSgpResguardosComponent } from './components/reports-sgp-resguardos/reports-sgp-resguardos.component';
 import { HistoricoSgpComponent } from './components/historico-sgp/historico-sgp.component';
 import { SgpInicioComponent } from './components/sgp-inicio/sgp-inicio.component';
@@ -32,6 +31,7 @@ import { SgrComparativoComponent } from './components/sgr-comparativo/sgr-compar
 import { SgrProgramacionComponent } from './components/sgr-programacion/sgr-programacion.component';
 import { SgrRecaudoDirectasComponent } from './components/sgr-recaudo-directas/sgr-recaudo-directas.component';
 import { SgrMontosCorrientesConstantesComponent } from './components/sgr-montos-corrientes-constantes/sgr-montos-corrientes-constantes.component';
+import { PgnInversionPorSectorComponent } from './components/pgn-inversion-por-sector/pgn-inversion-por-sector.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -50,8 +50,7 @@ export const routes: Routes = [
     { path: 'dashboard2', component: HighchartsDashboardComponent },
     { path: 'propuesta-resumen-sgr', component: PropuestaResumenSgrComponent }, // Redirect to home for any unknown routes    
     { path: 'graphics-sgp', component: GraphicsSgpComponent},
-    { path: 'reporte-funcionamiento', component: ReporteFuncionamientoComponent },
-    { path: 'home-sgp', component: HomeSgpComponent},
+    { path: 'reporte-funcionamiento', component: ReporteFuncionamientoComponent },    
     { path: 'sgp-inicio', component: SgpInicioComponent},
     { path: 'sgp-resguardos', component: ReportsSgpResguardosComponent},
     { path: 'sgp-historico', component: HistoricoSgpComponent},
@@ -67,4 +66,5 @@ export const routes: Routes = [
     { path: 'sgr-programacion', component: SgrProgramacionComponent },
     { path: 'sgr-recaudo-directas', component: SgrRecaudoDirectasComponent },
     { path: 'sgr-montos-corrientes-constantes', component: SgrMontosCorrientesConstantesComponent },
+    { path: 'pgn-inversion-por-sector', component:PgnInversionPorSectorComponent}
 ];
