@@ -120,5 +120,3 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 Para más información sobre el servicio de API, consulta: `src/app/services/README.md`
 
 --------------
-
-PATH=c:\ws\software\node-v20.18.0-win-x64;%PATH%
