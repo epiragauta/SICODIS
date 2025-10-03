@@ -99,4 +99,123 @@
             }
         }
     } 
+
+    // Content area
+  .content-area {
+    margin: 2rem 0;
+
+    .data-sections {
+      display: flex;
+      gap: 2rem;
+      
+      .left-section {
+        flex: 0 0 40%;
+        
+        .summary-card {
+          .card-title {
+            color: #1a408c;
+            font-weight: bold;
+            font-size: 1.2rem;
+            padding-bottom: 1rem;
+          }
+
+          .summary-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e9ecef;
+
+            &:last-child {
+              border-bottom: none;
+              margin-bottom: 0;
+            }
+
+            .summary-title {
+              font-size: 1.25rem;
+              color: #474a4c;
+              margin-bottom: 0.5rem;
+              font-weight: bold;
+            }
+
+            .summary-value {
+              font-size: 1.1rem;
+              font-weight: bold;
+              color: #2a2c2e;
+              background-color: #f8f9fa;
+              padding: 0.5rem;
+              border-radius: 4px;
+              text-align: center;
+            }
+
+            &.two-column {
+              .summary-values {
+                display: grid;
+                grid-template-columns: 2fr 1fr;
+                gap: 0.5rem;
+
+                .summary-value {
+                  font-size: 1rem;
+                }
+
+                .summary-percentage {
+                  font-size: 1rem;
+                  font-weight: bold;
+                  color: #495057;
+                  background-color: #e9ecef;
+                  padding: 0.5rem;
+                  border-radius: 4px;
+                  text-align: center;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .right-section {
+        flex: 1;
+        
+        .table-card {
+          .card-title {
+            color: #1a408c;
+            font-weight: bold;
+            font-size: 1.2rem;
+          }
+
+          .p-table {
+            font-size: 0.9rem;
+
+            th {
+              background-color: #f8f9fa;
+              font-weight: bold;
+              color: #495057;
+              border-bottom: 2px solid #dee2e6;
+            }
+
+            td {
+              border-bottom: 1px solid #dee2e6;
+            }
+
+            .total-row {
+              background-color: #f8f9fa;
+              font-weight: bold;
+              
+              td {
+                border-top: 2px solid #495057;
+                font-weight: bold;
+              }
+            }
+          }
+
+          .export-section {
+            margin-top: 1rem;
+            text-align: right;
+
+            .p-button {
+              border-radius: 24px;
+            } 
+          }
+        }
+      }
+    }
+  }
 }

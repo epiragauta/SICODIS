@@ -47,11 +47,11 @@
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select 
             id="departamento" 
-            [options]="departamentos" 
+            [options]="departamentosData" 
             inputId="departamentoSelect"
             [(ngModel)]="selectedDepartamento" 
             (onChange)="onDepartamentoChange($event)"
-            optionLabel="label" 
+            optionLabel="departamento" 
             placeholder="Departamento">
           </p-select>
           <label for="departamentoSelect">Departamento</label>
@@ -80,6 +80,105 @@
         <button pButton type="button" icon="pi pi-eraser" label="Limpiar filtros" 
           class="p-button-secondary" (click)="clearFilters()">
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content area -->
+  <div class="content-area">
+    <div class="data-sections">
+      <!-- Left section - Summary -->
+      <div class="left-section">
+        <mat-card class="summary-card">
+          <mat-card-header>
+            <mat-card-title class="card-title">Resumen de la distribución PGN Inversión</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <!-- Single column items -->
+            <div class="summary-item">
+              <div class="summary-title">Vigencia</div>
+              <div class="summary-value">{{selectedVigencia?.vigencia}}</div>
+            </div>
+            
+            <div class="summary-item">
+              <div class="summary-title">Período</div>
+              <div class="summary-value">{{selectedPeriodo?.label}}</div>
+            </div>
+
+            <!-- Two column items -->
+            <div class="summary-item two-column">
+              <div class="summary-title">Total Presupuesto PGN - Inversión</div>
+              <div class="summary-values">
+                <div class="summary-value">{{formatCurrency(resumenData.totalPresupuesto)}}</div>
+                <div class="summary-percentage">{{resumenData.totalPorcentaje}}%</div>
+              </div>
+            </div>
+
+            <div class="summary-item two-column">
+              <div class="summary-title">Regionalizado</div>
+              <div class="summary-values">
+                <div class="summary-value">{{formatCurrency(resumenData.regionalizado)}}</div>
+                <div class="summary-percentage">{{resumenData.regionalizadoPorcentaje}}%</div>
+              </div>
+            </div>
+
+            <div class="summary-item two-column">
+              <div class="summary-title">Nacional</div>
+              <div class="summary-values">
+                <div class="summary-value">{{formatCurrency(resumenData.nacional)}}</div>
+                <div class="summary-percentage">{{resumenData.nacionalPorcentaje}}%</div>
+              </div>
+            </div>
+
+            <div class="summary-item two-column">
+              <div class="summary-title">Por Regionalizar</div>
+              <div class="summary-values">
+                <div class="summary-value">{{formatCurrency(resumenData.porRegionalizar)}}</div>
+                <div class="summary-percentage">{{resumenData.porRegionalizarPorcentaje}}%</div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <!-- Right section - Table -->
+      <div class="right-section">
+        <mat-card class="table-card">
+          <mat-card-header>
+            <mat-card-title class="card-title">Distribución por Departamento</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p-table [value]="departamentosData" [scrollable]="true" scrollHeight="615px">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Departamento</th>
+                  <th class="text-right">{{selectedVigencia?.vigencia}}</th>
+                  <th class="text-right">Per Capita</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-dept>
+                <tr>
+                  <td>{{dept.departamento}}</td>
+                  <td class="text-right">{{formatCurrency(dept.vigencia)}}</td>
+                  <td class="text-right">{{formatPercentage(dept.perCapita)}}</td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="footer">
+                <tr class="total-row">
+                  <td><strong>Total General</strong></td>
+                  <td class="text-right"><strong>{{formatCurrency(getTotalVigencia())}}</strong></td>
+                  <td class="text-right"><strong>{{formatPercentage(getAveragePerCapita())}}</strong></td>
+                </tr>
+              </ng-template>
+            </p-table>
+            
+            <div class="export-section">
+              <button pButton type="button" icon="pi pi-file-excel" label="Exportar Excel" 
+                class="p-button-primary" (click)="exportToExcel()">
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
       </div>
     </div>
   </div>
