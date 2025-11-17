@@ -20,16 +20,16 @@
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select 
             id="vigencia" 
-            [options]="infoResume" 
+            [options]="vigencias" 
             inputId="vigenciaSelect" 
             [(ngModel)]="selected"
             (onChange)="onVigenciaChange($event)"
-            optionValue="year"
-            optionLabel="year" 
+            optionValue="id"
+            optionLabel="label" 
             placeholder="Vigencia">
           </p-select>
-          <label for="vigenciaSelect">Vigencia a consultar</label>
-        </p-floatlabel>
+          <label for="vigenciaSelect">Vigencia</label>
+        </p-floatlabel> 
       </div>
 
       <!-- Departamento -->
@@ -41,8 +41,8 @@
             inputId="departamentoSelect"
             [(ngModel)]="departmentSelected"
             (onChange)="onDepartmentChange($event)"
-            optionValue="codigo"
-            optionLabel="nombre" 
+            optionValue="id"
+            optionLabel="label" 
             placeholder="Departamento">
           </p-select>
           <label for="departamentoSelect">Departamento</label>
@@ -58,8 +58,8 @@
             inputId="municipioSelect"
             [(ngModel)]="townSelected"
             (onChange)="onTownChange($event)"
-            optionValue="codigo_municipio"
-            optionLabel="nombre_municipio" 
+            optionValue="id"
+            optionLabel="label" 
             placeholder="Municipio">
           </p-select>
           <label for="municipioSelect">Municipio</label>
@@ -68,12 +68,12 @@
 
       <!-- Botón Actualizar -->
       <div class="p-field update-button">
-        <button pButton type="button" 
+        <!-- <button pButton type="button" 
                 icon="pi pi-filter" 
                 label="Aplicar filtros" 
                 class="p-button-primary btn-apply-filters"
                 (click)="updateData()">
-        </button>
+        </button> -->
         <button pButton type="button" 
                 icon="pi pi-eraser" 
                 label="Limpiar filtros" 
@@ -86,8 +86,7 @@
 
   <div class="dates-buttons-container">
     <div style="width: 84%;">
-      <p class="date-update">Fecha de actualización: junio 30 de 2025</p>
-      <p class="date-update">Fecha de corte de recaudo: mayo 30 de 2025</p>
+      <p class="date-update">Fecha de actualización: octubre 01 de 2025</p>
     </div>    
   </div>
 
@@ -162,16 +161,11 @@
       <p class="final-note">
         <strong>(1)</strong> Cifras en pesos corrientes.
       </p>
-      <p class="final-note" *ngIf="isCurrentYear()">
-        <strong>(2)</strong> Los recursos pendientes por distribuir corresponden a i) la participación para educación 
-        por concepto de las doce doceavas por $1.839 mm y ii) la asignación especial para el FONPET por concepto de las
-        once doceavas por $ 2.469 mm.
-      </p>
     </div>
 
     <!-- Botón Descargar Excel centrado -->
     <div class="button-export-center">
-      <button pButton type="button" icon="pi pi-download" label="Exportar Excel" class="p-button-primary"></button>
+      <button pButton type="button" icon="pi pi-download" label="Exportar Excel" class="p-button-primary" (click)="exportToExcelReporte()"></button>   
     </div>
   </div>
 
@@ -202,8 +196,8 @@
             {{ truncateText(data.descripcion, 177) }}
           </td>          
           <td style="white-space: nowrap;">
-            <button pButton type="button" icon="pi pi-file-pdf" class="p-button-danger p-button-sm" 
-                    (click)="showDetails(data)" pTooltip="Ver detalles PDF"></button>
+            <!-- <button pButton type="button" icon="pi pi-file-pdf" class="p-button-danger p-button-sm" 
+                    (click)="showDetails(data)" pTooltip="Ver detalles PDF"></button> -->
             <button pButton type="button" icon="pi pi-file-excel" class="p-button-primary p-button-sm" 
                     (click)="showFiles(data)" pTooltip="Ver archivos Excel" style="margin-left: 0.5rem;"></button>
           </td>
@@ -251,15 +245,15 @@
         <p-table [value]="distributionFiles" [tableStyle]="{ 'min-width': '30rem' }">
           <ng-template #header>
             <tr>
-              <th>Descripción</th>
-              <th>Archivo</th>
+              <th>Descripción documento</th>
+              <th>Tipo de archivo</th>
               <th>Acciones</th>
             </tr>
           </ng-template>
           <ng-template #body let-file>
             <tr>
-              <td>{{ file.desc }}</td>
-              <td>{{ file.value }}</td>
+              <td>{{ file.descripcion }}</td>
+              <td>{{ file.documento }}</td>
               <td>
                 <button pButton type="button" icon="pi pi-download" 
                         class="p-button-primary p-button-sm" 

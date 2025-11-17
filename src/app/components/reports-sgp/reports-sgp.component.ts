@@ -18,7 +18,7 @@ import { TreeNode } from 'primeng/api';
 import Chart from 'chart.js/auto';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { SgpBoldPipe } from '../../utils/sgpBoldPipe';
-import { departamentos } from '../../data/departamentos';
+//import { departamentos } from '../../data/departamentos';
 import { SicodisApiService } from '../../services/sicodis-api.service';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { MenuItem } from 'primeng/api';
@@ -74,6 +74,11 @@ export class ReportsSgpComponent implements OnInit {
   barChartOptions: any;
   barChartInstance: any;
 
+  vigencias: any[] = [];
+  departments: any[] = [];
+  towns: any[] = [];
+
+
   infoResume: any = [
     {
       year: '2025',
@@ -119,9 +124,10 @@ export class ReportsSgpComponent implements OnInit {
     },
   ];
 
-  departments = departamentos;
+//  departments = departamentos;
 
-  towns: any[] = [];
+
+
 
   dataSource2: any = [
     {
@@ -175,7 +181,7 @@ export class ReportsSgpComponent implements OnInit {
 
   constructor(private renderer: Renderer2, private sicodisApiService: SicodisApiService) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.items = [
         { label: 'SGP', routerLink: '/sgp-inicio' },
         { label: 'Documentos y Anexos' }        
@@ -183,10 +189,28 @@ export class ReportsSgpComponent implements OnInit {
 
     this.home = { icon: 'pi pi-home', routerLink: '/' };
     
-    this.infoToResume = this.infoResume.filter(
-      (item: any) => item.year === this.selected
-    )[0];
+    await this.cargarVigencias();
+    await this.cargarDepartamentos();
+
+    // this.infoToResume = this.infoResume.filter(
+    //   (item: any) => item.year === this.selected
+    // )[0];
     
+    this.selected = this.vigencias[0].id;
+    this.departmentSelected = this.departments[0].id;
+
+    /// Inicializa en TODOS los municipios
+    const municipios = [
+                          { codigo: '0', nombre: 'TODOS' },
+                       ];
+
+    this.towns = municipios.map(m => ({
+      id: m.codigo,
+      label: m.nombre
+    }));
+
+    this.townSelected = '0';
+
     // Crear el gráfico después de un pequeño delay para asegurar que el DOM esté listo
     setTimeout(() => {
       this.createBarChart();
@@ -198,6 +222,88 @@ export class ReportsSgpComponent implements OnInit {
 
     console.log('Component initialized');
   }
+
+
+  /**
+   * Cargar datos desde la API para inicializar el formulario
+   */
+  private async cargarVigencias(): Promise<void> {
+    try {
+      const vigencias = await this.sicodisApiService.getSgpVigencias().toPromise();
+      this.vigencias = vigencias?.map((vigencia: any) => ({
+        id: vigencia.anio,
+        label: vigencia.anio
+      })) || [];
+      
+      // Seleccionar la primera vigencia por defecto
+      if (this.vigencias.length > 0) {
+        this.selected = this.vigencias[0];
+        console.log('Vigencia seleccionada por defecto:', this.selected);
+      }
+      
+      console.log('Vigencias cargadas desde API:', this.vigencias);
+    } catch (error) {
+      console.warn('Error cargando vigencias desde API, se usarán datos locales como fallback:', error);
+      this.vigencias = [];
+    }
+  }
+
+
+    /**
+   * Cargar datos departamentos desde la API 
+   */
+  private async cargarDepartamentos(): Promise<void> {
+    try {
+      const departamentosLista = await this.sicodisApiService.getSgpDepartamentos().toPromise();
+      this.departments = departamentosLista?.map((dept: any) => ({
+        id: dept.codigo,
+        label: dept.nombre
+      })) || [];
+      
+      // Seleccionar la primera vigencia por defecto
+      if (this.departments.length > 0) {
+        this.departmentSelected = this.departments[0];
+        console.log('Departamento seleccionada por defecto:', this.departmentSelected);
+      }
+      
+      console.log('Departamento cargadas desde API:', this.departments);
+    } catch (error) {
+      console.warn('Error cargando departamentos desde API, se usarán datos locales como fallback:', error);
+      this.departments = [];
+    }
+  }
+
+  /**
+   * Carga los municipios para el departamento seleccionado
+   */
+  private async loadTownsForDepartment(): Promise<void> {
+    if (!this.departmentSelected) {
+      //this.towns = [];
+      this.townSelected = '0';
+      return;
+    }
+
+    
+
+    console.log('Cargando municipios para departamento:', this.departmentSelected);
+
+    
+    const municipiosLista = await this.sicodisApiService.getMunicipiosDepartamentosSgp(this.departmentSelected).toPromise();
+    this.towns = municipiosLista?.map((town: any) => ({
+       id: town.codigo,
+       label: town.nombre
+    })) || [];
+
+
+      // Seleccionar la primera vigencia por defecto
+      if (this.towns.length > 0) {
+        this.townSelected = this.towns[0].id;
+        console.log('Municipio seleccionada por defecto:', this.townSelected);
+      }
+
+  }
+
+
 
   /**
    * Crea el gráfico de barras verticales para conceptos principales
@@ -364,9 +470,10 @@ export class ReportsSgpComponent implements OnInit {
   onVigenciaChange(event: SelectChangeEvent): void {
     console.log('Vigencia seleccionada:', event.value);
     this.selected = event.value;
-    this.infoToResume = this.infoResume.filter(
-      (item: any) => item.year === event.value
-    )[0];
+    
+    // this.infoToResume = this.infoResume.filter(
+    //   (item: any) => item.year === event.value
+    // )[0];
     
     // Recrear el gráfico con los nuevos datos
     setTimeout(() => {
@@ -385,8 +492,9 @@ export class ReportsSgpComponent implements OnInit {
   onDepartmentChange(event: SelectChangeEvent): void {
     console.log('Departamento seleccionado:', event.value);
     this.departmentSelected = event.value;
-    this.townSelected = '';
+    //this.townSelected = '';
     this.loadTownsForDepartment();
+    this.loadSgpData();
   }
 
   /**
@@ -395,8 +503,9 @@ export class ReportsSgpComponent implements OnInit {
   onTownChange(event: SelectChangeEvent): void {
     console.log('Municipio seleccionado:', event.value);
     this.townSelected = event.value;
-    this.filterDataByLocation();
-    this.loadSgpDataForMunicipality();
+    //this.filterDataByLocation();
+    //this.loadSgpDataForMunicipality();
+    this.loadSgpData();
   }
 
   /**
@@ -426,8 +535,8 @@ export class ReportsSgpComponent implements OnInit {
   clearFilters(): void {
     console.log('Limpiando filtros...');
     this.selected = '2025';
-    this.departmentSelected = '';
-    this.townSelected = '';
+    this.departmentSelected = '0';
+    this.townSelected = '0';
     this.towns = [];
     
     this.infoToResume = this.infoResume.filter(
@@ -446,29 +555,7 @@ export class ReportsSgpComponent implements OnInit {
     // Lógica para cargar datos específicos del año
   }
 
-  /**
-   * Carga los municipios para el departamento seleccionado
-   */
-  private loadTownsForDepartment(): void {
-    if (!this.departmentSelected) {
-      this.towns = [];
-      this.townSelected = '';
-      return;
-    }
 
-    console.log('Cargando municipios para departamento:', this.departmentSelected);
-    
-    this.sicodisApiService.getMunicipiosPorDepartamento(this.departmentSelected).subscribe({
-      next: (municipios) => {
-        console.log('Municipios cargados:', municipios);
-        this.towns = municipios;
-      },
-      error: (error) => {
-        console.error('Error cargando municipios:', error);
-        this.towns = [];
-      }
-    });
-  }
 
   /**
    * Filtra los datos por ubicación (departamento/municipio)
@@ -572,14 +659,28 @@ export class ReportsSgpComponent implements OnInit {
     this.distributionFiles = [];
     this.distributionName = data.nombre;
     this.distributionDate = data.fecha_distribucion;
-    this.distributionFiles.push({
-      desc: data.descripcion || data.nombre,
-      value: data.nombre
+/// acá traer los archivos
+
+    const id_distribucion = parseInt(data.id_distribucion  );
+    
+    this.sicodisApiService.getSgpResumenDistribucionesListaArchivos(id_distribucion).subscribe({
+      next: (result: any[]) => {
+        console.log('Archivos de la distribución del API:', result);
+        this.distributionFiles = result.map(item => ({
+          id_anexo: item.id_anexo,
+          nombre_documento: item.nombre_documento,
+          tipo: item.tipo,
+          documento: item.documento,
+          descripcion: item.descripcion,
+          extension: item.extension
+        }));
+      },
+      error: (error) => {
+        console.error('Error loading archivos de distribución data from API:', error);
+        this.distributionFiles = [];
+      }
     });
-    this.distributionFiles.push({
-      desc: "Anexos 1 al 3 " + data.nombre,
-      value: "Anexos"
-    });
+
   }
 
   /**
@@ -587,16 +688,49 @@ export class ReportsSgpComponent implements OnInit {
    */
   downloadFiles(data: any): void {
     console.log("downloadFiles", data);
+
+  this.sicodisApiService.getSgpDescargarArchivo(data.id_anexo).subscribe({
+    next: (response) => {
+      const blob = response.body as Blob;
+
+      // Obtener el nombre desde el Content-Disposition
+      let filename = 'archivo_sgp';
+      const contentDisposition = response.headers.get('content-disposition');
+
+      if (contentDisposition) {
+        const match = contentDisposition.match(/filename="?([^"]+)"?/);
+        if (match && match[1]) {
+          filename = match[1];
+        }
+      }
+
+      // Crear objeto URL
+      const url = window.URL.createObjectURL(blob);
+
+      // Crear enlace para descargar
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+
+      // Liberar memoria
+      window.URL.revokeObjectURL(url);
+    },
+    error: (err) => {
+      console.error('Error descargando archivo:', err);
+    }
+  });    
+
   }
 
   /**
    * Carga los datos SGP para la tabla
    */
   loadSgpData(): void {
-    const aniosString = this.selected;
-    
-    this.sicodisApiService.getSgpResumenHistorico({ anios: aniosString }).subscribe({
-      next: (result: any[]) => {
+    //const aniosString = this.selected;
+    const selectedYear = parseInt(this.selected );
+    this.sicodisApiService.getSgpResumenParticipaciones( selectedYear, this.departmentSelected, this.townSelected).subscribe({        
+      next: (result: any) => {
         console.log('Datos SGP del API:', result);
         this.historicoApiData = result;
         if (result && result.length > 0) {
@@ -716,7 +850,7 @@ export class ReportsSgpComponent implements OnInit {
    */
   getValueForYear(data: any[], conceptoId: string, year: string): number {
     const item = data.find(d => d.id_concepto === conceptoId && d.annio?.toString() === year);
-    return item?.total_corrientes || 0;
+    return item?.total || 0;
   }
 
   /**
@@ -798,7 +932,7 @@ export class ReportsSgpComponent implements OnInit {
    * Carga los datos de distribuciones del SGP usando el API
    */
   loadDistributionData(): void {
-    const selectedYear = parseInt(this.selected);
+    const selectedYear = parseInt(this.selected );
     
     this.sicodisApiService.getSgpResumenDistribuciones(selectedYear).subscribe({
       next: (result: any[]) => {
@@ -902,4 +1036,70 @@ export class ReportsSgpComponent implements OnInit {
     
     return title;
   }
+
+
+  exportToExcelReporte(): void {
+    console.log('Exportando a Excel...');
+    console.log('Actualizando datos...');   
+    this.descargarDatosDistribucion();
+  }  
+
+
+  /**
+   * Cargar datos de resumen y detalle de los departamentos de regionalización PGN a partir de los filtros seleccionados
+   */
+  private async descargarDatosDistribucion(): Promise<void> {
+    try {
+      const selectedDepartamento = this.departments.find(d => d.id === this.departmentSelected);
+      const selectedMunicipio = this.towns.find(d => d.id === this.townSelected);
+      
+      console.log('Vigencia seleccionada:', this.selected);
+      console.log('Código Departamento  seleccionado:',  selectedDepartamento);
+      console.log('Código Municipio seleccionado por defecto:', selectedMunicipio);
+      const selectedYear = parseInt(this.selected );
+      const archivo: Blob | undefined = await this.sicodisApiService
+                                            .getSgpDescargaDatosSgpResumenParticipaciones( selectedYear
+                                                                                           , this.departmentSelected
+                                                                                           , this.townSelected
+                                                                                           , selectedDepartamento.label
+                                                                                           , selectedMunicipio.label
+                                                                                          )
+                                                                                          .toPromise();
+
+      // Verificamos que sí tengamos archivo
+      if (!archivo) {
+        console.warn('No se recibió ningún archivo desde el servicio');
+        return;
+      }
+
+
+      // Forzar tipo MIME correcto para Excel
+      const excelBlob = new Blob([archivo], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+
+      const arrayBuffer = await excelBlob.arrayBuffer();
+      console.log('Tamaño de archivo:', arrayBuffer.byteLength);
+
+      // Crear enlace temporal para descargar
+      const url = window.URL.createObjectURL(excelBlob);
+      const a = document.createElement('a');
+      a.href = url;
+
+      const nombreArchivo = `ResumenDsitribucionSGP_${this.selected}.xlsx`;
+      a.download = nombreArchivo;
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+
+      console.log('Archivo descargado exitosamente');
+
+
+
+    } catch (error) {
+      console.warn('Error cargando fuentes desde API, se usarán datos locales como fallback:', error);
+    }
+  }
+
+
 }

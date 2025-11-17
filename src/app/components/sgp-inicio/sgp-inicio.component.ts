@@ -119,28 +119,30 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
       boton: 'Consultar',
       link: 'sgp-eficiencia',
       icon: 'assets/img/sgp/efficiency.png'
-    },
-    {
-      titulo: 'Resguardos Indígenas',
-      descripcion: 'Consulta resguardos indígenas',
-      boton: 'Consultar',
-      link: 'sgp-resguardos',
-      icon: 'assets/img/sgp/indigenous.png'
-    },
-    {
-      titulo: 'Distribuciones SGP',
-      descripcion: 'Consulta las proyecciones del sistema',
-      boton: 'Consultar',
-      link: 'reports-sgp-dist',
-      icon: 'assets/img/sgp/forecast.png'
-    },
-    {
-      titulo: 'Presupuesto SGP',
-      descripcion: 'Consulta variables del sistema',
-      boton: 'Consultar',
-      link: 'reports-sgp-budget',
-      icon: 'assets/img/sgp/segmentation.png'
-    },    
+    }
+    // ,
+    // {
+    //   titulo: 'Resguardos Indígenas',
+    //   descripcion: 'Consulta resguardos indígenas',
+    //   boton: 'Consultar',
+    //   link: 'sgp-resguardos',
+    //   icon: 'assets/img/sgp/indigenous.png'
+    // }
+    // ,
+    // {
+    //   titulo: 'Distribuciones SGP',
+    //   descripcion: 'Consulta las proyecciones del sistema',
+    //   boton: 'Consultar',
+    //   link: 'reports-sgp-dist',
+    //   icon: 'assets/img/sgp/forecast.png'
+    // },
+    // {
+    //   titulo: 'Presupuesto SGP',
+    //   descripcion: 'Consulta variables del sistema',
+    //   boton: 'Consultar',
+    //   link: 'reports-sgp-budget',
+    //   icon: 'assets/img/sgp/segmentation.png'
+    // },    
   ];
 
   ngOnInit(): void {

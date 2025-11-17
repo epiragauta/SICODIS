@@ -55,10 +55,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
             label: 'Ficha comparativa de distribución SGP',
             command: () => this.redirectUrl("sgp-comparativa")
           },
-          {
-            label: 'Distribución SGP para los Resguardos Indígenas',
-            // command: () => this.redirectUrl("reports-sgp-budget")
-          },
+          // {
+          //   label: 'Distribución SGP para los Resguardos Indígenas',
+          //   command: () => this.redirectUrl("reports-sgp-budget")
+          // },
           {
             label: 'Eficiencia Fiscal y Eficiencia Administrativa de la participación para Propósito general',
             command: () => this.redirectUrl("sgp-eficiencia")

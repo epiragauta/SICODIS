@@ -74,7 +74,16 @@ export class HomeComponent implements OnInit {
       title: 'Sobre distribución de recursos territoriales​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​',
       buttonLabel: 'Ver Reportes',
       link: 'https://www.dnp.gov.co/LaEntidad_/subdireccion-general-inversiones-seguimiento-evaluacion/direccion-programacion-inversiones-publicas/Paginas/distribucion-de-recursos-territoriales.aspx'
+    },
+    {
+      imageUrl: '/assets/img/carrousel3.jpg',
+      date: 'Junio 3 de 2024',
+      description: '',
+      title: 'Programación de Inversiones Públicas​',
+      buttonLabel: 'Ver Reportes',
+      link: 'https://dnp.gov.co/LaEntidad_/subdireccion-general-inversiones-seguimiento-evaluacion/direccion-programacion-inversiones-publicas/Paginas/default.aspx'
     }
+
   ];
 
   highlightApps = [

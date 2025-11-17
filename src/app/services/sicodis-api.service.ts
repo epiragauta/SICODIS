@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { HttpResponse } from '@angular/common/http';
 
 // ========== SGR Funcionamiento Interfaces ==========
 export interface DiccionarioItem {
@@ -85,6 +86,21 @@ export interface Vigencia {
 }
 
 // ========== SGP Interfaces ==========
+export interface VigenciaSgp {
+  anio: number;
+}
+
+export interface DepartamentoSgp {
+  codigo: string;
+  nombre: string;
+}
+
+
+export interface MunicipioSgp {
+  codigo: string;
+  nombre: string;
+}
+
 export interface ResumenGeneral {
   anio: number;
   total_distribuido: number;
@@ -118,6 +134,17 @@ export interface ResumenDistribuciones {
   total_distribucion: number;
   descripcion: string;
   tipo_distribucion: string;
+  id_DocumentoDistribucion: number;
+  id_DocumentoDatos: number;
+}
+
+export interface ResumenDistribucionesArchivo {
+  id_anexo: number;
+  nombre_documento: string;
+  tipo: string;
+  documento: number;
+  descripcion: string;
+  extension: string;
 }
 
 export interface ResumenHistorico {
@@ -474,6 +501,37 @@ export class SicodisApiService {
 
   // ========== SGP Methods ==========
 
+
+  /**
+   * Obtiene las vigencias de SGP
+   * @returns Observable con el array de vigencias de presupuesto
+   */
+  getSgpVigencias(): Observable<VigenciaSgp[]> {
+    const url = `${this.baseUrl}/sgp/vigencias`;
+    return this.http.get<VigenciaSgp[]>(url);
+  }
+
+
+/**
+   * Obtiene los departamentos de SGP
+   * @returns Observable con el array 
+   */
+  getSgpDepartamentos(): Observable<DepartamentoSgp[]> {
+    const url = `${this.baseUrl}/sgp/departamentos`;
+    return this.http.get<DepartamentoSgp[]>(url);
+  }
+
+  /**
+   * Obtiene los municipios por código de departamento
+   * @param codigoDepto - Código del departamento
+   * @returns Observable con el array de municipios
+   */
+  getMunicipiosDepartamentosSgp(codigoDepto: string): Observable<MunicipioSgp[]> {
+    const url = `${this.baseUrl}/sgp/municipios_departamentos/${codigoDepto}`;
+    return this.http.get<MunicipioSgp[]>(url);
+  }
+
+
   /**
    * Obtiene el resumen general del SGP para un año específico
    * @param anio - Año de consulta
@@ -505,6 +563,40 @@ export class SicodisApiService {
     const url = `${this.baseUrl}/sgp/resumen_distribuciones/${anio}`;
     return this.http.get<ResumenDistribuciones[]>(url);
   }
+
+   /**
+   * Obtiene los datos de resumen y detalle de regionaización dados unos parámetros
+   * @param id_vigencia - Año de consulta
+   * @param id_periodo - Periodo de consulta
+   * @param codigo_dane_depto - Código del departamento
+   * @param id_fuente - Código de la fuente
+   * @returns Observable con las fuentes para la vigencia y periodo seleccionados, así como el departamento y la fuente.
+   */
+  getSgpDescargaDatosSgpResumenParticipaciones( anio: number
+                                                , codigoDepto: string
+                                                , codigoMunicipio: string
+                                                , departamento: string
+                                                , municipio: string
+                                                ): Observable<Blob> {  
+    const url = `${this.baseUrl}/sgp/archivo_resumen_participaciones/${anio}/${codigoDepto}/${codigoMunicipio}/${departamento}/${municipio}`;
+    return this.http.get(url, { responseType: 'blob' });  // responseType 'blob' indica que será un archivo binario
+  }
+
+
+
+
+  /**
+   * Obtiene el listado de archivos de la distribución
+   * @param id_distribucion - dsitribucion
+   * @returns Observable con el resumen de distribuciones
+   */
+  getSgpResumenDistribucionesListaArchivos(id_distribucion: number): Observable<ResumenDistribucionesArchivo[]> {
+    const url = `${this.baseUrl}/sgp/resumen_distribuciones_lista_archivos/${id_distribucion}`;
+    return this.http.get<ResumenDistribucionesArchivo[]>(url);
+  }
+
+
+
 
   /**
    * Obtiene el resumen de participaciones de distribución específica
@@ -561,10 +653,21 @@ export class SicodisApiService {
    * @param idArchivo - ID del archivo a descargar
    * @returns Observable con los datos del archivo
    */
-  getSgpDescargarArchivo(idArchivo: number): Observable<any> {
+  // getSgpDescargarArchivo(idArchivo: number): Observable<Blob> {
+  //   const url = `${this.baseUrl}/sgp/descargararchivo/${idArchivo}`;
+  //   return this.http.get(url, {
+  //     responseType: 'blob'
+  //   });
+  // }
+
+  getSgpDescargarArchivo(idArchivo: number): Observable<HttpResponse<Blob>> {
     const url = `${this.baseUrl}/sgp/descargararchivo/${idArchivo}`;
-    return this.http.get<any>(url);
+    return this.http.get(url, {
+      responseType: 'blob',
+      observe: 'response'
+    });
   }
+  
 
   /**
    * Obtiene las vigencias de presupuesto de la última once del SGP

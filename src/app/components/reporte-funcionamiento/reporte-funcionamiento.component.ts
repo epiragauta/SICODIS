@@ -253,7 +253,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
   ngOnInit(): void {
     this.items = [
-        { label: 'Reporte de FuncionamienReporte de administración y SSEC' }        
+        { label: 'Reporte de administración y SSEC' }        
     ];
 
     this.home = { icon: 'pi pi-home', routerLink: '/' };
@@ -419,7 +419,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
     }
 
     let contenido = '<div style="font-size: 11px;"><table style="width: 100%; border-collapse: collapse;">';
-    contenido += '<thead><tr style="background-color: #f8f9fa;"><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Concepto</th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Descripción</th></tr></thead>';
+    contenido += '<thead><tr style="background-color: #f8f9fa;"><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Id </th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Concepto</th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Descripción</th></tr></thead>';
     contenido += '<tbody>';
 
     this.siglasDiccionarioData.diccionario.data.forEach((item: DiccionarioItem) => {
