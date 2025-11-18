@@ -76,7 +76,8 @@ export class SgpComparativaComponent {
 
   infoResume: any[] = [];
 
-  departments = departamentos;
+  //departments = departamentos;
+  departments: any[] = [];
   towns: any[] = [];
   towns2: any[] = [];
 
@@ -106,6 +107,7 @@ export class SgpComparativaComponent {
     this.home = { icon: 'pi pi-home', routerLink: '/' };
 
     this.loadVigencias();
+    this.cargarDepartamentos();
     this.loadInformeTrimestraldData(); // Load sample data for Informe Trimestral
     this.loadVariablesGeneralesData(); // Load sample data for Variables Generales
     this.loadVariablesEducacionData(); // Load sample data for Variables Educacion
@@ -116,6 +118,34 @@ export class SgpComparativaComponent {
     // Don't load any charts or data initially
     console.log('Component initialized');
   }
+
+
+    /**
+   * Cargar datos departamentos desde la API 
+   */
+  private async cargarDepartamentos(): Promise<void> {
+    try {
+      const departamentosLista = await this.sicodisApiService.getSgpDepartamentos().toPromise();
+      this.departments = departamentosLista?.map((dept: any) => ({
+        id: dept.codigo,
+        label: dept.nombre
+      })) || [];
+      
+      // Seleccionar la primera vigencia por defecto
+      if (this.departments.length > 0) {
+        this.departmentSelected = this.departments[0];
+        console.log('Departamento seleccionada por defecto:', this.departmentSelected);
+      }
+      
+      console.log('Departamento cargadas desde API:', this.departments);
+    } catch (error) {
+      console.warn('Error cargando departamentos desde API, se usarán datos locales como fallback:', error);
+      this.departments = [];
+    }
+  }
+
+
+
 
   /**
    * Genera la lista de años desde el actual hasta 2002 en orden descendente
@@ -891,7 +921,7 @@ export class SgpComparativaComponent {
   onDepartmentChange(event: SelectChangeEvent): void {
     console.log('Departamento seleccionado:', event.value);
     this.departmentSelected = event.value;
-    this.townSelected = '';
+    //this.townSelected = '';   
     this.loadTownsForDepartment();
     
     // Si no hay departamento 2 seleccionado, copiarlo del departamento 1
@@ -907,8 +937,9 @@ export class SgpComparativaComponent {
   onDepartment2Change(event: SelectChangeEvent): void {
     console.log('Departamento 2 seleccionado:', event.value);
     this.departmentSelected2 = event.value;
-    this.townSelected2 = '';
-    this.loadTownsForDepartment2();
+    //this.townSelected2 = '';
+    this.loadTownsForDepartment2();  
+
   }
 
   /**
@@ -996,52 +1027,103 @@ export class SgpComparativaComponent {
   /**
    * Carga los municipios para el departamento seleccionado
    */
-  private loadTownsForDepartment(): void {
+  private async loadTownsForDepartment(): Promise<void> {
     if (!this.departmentSelected) {
-      this.towns = [];
-      this.townSelected = '';
+      //this.towns = [];
+      this.townSelected = '0';
       return;
     }
-
     console.log('Cargando municipios para departamento:', this.departmentSelected);
-    
-    this.sicodisApiService.getMunicipiosPorDepartamento(this.departmentSelected).subscribe({
-      next: (municipios) => {
-        console.log('Municipios cargados:', municipios);
-        this.towns = municipios;
-        this.updateTowns2List();
-      },
-      error: (error) => {
-        console.error('Error cargando municipios:', error);
-        this.towns = [];
+    const municipiosLista = await this.sicodisApiService.getMunicipiosDepartamentosSgp(this.departmentSelected).toPromise();
+    this.towns = municipiosLista?.map((town: any) => ({
+       id: town.codigo,
+       label: town.nombre
+    })) || [];
+
+
+      // Seleccionar la primera vigencia por defecto
+      if (this.towns.length > 0) {
+        this.townSelected = this.towns[0].id;
+        console.log('Municipio seleccionada por defecto:', this.townSelected);
       }
-    });
+
   }
 
-  /**
-   * Carga los municipios para el segundo departamento seleccionado
+/**
+   * Carga los municipios para el departamento seleccionado
    */
-  private loadTownsForDepartment2(): void {
-    if (!this.departmentSelected2) {
-      this.towns2 = [];
-      this.townSelected2 = '';
+  private async loadTownsForDepartment2(): Promise<void> {
+    if (!this.departmentSelected) {
+      //this.towns = [];
+      this.townSelected2 = '0';
       return;
     }
+    console.log('Cargando municipios para departamento:', this.departmentSelected2);
+    const municipiosLista = await this.sicodisApiService.getMunicipiosDepartamentosSgp(this.departmentSelected2).toPromise();
+    this.towns2 = municipiosLista?.map((town: any) => ({
+       id: town.codigo,
+       label: town.nombre
+    })) || [];
 
-    console.log('Cargando municipios para departamento 2:', this.departmentSelected2);
-    
-    this.sicodisApiService.getMunicipiosPorDepartamento(this.departmentSelected2).subscribe({
-      next: (municipios) => {
-        console.log('Municipios 2 cargados:', municipios);
-        this.towns2 = municipios;
-        this.updateTowns2List();
-      },
-      error: (error) => {
-        console.error('Error cargando municipios 2:', error);
-        this.towns2 = [];
+
+      // Seleccionar la primera vigencia por defecto
+      if (this.towns.length > 0) {
+        this.townSelected2 = this.towns[0].id;
+        console.log('Municipio seleccionada por defecto:', this.townSelected2);
       }
-    });
+
   }
+
+
+  // /**
+  //  * Carga los municipios para el departamento seleccionado
+  //  */
+  // private loadTownsForDepartment(): void {
+  //   if (!this.departmentSelected) {
+  //     this.towns = [];
+  //     this.townSelected = '';
+  //     return;
+  //   }
+
+  //   console.log('Cargando municipios para departamento:', this.departmentSelected);
+    
+  //   this.sicodisApiService.getMunicipiosPorDepartamento(this.departmentSelected).subscribe({
+  //     next: (municipios) => {
+  //       console.log('Municipios cargados:', municipios);
+  //       this.towns = municipios;
+  //       this.updateTowns2List();
+  //     },
+  //     error: (error) => {
+  //       console.error('Error cargando municipios:', error);
+  //       this.towns = [];
+  //     }
+  //   });
+  // }
+
+  // /**
+  //  * Carga los municipios para el segundo departamento seleccionado
+  //  */
+  // private loadTownsForDepartment2(): void {
+  //   if (!this.departmentSelected2) {
+  //     this.towns2 = [];
+  //     this.townSelected2 = '';
+  //     return;
+  //   }
+
+  //   console.log('Cargando municipios para departamento 2:', this.departmentSelected2);
+    
+  //   this.sicodisApiService.getMunicipiosPorDepartamento(this.departmentSelected2).subscribe({
+  //     next: (municipios) => {
+  //       console.log('Municipios 2 cargados:', municipios);
+  //       this.towns2 = municipios;
+  //       this.updateTowns2List();
+  //     },
+  //     error: (error) => {
+  //       console.error('Error cargando municipios 2:', error);
+  //       this.towns2 = [];
+  //     }
+  //   });
+  // }
 
   /**
    * Actualiza la lista de municipios 2 para evitar duplicados
@@ -1336,12 +1418,12 @@ export class SgpComparativaComponent {
   getSelectedMunicipalityName(municipalityNumber: number): string {
     if (municipalityNumber === 1) {
       if (!this.townSelected) return 'Sin seleccionar';
-      const municipality = this.towns.find(town => town.codigo_municipio === this.townSelected);
-      return municipality ? municipality.nombre_municipio : 'Municipio 1';
+      const municipality = this.towns.find(town => town.id === this.townSelected);
+      return municipality ? municipality.label : 'Municipio 1';
     } else {
       if (!this.townSelected2) return 'Sin seleccionar';
-      const municipality = this.towns2.find(town => town.codigo_municipio === this.townSelected2);
-      return municipality ? municipality.nombre_municipio : 'Municipio 2';
+      const municipality = this.towns2.find(town => town.id === this.townSelected2);
+      return municipality ? municipality.label : 'Municipio 2';
     }
   }
 

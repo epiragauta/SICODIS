@@ -173,6 +173,8 @@ export interface ResumenHistoricoEntidadParams {
   anios?: string;
   codigoDepto?: string;
   codigoMunicipio?: string;
+  departamento?: string;
+  municipio?: string;
 }
 
 export interface VigenciaPresupuesto {
@@ -649,6 +651,40 @@ export class SicodisApiService {
   }
 
   /**
+   * Obtiene el archivo del resumen histórico de precios corrientes y constantes del SGP por entidad
+   * @param params - Parámetros opcionales incluyendo años, código de departamento y municipio
+   * @returns Observable con el array de datos históricos por entidad
+   */
+  getSgpDescargaResumenHistoricoEntidad(params?: ResumenHistoricoEntidadParams): Observable<Blob> {
+
+    const url = `${this.baseUrl}/sgp/archivo_resumen_historico_corrientes_constantes_entidad`;
+
+    let httpParams = new HttpParams();
+
+    if (params?.anios) {
+      httpParams = httpParams.set('anios', params.anios);
+    }
+    if (params?.codigoDepto) {
+      httpParams = httpParams.set('codigoDepto', params.codigoDepto);
+    }
+    if (params?.departamento) {
+      httpParams = httpParams.set('departamento', params.departamento);
+    }    
+    if (params?.codigoMunicipio) {
+      httpParams = httpParams.set('codigoMunicipio', params.codigoMunicipio);
+    }
+
+    if (params?.municipio) {
+      httpParams = httpParams.set('municipio', params.municipio);
+    }        
+    return this.http.get(url, { 
+      params: httpParams, 
+      responseType: 'blob' 
+    });
+  }
+
+
+  /**
    * Descarga un archivo del SGP por su ID
    * @param idArchivo - ID del archivo a descargar
    * @returns Observable con los datos del archivo
@@ -701,6 +737,29 @@ export class SicodisApiService {
     const url = `${this.baseUrl}/sgp/resumen_participaciones_ultima_once/${idVigencia}/${codigoDepto}/${codigoMunicipio}`;
     return this.http.get<ResumenParticipacionesUltimaOnce>(url);
   }
+
+
+  /**
+   * Obtiene el resumen de participaciones de la última once del SGP
+   * @param idVigencia - ID de la vigencia
+   * @param codigoDepto - Código del departamento
+   * @param codigoMunicipio - Código del municipio
+   * @param departamento - Departamento
+   * @param municipio - Municipio
+   * @returns Observable con el resumen de participaciones de la última once
+   */
+  getSgpDescargarResumenParticipacionesUltimaOnce( idvigencia: number
+                                                , codigoDepto: string
+                                                , codigoMunicipio: string
+                                                , departamento: string
+                                                , municipio: string
+                                                ): Observable<Blob> {  
+    const url = `${this.baseUrl}/sgp/archivo_resumen_participaciones_ultima_once/${idvigencia}/${codigoDepto}/${codigoMunicipio}/${departamento}/${municipio}`;
+    return this.http.get(url, { responseType: 'blob' });  // responseType 'blob' indica que será un archivo binario
+  }
+
+
+
 
   /**
    * Obtiene la ficha comparativa entre dos entidades del SGP

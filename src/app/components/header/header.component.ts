@@ -44,27 +44,28 @@ export class HeaderComponent implements OnInit, OnDestroy {
         label: 'SGP',
         items: [
           {
-            label: 'Distribución Doce Doceavas y Anexos',
+            label: 'Documentos y Anexos',
             command: () => this.redirectUrl("sgp-documentos-anexos")
           },
           {
-            label: 'Ficha SGP, información Presupuestal',
+            label: 'Detalle Presupuestal',
             command: () => this.redirectUrl("sgp-detalle-presupuestal")
           },
           {
-            label: 'Ficha comparativa de distribución SGP',
+            label: 'Ficha Comparativa',
             command: () => this.redirectUrl("sgp-comparativa")
           },
           // {
           //   label: 'Distribución SGP para los Resguardos Indígenas',
           //   command: () => this.redirectUrl("reports-sgp-budget")
           // },
+          // {
+          //   label: 'Consulta de eficiencia',
+          //   command: () => this.redirectUrl("sgp-eficiencia")
+          // },
           {
-            label: 'Eficiencia Fiscal y Eficiencia Administrativa de la participación para Propósito general',
-            command: () => this.redirectUrl("sgp-eficiencia")
-          },
-          {
-            label: 'Ficha para la proyección de los recursos del SGP – Vigencia 2024'
+            label: 'Histórico SGP',
+            command: () => this.redirectUrl("sgp-historico")
           }
         ]
       },
@@ -93,11 +94,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
           {
             label: 'Recaudo frente a presupuesto',
             command: () => this.redirectUrl("sgr-presupuesto-y-recaudo")
-          },
-          {
-            label: 'Visor General de recursos AD hidrocarburos y minería',
-            // command: () => this.redirectUrl("propuesta-resumen-sgr")
           }
+          // ,
+          // {
+          //   label: 'Visor General de recursos AD hidrocarburos y minería',
+          //   // command: () => this.redirectUrl("propuesta-resumen-sgr")
+          // }
         ]
       },
       {
@@ -114,11 +116,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
           {
             label: 'Inversión por sector, entidad y proyecto',
             command: () => this.redirectUrl("pgn-inversion-por-sector")
-          },          
-          {
-            label: 'Comparativa Regionalización',
-            command: () => this.redirectUrl("pgn-comparativa-regionalizacion")
-          }          
+          }
+          // ,          
+          // {
+          //   label: 'Comparativa Regionalización',
+          //   command: () => this.redirectUrl("pgn-comparativa-regionalizacion")
+          // }          
         ]
       },   
       {

@@ -144,24 +144,30 @@
     max-width: 80%;
     color: white;
     
+    position: relative;
+    margin-top: 1rem;
+    z-index: 2;
+    padding: 1rem;
+    max-width: 85%;    
+        
     h1 {
       font-size: 2rem;
       margin-top: 2.25rem;
       margin-bottom: 2.5rem;
-      color: #1a408c;
+      color: #e4e6eb;
       font-weight: bold;
-      max-width: 100%;
-      text-shadow: 1px 1px 3px rgba(241, 241, 247, 0.92);
+      text-shadow: 1px 1px 3px rgba(245, 245, 247, 0.92);
+      color: #103d6e;
     }
-    
+
     p {
-      font-size: 1.35rem;
-      margin-bottom: 2rem;
-      color: #f4f1f1;        
-      width: 90%;
-      font-weight: 500;
-      text-shadow: 1px 1px 3px rgba(23, 23, 104, 0.92);
-    }
+        font-size: 1.35rem;
+        margin-bottom: 1rem;
+        color: #103d6e;     
+        width: 80%;
+        font-weight: 500;
+        text-shadow: 1px 1px 3px rgba(245, 245, 247, 0.92);
+      }
   }
 }
 

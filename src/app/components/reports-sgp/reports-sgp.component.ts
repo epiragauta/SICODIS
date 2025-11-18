@@ -201,7 +201,7 @@ export class ReportsSgpComponent implements OnInit {
 
     /// Inicializa en TODOS los municipios
     const municipios = [
-                          { codigo: '0', nombre: 'TODOS' },
+                          { codigo: '0', nombre: 'Todos' },
                        ];
 
     this.towns = municipios.map(m => ({
@@ -282,12 +282,7 @@ export class ReportsSgpComponent implements OnInit {
       this.townSelected = '0';
       return;
     }
-
-    
-
     console.log('Cargando municipios para departamento:', this.departmentSelected);
-
-    
     const municipiosLista = await this.sicodisApiService.getMunicipiosDepartamentosSgp(this.departmentSelected).toPromise();
     this.towns = municipiosLista?.map((town: any) => ({
        id: town.codigo,
@@ -1046,7 +1041,7 @@ export class ReportsSgpComponent implements OnInit {
 
 
   /**
-   * Cargar datos de resumen y detalle de los departamentos de regionalización PGN a partir de los filtros seleccionados
+   * Descarga del archivo excel de acuerdo con los datos del filtro
    */
   private async descargarDatosDistribucion(): Promise<void> {
     try {

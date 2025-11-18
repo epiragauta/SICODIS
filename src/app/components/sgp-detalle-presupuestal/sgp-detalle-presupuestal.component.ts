@@ -49,9 +49,16 @@ export class SgpDetallePresupuestalComponent implements OnInit {
   municipios: any[] = [];
 
   // Datos de la tarjeta
-  totalAsignado: number = 5687181948;
-  ultimaDoceava: number = 473931829;
-  onceDoceava: number = 521325011;
+  totalAsignado: number = 0;
+  ultimaDoceava: number = 0;
+  onceDoceava: number = 0;
+
+  cifras: any = {
+    onceDoceava: 79849334012202,
+    ultimaDoceava: 2134848615360,
+    totalAsignado: 81984182627562
+  };
+  isLoading: boolean = false;
 
   yearUltimaDoceava: string = '2024';
 
@@ -64,7 +71,7 @@ export class SgpDetallePresupuestalComponent implements OnInit {
 
   constructor(private sicodisApiService: SicodisApiService) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.items = [
         { label: 'SGP', routerLink: '/sgp-inicio' },
         { label: 'Detalle Presupuestal' }        
@@ -72,54 +79,188 @@ export class SgpDetallePresupuestalComponent implements OnInit {
 
     this.home = { icon: 'pi pi-home', routerLink: '/' };
     
-    this.initializeDepartamentos();
-    this.loadVigenciasFromAPI();
+    //this.initializeDepartamentos();
+    //this.loadVigenciasFromAPI();
+    this.cargarVigencias();
+    await this.cargarDepartamentos();
+
+    this.selectedVigencia = this.vigencias[0].id;
+    this.selectedDepartamento = this.departamentos[0].id;
+
+    /// Inicializa en TODOS los municipios
+    const municipios = [
+                          { codigo: '0', nombre: 'Todos' },
+                       ];
+
+    this.municipios = municipios.map(m => ({
+      id: m.codigo,
+      label: m.nombre
+    }));
+
+    this.selectedMunicipio = '0';    
+
+    this.loadSgpData();
+    this.loadTableData();
+
   }
 
-  private initializeDepartamentos(): void {
-    this.departamentos = departamentos.map(dept => ({
-      label: dept.nombre,
-      value: dept.codigo
-    }));
+
+  loadSgpData(): void {
+    console.log("loadSgpData...");
+    this.isLoading = true;
+    const year = this.selectedVigencia;
+    this.sicodisApiService.getSgpResumenGeneralUltimaOnce(year, this.selectedDepartamento,this.selectedMunicipio).subscribe({
+      next: (result: any) => {
+        let resumen = result[0];
+        //this.fechaActualizacion = this.formatFecha(new Date(resumen.fecha_ultima_actualizacion));
+        this.cifras = {
+          totalAsignado: resumen.Total,
+          ultimaDoceava: resumen.UltimaDoceava,
+          onceDoceava: resumen.OnceDoceavas
+        };
+        //this.loadSgpParticipaciones();
+      },
+      error: (error) => {
+        console.error('Error loading SGP data:', error);
+        // Mantener datos por defecto en caso de error
+        this.cifras = {
+          presupuesto: 70540879911189,
+          distribuido: 65200000000000,
+          pendiente: 5330879911189,
+          avance: 100
+        };
+        //this.loadSgpParticipaciones();
+      },
+        complete: () => {
+        this.isLoading = false;  // AQUÍ SE APAGA EL LOADING
+      }
+    });
   }
+
+
+  /**
+   * Cargar datos desde la API para inicializar el formulario
+   */
+  private async cargarVigencias(): Promise<void> {
+    try {
+      const vigencias = await this.sicodisApiService.getSgpVigenciasPresupuestoUltimaOnce().toPromise();
+      this.vigencias = vigencias?.map((vigencia: any) => ({
+        id: vigencia.id_vigencia,
+        label: vigencia.vigencia
+      })) || [];
+      
+      // Seleccionar la primera vigencia por defecto
+      if (this.vigencias.length > 0) {
+        this.selectedVigencia = this.vigencias[0];
+        console.log('Vigencia seleccionada por defecto:', this.selectedVigencia);
+      }
+      
+      console.log('Vigencias cargadas desde API:', this.vigencias);
+    } catch (error) {
+      console.warn('Error cargando vigencias desde API, se usarán datos locales como fallback:', error);
+      this.vigencias = [];
+    }
+  }
+
+      /**
+   * Cargar datos departamentos desde la API 
+   */
+  private async cargarDepartamentos(): Promise<void> {
+    try {
+      const departamentosLista = await this.sicodisApiService.getSgpDepartamentos().toPromise();
+      this.departamentos = departamentosLista?.map((dept: any) => ({
+        id: dept.codigo,
+        label: dept.nombre
+      })) || [];
+      
+      // Seleccionar la primera vigencia por defecto
+      if (this.departamentos.length > 0) {
+        this.selectedDepartamento = this.departamentos[0];
+        console.log('Departamento seleccionada por defecto:', this.selectedDepartamento);
+      }
+      
+      console.log('Departamento cargadas desde API:', this.departamentos);
+    } catch (error) {
+      console.warn('Error cargando departamentos desde API, se usarán datos locales como fallback:', error);
+      this.departamentos = [];
+    }
+  }
+
+  private async loadTownsForDepartment(): Promise<void> {
+    if (!this.selectedDepartamento) {
+      //this.towns = [];
+      this.selectedMunicipio = '0';
+      return;
+    }
+    console.log('Cargando municipios para departamento:', this.selectedDepartamento);
+    const municipiosLista = await this.sicodisApiService.getMunicipiosDepartamentosSgp(this.selectedDepartamento).toPromise();
+    this.municipios = municipiosLista?.map((town: any) => ({
+       id: town.codigo,
+       label: town.nombre
+    })) || [];
+
+
+      // Seleccionar la primera vigencia por defecto
+      if (this.municipios.length > 0) {
+        this.selectedMunicipio = this.municipios[0].id;
+        console.log('Municipio seleccionada por defecto:', this.selectedMunicipio);
+      }
+
+  }
+
+  
+
+  // private initializeDepartamentos(): void {
+  //   this.departamentos = departamentos.map(dept => ({
+  //     label: dept.nombre,
+  //     value: dept.codigo
+  //   }));
+  // }
 
   onVigenciaChange(event: SelectChangeEvent): void {
     console.log('Vigencia seleccionada:', event.value);
+    this.loadSgpData();
     this.loadTableData();
-    this.yearUltimaDoceava = (parseInt(event.value.label  ) - 1).toString();
-    // Si ya hay un municipio seleccionado, actualizar las métricas
-    if (this.selectedMunicipio && this.selectedDepartamento) {
-      this.loadMunicipioData();
-    }
+    // this.yearUltimaDoceava = (parseInt(event.value.label  ) - 1).toString();
+    // // Si ya hay un municipio seleccionado, actualizar las métricas
+    // if (this.selectedMunicipio && this.selectedDepartamento) {
+    //   this.loadMunicipioData();
+    // }
   }
 
   onDepartamentoChange(event: SelectChangeEvent): void {
     console.log('Departamento seleccionado:', event.value);
-    this.selectedMunicipio = null;
-    this.municipios = [];
+    // this.selectedMunicipio = null;
+    // this.municipios = [];
     
     // Reset metrics to default values when department changes
-    this.resetMetricsToDefault();
+    //this.resetMetricsToDefault();
+    console.log('Departamento seleccionado:', event.value);
+    this.selectedDepartamento = event.value;
+    //this.townSelected = '';
+    this.loadTownsForDepartment();
+    this.loadSgpData();
+    this.loadTableData();
     
-    if (event.value) {
-      this.isLoadingMunicipios = true;
+    // if (event.value) {
+    //   this.isLoadingMunicipios = true;
       
-      this.sicodisApiService.getMunicipiosPorDepartamento(event.value).subscribe({
-        next: (municipios) => {
-          console.log('Municipios cargados:', municipios);
-          this.municipios = municipios.map(municipio => ({
-            label: municipio.nombre_municipio || 'Municipio sin nombre',
-            value: municipio.codigo_municipio
-          }));
-          this.isLoadingMunicipios = false;
-        },
-        error: (error) => {
-          console.error('Error cargando municipios:', error);
-          this.municipios = [];
-          this.isLoadingMunicipios = false;
-        }
-      });
-    }
+    //   this.sicodisApiService.getMunicipiosPorDepartamento(event.value).subscribe({
+    //     next: (municipios) => {
+    //       console.log('Municipios cargados:', municipios);
+    //       this.municipios = municipios.map(municipio => ({
+    //         label: municipio.nombre_municipio || 'Municipio sin nombre',
+    //         value: municipio.codigo_municipio
+    //       }));
+    //       this.isLoadingMunicipios = false;
+    //     },
+    //     error: (error) => {
+    //       console.error('Error cargando municipios:', error);
+    //       this.municipios = [];
+    //       this.isLoadingMunicipios = false;
+    //     }
+    //   });
+    // }
   }
 
   private resetMetricsToDefault(): void {
@@ -130,7 +271,11 @@ export class SgpDetallePresupuestalComponent implements OnInit {
 
   onMunicipioChange(event: SelectChangeEvent): void {
     console.log('Municipio seleccionado:', event.value);
-    this.loadMunicipioData();
+    // Reset metrics to default values when department changes
+    console.log('Departamento seleccionado:', event.value);
+    this.selectedMunicipio = event.value;
+    //this.townSelected = '';
+    this.loadSgpData();
     this.loadTableData();
   }
 
@@ -251,12 +396,9 @@ export class SgpDetallePresupuestalComponent implements OnInit {
   }
 
   private loadTableDataFromApi(): void {
-    const idVigencia = parseInt(this.selectedVigencia.value);
+    const idVigencia = parseInt(this.selectedVigencia);
     
-    this.sicodisApiService.getSgpResumenParticipacionesUltimaOnce(
-      idVigencia,
-      this.selectedDepartamento,
-      this.selectedMunicipio
+    this.sicodisApiService.getSgpResumenParticipacionesUltimaOnce(idVigencia, this.selectedDepartamento,this.selectedMunicipio
     ).subscribe({
       next: (data: any) => {
         console.log('Datos de participaciones cargados:', data);
@@ -411,8 +553,67 @@ export class SgpDetallePresupuestalComponent implements OnInit {
   // Métodos para descargas
   downloadData(): void {
     console.log('Descargando datos completos...');
-    // Aquí se puede implementar la lógica de descarga de datos completos
+    console.log('Exportando a Excel...');
+    console.log('Actualizando datos...');   
+    this.descargarDatosDistribucionUltimayOnce();
   }
+
+  /**
+   * Descarga del archivo excel de acuerdo con los datos del filtro
+   */
+  private async descargarDatosDistribucionUltimayOnce(): Promise<void> {
+    try {
+     
+	    // Usar método histórico original
+      console.log('Descargando  datos ultima y once');
+  	  const idvigencia = this.selectedVigencia;
+	    
+      const selectedDepartamento = this.departamentos.find(d => d.id === this.selectedDepartamento);
+      const selectedMunicipio = this.municipios.find(d => d.id === this.selectedMunicipio);
+
+      const archivo: Blob | undefined = await this.sicodisApiService.getSgpDescargarResumenParticipacionesUltimaOnce( idvigencia
+                                                                                                                     , selectedDepartamento.id
+                                                                                                                     , selectedMunicipio.id
+                                                                                                                     , selectedDepartamento.label
+                                                                                                                     , selectedMunicipio.label).toPromise();
+
+      // Verificamos que sí tengamos archivo
+      if (!archivo) {
+        console.warn('No se recibió ningún archivo desde el servicio');
+        return;
+      }
+
+
+      // Forzar tipo MIME correcto para Excel
+      const excelBlob = new Blob([archivo], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+
+      const arrayBuffer = await excelBlob.arrayBuffer();
+      console.log('Tamaño de archivo:', arrayBuffer.byteLength);
+
+      // Crear enlace temporal para descargar
+      const url = window.URL.createObjectURL(excelBlob);
+      const a = document.createElement('a');
+      a.href = url;
+
+      const nombreArchivo = `ResumenDsitribucionSGPHistorico.xlsx`;
+      a.download = nombreArchivo;
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+
+      console.log('Archivo descargado exitosamente');
+
+
+
+    } catch (error) {
+      console.warn('Error cargando fuentes desde API, se usarán datos locales como fallback:', error);
+    }
+  }
+
+
+
 
   downloadOnceDoceavas(): void {
     console.log('Descargando Once Doceavas del año:', this.getOnceDoceavasYear());

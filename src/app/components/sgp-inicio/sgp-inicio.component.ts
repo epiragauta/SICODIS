@@ -68,7 +68,7 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
     { v: 0, label: 'Salud', idConcepto: '0102' },
     { v: 0, label: 'Agua Potable', idConcepto: '0103' },
     { v: 0, label: 'Propósito General', idConcepto: '0104' },
-    { v: 0, label: 'Asignaciones Especiales', idConcepto: '0204' }
+    { v: 0, label: 'Asignaciones Especiales', idConcepto: '0201' }
   ]
 
   donutData: any;
@@ -112,14 +112,15 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
       boton: 'Consultar',
       link: 'sgp-comparativa',
       icon: 'assets/img/sgp/compare.png'
-    },
-    {
-      titulo: 'Consulta de eficiencia',
-      descripcion: 'Eficiencia Propósito General',
-      boton: 'Consultar',
-      link: 'sgp-eficiencia',
-      icon: 'assets/img/sgp/efficiency.png'
     }
+    // ,
+    // {
+    //   titulo: 'Consulta de eficiencia',
+    //   descripcion: 'Eficiencia Propósito General',
+    //   boton: 'Consultar',
+    //   link: 'sgp-eficiencia',
+    //   icon: 'assets/img/sgp/efficiency.png'
+    // }
     // ,
     // {
     //   titulo: 'Resguardos Indígenas',
@@ -208,7 +209,7 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
   loadSgpParticipaciones(): void {
     console.log("loadSgpParticipaciones...");
     const year = this.selectedVigencia?.value || 2025;
-    this.sicodisApiService.getSgpResumenParticipaciones(year, 'TODOS', 'TODOS').subscribe({
+    this.sicodisApiService.getSgpResumenParticipaciones(year, '0', '0').subscribe({
       next: (result: any) => {
         //console.log('Participaciones data:', result);
         // Actualizar resumenParticipaciones con los datos del API
@@ -234,7 +235,9 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
         item.label = apiItem.concepto;
       }
     });
-    
+
+    // Ordenar por valor (v) de mayor a menor
+    this.resumenParticipaciones.sort((a: any, b: any) => b.v - a.v);
     console.log('Updated resumenParticipaciones:', this.resumenParticipaciones);
   }
 

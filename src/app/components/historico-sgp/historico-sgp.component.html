@@ -44,8 +44,8 @@
               inputId="departamentoSelect"
               [(ngModel)]="departmentSelected"
               (onChange)="onDepartmentChange($event)"
-              optionValue="codigo"
-              optionLabel="nombre" 
+              optionValue="id"
+              optionLabel="label" 
               placeholder="Departamento">
             </p-select>
             <label for="departamentoSelect">Departamento</label>
@@ -61,19 +61,19 @@
               inputId="municipioSelect"
               [(ngModel)]="townSelected"
               (onChange)="onTownChange($event)"
-              optionValue="value"
-              optionLabel="name" 
+              optionValue="id"
+              optionLabel="label"
               placeholder="Municipio">
             </p-select>
             <label for="municipioSelect">Municipio</label>
           </p-floatlabel>
         </div>
-        <button pButton type="button" 
+        <!-- <button pButton type="button" 
               icon="pi pi-filter" 
               label="Aplicar Filtros" 
               class="p-button-primary"
               (click)="applyFilters()">
-        </button>
+        </button> -->
         <button pButton type="button" 
                 icon="pi pi-eraser" 
                 label="Limpiar filtros" 

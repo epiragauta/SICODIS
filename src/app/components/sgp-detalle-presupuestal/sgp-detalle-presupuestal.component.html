@@ -28,6 +28,7 @@
               inputId="vigenciaSelect" 
               [(ngModel)]="selectedVigencia"
               (onChange)="onVigenciaChange($event)"
+              optionValue="id"
               optionLabel="label" 
               placeholder="Vigencia">
             </p-select>
@@ -44,8 +45,9 @@
               inputId="departamentoSelect"
               [(ngModel)]="selectedDepartamento"
               (onChange)="onDepartamentoChange($event)"
-              optionLabel="label"
-              optionValue="value">
+              optionValue="id"
+              optionLabel="label" 
+              placeholder="Departamento">
             </p-select>
             <label for="departamentoSelect">Departamento</label>
           </p-floatlabel>
@@ -62,8 +64,9 @@
               (onChange)="onMunicipioChange($event)"
               [disabled]="isLoadingMunicipios || !selectedDepartamento"
               [loading]="isLoadingMunicipios"
-              optionLabel="label"
-              optionValue="value">
+              optionValue="id"
+              optionLabel="label" 
+              placeholder="Municipios">
             </p-select>
             <label for="municipioSelect">Municipio</label>
           </p-floatlabel>
@@ -95,18 +98,22 @@
   <!-- Tarjeta p-card con métricas -->
   <div class="metrics-card-section">
     <p-card class="metrics-card">
+      <div *ngIf="isLoading" style="padding: 1rem; text-align: center;">
+       <i class="pi pi-spin pi-spinner" style="font-size: 1.5rem; color: #0f4987;"></i>
+       <p style="color:#0f4987">Cargando información...</p>
+      </div>
       <div class="metrics-row">
         <div class="metric-item">
-          <div class="metric-value">{{ formatNumber(totalAsignado) }}</div>
-          <div class="metric-label">Total Asignado</div>
-        </div>
-        <div class="metric-item">
-          <div class="metric-value">{{ formatNumber(ultimaDoceava) }}</div>
+          <div class="metric-value">{{ formatNumber(cifras.ultimaDoceava) }}</div>
           <div class="metric-label">Última Doceava</div>
         </div>
         <div class="metric-item">
-          <div class="metric-value">{{ formatNumber(onceDoceava) }}</div>
+          <div class="metric-value">{{ formatNumber(cifras.onceDoceava) }}</div>
           <div class="metric-label">Once Doceava</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-value"> {{ formatNumber(cifras.totalAsignado) }}</div>
+          <div class="metric-label">Total Asignado</div>
         </div>
       </div>
     </p-card>
@@ -185,3 +192,5 @@
      </div>
    </div>
 </div>
+
+	  

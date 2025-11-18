@@ -67,26 +67,32 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
   infoResume: any[] = [];
   sgpData: any = null;
   territorialEntities: any[] = [];
+
+  vigencias: any[] = [];
+  departments: any[] = [];
+  towns: any[] = [];
+
+
   
   // Lista de años desde actual hasta 2002 en orden descendente
   availableYears: any[] = [];
 
-  departments = departamentos;
+  //departments = departamentos;
 
-  towns: any = [
-    { name: 'Municipio1' },
-    { name: 'Municipio2' },
-    { name: 'Municipio3' },
-    { name: 'Municipio4' },
-    { name: 'Municipio5' },
-    { name: 'Municipio6' },
-    { name: 'Municipio7' },
-    { name: 'Municipio8' },
-    { name: 'Municipio9' },
-    { name: 'Municipio10' },
-    { name: 'Municipio11' },
-    { name: 'Municipio12' },
-  ];
+  // towns: any = [
+  //   { name: 'Municipio1' },
+  //   { name: 'Municipio2' },
+  //   { name: 'Municipio3' },
+  //   { name: 'Municipio4' },
+  //   { name: 'Municipio5' },
+  //   { name: 'Municipio6' },
+  //   { name: 'Municipio7' },
+  //   { name: 'Municipio8' },
+  //   { name: 'Municipio9' },
+  //   { name: 'Municipio10' },
+  //   { name: 'Municipio11' },
+  //   { name: 'Municipio12' },
+  // ];
 
   // Datos de la tabla
   tableData: any = [];
@@ -135,18 +141,34 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
     ).subscribe(cols => this.cols = cols);
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void>  {
     this.items = [
         { label: 'SGP', routerLink: '/sgp-inicio' },
         { label: 'Histórico SGP' }        
     ];
 
     this.home = { icon: 'pi pi-home', routerLink: '/' };
+
+    await this.cargarDepartamentos();
+    /// Inicializa en TODOS los municipios
+    const municipios = [
+                          { codigo: '0', nombre: 'Todos' },
+                       ];
+
+    this.towns = municipios.map(m => ({
+      id: m.codigo,
+      label: m.nombre
+    }));
+
+    this.townSelected = '0';    
     
     this.generateAvailableYears();
     this.initializeDefaultSelection();
     this.loadSgpData();
     this.loadTerritorialEntities();
+
+
+
     this.initializeStackedBarChart();
     this.initializeBarChartsOptions();
     this.loadSgpHistoricoDataForEvolution();
@@ -158,6 +180,30 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.updateTableWidth();
     }, 100);
+  }
+
+    /**
+   * Cargar datos departamentos desde la API 
+   */
+  private async cargarDepartamentos(): Promise<void> {
+    try {
+      const departamentosLista = await this.sicodisApiService.getSgpDepartamentos().toPromise();
+      this.departments = departamentosLista?.map((dept: any) => ({
+        id: dept.codigo,
+        label: dept.nombre
+      })) || [];
+      
+      // Seleccionar la primera vigencia por defecto
+      if (this.departments.length > 0) {
+        this.departmentSelected = this.departments[0].id;
+        console.log('Departamento seleccionada por defecto:', this.departmentSelected);
+      }
+      
+      console.log('Departamento cargadas desde API:', this.departments);
+    } catch (error) {
+      console.warn('Error cargando departamentos desde API, se usarán datos locales como fallback:', error);
+      this.departments = [];
+    }
   }
 
   /**
@@ -192,44 +238,87 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
       this.createSampleTreeData();
       return;
     }
+	  // Usar método histórico original
+	  const aniosString = this.selectedYears.join(',');
+	  console.log('Cargando datos históricos para años:', aniosString);
 
-    // Si hay municipio seleccionado, usar getSgpResumenParticipaciones con municipio específico
-    if (this.townSelected && this.townSelected !== '') {
-      this.loadSgpParticipacionesByMunicipality();
-    } else if (this.departmentSelected && this.departmentSelected !== '-1') {
-      // Si hay departamento seleccionado, usar getSgpResumenParticipaciones
-      this.loadSgpParticipacionesByDepartment();
-    } else {
-      // Usar método histórico original
-      const aniosString = this.selectedYears.join(',');
-      console.log('Cargando datos históricos para años:', aniosString);
-      
-      this.sicodisApiService.getSgpResumenHistorico({ anios: aniosString }).subscribe({
-        next: (result: any[]) => {
-          console.log('Datos históricos del API:', result);
-          this.historicoApiData = result;
-          if (result && result.length > 0) {
-            this.buildTreeTableData();
-          } else {
-            console.log('No hay datos del API, creando datos de ejemplo');
-            this.createSampleTreeData();
-          }
-          // Desactivar indicadores de carga
-          this.isLoadingChart = false;
-          this.isLoadingTable = false;
-        },
-        error: (error) => {
-          console.error('Error loading SGP historico from API:', error);
-          // Fallback con datos de ejemplo
-          console.log('Error en API, creando datos de ejemplo');
-          this.createSampleTreeData();
-          // Desactivar indicadores de carga
-          this.isLoadingChart = false;
-          this.isLoadingTable = false;
+    this.sicodisApiService.getSgpResumenHistoricoEntidad({anios: aniosString, codigoDepto: this.departmentSelected, codigoMunicipio: this.townSelected}).subscribe({     
+      next: (result: any[]) => {
+        console.log('Datos históricos del API:', result);
+        this.historicoApiData = result;
+        if (result && result.length > 0) {
+        this.buildTreeTableData();
+        } else {
+        console.log('No hay datos del API, creando datos de ejemplo');
+        this.createSampleTreeData();
         }
+        // Desactivar indicadores de carga
+        this.isLoadingChart = false;
+        this.isLoadingTable = false;
+      },
+      error: (error) => {
+        console.error('Error loading SGP historico from API:', error);
+        // Fallback con datos de ejemplo
+        console.log('Error en API, creando datos de ejemplo');
+        this.createSampleTreeData();
+        // Desactivar indicadores de carga
+        this.isLoadingChart = false;
+        this.isLoadingTable = false;
+      }
       });
-    }
+    
   }
+
+
+
+  // /**
+  //  * Carga los datos históricos del SGP desde la API
+  //  */
+  // loadSgpHistoricoFromApi(): void {
+  //   if (this.selectedYears.length === 0) {
+  //     console.log('No hay años seleccionados para cargar datos');
+  //     // Crear datos de ejemplo para pruebas
+  //     this.createSampleTreeData();
+  //     return;
+  //   }
+
+  //   // Si hay municipio seleccionado, usar getSgpResumenParticipaciones con municipio específico
+  //   if (this.townSelected && this.townSelected !== '') {
+  //     this.loadSgpParticipacionesByMunicipality();
+  //   } else if (this.departmentSelected && this.departmentSelected !== '-1') {
+  //     // Si hay departamento seleccionado, usar getSgpResumenParticipaciones
+  //     this.loadSgpParticipacionesByDepartment();
+  //   } else {
+  //     // Usar método histórico original
+  //     const aniosString = this.selectedYears.join(',');
+  //     console.log('Cargando datos históricos para años:', aniosString);
+      
+  //     this.sicodisApiService.getSgpResumenHistorico({ anios: aniosString }).subscribe({
+  //       next: (result: any[]) => {
+  //         console.log('Datos históricos del API:', result);
+  //         this.historicoApiData = result;
+  //         if (result && result.length > 0) {
+  //           this.buildTreeTableData();
+  //         } else {
+  //           console.log('No hay datos del API, creando datos de ejemplo');
+  //           this.createSampleTreeData();
+  //         }
+  //         // Desactivar indicadores de carga
+  //         this.isLoadingChart = false;
+  //         this.isLoadingTable = false;
+  //       },
+  //       error: (error) => {
+  //         console.error('Error loading SGP historico from API:', error);
+  //         // Fallback con datos de ejemplo
+  //         console.log('Error en API, creando datos de ejemplo');
+  //         this.createSampleTreeData();
+  //         // Desactivar indicadores de carga
+  //         this.isLoadingChart = false;
+  //         this.isLoadingTable = false;
+  //       }
+  //     });
+  //   }
+  // }
 
   /**
    * Carga datos del SGP por departamento usando getSgpResumenParticipaciones
@@ -575,7 +664,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
       { id: '0102', label: 'Salud' },
       { id: '0103', label: 'Agua Potable' },
       { id: '0104', label: 'Propósito General' },
-      { id: '0204', label: 'Fonpet Asignaciones Especiales' }
+      { id: '0201', label: 'Asignaciones Especiales' }
     ];
 
     // Crear datasets para cada concepto
@@ -673,9 +762,9 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
     // Activar indicadores de carga
     this.isLoadingChart = true;
     this.isLoadingTable = true;
-    
+    this.loadTownsForDepartment();    
     this.loadSgpData();
-    this.loadTownsForDepartment();
+
   }
 
   /**
@@ -713,12 +802,25 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
   /**
    * Limpia todos los filtros
    */
-  clearFilters(): void {
+  async clearFilters(): Promise<void> {
     console.log('Limpiando filtros...');
     this.selectedYears = [];
     this.departmentSelected = '';
     this.townSelected = '';
     this.towns = []; // Limpiar municipios
+
+    await this.cargarDepartamentos();
+    /// Inicializa en TODOS los municipios
+    const municipios = [
+                          { codigo: '0', nombre: 'Todos' },
+                       ];
+
+    this.towns = municipios.map(m => ({
+      id: m.codigo,
+      label: m.nombre
+    }));
+
+    this.townSelected = '0';       
     
     // Regenerar años disponibles y selección por defecto
     this.generateAvailableYears();
@@ -731,8 +833,66 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
    */
   exportToExcel(): void {
     console.log('Exportando a Excel...');
-    // Aquí iría la lógica para exportar a Excel
+    console.log('Actualizando datos...');   
+    this.descargarDatosDistribucion();
+  } 
+
+  /**
+   * Descarga del archivo excel de acuerdo con los datos del filtro
+   */
+  private async descargarDatosDistribucion(): Promise<void> {
+    try {
+     
+	    // Usar método histórico original
+  	  const aniosString = this.selectedYears.join(',');
+	    console.log('Cargando datos históricos para años:', aniosString);
+      const selectedDepartamento = this.departments.find(d => d.id === this.departmentSelected);
+      const selectedMunicipio = this.towns.find(d => d.id === this.townSelected);
+
+
+      const archivo: Blob | undefined = await this.sicodisApiService.getSgpDescargaResumenHistoricoEntidad( {anios: aniosString
+                                                                                                            , codigoDepto: this.departmentSelected
+                                                                                                            , departamento: selectedDepartamento.label
+                                                                                                            , municipio: selectedMunicipio.label
+                                                                                                            , codigoMunicipio: this.townSelected}).toPromise();
+
+      // Verificamos que sí tengamos archivo
+      if (!archivo) {
+        console.warn('No se recibió ningún archivo desde el servicio');
+        return;
+      }
+
+
+      // Forzar tipo MIME correcto para Excel
+      const excelBlob = new Blob([archivo], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+
+      const arrayBuffer = await excelBlob.arrayBuffer();
+      console.log('Tamaño de archivo:', arrayBuffer.byteLength);
+
+      // Crear enlace temporal para descargar
+      const url = window.URL.createObjectURL(excelBlob);
+      const a = document.createElement('a');
+      a.href = url;
+
+      const nombreArchivo = `ResumenDsitribucionSGPHistorico.xlsx`;
+      a.download = nombreArchivo;
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+
+      console.log('Archivo descargado exitosamente');
+
+
+
+    } catch (error) {
+      console.warn('Error cargando fuentes desde API, se usarán datos locales como fallback:', error);
+    }
   }
+
+
+
 
   /**
    * Exporta los datos a PDF
@@ -941,35 +1101,62 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
   /**
    * Carga los municipios para el departamento seleccionado
    */
-  private loadTownsForDepartment(): void {
-    if (!this.departmentSelected || this.territorialEntities.length === 0) {
-      this.towns = [];
-      this.townSelected = '';
+  private async loadTownsForDepartment(): Promise<void> {
+    if (!this.departmentSelected) {
+      //this.towns = [];
+      this.townSelected = '0';
       return;
     }
-
     console.log('Cargando municipios para departamento:', this.departmentSelected);
-    
-    // Transformar código del departamento: remover cero a la izquierda y agregar tres ceros
-    const departmentCode = this.departmentSelected.replace(/^0+/, '') + '000';
-    const departmentCodeNumber = parseInt(departmentCode);
-    
-    console.log('Código transformado:', departmentCodeNumber);
-    
-    // Filtrar municipios por codPadre y excluir el departamento mismo
-    this.towns = this.territorialEntities
-      .filter(entity => 
-        entity.codPadre === departmentCodeNumber && 
-        entity.codigo !== departmentCodeNumber
-      )
-      .map(entity => ({
-        name: entity.entidad,
-        value: entity.codigo2 || entity.codigo
-      }));
-    
-    console.log('Municipios encontrados:', this.towns);
-    this.townSelected = '';
+  
+    const municipiosLista = await this.sicodisApiService.getMunicipiosDepartamentosSgp(this.departmentSelected).toPromise();
+    this.towns = municipiosLista?.map((town: any) => ({
+       id: town.codigo,
+       label: town.nombre
+    })) || [];
+
+
+    // Seleccionar la primera vigencia por defecto
+    if (this.towns.length > 0) {
+      this.townSelected = this.towns[0].id;
+      console.log('Municipio seleccionada por defecto:', this.townSelected);
+    }
+
   }
+
+
+  // /**
+  //  * Carga los municipios para el departamento seleccionado
+  //  */
+  // private loadTownsForDepartment(): void {
+  //   if (!this.departmentSelected || this.territorialEntities.length === 0) {
+  //     this.towns = [];
+  //     this.townSelected = '';
+  //     return;
+  //   }
+
+  //   console.log('Cargando municipios para departamento:', this.departmentSelected);
+    
+  //   // Transformar código del departamento: remover cero a la izquierda y agregar tres ceros
+  //   const departmentCode = this.departmentSelected.replace(/^0+/, '') + '000';
+  //   const departmentCodeNumber = parseInt(departmentCode);
+    
+  //   console.log('Código transformado:', departmentCodeNumber);
+    
+  //   // Filtrar municipios por codPadre y excluir el departamento mismo
+  //   this.towns = this.territorialEntities
+  //     .filter(entity => 
+  //       entity.codPadre === departmentCodeNumber && 
+  //       entity.codigo !== departmentCodeNumber
+  //     )
+  //     .map(entity => ({
+  //       name: entity.entidad,
+  //       value: entity.codigo2 || entity.codigo
+  //     }));
+    
+  //   console.log('Municipios encontrados:', this.towns);
+  //   this.townSelected = '';
+  // }
 
   /**
    * Actualiza el ancho dinámico de la tabla basado en el número de vigencias
