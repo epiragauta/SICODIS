@@ -671,7 +671,7 @@ export class HomeComponent implements OnInit {
   }
 
   redirectSGR() {
-    this.route.navigate(['/sgr-recaudo-directas']).then(() => {
+    this.route.navigate(['/sgr-recaudo-mensual']).then(() => {
       window.scrollTo(0, 0);
     });
   }
