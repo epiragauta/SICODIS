@@ -79,7 +79,7 @@ export class HomeComponent implements OnInit {
       imageUrl: '/assets/img/carrousel3.jpg',
       date: 'Junio 3 de 2024',
       description: '',
-      title: 'Programación de Inversiones Públicas​',
+      title: 'Dirección de Programación de Inversiones Públicas​',
       buttonLabel: 'Ver Reportes',
       link: 'https://dnp.gov.co/LaEntidad_/subdireccion-general-inversiones-seguimiento-evaluacion/direccion-programacion-inversiones-publicas/Paginas/default.aspx'
     }
@@ -671,7 +671,7 @@ export class HomeComponent implements OnInit {
   }
 
   redirectSGR() {
-    this.route.navigate(['/reports-sgr']).then(() => {
+    this.route.navigate(['/sgr-recaudo-directas']).then(() => {
       window.scrollTo(0, 0);
     });
   }

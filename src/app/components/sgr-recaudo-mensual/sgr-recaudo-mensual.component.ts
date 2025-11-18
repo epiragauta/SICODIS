@@ -1154,52 +1154,67 @@ tableDataBase: any[] =
     }
 
     const months = this.getMonthsInRange(this.selectedPeriodoDesde, this.selectedPeriodoHasta);
-    
-    this.detailedTableData = months.map((monthDate, index) => {
-      const monthName = monthDate.toLocaleDateString('es-ES', { 
-        month: 'long', 
-        year: 'numeric' 
-      });
+    // Obtiene todos los meses en el rango seleccionado
+    const monthsInRange = this.getMonthsInRange(this.selectedPeriodoDesde, this.selectedPeriodoHasta);
 
-      // Datos mock para Recaudo Corriente
-      const rcInversionAforada = 8200000000000 + (Math.random() * 2000000000000);
-      const rcAhorro = 1950000000000 + (Math.random() * 500000000000);
-      const rcAdministracion = 520000000000 + (Math.random() * 200000000000);
-      const rcNoAforado = 1250000000000 + (Math.random() * 400000000000);
-      const rcTotal = rcInversionAforada + rcAhorro + rcAdministracion + rcNoAforado;
+    // Filtra los datos de tableDataBase según los meses seleccionados
+    this.detailedTableData = this.detailedTableDataBase.filter(row => {
+      // Extrae mes y año del registro
+      const [nombreMes, anioStr] = row.mes.split(' de ');
+      const year = parseInt(anioStr, 10);
 
-      // Datos mock adicionales
-      const totalPBC = rcTotal + (Math.random() * 1000000000000);
-      const avance = ((rcTotal / totalPBC) * 100);
+      // Convierte el nombre del mes a índice (0 = Enero, 1 = Febrero, ...)
+      const monthIndex = this.getMonthIndexByName(nombreMes);
 
-      // Datos mock para Recaudo Otros
-      const roInversion = 2800000000000 + (Math.random() * 800000000000);
-      const roAhorro = 650000000000 + (Math.random() * 200000000000);
-      const roAdministracion = 180000000000 + (Math.random() * 80000000000);
-      const roTotal = roInversion + roAhorro + roAdministracion;
+      // Retorna true si el mes y año del registro están en monthsInRange
+      return monthsInRange.some(d => d.getFullYear() === year && d.getMonth() === monthIndex);
+    });    
 
-      // Total distribuido
-      const totalDistribuido = rcTotal + roTotal;
+    // this.detailedTableData = months.map((monthDate, index) => {
+    //   const monthName = monthDate.toLocaleDateString('es-ES', { 
+    //     month: 'long', 
+    //     year: 'numeric' 
+    //   });
 
-      return {
-        periodo: monthName.charAt(0).toUpperCase() + monthName.slice(1),
-        // Recaudo Corriente
-        rc_inversion_aforada: rcInversionAforada,
-        rc_ahorro: rcAhorro,
-        rc_administracion: rcAdministracion,
-        rc_no_aforado: rcNoAforado,
-        rc_total: rcTotal,
-        // Individuales
-        total_pbc: totalPBC,
-        avance: avance,
-        // Recaudo Otros
-        ro_inversion: roInversion,
-        ro_ahorro: roAhorro,
-        ro_administracion: roAdministracion,
-        ro_total: roTotal,
-        // Total final
-        total_distribuido: totalDistribuido
-      };
-    });
+    //   // Datos mock para Recaudo Corriente
+    //   const rcInversionAforada = 8200000000000 + (Math.random() * 2000000000000);
+    //   const rcAhorro = 1950000000000 + (Math.random() * 500000000000);
+    //   const rcAdministracion = 520000000000 + (Math.random() * 200000000000);
+    //   const rcNoAforado = 1250000000000 + (Math.random() * 400000000000);
+    //   const rcTotal = rcInversionAforada + rcAhorro + rcAdministracion + rcNoAforado;
+
+    //   // Datos mock adicionales
+    //   const totalPBC = rcTotal + (Math.random() * 1000000000000);
+    //   const avance = ((rcTotal / totalPBC) * 100);
+
+    //   // Datos mock para Recaudo Otros
+    //   const roInversion = 2800000000000 + (Math.random() * 800000000000);
+    //   const roAhorro = 650000000000 + (Math.random() * 200000000000);
+    //   const roAdministracion = 180000000000 + (Math.random() * 80000000000);
+    //   const roTotal = roInversion + roAhorro + roAdministracion;
+
+    //   // Total distribuido
+    //   const totalDistribuido = rcTotal + roTotal;
+
+    //   return {
+    //     periodo: monthName.charAt(0).toUpperCase() + monthName.slice(1),
+    //     // Recaudo Corriente
+    //     rc_inversion_aforada: rcInversionAforada,
+    //     rc_ahorro: rcAhorro,
+    //     rc_administracion: rcAdministracion,
+    //     rc_no_aforado: rcNoAforado,
+    //     rc_total: rcTotal,
+    //     // Individuales
+    //     total_pbc: totalPBC,
+    //     avance: avance,
+    //     // Recaudo Otros
+    //     ro_inversion: roInversion,
+    //     ro_ahorro: roAhorro,
+    //     ro_administracion: roAdministracion,
+    //     ro_total: roTotal,
+    //     // Total final
+    //     total_distribuido: totalDistribuido
+    //   };
+    // });
   }
 }
