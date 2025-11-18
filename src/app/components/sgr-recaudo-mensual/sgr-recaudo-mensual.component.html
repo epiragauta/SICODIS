@@ -51,7 +51,12 @@
       <div class="p-field periodo-desde-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-datepicker id="periodoDesde" inputId="periodoDesdeSelect" [(ngModel)]="selectedPeriodoDesde"
-            view="month" dateFormat="mm/yy" [showIcon]="true" placeholder="Seleccione período desde">
+            view="month" 
+            dateFormat="mm/yy" 
+            [showIcon]="true" 
+            [minDate]="minDate"
+            [maxDate]="maxDate"
+            placeholder="Seleccione período desde">
           </p-datepicker>
           <label for="periodoDesdeSelect">Período desde</label>
         </p-floatlabel>
@@ -60,7 +65,12 @@
       <div class="p-field periodo-hasta-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-datepicker id="periodoHasta" inputId="periodoHastaSelect" [(ngModel)]="selectedPeriodoHasta"
-            view="month" dateFormat="mm/yy" [showIcon]="true" placeholder="Seleccione período hasta">
+            view="month" 
+            dateFormat="mm/yy" 
+            [showIcon]="true" 
+            [minDate]="minDate"
+            [maxDate]="maxDate"            
+            placeholder="Seleccione período hasta">
           </p-datepicker>
           <label for="periodoHastaSelect">Período hasta</label>
         </p-floatlabel>
@@ -89,8 +99,8 @@
   <!-- Sección de botones Diccionario y Siglas -->
   <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0;">
     <div style="width: 83%;">
-      <p class="date-update">Fecha de actualización: junio 30 de 2025</p>
-      <p class="date-update">Fecha de corte de recaudo: mayo 30 de 2025</p>
+      <p class="date-update">Fecha de actualización: octubre 31 de 2025</p>
+      <p class="date-update">Fecha de corte de recaudo: octubre 31 de 2025</p>
     </div>
     <div style="position: relative; padding-bottom: .25rem;">
       <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 2rem; width: 96px;"
@@ -118,7 +128,7 @@
           </p-chart>
         </div>
         <div class="chart-footer">
-          <p class="source-note">Fuente de información: Agencia Nacional de Minería</p>
+          <p class="source-note">Últimos 5 meses. Fuente de información: Agencia Nacional de Minería</p>
         </div>
       </div>
 
@@ -135,7 +145,7 @@
           </p-chart>
         </div>
         <div class="chart-footer">
-          <p class="source-note">Fuente de información: Agencia Nacional de Hidrocarburos</p>
+          <p class="source-note">Últimos 5 meses. Fuente de información: Agencia Nacional de Hidrocarburos</p>
         </div>
       </div>
     </div>
@@ -174,7 +184,7 @@
           </p-chart>
         </div>
         <div class="chart-footer">
-          <p class="source-note">Fuente de información: Sistema General de Regalías</p>
+          <p class="source-note">últimos 5 meses. Fuente de información: Sistema General de Regalías</p>
         </div>
       </div>
     </div>

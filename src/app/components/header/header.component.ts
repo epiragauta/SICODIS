@@ -72,18 +72,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
       {
         label: 'SGR',
         items: [
-          {
-            label: 'Comparativo Avance vs Presupuesto',
-            command: () => this.redirectUrl("sgr-comparativo")
-          },
+          // {
+          //   label: 'Comparativo Avance vs Presupuesto',
+          //   command: () => this.redirectUrl("sgr-comparativo")
+          // },
           {
             label: 'Administración y Sistema de Seguimiento (SSEC)',
              command: () => this.redirectUrl("reporte-funcionamiento")
           },          
-          {
-            label: 'Plan Bienal de Caja',
-            command: () => this.redirectUrl("sgr-programacion")
-          },
+          // {
+          //   label: 'Plan Bienal de Caja',
+          //   command: () => this.redirectUrl("sgr-programacion")
+          // },
           {
             label: 'Recaudo directas',
             command: () => this.redirectUrl("sgr-recaudo-directas")

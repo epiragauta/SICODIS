@@ -59,9 +59,138 @@ export class SgrRecaudoMensualComponent implements OnInit {
   conceptChartOptions: any;
   trendChartData: any;
   trendChartOptions: any;
+  
+  minDate: Date = new Date(2025, 0, 1); // Enero 2025
+  maxDate: Date = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1); // Mes anterior al actual
+
 
   // Configuración de tabla (vista Recaudo)
-  tableData: any[] = [];
+tableData: any[] = [];
+tableDataBase: any[] =
+[
+  {
+    mes: "Enero de 2025",
+    pbc_mineria: 507182857652.2,
+    pbc_hidrocarburos: 718161024698.81,
+    pbc_total: 1225343882351.01,
+    recaudo_mineria: 682080813613.28,
+    recaudo_hidrocarburos: 543822025382.50,
+    recaudo_total: 1225902838995.78,
+    variacion_mineria: 0.344842009784597,
+    variacion_hidrocarburos: -0.242757533924131,
+    variacion_total: 0.000456163084356022,
+  },
+  {
+    mes: "Febrero de 2025",
+    pbc_mineria: 253591429312.2,
+    pbc_hidrocarburos: 648661358247.37,
+    pbc_total: 902252787559.57,
+    recaudo_mineria: 205815241161.59,
+    recaudo_hidrocarburos: 575748522787.45,
+    recaudo_total: 781563763949.04,
+    variacion_mineria: -0.188398276235874,
+    variacion_hidrocarburos: -0.112405085539432,
+    variacion_total: -0.133764090590367,
+  },
+  {
+    mes: "Marzo de 2025",
+    pbc_mineria: 211326191168.2,
+    pbc_hidrocarburos: 718161024698.81,
+    pbc_total: 929487215867.01,
+    recaudo_mineria: 179536864856.32,
+    recaudo_hidrocarburos: 861254012523.80,
+    recaudo_total: 1040790877380.12,
+    variacion_mineria: -0.150427763525904,
+    variacion_hidrocarburos: 0.199249169620423,
+    variacion_total: 0.119747382872058,
+  },
+  {
+    mes: "Abril de 2025",
+    pbc_mineria: 422652382500.2,
+    pbc_hidrocarburos: 694994469215,
+    pbc_total: 1117646851715.2,
+    recaudo_mineria: 440812708054.56,
+    recaudo_hidrocarburos: 512559858421.90,
+    recaudo_total: 953372566476.46,
+    variacion_mineria: 0.042967522025861,
+    variacion_hidrocarburos: -0.262497931816869,
+    variacion_total: -0.146982282450522,
+  },
+  {
+    mes: "Mayo de 2025",
+    pbc_mineria: 253591429312.2,
+    pbc_hidrocarburos: 718161024698.81,
+    pbc_total: 971752454011.01,
+    recaudo_mineria: 522098700875.28,
+    recaudo_hidrocarburos: 569432496349.85,
+    recaudo_total: 1091531197225.13,
+    variacion_mineria: 1.05881840049301,
+    variacion_hidrocarburos: -0.207096351979468,
+    variacion_total: 0.123260551305758,
+  },
+  {
+    mes: "Junio de 2025",
+    pbc_mineria: 169060952916,
+    pbc_hidrocarburos: 694994469215,
+    pbc_total: 864055422131,
+    recaudo_mineria: 162378056399.30,
+    recaudo_hidrocarburos: 675696129037.60,
+    recaudo_total: 838074185436.90,
+    variacion_mineria: -0.039529509336319,
+    variacion_hidrocarburos: -0.0277676169124016,
+    variacion_total: -0.0300689470011345,
+  },
+  {
+    mes: "Julio de 2025",
+    pbc_mineria: 464917620452,
+    pbc_hidrocarburos: 718161024698.81,
+    pbc_total: 1183078645150.81,
+    recaudo_mineria: 428193893327.82,
+    recaudo_hidrocarburos: 487125727411.30,
+    recaudo_total: 915319620739.12,
+    variacion_mineria: -0.0789897511057478,
+    variacion_hidrocarburos: -0.321704032023186,
+    variacion_total: -0.226323943475083,
+  },
+  {
+    mes: "Agosto de 2025",
+    pbc_mineria: 422652382500,
+    pbc_hidrocarburos: 718161024698.81,
+    pbc_total: 1140813407198.81,
+    recaudo_mineria: 236606358724.68,
+    recaudo_hidrocarburos: 516581168859.30,
+    recaudo_total: 753187527583.98,
+    variacion_mineria: -0.44018685680855,
+    variacion_hidrocarburos: -0.280688938701527,
+    variacion_total: -0.339780263072661,
+  },
+  {
+    mes: "Septiembre de 2025",
+    pbc_mineria: 169060952916,
+    pbc_hidrocarburos: 694994469215,
+    pbc_total: 864055422131,
+    recaudo_mineria: 176744693700.48,
+    recaudo_hidrocarburos: 694193464544.95,
+    recaudo_total: 870938158245.43,
+    variacion_mineria: 0.0454495296042592,
+    variacion_hidrocarburos: -0.00115253387693112,
+    variacion_total: 0.00796561879960815,
+  },
+  {
+    mes: "Octubre de 2025",
+    pbc_mineria: 507182858648,
+    pbc_hidrocarburos: 718161024698.81,
+    pbc_total: 1225343883346.81,
+    recaudo_mineria: 688694062304.62,
+    recaudo_hidrocarburos: 527252664807.15,
+    recaudo_total: 1215946727111.77,
+    variacion_mineria: 0.35788118735021,
+    variacion_hidrocarburos: -0.265829463485191,
+    variacion_total: -0.00766899509823591,
+  },
+
+];
+
   tableColumns: any[] = [];
 
   // Configuración de tabla comportamiento (vista Tipo de Recurso)
@@ -72,6 +201,8 @@ export class SgrRecaudoMensualComponent implements OnInit {
   detailedTableData: any[] = [];
   detailedTableColumns: any[] = [];
 
+  
+
   constructor() { }
 
   ngOnInit(): void {
@@ -81,6 +212,8 @@ export class SgrRecaudoMensualComponent implements OnInit {
     ];
 
     this.home = { icon: 'pi pi-home', routerLink: '/' };
+
+    this.tableData = [...this.tableDataBase];
 
     this.setDefaultPeriods();
     this.initializeCharts();
@@ -100,7 +233,7 @@ export class SgrRecaudoMensualComponent implements OnInit {
     this.selectedPeriodoDesde = new Date(currentYear, 0); // Enero = mes 0
     
     // Período hasta: mes actual del año actual
-    this.selectedPeriodoHasta = new Date(currentYear, currentMonth);
+    this.selectedPeriodoHasta = new Date(currentYear, currentMonth-1);
   }
 
   /**
@@ -190,40 +323,35 @@ export class SgrRecaudoMensualComponent implements OnInit {
 
     const months = this.getMonthsInRange(this.selectedPeriodoDesde, this.selectedPeriodoHasta);
     
-    this.tableData = months.map((monthDate, index) => {
-      const monthName = monthDate.toLocaleDateString('es-ES', { 
-        month: 'long', 
-        year: 'numeric' 
-      });
+      // Obtiene todos los meses en el rango seleccionado
+    const monthsInRange = this.getMonthsInRange(this.selectedPeriodoDesde, this.selectedPeriodoHasta);
 
-      // Datos mock - en implementación real vendrían del backend
-      const pbcMineria = 980000000000 + (Math.random() * 400000000000);
-      const pbcHidrocarburos = 2200000000000 + (Math.random() * 800000000000);
-      const pbcTotal = pbcMineria + pbcHidrocarburos;
+    // Filtra los datos de tableDataBase según los meses seleccionados
+    this.tableData = this.tableDataBase.filter(row => {
+      // Extrae mes y año del registro
+      const [nombreMes, anioStr] = row.mes.split(' de ');
+      const year = parseInt(anioStr, 10);
 
-      const recaudoMineria = 1250000000000 + (Math.random() * 300000000000);
-      const recaudoHidrocarburos = 2850000000000 + (Math.random() * 500000000000);
-      const recaudoTotal = recaudoMineria + recaudoHidrocarburos;
+      // Convierte el nombre del mes a índice (0 = Enero, 1 = Febrero, ...)
+      const monthIndex = this.getMonthIndexByName(nombreMes);
 
-      // Calcular variaciones (porcentajes)
-      const variacionMineria = ((recaudoMineria - pbcMineria) / pbcMineria) * 100;
-      const variacionHidrocarburos = ((recaudoHidrocarburos - pbcHidrocarburos) / pbcHidrocarburos) * 100;
-      const variacionTotal = ((recaudoTotal - pbcTotal) / pbcTotal) * 100;
-
-      return {
-        mes: monthName.charAt(0).toUpperCase() + monthName.slice(1),
-        pbc_mineria: pbcMineria,
-        pbc_hidrocarburos: pbcHidrocarburos,
-        pbc_total: pbcTotal,
-        recaudo_mineria: recaudoMineria,
-        recaudo_hidrocarburos: recaudoHidrocarburos,
-        recaudo_total: recaudoTotal,
-        variacion_mineria: variacionMineria,
-        variacion_hidrocarburos: variacionHidrocarburos,
-        variacion_total: variacionTotal
-      };
+      // Retorna true si el mes y año del registro están en monthsInRange
+      return monthsInRange.some(d => d.getFullYear() === year && d.getMonth() === monthIndex);
     });
+    
+
   }
+
+
+
+  private getMonthIndexByName(monthName: string): number {
+  const months = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
+  return months.indexOf(monthName);
+}
+
 
   /**
    * Obtener lista de meses en un rango de fechas
@@ -256,31 +384,31 @@ export class SgrRecaudoMensualComponent implements OnInit {
   downloadExcel(): void {
     console.log('Descargando Excel con datos de la tabla...');
     
-    if (this.tableData.length === 0) {
-      console.warn('No hay datos para descargar');
-      return;
-    }
+    // if (this.tableData.length === 0) {
+    //   console.warn('No hay datos para descargar');
+    //   return;
+    // }
 
-    // Preparar datos para Excel
-    const excelData = this.tableData.map(row => ({
-      'Mes': row.mes,
-      'PBC Minería': row.pbc_mineria,
-      'PBC Hidrocarburos': row.pbc_hidrocarburos,
-      'PBC Total': row.pbc_total,
-      'Recaudo Minería': row.recaudo_mineria,
-      'Recaudo Hidrocarburos': row.recaudo_hidrocarburos,
-      'Recaudo Total': row.recaudo_total,
-      'Variación Minería (%)': this.formatPercentage(row.variacion_mineria),
-      'Variación Hidrocarburos (%)': this.formatPercentage(row.variacion_hidrocarburos),
-      'Variación Total (%)': this.formatPercentage(row.variacion_total)
-    }));
+    // // Preparar datos para Excel
+    // const excelData = this.tableData.map(row => ({
+    //   'Mes': row.mes,
+    //   'PBC Minería': row.pbc_mineria,
+    //   'PBC Hidrocarburos': row.pbc_hidrocarburos,
+    //   'PBC Total': row.pbc_total,
+    //   'Recaudo Minería': row.recaudo_mineria,
+    //   'Recaudo Hidrocarburos': row.recaudo_hidrocarburos,
+    //   'Recaudo Total': row.recaudo_total,
+    //   'Variación Minería (%)': this.formatPercentage(row.variacion_mineria),
+    //   'Variación Hidrocarburos (%)': this.formatPercentage(row.variacion_hidrocarburos),
+    //   'Variación Total (%)': this.formatPercentage(row.variacion_total)
+    // }));
 
-    console.log('Datos preparados para Excel:', excelData);
+    //console.log('Datos preparados para Excel:', excelData);
     
     // Aquí se implementaría la lógica real de descarga Excel
     // Por ejemplo, usando una librería como SheetJS o similar
     // Por ahora solo logueamos los datos
-    alert('Función de descarga Excel pendiente de implementación. Ver consola para datos.');
+    //alert('Función de descarga Excel pendiente de implementación. Ver consola para datos.');
   }
 
   /**
@@ -341,11 +469,11 @@ export class SgrRecaudoMensualComponent implements OnInit {
    */
   private initializeMiningChart(): void {
     // Datos mock para 5 períodos (Enero 2025 - Mayo 2025)
-    const periods = ['Enero 2025', 'Febrero 2025', 'Marzo 2025', 'Abril 2025', 'Mayo 2025'];
+    const periods = ['Junio 2025', 'Julio 2025', 'Agosto 2025', 'Septiembre 2025', 'Octubre 2025'];
     
     // Datos simulados en pesos colombianos
-    const recaudoMineria = [1250000000000, 1100000000000, 1350000000000, 1180000000000, 1420000000000];
-    const pbcMineria = [980000000000, 850000000000, 1200000000000, 920000000000, 1300000000000];
+    const recaudoMineria = [162378056399, 428193893327, 236606358724, 176744693700, 688694062304];
+    const pbcMineria = [169060952916, 464917620452, 422652382500, 169060952916, 507182858648];
 
     this.miningChartData = {
       labels: periods,
@@ -431,11 +559,11 @@ export class SgrRecaudoMensualComponent implements OnInit {
    */
   private initializeHydrocarbonChart(): void {
     // Datos mock para 5 períodos (Enero 2025 - Mayo 2025)
-    const periods = ['Enero 2025', 'Febrero 2025', 'Marzo 2025', 'Abril 2025', 'Mayo 2025'];
+    const periods = ['Junio 2025', 'Julio 2025', 'Agosto 2025', 'Septiembre 2025', 'Octubre 2025'];
     
     // Datos simulados en pesos colombianos
-    const recaudoHidrocarburos = [2850000000000, 2650000000000, 3100000000000, 2920000000000, 3350000000000];
-    const pbcHidrocarburos = [2200000000000, 2050000000000, 2800000000000, 2400000000000, 2950000000000];
+    const recaudoHidrocarburos = [675696129037, 487125727411, 516581168859, 694193464544, 527252664807];
+    const pbcHidrocarburos = [694994469215, 718161024698, 718161024698, 694994469215, 718161024698];
 
     this.hydrocarbonChartData = {
       labels: periods,
@@ -540,8 +668,8 @@ export class SgrRecaudoMensualComponent implements OnInit {
    */
   private initializeConceptChart(): void {
     // Datos mock para conceptos: Inversión, Ahorro, Administración
-    const presupuestoBienal = [15500000000000, 3200000000000, 850000000000]; // En pesos
-    const recaudoAcumulado = [12800000000000, 2950000000000, 780000000000]; // En pesos
+    const presupuestoBienal = [58862399828683.4, 3818054798482, 1349253466492.98]; // En pesos
+    const recaudoAcumulado = [48023947202842.2, 3104825725066.34, 873767417549.329]; // En pesos
 
     this.conceptChartData = {
       labels: ['Inversión', 'Ahorro', 'Administración'],
@@ -626,12 +754,12 @@ export class SgrRecaudoMensualComponent implements OnInit {
    * Inicializar gráfico de tendencia mensual
    */
   private initializeTrendChart(): void {
-    // Datos mock para 5 meses (Enero 2025 - Mayo 2025)
-    const periods = ['Enero 2025', 'Febrero 2025', 'Marzo 2025', 'Abril 2025', 'Mayo 2025'];
+    // Datos ultimos 5 mees
+        const periods = ['Junio 2025', 'Julio 2025', 'Agosto 2025', 'Septiembre 2025', 'Octubre 2025'];
     
     // Datos simulados de Inversión (PBC vs Recaudo)
-    const inversionPBC = [4200000000000, 4150000000000, 4300000000000, 4250000000000, 4400000000000];
-    const inversionRecaudo = [3800000000000, 3900000000000, 4100000000000, 3950000000000, 4200000000000];
+    const inversionPBC = [864055422131, 1183078645150.81, 1140813407198.81, 864055422131, 1225343883346.81];
+    const inversionRecaudo = [838074185436.9, 915319620739.12, 753187527583.98, 870938158245.43, 1215946727111.77];
 
     this.trendChartData = {
       labels: periods,
@@ -814,15 +942,15 @@ export class SgrRecaudoMensualComponent implements OnInit {
     ];
 
     // Datos mock para la única fila
-    const inversionAforada = 12800000000000; // 12.8 billones
-    const ahorro = 2950000000000; // 2.95 billones
-    const administracion = 780000000000; // 780 mil millones
-    const noAforado = 1850000000000; // 1.85 billones
+    const inversionAforada = 44045354060226.5; // 12.8 billones
+    const ahorro = 3104825725066.34; // 2.95 billones
+    const administracion = 873767417549.329; // 780 mil millones
+    const noAforado = 156225926019.87; // 1.85 billones
     const total = inversionAforada + ahorro + administracion + noAforado;
 
     this.behaviorTableData = [
       {
-        concepto: 'Total recaudo corrientes y otros',
+        concepto: 'Total recaudo corrientes y otro',
         inversion_aforada: inversionAforada,
         ahorro: ahorro,
         administracion: administracion,
