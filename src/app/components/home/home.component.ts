@@ -228,7 +228,7 @@ export class HomeComponent implements OnInit {
     'Es el conjunto de ingresos, asignaciones, órganos, procedimientos y regulaciones, para el uso eficiente y la destinación de los ingresos provenientes de la explotación de los recursos naturales no renovables.';
 
   descriptionPGN =
-    'En esta sección podrá consultar información relacionada con la ejecución presupuestal de las entidades que hacen parte del Presupuesto General de la Nación (PGN).';
+    'En esta sección podrá consultar información relacionada con la regionalización del Presupuesto General de la Nación (PGN).';
 
   descriptionGeovisor =
     'Comparativo y valores vigentes de los recursos distribuidos del SGP y SGR por regiones y departamentos.';
