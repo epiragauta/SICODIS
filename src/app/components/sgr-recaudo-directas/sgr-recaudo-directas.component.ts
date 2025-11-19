@@ -259,7 +259,7 @@ export class SgrRecaudoDirectasComponent implements OnInit {
             },
             color: '#374151',
             callback: (value: any) => {
-              return '$' + value + 'M';
+              return '$' + this.formatNumber(value) + 'M';
             }
           }
         },
@@ -280,6 +280,12 @@ export class SgrRecaudoDirectasComponent implements OnInit {
     this.mineriaChartOptions = { ...commonOptions };
     this.hidrocarburosChartOptions = { ...commonOptions };
   }
+
+
+formatNumber(num: number): string {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
 
   /**
    * Inicializar datos de la tabla de comparación mensual
