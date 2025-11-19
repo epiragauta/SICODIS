@@ -68,6 +68,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
   // Configuración de columnas responsivas
   //cols: number = 2;
   cardCols: number = 2;
+  recaudo_otros: number = 38493545665718.3;
 
   // Popups
   showDiccionarioPopup: boolean = false;
@@ -257,28 +258,28 @@ export class PresupuestoYRecaudoComponent implements OnInit {
       // Cargar asignaciones desde API
       this.cargarAsignaciones();
 
-      this.infoPopupContent = `
-      <div style="font-size: 11px;">
-        <p>Información detallada sobre presupuestos, recaudos y distribución de recursos del Sistema General de Regalías de Colombia, organizada jerárquicamente por diferentes conceptos presupuestales.</p>
-        <br>
-        <ul>
-          <li><strong>Concepto</strong>: Descripción de la categoría presupuestal</li>
-          <li><strong>Presupuesto corriente</strong>: Monto presupuestado para ingresos corrientes</li>
-          <li><strong>Presupuesto otros</strong>: Montos presupuestados para otras fuentes de ingreso</li>
-          <li><strong>Presupuesto total vigente</strong>: Suma total del presupuesto vigente (corriente + otros)</li>
-          <li><strong>Recaudo corriente informada</strong>: Valores de recaudo reportados para los ingresos corrientes</li>
-          <li><strong>Recaudo total</strong>: Monto total de recaudo</li>
-          <li><strong>Disponibilidad inicial</strong>: Recursos disponibles al inicio del periodo</li>
-          <li><strong>Excedentes faep fonpet</strong>: Excedentes provenientes del Fondo de Ahorro y Estabilización (FAE) y del Fondo de Pensiones Territoriales (FONPET)</li>
-          <li><strong>Mineral sin identificacion de origen</strong>: Ingresos provenientes de minerales cuyo origen no está identificado</li>
-          <li><strong>MR</strong>: Categoría específica de ingresos</li>
-          <li><strong>Multas</strong>: Ingresos provenientes de sanciones o penalidades</li>
-          <li><strong>Reintegros</strong>: Devoluciones o retornos de recursos</li>
-          <li><strong>Rendimientos financieros</strong>: Ingresos generados por rendimientos de inversiones</li>
-          <li><strong>Porcentaje 1</strong> y <strong>Porcentaje 2</strong>: Indicadores porcentuales que miden proporciones entre valores</li>
-        </ul>          
-      </div>
-      `;
+      // this.infoPopupContent = `
+      // <div style="font-size: 11px;">
+      //   <p>Información detallada sobre presupuestos, recaudos y distribución de recursos del Sistema General de Regalías de Colombia, organizada jerárquicamente por diferentes conceptos presupuestales.</p>
+      //   <br>
+      //   <ul>
+      //     <li><strong>Concepto</strong>: Descripción de la categoría presupuestal</li>
+      //     <li><strong>Presupuesto corriente</strong>: Monto presupuestado para ingresos corrientes</li>
+      //     <li><strong>Presupuesto otros</strong>: Montos presupuestados para otras fuentes de ingreso</li>
+      //     <li><strong>Presupuesto total vigente</strong>: Suma total del presupuesto vigente (corriente + otros)</li>
+      //     <li><strong>Recaudo corriente informada</strong>: Valores de recaudo reportados para los ingresos corrientes</li>
+      //     <li><strong>Recaudo total</strong>: Monto total de recaudo</li>
+      //     <li><strong>Disponibilidad inicial</strong>: Recursos disponibles al inicio del periodo</li>
+      //     <li><strong>Excedentes faep fonpet</strong>: Excedentes provenientes del Fondo de Ahorro y Estabilización (FAE) y del Fondo de Pensiones Territoriales (FONPET)</li>
+      //     <li><strong>Mineral sin identificacion de origen</strong>: Ingresos provenientes de minerales cuyo origen no está identificado</li>
+      //     <li><strong>MR</strong>: Categoría específica de ingresos</li>
+      //     <li><strong>Multas</strong>: Ingresos provenientes de sanciones o penalidades</li>
+      //     <li><strong>Reintegros</strong>: Devoluciones o retornos de recursos</li>
+      //     <li><strong>Rendimientos financieros</strong>: Ingresos generados por rendimientos de inversiones</li>
+      //     <li><strong>Porcentaje 1</strong> y <strong>Porcentaje 2</strong>: Indicadores porcentuales que miden proporciones entre valores</li>
+      //   </ul>          
+      // </div>
+      // `;
   }
 
   private initializeMenuItems() {
@@ -341,11 +342,11 @@ export class PresupuestoYRecaudoComponent implements OnInit {
   private loadFinancialData() {
     // Simulando datos - en un caso real estos vendrían de un servicio
     this.financialData = {
-      presupuesto_total_vigente: 63697733611855.4,
-      caja_total: 41832989623504.40,
-      presupuesto_corriente: 25536162427940.00,
-      caja_corriente_informada: 2995629703785.00,
-      presupuesto_otros: 48161571183915.4
+      presupuesto_total_vigente: 64029708093658.3,
+      caja_total: 48180173128862.1,
+      presupuesto_corriente: 25536162427940,
+      caja_corriente_informada: 9686627463144,
+      presupuesto_otros: 38493545665718.3
     };
   }
 
@@ -369,7 +370,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
           data: [
             this.financialData.caja_total,
             this.financialData.caja_corriente_informada,
-            this.financialData.caja_total // Usando caja_total para "Otros"
+            this.recaudo_otros
           ],
           backgroundColor: '#60a5fa', // Azul claro para caja/recaudo
           borderColor: '#60a5fa',

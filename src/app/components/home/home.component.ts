@@ -273,7 +273,7 @@ export class HomeComponent implements OnInit {
   sgrPorcentajeOtros: string = '0,0';
 
   sgrItems = [
-    { concept: 'Inversión', amount: 23620950245846, progress: 37.27, isFirst: true, isTotal: false },
+    { concept: 'Inversión', amount: 23620950245846, progress: 37.27, isFirst: false, isTotal: false },
     { concept: 'Ahorro', amount: 1149127309256, progress: 37.93, isFirst: false, isTotal: false },
     { concept: 'Administración y SSEC', amount: 766084872838, progress: 37.93,isFirst: false, isTotal: false },    
     { concept: 'Total Corrientes', amount: 25536162427940, progress: 37.32, isFirst: false, isTotal: true }
