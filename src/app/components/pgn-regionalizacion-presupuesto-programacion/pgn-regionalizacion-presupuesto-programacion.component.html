@@ -186,14 +186,14 @@
                 <tr>
                   <td>{{dept.departamento}}</td>
                   <td class="text-right">{{formatCurrency(dept.total_presupuesto_pgn_inversion)}}</td>
-                  <td class="text-right">{{formatPercentage(dept.per_capita)}}</td>
+                  <td class="text-right">{{formatCurrency(dept.per_capita)}}</td>
                 </tr>
               </ng-template>
               <ng-template pTemplate="footer">
                 <tr class="total-row">
                   <td><strong>Total General</strong></td>
                   <td class="text-right"><strong>{{formatCurrency(getTotalVigencia())}}</strong></td>
-                  <td class="text-right"><strong>{{formatPercentage(getAveragePerCapita())}}</strong></td>
+                  <td class="text-right"><strong>{{formatCurrency(getTotalPercapita())}}</strong></td>
                 </tr>
               </ng-template>
             </p-table>

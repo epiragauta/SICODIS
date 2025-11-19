@@ -440,6 +440,10 @@ export class PgnRegionalizacionPresupuestoProgramacionComponent implements OnIni
     return this.detalle.reduce((sum, item) => sum + item.total_presupuesto_pgn_inversion, 0);
   }
 
+ getTotalPercapita(): number {
+    return this.detalle.reduce((sum, item) => sum + item.per_capita, 0);
+  }
+
   getAveragePerCapita(): number {
     const total = this.detalle.reduce((sum, item) => sum + item.per_capita, 0);
     return Math.round((total / this.detalle.length) * 10) / 10;
