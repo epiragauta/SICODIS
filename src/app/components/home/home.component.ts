@@ -71,7 +71,7 @@ export class HomeComponent implements OnInit {
       imageUrl: '/assets/img/carrousel2.jpg',
       date: 'Junio 3 de 2024',
       description: '',
-      title: 'Sobre distribución de recursos territoriales​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​',
+      title: 'Subdirección de Distribución de Recursos Territoriales​​',
       buttonLabel: 'Ver Reportes',
       link: 'https://www.dnp.gov.co/LaEntidad_/subdireccion-general-inversiones-seguimiento-evaluacion/direccion-programacion-inversiones-publicas/Paginas/distribucion-de-recursos-territoriales.aspx'
     },
