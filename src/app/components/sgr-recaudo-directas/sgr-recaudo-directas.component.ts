@@ -59,14 +59,17 @@ export class SgrRecaudoDirectasComponent implements OnInit {
   ];
 
   beneficiarios: any[] = [
-    { id: 1, nombre: 'Departamentos' },
-    { id: 2, nombre: 'Municipios' },
-    { id: 3, nombre: 'Entidades Nacionales' },
-    { id: 4, nombre: 'Universidades' },
-    { id: 5, nombre: 'Comunidades Étnicas' }
+    { id: 1, nombre: 'Todos' },
+    { id: 2, nombre: 'Departamentos' },
+    { id: 3, nombre: 'Entidades' },
+    { id: 4, nombre: 'Regiones' }
   ];
 
-  departamentos = departamentos;
+  departamentos: any[] = [
+    { id: 1, nombre: 'Todos' }
+  ];
+
+  //departamentos = departamentos;
 
   // Chart data for line charts
   mineriaChartData: any = {};
@@ -86,6 +89,8 @@ export class SgrRecaudoDirectasComponent implements OnInit {
     ];
 
     this.home = { icon: 'pi pi-home', routerLink: '/' };
+    this.selectedBeneficiario = this.beneficiarios[0]; // aquí sí funciona
+    this.selectedDepartamento = this.beneficiarios[0];
 
     // Inicialización del componente
     this.initializeLineCharts();
@@ -189,7 +194,7 @@ export class SgrRecaudoDirectasComponent implements OnInit {
           beginAtZero: true,
           title: {
             display: true,
-            text: 'Billones de pesos',
+            text: 'MM',
             font: {
               size: 11,
               family: 'Work Sans'
@@ -203,7 +208,7 @@ export class SgrRecaudoDirectasComponent implements OnInit {
             },
             color: '#374151',
             callback: (value: any) => {
-              return '$' + value + 'B';
+              return '$' + value + 'MM';
             }
           }
         },
@@ -232,30 +237,68 @@ export class SgrRecaudoDirectasComponent implements OnInit {
     // Usar los mismos datos de los gráficos
     const monthLabels = [
       'Ene 2025', 'Feb 2025', 'Mar 2025', 'Abr 2025', 'May 2025', 'Jun 2025',
-      'Jul 2025', 'Ago 2025', 'Sep 2025', 'Oct 2025', 'Nov 2025', 'Dic 2025',
-      'Ene 2026', 'Feb 2026', 'Mar 2026', 'Abr 2026', 'May 2026', 'Jun 2026',
-      'Jul 2026', 'Ago 2026', 'Sep 2026', 'Oct 2026', 'Nov 2026', 'Dic 2026'
+      'Jul 2025', 'Ago 2025', 'Sep 2025', 'Oct 2025'
     ];
 
     // Datos para Minería (en billones de pesos)
-    const mineriaPBCData = [12, 12.5, 13, 12.8, 13.2, 13.5, 14, 14.2, 14.5, 14.8, 15, 15.2, 
-                           15.5, 15.8, 16, 16.2, 16.5, 16.8, 17, 17.2, 17.5, 17.8, 18, 18.2];
-    const mineriaRecaudoData = [10, 10.8, 11.2, 11.5, 11.8, 12.1, 12.5, 12.8, 13.1, 13.4, 13.7, 14,
-                               14.3, 14.6, 14.9, 15.2, 15.5, 15.8, 16.1, 16.4, 16.7, 17, 17.3, 17.6];
+    const mineriaPBCData = [
+                              507182857652.2
+                            ,	253591429312.20
+                            ,	211326191168.20
+                            ,	422652382500.20
+                            ,	253591429312.20
+                            ,	169060952916.00
+                            ,	464917620452.00
+                            ,	422652382500.00
+                            ,	169060952916.00
+                            ,	507182858648.00
+                          ];
+    const mineriaRecaudoData = [
+                            	170520203403.32
+                            ,	51453810290.40
+                            ,	44884216214.08
+                            ,	110203177013.64
+                            ,	130524675218.82
+                            ,	40594514099.83
+                            ,	107048473331.95
+                            ,	59151589681.17
+                            ,	44186173425.12
+                            ,	172173515576.15
+                              ];
 
     // Datos para Hidrocarburos (en billones de pesos)
-    const hidrocarburosPBCData = [35, 35.5, 36, 35.8, 36.2, 36.5, 37, 37.2, 37.5, 37.8, 38, 38.2,
-                                 38.5, 38.8, 39, 39.2, 39.5, 39.8, 40, 40.2, 40.5, 40.8, 41, 41.2];
-    const hidrocarburosRecaudoData = [28, 29.2, 30.1, 30.8, 31.5, 32.2, 32.8, 33.4, 34, 34.6, 35.2, 35.8,
-                                     36.4, 37, 37.6, 38.2, 38.8, 39.4, 40, 40.6, 41.2, 41.8, 42.4, 43];
+    const hidrocarburosPBCData = [
+                                  718161024698.81
+                                  ,	648661358247.37
+                                  ,	718161024698.81
+                                  ,	694994469215.00
+                                  ,	718161024698.81
+                                  ,	694994469215.00
+                                  ,	718161024698.81
+                                  ,	718161024698.81
+                                  ,	694994469215.00
+                                  ,	718161024698.81
+                                ];
+    const hidrocarburosRecaudoData = [
+                                  	135955506345.63
+                                  ,	143937130696.86
+                                  ,	258376203757.14
+                                  ,	128139964605.48
+                                  ,	142358124087.46
+                                  ,	168924032259.40
+                                  ,	121781431852.83
+                                  ,	129145292214.83
+                                  ,	173548366136.24
+                                  ,	131813166201.79
+                                    ];
 
     // Construir datos de la tabla
     this.monthlyComparisonData = monthLabels.map((month, index) => ({
       mes: month,
-      mineria_pbc: mineriaPBCData[index] * 1000000000000, // Convertir a pesos
-      mineria_recaudo: mineriaRecaudoData[index] * 1000000000000,
-      hidrocarburos_pbc: hidrocarburosPBCData[index] * 1000000000000,
-      hidrocarburos_recaudo: hidrocarburosRecaudoData[index] * 1000000000000
+      mineria_pbc: mineriaPBCData[index] * 1, // Convertir a pesos
+      mineria_recaudo: mineriaRecaudoData[index] * 1,
+      hidrocarburos_pbc: hidrocarburosPBCData[index] * 1,
+      hidrocarburos_recaudo: hidrocarburosRecaudoData[index] * 1
     }));
   }
 
