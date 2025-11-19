@@ -118,35 +118,36 @@ export class PresupuestoYRecaudoComponent implements OnInit {
       {
           "id": 1,
           "label": "2025 - 2026"
-      },
-      {
-          "id": 2,
-          "label": "2023 - 2024"
-      },
-      {
-          "id": 3,
-          "label": "2021 - 2022"
-      },
-      {
-          "id": 4,
-          "label": "2019 - 2020"
-      },
-      {
-          "id": 5,
-          "label": "2017 - 2018"
-      },
-      {
-          "id": 6,
-          "label": "2015 - 2016"
-      },
-      {
-          "id": 7,
-          "label": "2013 - 2014"
-      },
-      {
-          "id": 8,
-          "label": "Vigencia 2012"
       }
+      // ,
+      // {
+      //     "id": 2,
+      //     "label": "2023 - 2024"
+      // },
+      // {
+      //     "id": 3,
+      //     "label": "2021 - 2022"
+      // },
+      // {
+      //     "id": 4,
+      //     "label": "2019 - 2020"
+      // },
+      // {
+      //     "id": 5,
+      //     "label": "2017 - 2018"
+      // },
+      // {
+      //     "id": 6,
+      //     "label": "2015 - 2016"
+      // },
+      // {
+      //     "id": 7,
+      //     "label": "2013 - 2014"
+      // },
+      // {
+      //     "id": 8,
+      //     "label": "Vigencia 2012"
+      // }
   ];
   dptos = departamentos;
   entities = territorialEntities;

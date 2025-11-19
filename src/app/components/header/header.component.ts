@@ -131,7 +131,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
             label: 'Preguntas Frecuentes',
             command: () => this.redirectFAQ()
           },{
-            label: 'Guías y manuales'
+            label: 'Manual de usuario'
           }
         ]
       }      

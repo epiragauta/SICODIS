@@ -273,10 +273,10 @@ export class HomeComponent implements OnInit {
   sgrPorcentajeOtros: string = '0,0';
 
   sgrItems = [
-    { concept: 'Inversión', amount: 2000000000, progress: 67.65, isFirst: true, isTotal: false },
-    { concept: 'Ahorro', amount: 500000000, progress: 56.73, isFirst: false, isTotal: false },
-    { concept: 'Administración y SSEC', amount: 400000000, progress: 73.69,isFirst: false, isTotal: false },    
-    { concept: 'Total Ahorro', amount: 3700000000, progress: 83.2, isFirst: false, isTotal: true }
+    { concept: 'Inversión', amount: 23620950245846, progress: 37.27, isFirst: true, isTotal: false },
+    { concept: 'Ahorro', amount: 1149127309256, progress: 37.93, isFirst: false, isTotal: false },
+    { concept: 'Administración y SSEC', amount: 766084872838, progress: 37.93,isFirst: false, isTotal: false },    
+    { concept: 'Total Corrientes', amount: 25536162427940, progress: 37.32, isFirst: false, isTotal: true }
   ];
 
   isBrowser: boolean = false;
@@ -284,7 +284,7 @@ export class HomeComponent implements OnInit {
 
   gaugeSize: number = 180;
   gaugeTick: number = 10;
-  gaugeValue: number = 68.2;
+  gaugeValue: number = 37.32;
 
   markerConfig = {
     "0": { color: '#555', size: 8, label: '0', type: 'line'},
@@ -555,10 +555,12 @@ export class HomeComponent implements OnInit {
     };
   }
 
+
+
   private initializeSgrData() {
     // Datos de ejemplo para corrientes (naranja)
-    const corrientesDistribuido = 1350000000;
-    const corrientesTotal = 2000000000;
+    const corrientesDistribuido = 9530401537124;
+    const corrientesTotal = 25536162427940;
     const corrientesRestante = corrientesTotal - corrientesDistribuido;
     const corrientesPorcentaje = (corrientesDistribuido / corrientesTotal) * 100;
     
@@ -568,7 +570,7 @@ export class HomeComponent implements OnInit {
       labels: ['Distribución', 'Presupuesto'],
       datasets: [
         {
-          data: [corrientesDistribuido, corrientesRestante],
+          data: [corrientesDistribuido, corrientesTotal],
           backgroundColor: ['#ee825a', '#eceae9'],
           hoverBackgroundColor: ['#e85c16', '#dee2e6'],
           borderColor: '#CCCCCC',
@@ -600,7 +602,7 @@ export class HomeComponent implements OnInit {
   }
 
   loadSgpData() {
-    this.sicodisApiService.getSgpResumenParticipaciones(2025, 'TODOS', 'TODOS').subscribe({
+    this.sicodisApiService.getSgpResumenParticipaciones(2025, '0', '0').subscribe({
       next: (response: any) => {
         if (Array.isArray(response)) {
           this.processSgpData(response);

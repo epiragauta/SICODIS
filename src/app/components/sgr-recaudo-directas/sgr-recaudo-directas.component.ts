@@ -52,9 +52,10 @@ export class SgrRecaudoDirectasComponent implements OnInit {
 
   // Opciones de filtros
   bienios: any[] = [
-    { id: 1, label: '2025 - 2026' },
-    { id: 2, label: '2023 - 2024' },
-    { id: 3, label: '2021 - 2022' }
+    { id: 1, label: '2025 - 2026' }
+    // ,
+    // { id: 2, label: '2023 - 2024' },
+    // { id: 3, label: '2021 - 2022' }
   ];
 
   beneficiarios: any[] = [

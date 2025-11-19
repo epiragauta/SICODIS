@@ -824,9 +824,9 @@ tableDataBase: any[] =
    */
   private initializeConceptChart(): void {
     // Datos mock para conceptos: Inversión, Ahorro, Administración
-    const presupuestoBienal = [58862399828683.4, 3818054798482, 1349253466492.98]; // En pesos
-    const recaudoAcumulado = [48023947202842.2, 3104825725066.34, 873767417549.329]; // En pesos
-
+    const presupuestoBienal = [ 23620950245846, 1149127309256 , 766084872838 ]; // En pesos
+    const recaudoAcumulado = [8803904477389, 435898235840, 290598823894]; // En pesos
+  
     this.conceptChartData = {
       labels: ['Inversión', 'Ahorro', 'Administración'],
       datasets: [
@@ -1098,10 +1098,10 @@ tableDataBase: any[] =
     ];
 
     // Datos mock para la única fila
-    const inversionAforada = 44045354060226.5; // 12.8 billones
-    const ahorro = 3104825725066.34; // 2.95 billones
-    const administracion = 873767417549.329; // 780 mil millones
-    const noAforado = 156225926019.87; // 1.85 billones
+    const inversionAforada = 8803904477389; 
+    const ahorro = 435898235840; 
+    const administracion = 290598823894; 
+    const noAforado = 156225926020; 
     const total = inversionAforada + ahorro + administracion + noAforado;
 
     this.behaviorTableData = [
@@ -1160,7 +1160,7 @@ tableDataBase: any[] =
     // Filtra los datos de tableDataBase según los meses seleccionados
     this.detailedTableData = this.detailedTableDataBase.filter(row => {
       // Extrae mes y año del registro
-      const [nombreMes, anioStr] = row.mes.split(' de ');
+      const [nombreMes, anioStr] = row.periodo.split(' de ');
       const year = parseInt(anioStr, 10);
 
       // Convierte el nombre del mes a índice (0 = Enero, 1 = Febrero, ...)

@@ -356,7 +356,7 @@ export class ReportsSgpComponent implements OnInit {
                  display: true,
                  text: '',
                  font: {
-                   size: 16,
+                   size: 12,
                    weight: 'bold'
                  }
                },
@@ -364,7 +364,7 @@ export class ReportsSgpComponent implements OnInit {
                  maxRotation: 45,
                  minRotation: 0,
                  font: {
-                   size: 15
+                   size: 11
                  }
                }
             },
