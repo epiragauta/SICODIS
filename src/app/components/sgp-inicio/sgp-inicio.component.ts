@@ -313,7 +313,7 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
           }
         },
         datalabels: {
-          display: true,
+          display: false,
           color: '#ffffff',
           font: {
             size: 14,
@@ -323,7 +323,7 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
           formatter: (value: any, context: any) => {
             const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
             const percentage = Math.round((value / total) * 100 * 100) / 100;
-            return `${percentage}%`;
+            return `${total}%`;
           }
         }
       },

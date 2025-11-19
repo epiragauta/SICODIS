@@ -256,7 +256,7 @@ export class HomeComponent implements OnInit {
 
   selectedDepartment: number | null = null;
 
-  sgpItems: { concept: string; amount: number; isTotal: boolean; avanceDistribucion?: number }[] = [];
+  //sgpItems: { concept: string; amount: number; isTotal: boolean; avanceDistribucion?: number }[] = [];
 
   // Datos para el gráfico donut SGP
   donutSgpData: any;
@@ -277,6 +277,15 @@ export class HomeComponent implements OnInit {
     { concept: 'Ahorro', amount: 1149127309256, progress: 37.93, isFirst: false, isTotal: false },
     { concept: 'Administración y SSEC', amount: 766084872838, progress: 37.93,isFirst: false, isTotal: false },    
     { concept: 'Total Corrientes', amount: 25536162427940, progress: 37.32, isFirst: false, isTotal: true }
+  ];
+
+sgpItems = [
+    { concept: 'Educación', amount: 46158590355728, progress: 58.5, isFirst: false, isTotal: false },
+    { concept: 'Salud', amount: 19060914641273, progress: 24.5, isFirst: false, isTotal: false },
+    { concept: 'Agua Potable', amount: 4212201594403, progress: 5.4,isFirst: false, isTotal: false },    
+    { concept: 'Propósito General', amount: 9048433054643, progress: 11.6, isFirst: false, isTotal: false },
+    { concept: 'Asignaciones Especiales', amount: 3504042981515, progress: 4, isFirst: false, isTotal: false },
+    { concept: 'Total SGP', amount: 81984182627562, progress: 100, isFirst: false, isTotal: true }
   ];
 
   isBrowser: boolean = false;
@@ -631,22 +640,22 @@ export class HomeComponent implements OnInit {
     const sumaConcepts = principalRecords.reduce((sum, item) => sum + (item.total || 0), 0);
     
     // Procesar registros principales y calcular avance distribución
-    this.sgpItems = principalRecords.map(item => ({
-      concept: item.concepto,
-      amount: item.total,
-      isTotal: false,
-      avanceDistribucion: totalAmount > 0 ? (item.total / totalAmount) * 100 : 0
-    }));
+    // this.sgpItems = principalRecords.map(item => ({
+    //   concept: item.concepto,
+    //   amount: item.total,
+    //   isTotal: false,
+    //   avanceDistribucion: totalAmount > 0 ? (item.total / totalAmount) * 100 : 0
+    // }));
     
-    // Agregar el registro total al final
-    if (totalRecord) {
-      this.sgpItems.push({
-        concept: totalRecord.concepto,
-        amount: totalRecord.total,
-        isTotal: true,
-        avanceDistribucion: 100
-      });
-    }
+    // // Agregar el registro total al final
+    // if (totalRecord) {
+    //   this.sgpItems.push({
+    //     concept: totalRecord.concepto,
+    //     amount: totalRecord.total,
+    //     isTotal: true,
+    //     avanceDistribucion: 100//
+    //   });
+    // }
     
     // Calcular datos para el gráfico donut
     this.updateDonutChart(sumaConcepts, totalAmount);
