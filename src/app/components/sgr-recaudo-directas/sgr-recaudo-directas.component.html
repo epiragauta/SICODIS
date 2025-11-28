@@ -34,25 +34,46 @@
     <div class="filters-row">
       <div class="p-field bienio-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-select id="bienio" [options]="bienios" inputId="bienioSelect" [(ngModel)]="selectedBienio"
+          <p-select id="bienio" [options]="vigencias" inputId="bienioSelect" [(ngModel)]="selectedVigencia"
             optionLabel="label" [showClear]="false" placeholder="Bienio"></p-select>
           <label for="bienioSelect">Bienio</label>
         </p-floatlabel>
       </div>
 
       <div class="p-field beneficiarios-select">
-        <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-select id="beneficiarios" [options]="beneficiarios" inputId="beneficiariosSelect" [(ngModel)]="selectedBeneficiario"
-            optionLabel="nombre" [showClear]="false" placeholder="Beneficiarios"></p-select>
+        <!-- <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="beneficiarios" [options]="departments" inputId="beneficiariosSelect" [(ngModel)]="departmentSelected"
+            optionLabel="label" [showClear]="false" placeholder="Beneficiarios"></p-select>
           <label for="beneficiariosSelect">Beneficiarios</label>
-        </p-floatlabel>
+        </p-floatlabel> -->
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select 
+            id="departamento" 
+            [options]="departments" 
+            inputId="departamentoSelect"
+            [(ngModel)]="departmentSelected"
+            (onChange)="onDepartmentChange($event)"
+            optionValue="id"
+            optionLabel="label" 
+            placeholder="Departamento">
+          </p-select>
+          <label for="departamentoSelect">Departamento</label>
+        </p-floatlabel>        
       </div>
 
       <div class="p-field departamento-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-select id="departamento" [options]="departamentos" inputId="departamentoSelect" [(ngModel)]="selectedDepartamento"
-            optionLabel="nombre" [showClear]="false" placeholder="Entidad"></p-select>
-          <label for="departamentoSelect">Departamento</label>
+          <p-select 
+            id="municipio" 
+            [options]="towns" 
+            inputId="municipioSelect"
+            [(ngModel)]="townSelected"
+            
+            optionValue="id"
+            optionLabel="label" 
+            placeholder="Municipio">
+          </p-select>
+          <label for="municipioSelect">Municipio</label>
         </p-floatlabel>
       </div>
 

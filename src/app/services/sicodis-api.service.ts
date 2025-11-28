@@ -85,6 +85,17 @@ export interface Vigencia {
   vigencia: string;  
 }
 
+export interface DepartamentoSgr {
+  codigo: string;
+  nombre: string;
+}
+
+
+export interface MunicipioSgr {
+  codigo: string;
+  nombre: string;
+}
+
 // ========== SGP Interfaces ==========
 export interface VigenciaSgp {
   anio: number;
@@ -337,6 +348,14 @@ export interface PgnDatosSeguimientoResponse {
 }
 
 
+export interface SgrRecaudoItem {
+  mes: string;
+  mineria_pbc: number;
+  mineria_recaudo: number;
+  hidrocarburos_pbc: number;
+  hidrocarburos_recaudo: number;
+}
+
 // ========== Request Parameters Interfaces ==========
 export interface DistribucionTotalParams {
   idVigencia?: number;
@@ -412,6 +431,17 @@ export class SicodisApiService {
     const url = `${this.baseUrl}/sgrfun/diccionario`;
     const httpOptions = { headers: this.getNoCacheHeaders() };
     return this.http.get<DiccionarioItem[]>(url, httpOptions);
+  }
+
+
+  /**
+   * Obtiene las vigencias registradas del SGR para funcionamiento
+   * @returns Observable con el array de vigencias
+   * @note Este endpoint puede tener restricciones CORS en desarrollo local
+   */
+  getSgrFunVigencias(): Observable<Vigencia[]> {
+    const url = `${this.baseUrl}/sgrfun/vigencias`;
+    return this.http.get<Vigencia[]>(url);
   }
 
   /**
@@ -500,6 +530,61 @@ export class SicodisApiService {
     const url = `${this.baseUrl}/sgr/vigencias`;
     return this.http.get<Vigencia[]>(url);
   }
+
+
+  /**
+   * Obtiene los departamentos de SGR
+   * @returns Observable con el array 
+   */
+  getSgrDepartamentos(): Observable<DepartamentoSgr[]> {
+    const url = `${this.baseUrl}/sgr/departamentos`;
+    return this.http.get<DepartamentoSgr[]>(url);
+  }
+
+  /**
+   * Obtiene los municipios por código de departamento
+   * @param codigoDepto - Código del departamento
+   * @returns Observable con el array de municipios
+   */
+  getMunicipiosDepartamentosSgr(codigoDepto: string): Observable<MunicipioSgp[]> {
+    const url = `${this.baseUrl}/sgR/municipios_departamentos/${codigoDepto}`;
+    return this.http.get<MunicipioSgp[]>(url);
+  }
+
+
+  /**
+   * Obtiene el resumen de PBC vs Recaudo
+   * @param idvigencia - vigencia de consulta
+   * @param codigoDepto - Código del departamento
+   * @param codigoMunicipio - Código del municipio
+   * @returns Observable con el resumen de participaciones
+   */
+  getSgrDetallePBCRecaudo(idvigencia : number, codigoDepto: string, codigoMunicipio: string): Observable<SgrRecaudoItem[]> {
+    const url = `${this.baseUrl}/sgr/detalle_pbc_recaudo/${idvigencia }/${codigoDepto}/${codigoMunicipio}`;
+    return this.http.get<SgrRecaudoItem[]>(url);
+  }
+
+    /**
+   * Obtiene el archivo de resumen de PBC vs Recaudo
+   * @param idvigencia - vigencia de consulta
+   * @param codigoDepto - Código del departamento
+   * @param codigoMunicipio - Código del municipio
+   * @param vigencia - vigencia de consulta string
+   * @param departamento - Nombre del departamento
+   * @param municipio - Nombre del municipio
+   * @returns Observable con el resumen de participaciones
+   */
+  getSgrDescargaDetallePBCRecaudo( idvigencia: number
+                                   , codigoDepto: string
+                                   , codigoMunicipio: string
+                                   , vigencia: string
+                                   , departamento: string
+                                   , municipio: string
+                                                ): Observable<Blob> {  
+    const url = `${this.baseUrl}/sgr/descarga_detalle_pbc_recaudo/${idvigencia}/${codigoDepto}/${codigoMunicipio}/${vigencia}/${departamento}/${municipio}`;
+    return this.http.get(url, { responseType: 'blob' });  // responseType 'blob' indica que será un archivo binario
+  }
+
 
   // ========== SGP Methods ==========
 
