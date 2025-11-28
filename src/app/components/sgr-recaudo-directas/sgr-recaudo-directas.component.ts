@@ -327,10 +327,10 @@ this.departmentSelected = '0';
     // Labels para los meses de enero 2025 a diciembre 2026 (24 meses)  
 
     const monthLabels = this.dataRecaudo.map((d: SgrRecaudoItem) => d.mes);
-    const mineriaPBCData = this.dataRecaudo.map((d: SgrRecaudoItem) => d.mineria_pbc);
-    const mineriaRecaudoData = this.dataRecaudo.map((d: SgrRecaudoItem) => d.mineria_recaudo);
-    const hidrocarburosPBCData = this.dataRecaudo.map((d: SgrRecaudoItem) => d.hidrocarburos_pbc);
-    const hidrocarburosRecaudoData = this.dataRecaudo.map((d: SgrRecaudoItem) => d.hidrocarburos_recaudo);
+    const mineriaPBCData = this.dataRecaudo.map((d: SgrRecaudoItem) => d.mineria_pbc === 0 ? null : d.mineria_pbc);
+    const mineriaRecaudoData = this.dataRecaudo.map((d: SgrRecaudoItem) => d.mineria_recaudo === 0 ? null : d.mineria_recaudo);
+    const hidrocarburosPBCData = this.dataRecaudo.map((d: SgrRecaudoItem) => d.hidrocarburos_pbc === 0 ? null : d.hidrocarburos_pbc);
+    const hidrocarburosRecaudoData = this.dataRecaudo.map((d: SgrRecaudoItem) => d.hidrocarburos_recaudo === 0 ? null : d.hidrocarburos_recaudo);
 
     // Configuración para gráfico de Minería
     this.mineriaChartData = {
@@ -405,7 +405,7 @@ this.departmentSelected = '0';
           beginAtZero: true,
           title: {
             display: true,
-            text: 'MM',
+            text: '',
             font: {
               size: 11,
               family: 'Work Sans'
@@ -419,11 +419,19 @@ this.departmentSelected = '0';
             },
             color: '#374151',
             callback: (value: any) => {
-              return '$' + this.formatNumber(value/1000000) + 'MM';
+              return this.formatNumber(value/1000000) ;
             }
           }
         },
         x: {
+          title: {
+            display: true,
+            text: 'Miles de millones',
+            font: {
+              family: '"Work Sans", sans-serif',
+              size: 11
+            }
+          },
           ticks: {
             font: {
               family: 'Work Sans',

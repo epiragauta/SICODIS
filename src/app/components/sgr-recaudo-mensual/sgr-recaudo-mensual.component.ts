@@ -1057,7 +1057,7 @@ tableDataBase: any[] =
           <li style="margin-bottom: 0.5rem;"><strong>Inversión:</strong> Recursos destinados a proyectos de inversión territorial</li>
           <li style="margin-bottom: 0.5rem;"><strong>Ahorro:</strong> Recursos destinados al Fondo de Ahorro y Estabilización</li>
           <li style="margin-bottom: 0.5rem;"><strong>Administración:</strong> Recursos para gastos administrativos del sistema</li>
-          <li style="margin-bottom: 0.5rem;"><strong>Tipo de Recurso:</strong> Clasificación según el mineral o hidrocarburo de origen</li>
+          <li style="margin-bottom: 0.5rem;"><strong>Sector:</strong> Clasificación según el mineral o hidrocarburo de origen</li>
         </ul>
       </div>
     `;

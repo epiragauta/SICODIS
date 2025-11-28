@@ -34,7 +34,7 @@
     <div class="view-buttons-container">
       <button pButton type="button" 
               [class]="showRecaudoView ? 'p-button-primary' : 'p-button-secondary'" 
-              label="Tipo de recurso" 
+              label="Sector" 
               (click)="showRecaudo()">
       </button>
       <button pButton type="button" 
@@ -127,10 +127,10 @@
             height="300px">
           </p-chart>
         </div>
-        <div class="chart-footer">
+      </div>
+      <div class="chart-footer">
           <p class="source-note">Últimos 5 meses. Fuente de información: Agencia Nacional de Minería</p>
         </div>
-      </div>
 
       <!-- Gráfico de Hidrocarburos -->
       <div class="chart-card">
