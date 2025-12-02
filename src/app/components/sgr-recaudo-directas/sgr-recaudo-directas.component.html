@@ -24,8 +24,8 @@
   <div class="gradient-banner">    
     <div class="gradient-overlay"></div>
     <div class="banner-content">
-      <h1>SGR Recaudo Directas</h1>
-        <p>Consulte información sobre el recaudo de asignaciones directas del Sistema General de Regalías para diferentes entidades territoriales.</p>
+      <h1>Recaudo directas por sector</h1>
+        <p>Consulte el recaudo mensual de asignaciones directas durante el bienio por sector frente al Plan Bienal de Caja.</p>
     </div>
   </div>
 
@@ -100,8 +100,8 @@
   <!-- Sección de botones Diccionario y Siglas -->
   <div style="display: flex; justify-content: space-between; align-items: center; padding: .1rem 0;">
     <div style="width: 83%;">
-      <p class="date-update">Fecha de actualización: noviembre 14 de 2025</p>
-      <p class="date-update">Fecha de corte de recaudo: octubre 31 de 2025</p>
+      <p class="date-update">Fecha de actualización: {{ fechaActualizacion }}</p>
+      <p class="date-update">Fecha de corte de recaudo: {{ fechaCorteRecaudo }}</p>
     </div>
     <div style="position: relative; padding-bottom: .25rem;">
       <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 1.8rem; width: 96px;"
@@ -179,7 +179,7 @@
   <!-- Comparative table section -->
   <div class="table-section" *ngIf="filtersApplied">
     <div class="table-header">
-      <h2 class="table-title">Comparativo de recaudo Asignaciones Directas por tipo de recurso frente al PBC</h2>
+      <h2 class="table-title">Comparativo de recaudo Asignaciones Directas por sector frente al PBC</h2>
     </div>
     
     <p-table [value]="monthlyComparisonData" 
@@ -188,7 +188,7 @@
       <!-- Grouped headers -->
       <ng-template pTemplate="header">
         <tr>
-          <th colspan="5" class="main-header">Asignaciones Directas (25%)</th>
+          <th colspan="5" class="main-header">{{ titleTablaPBCRecaudo }}</th>
         </tr>
         <tr>
           <th rowspan="2" class="mes-header">Mes</th>

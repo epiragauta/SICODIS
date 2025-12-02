@@ -80,6 +80,11 @@ export interface FuncionamientoSiglasDiccionario {
 }
 
 // ========== SGR General Interfaces ==========
+export interface SGRFechaActualizacionCorte {
+  fecha_actualizacion: string;
+  fecha_corte_recaudo: string;
+}
+
 export interface Vigencia {
   id_vigencia: number;
   vigencia: string;  
@@ -520,6 +525,15 @@ export class SicodisApiService {
   }
 
   // ========== SGR General Methods ==========
+  /**
+   * Obtiene las fechas de corte y actualización para SGR
+   * @returns Observable con el array de fechas
+   */
+  getSGRFechasActualizacionCorteRecaudoIAC(): Observable<SGRFechaActualizacionCorte[]> {
+    const url = `${this.baseUrl}/sgr/fecha_actualizacion_corte`;
+    return this.http.get<SGRFechaActualizacionCorte[]>(url);
+  }
+
 
   /**
    * Obtiene las vigencias registradas del SGR
@@ -580,8 +594,10 @@ export class SicodisApiService {
                                    , vigencia: string
                                    , departamento: string
                                    , municipio: string
+                                   , fecha_actualizacion: string
+                                   , fecha_corte : string
                                                 ): Observable<Blob> {  
-    const url = `${this.baseUrl}/sgr/descarga_detalle_pbc_recaudo/${idvigencia}/${codigoDepto}/${codigoMunicipio}/${vigencia}/${departamento}/${municipio}`;
+    const url = `${this.baseUrl}/sgr/descarga_detalle_pbc_recaudo/${idvigencia}/${codigoDepto}/${codigoMunicipio}/${vigencia}/${departamento}/${municipio}/${fecha_actualizacion}/${fecha_corte}`;
     return this.http.get(url, { responseType: 'blob' });  // responseType 'blob' indica que será un archivo binario
   }
 
