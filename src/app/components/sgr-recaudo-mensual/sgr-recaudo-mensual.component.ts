@@ -8,6 +8,7 @@ import { ChartModule } from 'primeng/chart';
 import { TableModule } from 'primeng/table';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
+import { SGRFechaActualizacionCorte, SgrRecaudoItem, SicodisApiService } from '../../services/sicodis-api.service';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { MenuItem } from 'primeng/api';
 
@@ -188,7 +189,6 @@ tableDataBase: any[] =
     variacion_hidrocarburos: -26.5829463485191,
     variacion_total: -0.766899509823591,
   },
-
 ];
 
   tableColumns: any[] = [];
@@ -199,165 +199,338 @@ tableDataBase: any[] =
 
   // Configuración de tabla detallada (vista Tipo de Recurso)
   detailedTableData: any[] = [];
-  detailedTableDataBase: any[] = [
-  {
-    periodo: "Enero de 2025",
-    rc_inversion_aforada: 1108769155710.65,
-    rc_ahorro: 55165627754.18,
-    rc_administracion: 36777085169.88,
-    rc_no_aforado: 25190970361.07,
-    rc_total: 1225902838995.78,
-    total_pbc: 1225343882351.01,
-    avance: 1.00045616308436,
-    ro_inversion: 293997375070,
-    ro_ahorro: 0,
-    ro_administracion: 0,
-    ro_total: 293997375070,
-    total_distribuido: 1519900214065.78,
-  },
-  {
-    periodo: "Febrero de 2025",
-    rc_inversion_aforada: 703007556076.26,
-    rc_ahorro: 35170369377.64,
-    rc_administracion: 23446912918.47,
-    rc_no_aforado: 19938925576.67,
-    rc_total: 781563763949.04,
-    total_pbc: 902252787559.57,
-    avance: 0.866235909409632,
-    ro_inversion: 0,
-    ro_ahorro: 0,
-    ro_administracion: 0,
-    ro_total: 0,
-    total_distribuido: 781563763949.04,
-  },
-  {
-    periodo: "Marzo de 2025",
-    rc_inversion_aforada: 955233680976.37,
-    rc_ahorro: 46835589482.08,
-    rc_administracion: 31223726321.4,
-    rc_no_aforado: 7497880600.27,
-    rc_total: 1040790877380.12,
-    total_pbc: 929487215867.01,
-    avance: 1.11974738287206,
-    ro_inversion: 3618312830497,
-    ro_ahorro: 0,
-    ro_administracion: 0,
-    ro_total: 3618312830497,
-    total_distribuido: 4659103707877.12,
-  },
-  {
-    periodo: "Abril de 2025",
-    rc_inversion_aforada: 873398583357.77,
-    rc_ahorro: 42901765491.4,
-    rc_administracion: 28601176994.28,
-    rc_no_aforado: 8471040633.01,
-    rc_total: 953372566476.46,
-    total_pbc: 1117646851715.2,
-    avance: 0.853017717549478,
-    ro_inversion: 1533412273420.17,
-    ro_ahorro: 315990852796,
-    ro_administracion: 4738134,
-    ro_total: 1849407864350.17,
-    total_distribuido: 2802780430826.63,
-  },
-  {
-    periodo: "Mayo de 2025",
-    rc_inversion_aforada: 997690963296.71,
-    rc_ahorro: 49118903875.1,
-    rc_administracion: 32745935916.75,
-    rc_no_aforado: 11975394136.57,
-    rc_total: 1091531197225.13,
-    total_pbc: 971752454011.01,
-    avance: 1.12326055130576,
-    ro_inversion: 70471254694,
-    ro_ahorro: 0,
-    ro_administracion: 0,
-    ro_total: 70471254694,
-    total_distribuido: 1162002451919.13,
-  },
-  {
-    periodo: "Junio de 2025",
-    rc_inversion_aforada: 771863851558.67,
-    rc_ahorro: 37713338344.58,
-    rc_administracion: 25142225563.11,
-    rc_no_aforado: 3354769970.54,
-    rc_total: 838074185436.9,
-    total_pbc: 864055422131,
-    avance: 0.969931052998865,
-    ro_inversion: 0,
-    ro_ahorro: 0,
-    ro_administracion: 0,
-    ro_total: 0,
-    total_distribuido: 838074185436.9,
-  },
-  {
-    periodo: "Julio de 2025",
-    rc_inversion_aforada: 841997430050.15,
-    rc_ahorro: 41189382933.28,
-    rc_administracion: 27459588622.17,
-    rc_no_aforado: 4673219133.52,
-    rc_total: 915319620739.12,
-    total_pbc: 1183078645150.81,
-    avance: 0.773676056524917,
-    ro_inversion: 0,
-    ro_ahorro: 0,
-    ro_administracion: 0,
-    ro_total: 0,
-    total_distribuido: 915319620739.12,
-  },
-  {
-    periodo: "Agosto de 2025",
-    rc_inversion_aforada: 694076570134.94,
-    rc_ahorro: 33893438741.18,
-    rc_administracion: 22595625827.55,
-    rc_no_aforado: 2621892880.31,
-    rc_total: 753187527583.98,
-    total_pbc: 1140813407198.81,
-    avance: 0.660219736927339,
-    ro_inversion: 0,
-    ro_ahorro: 0,
-    ro_administracion: 0,
-    ro_total: 0,
-    total_distribuido: 753187527583.98,
-  },
-  {
-    periodo: "Septiembre de 2025",
-    rc_inversion_aforada: 798582058348.1,
-    rc_ahorro: 39192217121.06,
-    rc_administracion: 26128144747.38,
-    rc_no_aforado: 7035738028.89,
-    rc_total: 870938158245.43,
-    total_pbc: 864055422131,
-    avance: 1.00796561879961,
-    ro_inversion: 0,
-    ro_ahorro: 0,
-    ro_administracion: 0,
-    ro_total: 0,
-    total_distribuido: 870938158245.43,
-  },
-  {
-    periodo: "Octubre de 2025",
-    rc_inversion_aforada: 1053500369754.46,
-    rc_ahorro: 54717602719.84,
-    rc_administracion: 36478401813.36,
-    rc_no_aforado: 71250352824.11,
-    rc_total: 1215946727111.77,
-    total_pbc: 1225343883346.81,
-    avance: 0.992331004901764,
-    ro_inversion: 0,
-    ro_ahorro: 0,
-    ro_administracion: 0,
-    ro_total: 0,
-    total_distribuido: 1215946727111.77,
-  },
+//   detailedTableDataBase: any[] = [
+//   {
+//     periodo: "Enero de 2025",
+//     rc_inversion_aforada: 1108769155710.65,
+//     rc_ahorro: 55165627754.18,
+//     rc_administracion: 36777085169.88,
+//     rc_no_aforado: 25190970361.07,
+//     rc_total: 1225902838995.78,
+//     total_pbc: 1225343882351.01,
+//     avance: 1.00045616308436,
+//     ro_inversion: 293997375070,
+//     ro_ahorro: 0,
+//     ro_administracion: 0,
+//     ro_total: 293997375070,
+//     total_distribuido: 1519900214065.78,
+//   },
+//   {
+//     periodo: "Febrero de 2025",
+//     rc_inversion_aforada: 703007556076.26,
+//     rc_ahorro: 35170369377.64,
+//     rc_administracion: 23446912918.47,
+//     rc_no_aforado: 19938925576.67,
+//     rc_total: 781563763949.04,
+//     total_pbc: 902252787559.57,
+//     avance: 0.866235909409632,
+//     ro_inversion: 0,
+//     ro_ahorro: 0,
+//     ro_administracion: 0,
+//     ro_total: 0,
+//     total_distribuido: 781563763949.04,
+//   },
+//   {
+//     periodo: "Marzo de 2025",
+//     rc_inversion_aforada: 955233680976.37,
+//     rc_ahorro: 46835589482.08,
+//     rc_administracion: 31223726321.4,
+//     rc_no_aforado: 7497880600.27,
+//     rc_total: 1040790877380.12,
+//     total_pbc: 929487215867.01,
+//     avance: 1.11974738287206,
+//     ro_inversion: 3618312830497,
+//     ro_ahorro: 0,
+//     ro_administracion: 0,
+//     ro_total: 3618312830497,
+//     total_distribuido: 4659103707877.12,
+//   },
+//   {
+//     periodo: "Abril de 2025",
+//     rc_inversion_aforada: 873398583357.77,
+//     rc_ahorro: 42901765491.4,
+//     rc_administracion: 28601176994.28,
+//     rc_no_aforado: 8471040633.01,
+//     rc_total: 953372566476.46,
+//     total_pbc: 1117646851715.2,
+//     avance: 0.853017717549478,
+//     ro_inversion: 1533412273420.17,
+//     ro_ahorro: 315990852796,
+//     ro_administracion: 4738134,
+//     ro_total: 1849407864350.17,
+//     total_distribuido: 2802780430826.63,
+//   },
+//   {
+//     periodo: "Mayo de 2025",
+//     rc_inversion_aforada: 997690963296.71,
+//     rc_ahorro: 49118903875.1,
+//     rc_administracion: 32745935916.75,
+//     rc_no_aforado: 11975394136.57,
+//     rc_total: 1091531197225.13,
+//     total_pbc: 971752454011.01,
+//     avance: 1.12326055130576,
+//     ro_inversion: 70471254694,
+//     ro_ahorro: 0,
+//     ro_administracion: 0,
+//     ro_total: 70471254694,
+//     total_distribuido: 1162002451919.13,
+//   },
+//   {
+//     periodo: "Junio de 2025",
+//     rc_inversion_aforada: 771863851558.67,
+//     rc_ahorro: 37713338344.58,
+//     rc_administracion: 25142225563.11,
+//     rc_no_aforado: 3354769970.54,
+//     rc_total: 838074185436.9,
+//     total_pbc: 864055422131,
+//     avance: 0.969931052998865,
+//     ro_inversion: 0,
+//     ro_ahorro: 0,
+//     ro_administracion: 0,
+//     ro_total: 0,
+//     total_distribuido: 838074185436.9,
+//   },
+//   {
+//     periodo: "Julio de 2025",
+//     rc_inversion_aforada: 841997430050.15,
+//     rc_ahorro: 41189382933.28,
+//     rc_administracion: 27459588622.17,
+//     rc_no_aforado: 4673219133.52,
+//     rc_total: 915319620739.12,
+//     total_pbc: 1183078645150.81,
+//     avance: 0.773676056524917,
+//     ro_inversion: 0,
+//     ro_ahorro: 0,
+//     ro_administracion: 0,
+//     ro_total: 0,
+//     total_distribuido: 915319620739.12,
+//   },
+//   {
+//     periodo: "Agosto de 2025",
+//     rc_inversion_aforada: 694076570134.94,
+//     rc_ahorro: 33893438741.18,
+//     rc_administracion: 22595625827.55,
+//     rc_no_aforado: 2621892880.31,
+//     rc_total: 753187527583.98,
+//     total_pbc: 1140813407198.81,
+//     avance: 0.660219736927339,
+//     ro_inversion: 0,
+//     ro_ahorro: 0,
+//     ro_administracion: 0,
+//     ro_total: 0,
+//     total_distribuido: 753187527583.98,
+//   },
+//   {
+//     periodo: "Septiembre de 2025",
+//     rc_inversion_aforada: 798582058348.1,
+//     rc_ahorro: 39192217121.06,
+//     rc_administracion: 26128144747.38,
+//     rc_no_aforado: 7035738028.89,
+//     rc_total: 870938158245.43,
+//     total_pbc: 864055422131,
+//     avance: 1.00796561879961,
+//     ro_inversion: 0,
+//     ro_ahorro: 0,
+//     ro_administracion: 0,
+//     ro_total: 0,
+//     total_distribuido: 870938158245.43,
+//   },
+//   {
+//     periodo: "Octubre de 2025",
+//     rc_inversion_aforada: 1053500369754.46,
+//     rc_ahorro: 54717602719.84,
+//     rc_administracion: 36478401813.36,
+//     rc_no_aforado: 71250352824.11,
+//     rc_total: 1215946727111.77,
+//     total_pbc: 1225343883346.81,
+//     avance: 0.992331004901764,
+//     ro_inversion: 0,
+//     ro_ahorro: 0,
+//     ro_administracion: 0,
+//     ro_total: 0,
+//     total_distribuido: 1215946727111.77,
+//   }
+// ]  
+// ;
+
+detailedTableDataBase: any[] = [
+
+ {
+  periodo: "Enero de 2025",
+  rc_inversion_aforada: 1114553413835.74,
+  rc_ahorro: 55165627754.18,
+  rc_administracion: 36777085169.88,
+  rc_no_aforado: 19406712235.98,
+  rc_total: 1225902838995.7798,
+  total_pbc: 1225343882351.01,
+  avance: 1.0004561630843558,
+  ro_inversion: 293997375070,
+  ro_ahorro: 0,
+  ro_administracion: 0,
+  ro_total: 293997375070,
+  total_distribuido: 1519900214065.7798
+ },
+ {
+  periodo: "Febrero de 2025",
+  rc_inversion_aforada: 703007556076.26,
+  rc_ahorro: 35170369377.64,
+  rc_administracion: 23446912918.47,
+  rc_no_aforado: 19938925576.67,
+  rc_total: 781563763949.04,
+  total_pbc: 902252787559.5701,
+  avance: 0.8662359094096324,
+  ro_inversion: 0,
+  ro_ahorro: 0,
+  ro_administracion: 0,
+  ro_total: 0,
+  total_distribuido: 781563763949.04
+ },
+ {
+  periodo: "Marzo de 2025",
+  rc_inversion_aforada: 955233680976.37,
+  rc_ahorro: 46835589482.08,
+  rc_administracion: 31223726321.4,
+  rc_no_aforado: 7497880600.27,
+  rc_total: 1040790877380.12,
+  total_pbc: 929487215867.01,
+  avance: 1.1197473828720579,
+  ro_inversion: 3618312830497,
+  ro_ahorro: 0,
+  ro_administracion: 0,
+  ro_total: 3618312830497,
+  total_distribuido: 4659103707877.12
+ },
+ {
+  periodo: "Abril de 2025",
+  rc_inversion_aforada: 873398583357.77,
+  rc_ahorro: 42901765491.4,
+  rc_administracion: 28601176994.28,
+  rc_no_aforado: 8471040633.01,
+  rc_total: 953372566476.4601,
+  total_pbc: 1117646851715.2,
+  avance: 0.8530177175494783,
+  ro_inversion: 394804644941.59,
+  ro_ahorro: 315990852796,
+  ro_administracion: 4738134,
+  ro_total: 710800235871.5901,
+  total_distribuido: 1664172802348.0503
+ },
+ {
+  periodo: "Mayo de 2025",
+  rc_inversion_aforada: 997690963296.71,
+  rc_ahorro: 49118903875.1,
+  rc_administracion: 32745935916.75,
+  rc_no_aforado: 11975394136.57,
+  rc_total: 1091531197225.1299,
+  total_pbc: 971752454011.01,
+  avance: 1.1232605513057574,
+  ro_inversion: 70471254694,
+  ro_ahorro: 0,
+  ro_administracion: 0,
+  ro_total: 70471254694,
+  total_distribuido: 1162002451919.13
+ },
+ {
+  periodo: "Junio de 2025",
+  rc_inversion_aforada: 771863851558.67,
+  rc_ahorro: 37713338344.58,
+  rc_administracion: 25142225563.11,
+  rc_no_aforado: 3354769970.54,
+  rc_total: 838074185436.9,
+  total_pbc: 864055422131,
+  avance: 0.9699310529988655,
+  ro_inversion: 0,
+  ro_ahorro: 0,
+  ro_administracion: 0,
+  ro_total: 0,
+  total_distribuido: 838074185436.9
+ },
+ {
+  periodo: "Julio de 2025",
+  rc_inversion_aforada: 841997430050.15,
+  rc_ahorro: 41189382933.28,
+  rc_administracion: 27459588622.17,
+  rc_no_aforado: 4673219133.52,
+  rc_total: 915319620739.1201,
+  total_pbc: 1183078645150.81,
+  avance: 0.7736760565249168,
+  ro_inversion: 1311167428,
+  ro_ahorro: 0,
+  ro_administracion: -1311167428,
+  ro_total: 0,
+  total_distribuido: 915319620739.1201
+ },
+ {
+  periodo: "Agosto de 2025",
+  rc_inversion_aforada: 694076570134.94,
+  rc_ahorro: 33893438741.18,
+  rc_administracion: 22595625827.55,
+  rc_no_aforado: 2621892880.31,
+  rc_total: 753187527583.9801,
+  total_pbc: 1140813407198.81,
+  avance: 0.6602197369273394,
+  ro_inversion: 1081295637107,
+  ro_ahorro: 0,
+  ro_administracion: 0,
+  ro_total: 1081295637107,
+  total_distribuido: 1834483164690.98
+ },
+ {
+  periodo: "Septiembre de 2025",
+  rc_inversion_aforada: 798582058348.1,
+  rc_ahorro: 39192217121.06,
+  rc_administracion: 26128144747.38,
+  rc_no_aforado: 7035738028.89,
+  rc_total: 870938158245.4299,
+  total_pbc: 864055422131,
+  avance: 1.007965618799608,
+  ro_inversion: 0,
+  ro_ahorro: 0,
+  ro_administracion: 0,
+  ro_total: 0,
+  total_distribuido: 870938158245.4299
+ },
+ {
+  periodo: "Octubre de 2025",
+  rc_inversion_aforada: 1053500369754.46,
+  rc_ahorro: 54717602719.84,
+  rc_administracion: 36478401813.36,
+  rc_no_aforado: 71250352824.11,
+  rc_total: 1215946727111.7703,
+  total_pbc: 1225343883346.81,
+  avance: 0.9923310049017643,
+  ro_inversion: 0,
+  ro_ahorro: 0,
+  ro_administracion: 0,
+  ro_total: 0,
+  total_distribuido: 1215946727111.7703
+ },
+ {
+  periodo: "Total",
+  rc_inversion_aforada: 8803904477389.168,
+  rc_ahorro: 435898235840.33997,
+  rc_administracion: 290598823894.35,
+  rc_no_aforado: 156225926019.87,
+  rc_total: 9686627463143.73,
+  total_pbc: 10423829971462.23,
+  avance: 9.366841194373777,
+  ro_inversion: 5460192909737.59,
+  ro_ahorro: 315990852796,
+  ro_administracion: -1306429294,
+  ro_total: 5774877333239.59,
+  total_distribuido: 15461504796383.32
+ }
 ]  
 ;
+  
 
-  detailedTableColumns: any[] = [];
+
+detailedTableColumns: any[] = [];
+
 
   
 
-  constructor() { }
+constructor(private sicodisApiService: SicodisApiService) { }
 
   ngOnInit(): void {
     this.items = [
@@ -540,72 +713,59 @@ tableDataBase: any[] =
   downloadExcel(): void {
     console.log('Descargando Excel con datos de la tabla...');
     
-    // if (this.tableData.length === 0) {
-    //   console.warn('No hay datos para descargar');
-    //   return;
-    // }
-
-    // // Preparar datos para Excel
-    // const excelData = this.tableData.map(row => ({
-    //   'Mes': row.mes,
-    //   'PBC Minería': row.pbc_mineria,
-    //   'PBC Hidrocarburos': row.pbc_hidrocarburos,
-    //   'PBC Total': row.pbc_total,
-    //   'Recaudo Minería': row.recaudo_mineria,
-    //   'Recaudo Hidrocarburos': row.recaudo_hidrocarburos,
-    //   'Recaudo Total': row.recaudo_total,
-    //   'Variación Minería (%)': this.formatPercentage(row.variacion_mineria),
-    //   'Variación Hidrocarburos (%)': this.formatPercentage(row.variacion_hidrocarburos),
-    //   'Variación Total (%)': this.formatPercentage(row.variacion_total)
-    // }));
-
-    //console.log('Datos preparados para Excel:', excelData);
-    
-    // Aquí se implementaría la lógica real de descarga Excel
-    // Por ejemplo, usando una librería como SheetJS o similar
-    // Por ahora solo logueamos los datos
-    //alert('Función de descarga Excel pendiente de implementación. Ver consola para datos.');
+  
+    this.descargarDatosPBCRecaudoMensual();
   }
 
-  /**
-   * Descargar datos de la tabla detallada en formato Excel
+
+    /**
+   * Descarga del archivo excel de acuerdo con los datos del filtro
    */
-  downloadDetailedExcel(): void {
-    console.log('Descargando Excel con datos de la tabla detallada...');
-    
-    if (this.detailedTableData.length === 0) {
-      console.warn('No hay datos para descargar');
-      return;
+  private async descargarDatosPBCRecaudoMensual(): Promise<void> {
+    try {
+     
+	    // Usar método histórico original
+      console.log('Descargando  datos SGr recaudo mensual');
+
+      const archivo: Blob | undefined = await this.sicodisApiService.getSgrDescargaDetallePBCRecaudoMensual().toPromise();
+
+      // Verificamos que sí tengamos archivo
+      if (!archivo) {
+        console.warn('No se recibió ningún archivo desde el servicio');
+        return;
+      }
+
+
+      // Forzar tipo MIME correcto para Excel
+      const excelBlob = new Blob([archivo], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+
+      const arrayBuffer = await excelBlob.arrayBuffer();
+      console.log('Tamaño de archivo:', arrayBuffer.byteLength);
+
+      // Crear enlace temporal para descargar
+      const url = window.URL.createObjectURL(excelBlob);
+      const a = document.createElement('a');
+      a.href = url;
+
+      const nombreArchivo = `ResumenPBCvsRecaudoMensual.xlsx`;
+      a.download = nombreArchivo;
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+
+      console.log('Archivo descargado exitosamente');
+
+
+
+    } catch (error) {
+      console.warn('Error cargando fuentes desde API, se usarán datos locales como fallback:', error);
     }
-
-    // Preparar datos para Excel
-    const excelData = this.detailedTableData.map(row => ({
-      'Periodo de recaudo': row.periodo,
-      // Recaudo Corriente
-      'RC Inversión aforada': row.rc_inversion_aforada,
-      'RC Ahorro': row.rc_ahorro,
-      'RC Administración y SSEC': row.rc_administracion,
-      'RC No aforado': row.rc_no_aforado,
-      'RC Total Recaudo': row.rc_total,
-      // Individuales
-      'Total PBC': row.total_pbc,
-      'Avance (%)': this.formatPercentage(row.avance),
-      // Recaudo Otros
-      'RO Inversión': row.ro_inversion,
-      'RO Ahorro': row.ro_ahorro,
-      'RO Administración y SSEC': row.ro_administracion,
-      'RO Total recaudo otros': row.ro_total,
-      // Total final
-      'Total distribuido': row.total_distribuido
-    }));
-
-    console.log('Datos preparados para Excel detallado:', excelData);
-    
-    // Aquí se implementaría la lógica real de descarga Excel
-    // Por ejemplo, usando una librería como SheetJS o similar
-    // Por ahora solo logueamos los datos
-    alert('Función de descarga Excel detallado pendiente de implementación. Ver consola para datos.');
   }
+
+
+
 
   /**
    * Inicializar gráficos
@@ -644,8 +804,10 @@ tableDataBase: any[] =
         {
           label: 'PBC Minería',
           data: pbcMineria,
-          backgroundColor: '#60a5fa',
-          borderColor: '#3b82f6',
+          backgroundColor: '#f7d0b6ff',
+          borderColor: '#f38135ff',          
+          // backgroundColor: '#60a5fa',
+          // borderColor: '#3b82f6',
           borderWidth: 1
         }
       ]
@@ -681,10 +843,11 @@ tableDataBase: any[] =
           beginAtZero: true,
           title: {
             display: true,
+            text: 'Cifras en miles de millones de pesos corrientes',
             font: {
               family: '"Work Sans", sans-serif',
-              size: 12,
-              weight: 'bold'
+              size: 12
+              //weight: 'bold'
             }
           },
           ticks: {
@@ -734,8 +897,10 @@ tableDataBase: any[] =
         {
           label: 'PBC Hidrocarburos',
           data: pbcHidrocarburos,
-          backgroundColor: '#34d399',
-          borderColor: '#10b981',
+          // backgroundColor: '#34d399',
+          // borderColor: '#10b981',
+          backgroundColor: '#f7d0b6ff',
+          borderColor: '#f38135ff',          
           borderWidth: 1
         }
       ]
@@ -771,10 +936,11 @@ tableDataBase: any[] =
           beginAtZero: true,
           title: {
             display: true,
+            text: 'Cifras en miles de millones de pesos corrientes',
             font: {
               family: '"Work Sans", sans-serif',
-              size: 12,
-              weight: 'bold'
+              size: 12
+              //weight: 'bold'
             }
           },
           ticks: {
@@ -806,14 +972,14 @@ tableDataBase: any[] =
   private formatCurrency(value: number): string {
     if (value === 0) return '0';
     
-    const billions = value / 1000000000000;
-    if (billions >= 1) {
-      return billions.toFixed(1).replace('.', ',') + ' B';
-    }
+    // const billions = value / 1000000000000;
+    // if (billions >= 1) {
+    //   return billions.toFixed(1).replace('.', ',') + ' B';
+    // }
     
     const millions = value / 1000000000;
     if (millions >= 1) {
-      return millions.toFixed(1).replace('.', ',') + ' MM';
+      return millions.toFixed(1).replace('.', ',') + '';
     }
     
     return new Intl.NumberFormat('es-CO').format(value);
@@ -876,7 +1042,7 @@ tableDataBase: any[] =
           stacked: false,
           beginAtZero: true,
           title: {
-            display: true,            
+            display: true,           
             font: {
               family: '"Work Sans", sans-serif',
               size: 12,
@@ -923,13 +1089,13 @@ tableDataBase: any[] =
         {
           label: 'Total PBC',
           data: inversionPBC,
-          borderColor: '#4986e9ff',
+          borderColor: '#f38135ff',
           backgroundColor: 'rgba(59, 130, 246, 0.1)',
           tension: 0.4,
           fill: false,
           pointRadius: 4,
-          pointBackgroundColor: '#3b82f6',
-          pointBorderColor: '#1e40af',
+          pointBackgroundColor: '#f38135ff',
+          pointBorderColor: '#f38135ff',
           pointBorderWidth: 2
         },
         {
@@ -974,10 +1140,11 @@ tableDataBase: any[] =
         x: {
           title: {
             display: true,
+            text: 'Cifras en miles de millones de pesos corrientes',
             font: {
               family: '"Work Sans", sans-serif',
-              size: 12,
-              weight: 'bold'
+              size: 12
+              //weight: 'bold'
             }
           },
           ticks: {
@@ -993,8 +1160,8 @@ tableDataBase: any[] =
             display: true,
             font: {
               family: '"Work Sans", sans-serif',
-              size: 12,
-              weight: 'bold'
+              size: 12
+              //weight: 'bold'
             }
           },
           ticks: {
@@ -1089,28 +1256,31 @@ tableDataBase: any[] =
   private initializeBehaviorTable(): void {
     // Configuración de columnas
     this.behaviorTableColumns = [
-      { field: 'concepto', header: 'Concepto', width: '25%' },
+      { field: 'concepto', header: 'Concepto', width: '15%' },
       { field: 'inversion_aforada', header: 'Inversión aforada', width: '15%' },
       { field: 'ahorro', header: 'Ahorro', width: '15%' },
-      { field: 'administracion', header: 'Administración y SSEC', width: '15%' },
-      { field: 'no_aforado', header: 'No aforado', width: '15%' },
+      { field: 'administracion', header: 'Administración y SSEC', width: '13%' },
+      { field: 'no_aforado', header: 'No aforado', width: '13%' },
+      { field: 'otros', header: 'Otros', width: '14%' },
       { field: 'total', header: 'Total', width: '15%' }
     ];
 
     // Datos mock para la única fila
-    const inversionAforada = 8803904477389; 
-    const ahorro = 435898235840; 
-    const administracion = 290598823894; 
-    const noAforado = 156225926020; 
-    const total = inversionAforada + ahorro + administracion + noAforado;
+    const inversionAforada = 8803904477389.168; 
+    const ahorro = 435898235840.33997; 
+    const administracion = 290598823894.35; 
+    const noAforado = 156225926019.87; 
+    const otros = 5774877333239.59; 
+    const total = inversionAforada + ahorro + administracion + noAforado + otros;
 
     this.behaviorTableData = [
       {
-        concepto: 'Total recaudo corrientes y otro',
+        concepto: 'Total recaudo corrientes y otros',
         inversion_aforada: inversionAforada,
         ahorro: ahorro,
         administracion: administracion,
         no_aforado: noAforado,
+        otros: otros,
         total: total
       }
     ];

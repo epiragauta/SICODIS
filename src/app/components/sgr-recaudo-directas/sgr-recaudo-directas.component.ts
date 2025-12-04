@@ -593,15 +593,15 @@ private initializeLineCharts(): void {
         beginAtZero: true,
         suggestedMin: 0,
         suggestedMax: suggestedMax,
-          title: {
-            display: true,
-            text: 'MM',
-            font: {
-              size: 11,
-              family: 'Work Sans'
-            },
-            color: '#374151'
-          },        
+        title: {
+          display: true,
+          //text: 'MM',
+          font: {
+            size: 11,
+            family: 'Work Sans'
+          },
+          color: '#374151'
+        },        
         ticks: {
           font: { family: 'Work Sans', size: 10 },
           color: '#374151',
@@ -613,6 +613,15 @@ private initializeLineCharts(): void {
         }
       },
       x: {
+        title: {
+          display: true,
+          text: 'Cifras en miles de millones de pesos corrientes',
+          font: {
+            size: 11,
+            family: 'Work Sans'
+          },
+          color: '#374151'
+        },                
         ticks: {
           font: { family: 'Work Sans', size: 9 },
           color: '#374151',

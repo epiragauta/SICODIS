@@ -25,7 +25,7 @@
     <div class="gradient-overlay"></div>
     <div class="banner-content">
       <h1>Recaudo mensual SGR</h1>
-        <p>Consulte el recaudo de regalías de ingresos corrientes y otros ingresos, distribuido por los conceptos de inversión, ahorro y administración. También, por tipo de recurso.</p>
+        <p>Consulte el recaudo de regalías de ingresos corrientes y otros ingresos, distribuido por los conceptos de inversión, ahorro y administración. También, por sector.</p>
     </div>
   </div>
   
@@ -117,7 +117,7 @@
     <div class="charts-container">
       <!-- Gráfico de Minería -->
       <div class="chart-card">
-        <h3 class="chart-title">Recaudo y PBC Minería</h3>
+        <h3 class="chart-title">Recaudo y PBC</h3>
         <div class="chart-content">
           <p-chart 
             type="bar" 
@@ -127,14 +127,16 @@
             height="300px">
           </p-chart>
         </div>
+        <div class="chart-footer">
+          <p class="source-note">Por defecto, se muestran los últimos 5 meses. Para más detalle, consulte la tabla de datos ubicada más abajo.</p>
+          <p class="source-note">Fuente de información: Agencia Nacional de Minería</p>
+        </div>        
       </div>
-      <div class="chart-footer">
-          <p class="source-note">Últimos 5 meses. Fuente de información: Agencia Nacional de Minería</p>
-        </div>
+
 
       <!-- Gráfico de Hidrocarburos -->
       <div class="chart-card">
-        <h3 class="chart-title">Recaudo y PBC Hidrocarburos</h3>
+        <h3 class="chart-title">Recaudo y PBC</h3>
         <div class="chart-content">
           <p-chart 
             type="bar" 
@@ -145,7 +147,8 @@
           </p-chart>
         </div>
         <div class="chart-footer">
-          <p class="source-note">Últimos 5 meses. Fuente de información: Agencia Nacional de Hidrocarburos</p>
+          <p class="source-note">Por defecto, se muestran los últimos 5 meses. Para más detalle, consulte la tabla de datos ubicada más abajo. </p>
+          <p class="source-note">Fuente de información: Agencia Nacional de Hidrocarburos</p>
         </div>
       </div>
     </div>
@@ -299,7 +302,7 @@
               icon="pi pi-file-excel" 
               label="Descargar Excel" 
               class="p-button-primary download-excel-btn"
-              (click)="downloadDetailedExcel()">
+              (click)="downloadExcel()">
       </button>
     </div>
   </div>

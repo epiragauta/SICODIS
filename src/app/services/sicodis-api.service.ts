@@ -602,6 +602,15 @@ export class SicodisApiService {
   }
 
 
+  /**
+   * 
+   * @returns Descarga del servicio el archivo excel de recaudo mensual
+   */
+  getSgrDescargaDetallePBCRecaudoMensual(): Observable<Blob> {  
+    const url = `${this.baseUrl}/sgr/descarga_detalle_pbc_recaudo_mensual`;
+    return this.http.get(url, { responseType: 'blob' });  // responseType 'blob' indica que será un archivo binario
+  }
+
   // ========== SGP Methods ==========
 
 
