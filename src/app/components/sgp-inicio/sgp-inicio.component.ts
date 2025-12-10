@@ -114,14 +114,14 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
       icon: 'assets/img/sgp/compare.png'
     },
     
-    {
-      titulo: 'Consulta de eficiencia',
-      descripcion: 'Eficiencia Propósito General',
-      boton: 'Consultar',
-      link: 'sgp-eficiencia',
-      icon: 'assets/img/sgp/efficiency.png'
-    }
-    ,
+    // {
+    //   titulo: 'Consulta de eficiencia',
+    //   descripcion: 'Eficiencia Propósito General',
+    //   boton: 'Consultar',
+    //   link: 'sgp-eficiencia',
+    //   icon: 'assets/img/sgp/efficiency.png'
+    // }
+    // ,
     // {
     //   titulo: 'Resguardos Indígenas',
     //   descripcion: 'Consulta resguardos indígenas',
