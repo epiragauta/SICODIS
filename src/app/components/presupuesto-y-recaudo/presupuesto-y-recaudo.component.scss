@@ -219,7 +219,7 @@
   }
 
   .card-title {
-    color: #374151;
+    color: #75432c;
     font-size: 0.9rem;
     font-weight: 600;
     margin: 0 0 0.5rem 0;
@@ -380,7 +380,6 @@
       .p-field {
         flex: 0 0 auto;
         min-width: 200px;
-
         &.vigencia-select {
           min-width: 225px;
         }
@@ -431,7 +430,7 @@ clear-filters{
       }
 
       td {
-        font-size: 0.875rem;
+        font-size: 0.775rem;
         padding: 0.75rem;
 
         &.text-right {
@@ -447,7 +446,7 @@ clear-filters{
         }
 
         .font-bold {
-          font-weight: 600;
+          font-weight: 500;
           color: #374151;
         }
       }

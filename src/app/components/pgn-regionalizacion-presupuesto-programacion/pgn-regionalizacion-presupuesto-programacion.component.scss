@@ -161,8 +161,9 @@
         flex: 0 0 40%;
         
         .summary-card {
+          background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
           .card-title {
-            color: #1a408c;
+            color: #28a745;
             font-weight: bold;
             font-size: 1.2rem;
             padding-bottom: 1rem;
@@ -180,7 +181,8 @@
 
             .summary-title {
               font-size: 1.25rem;
-              color: #474a4c;
+              color: #1a408c;
+              text-align: center;
               margin-bottom: 0.5rem;
               font-weight: bold;
             }
@@ -188,7 +190,7 @@
             .summary-value {
               font-size: 1.1rem;
               font-weight: bold;
-              color: #2a2c2e;
+              color: #1a408c;
               background-color: #f8f9fa;
               padding: 0.5rem;
               border-radius: 4px;
@@ -208,8 +210,8 @@
                 .summary-percentage {
                   font-size: 1rem;
                   font-weight: bold;
-                  color: #495057;
-                  background-color: #e9ecef;
+                  color: #1a408c;
+                  background-color: #f8f9fa;
                   padding: 0.5rem;
                   border-radius: 4px;
                   text-align: center;

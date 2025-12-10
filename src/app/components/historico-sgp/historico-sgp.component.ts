@@ -111,8 +111,8 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
   barChartOptions: any;
 
   // Estados de carga
-  isLoadingChart: boolean = false;
-  isLoadingTable: boolean = false;
+  isLoadingChart: boolean = true;
+  isLoadingTable: boolean = true;
 
   @ViewChild('treeTable', { static: false }) treeTable: any;
   
@@ -651,11 +651,11 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
   updateStackedBarChart(): void {
     // Colores verdes degradados para cada concepto
     const greenColors = [
-      '#1e5f1e', // Verde oscuro - Educación
-      '#2d7a2d', // Verde medio oscuro - Salud
-      '#3b9b3b', // Verde medio - Agua Potable
-      '#4abb4a', // Verde medio claro - Propósito General
-      '#66cc66'  // Verde claro - Fonpet Asignaciones Especiales
+      '#31FCBC', //  - Educación
+      '#8FB8FA', //  - Salud
+      '#f7d0b6ff', //  - Agua Potable
+      '#FFD357', //  - Propósito General
+      '#E49EDD'  //  Asignaciones Especiales
     ];
 
     // Conceptos principales
@@ -679,9 +679,10 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
           return conceptoData.total_corrientes; // Valores en pesos
         } else {
           // Datos de ejemplo si no hay datos reales
-          const baseValue = (index + 1) * 15000000;
-          const yearIndex = this.selectedYears.indexOf(year);
-          return baseValue + (yearIndex * 2000000) + (Math.random() * 5000000);
+          // const baseValue = (index + 1) * 15000000;
+          // const yearIndex = this.selectedYears.indexOf(year);
+          // return baseValue + (yearIndex * 2000000) + (Math.random() * 5000000);
+          return 0;
         }
       });
 
@@ -694,9 +695,18 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
       };
     });
 
+
+    // Invertir años
+    const ascendingYears = [...this.selectedYears].reverse();
+    // Invertir datos de cada dataset
+    const adjustedDatasets = datasets.map(ds => ({
+      ...ds,
+      data: [...ds.data].reverse()
+    }));
+    
     this.stackedBarChartData = {
-      labels: this.selectedYears,
-      datasets: datasets
+      labels: ascendingYears,
+      datasets: adjustedDatasets
     };
 
     console.log('Gráfico de barras apiladas actualizado:', this.stackedBarChartData);

@@ -198,7 +198,7 @@ export class SgrRecaudoDirectasComponent implements OnInit {
     //this.selectedBeneficiario = this.beneficiarios[0]; // aquí sí funciona
     //this.selectedDepartamento = this.beneficiarios[0];
 
-this.departmentSelected = '0';
+    this.departmentSelected = '0';
 
 
     /// Inicializa en TODOS los municipios
@@ -285,9 +285,7 @@ this.departmentSelected = '0';
   onDepartmentChange(event: SelectChangeEvent): void {
     console.log('Departamento seleccionado:', event.value);
     this.departmentSelected = event.value;
-    //this.townSelected = '';
     this.loadTownsForDepartment();
-    //this.loadSgpData();
   }
 
   /**

@@ -12,7 +12,7 @@ import { ChartModule } from 'primeng/chart';
 import { TreeTableModule } from 'primeng/treetable';
 import { ButtonModule } from 'primeng/button';
 import { SplitButtonModule } from 'primeng/splitbutton';
-import { Select } from 'primeng/select';
+import { Select, SelectChangeEvent } from 'primeng/select';
 import { FloatLabel } from 'primeng/floatlabel';
 import { TreeNode, MenuItem } from 'primeng/api';
 
@@ -105,7 +105,8 @@ export class PresupuestoYRecaudoComponent implements OnInit {
   historicMenuItems: MenuItem[] = [];
 
   // Filtros
-  selectedVigencia: any = { id: 1, label: '2025 - 2026' };
+  //selectedVigencia: any = { id: 8, label: '2025 - 2026' };
+  selectedVigencia: any; // Seleccionar el primer elemento por defecto  
   selectedTipoIngreso: any = { id: 1, label: 'Total' };
   tiposIngreso = [
     { id: 1, label: 'Total' },
@@ -176,12 +177,20 @@ export class PresupuestoYRecaudoComponent implements OnInit {
   ];
   detailedData: any[] = [];
   territorialEntitiesDetailUrl = '/assets/data/territorial-entities-detail.json';
-  detailedDataUrl = '/assets/data/propuesta-resumen-sgr.json';
+  detailedDataUrl = '/assets/data/propuesta-resumen-sgr3.json';
   detailEntitiesFiltered: any[] = [];
   detailEntities: any[] = [];
   selectedDpto: any = { codigo: '-1', nombre: 'Por departamento' };
   selectedEntity: any;
   selectedDetailEntity: any;
+
+  departments: any[] = [];
+  departmentSelected: string = '';  
+  towns: any[] = [];
+  townSelected: string = '';  
+  vigencias: any[] = [];
+
+  urlSgrInformesRecaudo: string = "https://www.dnp.gov.co/LaEntidad_/subdireccion-general-inversiones-seguimiento-evaluacion/direccion-programacion-inversiones-publicas/Paginas/sistema-general-de-regalias.aspx#veinticincoseis"
 
   constructor(private breakpointObserver: BreakpointObserver,
               private sicodisApiService: SicodisApiService,
@@ -210,7 +219,14 @@ export class PresupuestoYRecaudoComponent implements OnInit {
     
   }
 
-  ngOnInit() {
+  ngOnInit():void {
+    
+    this.cargarVigencias();
+    this.cargarDepartamentos();
+    //this.selectedVigencia = '0'
+    this.departmentSelected = '0';
+    
+    
     this.initializeMenuItems();
     this.initializeHistoricMenu();
     this.initializeCharts();
@@ -220,9 +236,14 @@ export class PresupuestoYRecaudoComponent implements OnInit {
     this.initializeDonutCharts();
     //this.loadTreeTableData();
     this.colsA = [
-        { field: 'concepto', header: 'Concepto', width: '20%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Descripción de la categoría presupuestal' },
-        { field: 'presupuesto_total_vigente', header: 'Presupuesto Total Vigente', width: '14%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Suma total del presupuesto vigente (corriente + otros)' },
-        { field: 'presupuesto_otros', header: 'Presupuesto Otros', width: '14%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Montos presupuestados para otras fuentes de ingreso. Haga clic en este encabezado para ver/ocultar el detalle de las fuentes.' },
+        { field: 'concepto', header: 'Concepto', width: '32%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Descripción de la categoría presupuestal' },
+        { field: 'presupuesto_total_vigente', header: 'Presupuesto Total', width: '10%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Suma total del presupuesto vigente (corriente + otros)' },
+        { field: 'presupuesto_corriente', header: 'Presupuesto Corriente', width: '10%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Monto presupuestado para ingresos corrientes' },
+        { field: 'presupuesto_otros', header: 'Presupuesto Otros', width: '10%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Montos presupuestados para otras fuentes de ingreso.' },
+        { field: 'caja_corriente_informada', header: 'Recaudo <br>Corriente', width: '10%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Valores de recaudo reportados para los ingresos corrientes' },
+        { field: 'caja_otros', header: 'Recaudo <br>Otros', width: '10%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Valores de recaudo reportados para otros ingresos.' },
+        { field: 'caja_total', header: 'Recaudo <br>Total', width: '10%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Valores de recaudo reportados para todos los ingresos.' },
+        { field: 'avance_iac_presupuesto', header: 'Avance IAC frente a Presupuesto', width: '7%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Porcentaje de ejecución: (Recaudo Total / Presupuesto Corriente) * 100.' },
       ]
       this.colsB = [
         { field: 'presupuesto_corriente', header: 'Presupuesto Corriente', width: '14%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Monto presupuestado para ingresos corrientes' },
@@ -232,8 +253,8 @@ export class PresupuestoYRecaudoComponent implements OnInit {
         { field: 'porcentaje_2', header: '%', width: '5%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Porcentaje de ejecución: (Recaudo Total / Presupuesto Total Vigente) * 100' },
       ]
       this.cols = [
-        ...this.colsA,
-        ...this.colsB
+        ...this.colsA
+        //...this.colsB
       ];
 
       // Configurar columnas expandidas que serán mostradas/ocultadas
@@ -246,7 +267,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
         { field: 'mr', header: 'MR', width: '14%', 'color': '#a5cef6', 'class': 'col-expanded', tooltip: 'Categoría específica de ingresos MR (Mayor Recaudo)' }
       ];
       // Initialize selectedVigencia, but loadData and queryData will handle initial table population
-      this.selectedVigencia = this.vigencia.find(v => v.id === 1) || this.vigencia[0];
+      //this.selectedVigencia = this.vigencia.find(v => v.id === 1) || this.vigencia[0];
       this.selectedSearchType = this.searchTypes.find(st => st.id === 1) || this.searchTypes[0];
 
 
@@ -256,7 +277,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
       });
 
       // Cargar asignaciones desde API
-      this.cargarAsignaciones();
+      //this.cargarAsignaciones();
 
       // this.infoPopupContent = `
       // <div style="font-size: 11px;">
@@ -281,6 +302,107 @@ export class PresupuestoYRecaudoComponent implements OnInit {
       // </div>
       // `;
   }
+
+
+    // Función para formatear números con separadores de miles
+  formatNumber(value: number): string {
+    return value.toLocaleString('es-CO');
+  }
+
+  /**
+   * Cargar las vigencias desde el servicio
+   */
+  async cargarVigencias(): Promise<void> {
+    try {
+      const vigencias = await this.sicodisApiService.getSgrVigencias().toPromise();
+      this.vigencias = vigencias?.map((vigencia: any) => ({
+        id: vigencia.id_vigencia,
+        label: vigencia.vigencia
+      })) || [];
+      
+      // Seleccionar la primera vigencia por defecto
+      if (this.vigencias.length > 0) {
+        this.selectedVigencia = this.vigencias[0];
+        console.log('Vigencia seleccionada por defecto:', this.selectedVigencia);
+      }
+      
+      console.log('Vigencias cargadas desde API:', this.vigencias);
+    } catch (error) {
+      console.warn('No se pudieron cargar las vigencias desde la API debido a restricciones CORS en desarrollo:', error);
+      console.info('Usando vigencias por defecto. En producción, este endpoint debería funcionar correctamente.');
+      
+      // Fallback a vigencias por defecto en caso de error CORS
+      this.vigencias = [
+        { id: 1, label: "2023 - 2024" },
+        { id: 2, label: "2024 - 2025" },
+        { id: 3, label: "2025 - 2026" }
+      ];
+      this.selectedVigencia = this.vigencias[2]; // Seleccionar la más reciente por defecto
+      console.log('Vigencia seleccionada por defecto (fallback):', this.selectedVigencia);
+      
+      console.log('Vigencias por defecto configuradas:', this.vigencias);
+    }
+  }
+
+
+
+    /**
+   * Cargar datos departamentos desde la API 
+   */
+  private async cargarDepartamentos(): Promise<void> {
+    try {
+      const departamentosLista = await this.sicodisApiService.getSgrDepartamentos().toPromise();
+      this.departments = departamentosLista?.map((dept: any) => ({
+        id: dept.codigo,
+        label: dept.nombre
+      })) || [];
+      
+      // Seleccionar la primera vigencia por defecto
+      if (this.departments.length > 0) {
+        //this.departmentSelected = this.departments[0];
+        console.log('Departamento seleccionada por defecto:', this.departmentSelected);
+      }
+      
+      console.log('Departamento cargadas desde API:', this.departments);
+    } catch (error) {
+      console.warn('Error cargando departamentos desde API, se usarán datos locales como fallback:', error);
+      this.departments = [];
+    }
+  }
+
+
+  onDepartmentChange(event: SelectChangeEvent): void {
+    console.log('Departamento seleccionado:', event.value);
+    this.departmentSelected = event.value;
+    this.loadTownsForDepartment();
+  }
+
+    /**
+   * Carga los municipios para el departamento seleccionado
+   */
+  private async loadTownsForDepartment(): Promise<void> {
+    if (!this.departmentSelected) {
+      //this.towns = [];
+      this.townSelected = '0';
+      return;
+    }
+    console.log('Cargando municipios para departamento:', this.departmentSelected);
+    const municipiosLista = await this.sicodisApiService.getMunicipiosDepartamentosSgr(this.departmentSelected).toPromise();
+    this.towns = municipiosLista?.map((town: any) => ({
+       id: town.codigo,
+       label: town.nombre
+    })) || [];
+
+
+      // Seleccionar la primera vigencia por defecto
+      if (this.towns.length > 0) {
+        this.townSelected = this.towns[0].id;
+        console.log('Municipio seleccionada por defecto:', this.townSelected);
+      }
+
+  }
+
+
 
   private initializeMenuItems() {
     this.menuItems = [
@@ -409,18 +531,21 @@ export class PresupuestoYRecaudoComponent implements OnInit {
           beginAtZero: true,
           title: {
             display: true,
-            text: 'Pesos Colombianos',
+            text: 'Cifras en miles de millones de pesos corrientes',
             font: {
               family: '"Work Sans", sans-serif',
-              size: 12,
-              weight: 'bold'
+              size: 11
+              //weight: 'bold'
             }
           },
           ticks: {
             font: {
               family: '"Work Sans", sans-serif',
               size: 11
-            }
+            },
+            callback: (value: any) => {
+              return this.formatCurrency(value);
+            }             
           }
         },
         y: {
@@ -434,6 +559,21 @@ export class PresupuestoYRecaudoComponent implements OnInit {
         }
       }
     };
+  }
+
+
+  /**
+   * Formatear moneda como en presupuesto-y-recaudo
+   */
+  private formatCurrency(value: number): string {
+    if (value === 0) return '0';
+      
+    const millions = value / 1000000000;
+    if (millions >= 1) {
+      return millions.toFixed(1).replace('.', ',') + '';
+    }
+    
+    return new Intl.NumberFormat('es-CO').format(value);
   }
 
   private initializeDonutCharts(): void {
@@ -788,7 +928,8 @@ export class PresupuestoYRecaudoComponent implements OnInit {
   private showHistoric(): void {
     console.log('Mostrando histórico...');
     // Aquí se implementaría la lógica para mostrar datos históricos
-    alert('Funcionalidad de histórico pendiente de implementación');
+    //alert('Funcionalidad de histórico pendiente de implementación');
+    window.open(this.urlSgrInformesRecaudo, '_blank');
   }
 
   /**

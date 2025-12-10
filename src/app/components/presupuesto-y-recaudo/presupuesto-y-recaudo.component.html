@@ -31,13 +31,13 @@
     <div class="filters-row">
       <div class="p-field vigencia-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-select id="vigencia" [options]="vigencia" inputId="vigenciaSelect" [(ngModel)]="selectedVigencia"
+          <p-select id="vigencia" [options]="vigencias" inputId="vigenciaSelect" [(ngModel)]="selectedVigencia"
           optionLabel="label" [showClear]="false" placeholder="Seleccione Vigencia"></p-select>
           <label for="vigenciaSelect">Vigencia</label>
         </p-floatlabel>
       </div>
 
-      <div class="p-field tipo-ingreso-select">
+      <!-- <div class="p-field tipo-ingreso-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="tipoIngreso" [options]="tiposIngreso" inputId="tipoIngresoSelect" [(ngModel)]="selectedTipoIngreso"
           optionLabel="label" [showClear]="false" placeholder="Seleccione Tipo"></p-select>
@@ -52,14 +52,27 @@
           </p-multiselect>
           <label for="asignacionesSelect">Asignaciones</label>
         </p-floatlabel>
-      </div>
+      </div> -->
 
       <div class="p-field search-type-select">
-        <p-floatlabel class="w-full md:w-56" variant="on">
+        <!-- <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="searchType" inputId="searchType" [options]="searchTypes" [(ngModel)]="selectedSearchType" fluid="true"
           placeholder="Seleccione Por" optionLabel="label" [showClear]="false" (onChange)="updateSelectedSearchType($event)"></p-select>
           <label for="searchType">Beneficiario</label>
-        </p-floatlabel>
+        </p-floatlabel> -->
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select 
+            id="departamento" 
+            [options]="departments" 
+            inputId="departamentoSelect"
+            [(ngModel)]="departmentSelected"
+            (onChange)="onDepartmentChange($event)"
+            optionValue="id"
+            optionLabel="label" 
+            placeholder="Departamento">
+          </p-select>
+          <label for="departamentoSelect">Departamento</label>
+        </p-floatlabel>         
       </div>
 
       <div *ngIf="selectedSearchType.id == 2" class="p-field dpto-select">
@@ -273,12 +286,14 @@
               <tr>
                 <th *ngFor="let col of columns"
                     [ngStyle]="{'width': col.width, 'backgroundColor': col.color}"
-                    [ngClass]="[col.field === 'presupuesto_otros' ? 'expandable-column' : '',
+                    [ngClass]="[col.field === 'presupuesto_otros1' ? 'expandable-column' : '',
                                 col.class ? col.class : '']"
-                    (click)="col.field === 'presupuesto_otros' ? toggleColumns() : null"
+                    (click)="col.field === 'presupuesto_otros1' ? toggleColumns() : null"
                     [pTooltip]="col.tooltip" tooltipPosition="top">
-                  {{col.header}}
-                  <span *ngIf="col.field === 'presupuesto_otros'" class="toggle-icon" style="padding-left: 3px;padding-right: 3px;color: #fff;">
+                  <!-- {{col.header}} -->
+                    <!-- AQUÍ ESTÁ EL CAMBIO -->
+                  <span [innerHTML]="col.header"></span>
+                  <span *ngIf="col.field === 'presupuesto_otros1'" class="toggle-icon" style="padding-left: 3px;padding-right: 3px;color: #fff;">
                       <mat-icon style="color: #fff;background-color: #566cbb;" class="mr-2 sgp-icon">pinch</mat-icon>
                   </span>
                 </th>
@@ -291,13 +306,13 @@
                     <ng-container [ngSwitch]="col.field">
                       <ng-container *ngSwitchCase="'concepto'">
                         <span [ngClass]="{'font-bold': rowNode.level <= 1,
-                                          'expandable-column': col.field === 'presupuesto_otros',
-                                          'col-style': col.field === 'presupuesto_otros' && col.class}">
+                                          'expandable-column': col.field === 'presupuesto_otros1',
+                                          'col-style': col.field === 'presupuesto_otros1' && col.class}">
                           {{rowData.concepto}}
                         </span>
                       </ng-container>
 
-                      <ng-container *ngSwitchCase="'porcentaje_1'">
+                      <ng-container *ngSwitchCase="'avance_iac_presupuesto'">
                         <div [ngClass]="{'font-bold': rowNode.level <= 1}">
                           {{formatPercentage(rowData[col.field])}}
                         </div>
@@ -311,7 +326,7 @@
                       </ng-container>
 
                       <ng-container *ngSwitchDefault>
-                        <div [ngClass]="{'font-bold': rowNode.level <= 1, 'col-style': col.field === 'presupuesto_otros' && col.class}" class="text-right"
+                        <div [ngClass]="{'font-bold': rowNode.level <= 1, 'col-style': col.field === 'presupuesto_otros1' && col.class}" class="text-right"
                             *ngIf="rowData[col.field] !== null && rowData[col.field] !== undefined">
                           {{rowData[col.field] | numberFormat}} 
                         </div>

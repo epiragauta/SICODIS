@@ -71,7 +71,7 @@ function organizeCategoryData(data: any) {
       }
     } else {
       // Las categorías sin punto son nodos raíz (1, 2, 3, total, etc.)
-      node.expanded = true; // Expandimos los nodos raíz por defecto
+      node.expanded = false; // Expandimos los nodos raíz por defecto
       rootNodes.push(node);
     }
   });

@@ -4,6 +4,11 @@ import { SicodisApiService } from '../../services/sicodis-api.service';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { MatGridListModule, MatGridTile } from '@angular/material/grid-list';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+
+
 
 // PrimeNG imports
 import { ButtonModule } from 'primeng/button';
@@ -29,8 +34,10 @@ import { MenuItem } from 'primeng/api';
     FloatLabel,
     ProgressSpinnerModule,
     TableModule,
-    Breadcrumb
-  ],
+    Breadcrumb,
+    MatGridTile,
+    MatGridListModule
+],
   templateUrl: './pgn-regionalizacion-presupuesto-programacion.component.html',
   styleUrl: './pgn-regionalizacion-presupuesto-programacion.component.scss'
 })
@@ -47,6 +54,8 @@ export class PgnRegionalizacionPresupuestoProgramacionComponent implements OnIni
 
   // Loading state
   isLoading = false;
+  // Loading states
+  isLoadingData: boolean = false;
 
   // Data arrays
   vigencias: any[] = [];
@@ -140,6 +149,38 @@ export class PgnRegionalizacionPresupuestoProgramacionComponent implements OnIni
     // Set default values
     this.selectedVigencia = this.vigencias[0];
     this.selectedPeriodo = this.periodos[0];
+  }
+
+
+
+  formatMillions2(
+    num: number,
+    options: {
+      includeSymbol?: boolean;
+      decimalPlaces?: number;      
+    } = {}
+  ) {
+    // Default options
+    const {
+      includeSymbol = false,
+      decimalPlaces = 0,      
+    } = options;
+
+    // Convert to miles of millions
+    const valueInMilesOfMillions = num;
+
+    // Format the number
+    const formattedValue = valueInMilesOfMillions.toLocaleString('en-US', {
+      minimumFractionDigits: decimalPlaces,
+      maximumFractionDigits: decimalPlaces
+    }).replaceAll(',', 'temp').replaceAll('.', ',').replaceAll('temp', '.');
+
+    // Build the result string
+    let result = '';
+    if (includeSymbol) result += '$ ';
+    result += formattedValue;
+    
+    return result;
   }
 
 

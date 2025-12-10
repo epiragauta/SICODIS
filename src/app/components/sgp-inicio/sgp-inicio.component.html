@@ -113,7 +113,7 @@
     <div class="herramientas-cards-container">
       <div class="herramienta-card" 
            *ngFor="let recurso of recursos" 
-           (click)="navigateToResource(recurso.link)"
+           (click)="onResourceClick(recurso)"
            style="cursor: pointer;">
         <div class="card-icon-placeholder">
           <img [src]="recurso.icon" alt="{{ recurso.titulo }}" class="mr-2 sgp-icon">
