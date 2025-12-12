@@ -70,41 +70,114 @@ export class FaqComponent implements OnInit {
       icon: 'oil_barrel',
       items: [
         {
-          title: '¿Qué es el Sistema General de Regalías?',
-          content: 'El Sistema General de Regalías (SGR) es el conjunto de ingresos, órganos, procedimientos y regulaciones a través del cual se distribuyen los ingresos provenientes de la explotación de recursos naturales no renovables.',
+          title: '¿Qué son las regalías?',
+          content: 'Contraprestación económica que recibe el Estado por la explotación de un recurso natural no renovable cuya producción se extingue por el transcurso del tiempo.',
           route: 'reports-sgr',
           value: '4'
         },
         {
-          title: '¿Cómo consultar el plan bienal de caja del SGR?',
-          content: 'Puede generar reportes detallados del plan bienal de caja para los recursos del SGR, incluyendo la información de presupuesto y ejecución por bienio.',
+          title: '¿Qué es Sicodis?',
+          content: 'Es un Sistema de información y consulta de los recursos distribuidos por el DNP: i) Sistema General de Participaciones (SGP); ii) Sistema General de Regalías (SGR); iii) regionalización del Presupuesto General de la Nación (PGN).',
           route: 'reports-sgr-bienal',
           value: '5'
         },
         {
-          title: '¿Dónde veo el comparativo de presupuesto vs recaudo del SGR?',
-          content: 'En el módulo comparativo puede consultar el avance durante el bienio seleccionado, del presupuesto frente al recaudo comunicado a través de las Instrucciones de Abono a Cuenta (IAC).',
+          title: '¿Cuál información de regalías se puede consultar en Sicodis?',
+          content: 'Se puede consultar la información presupuestal y la distribución del recaudo corriente y otros ingresos como rendimientos financieros, mayor recaudo, desahorro, entre otros. Esto según las funciones del DNP. La información de giros, pagos, y en general la ejecución presupuestal de los recursos del SGR es información que dispone el Ministerio de Hacienda y Crédito Público atendiendo las funciones que le corresponden a este ministerio. La información del SGR en Sicodis se encuetra desde el año 2012 (único año en que no fue bienal el presupuesto), hasta el bienio en ejecución.',
           route: 'reports-sgr-comparative',
           value: '6'
         },
         {
-          title: '¿Cómo acceder al comparativo IAC vs Presupuesto detallado?',
-          content: 'Este módulo presenta el comparativo detallado entre las Instrucciones de Abono a Cuenta y el presupuesto asignado, con información por entidad y concepto.',
+          title: '¿Qué es el SGR?',
+          content: 'Es el conjunto de ingresos, asignaciones, órganos, procedimientos y regulaciones, para el uso eficiente y la destinación de los ingresos provenientes de la explotación de los recursos naturales no renovables.',
           route: 'comparativo-iac-presupuesto',
           value: '7'
         },
         {
-          title: '¿Qué información contiene el resumen del plan de recursos SGR?',
-          content: 'El resumen del plan de recursos presenta la información consolidada de asignaciones, distribución y ejecución de recursos del SGR por diferentes conceptos y entidades.',
+          title: '¿Qué son los ingresos corrientes?',
+          content: 'Corresponde a los recursos proyectados que se esperan recaudar durante el bienio por la explotación de los recursos naturales no renovables (RNNR), como minerales, hidrocarburos, gas. Se incluyen en el Plan de Recursos (PR), el presupuesto bienal, y el Plan Bienal de Caja (PBC).',
           route: 'reports-sgr-resumen-plan-recursos',
           value: '8'
         },
         {
-          title: '¿Dónde consulto la propuesta resumen del SGR?',
-          content: 'La propuesta resumen SGR presenta información detallada sobre presupuestos, recaudos y distribución de recursos, organizada jerárquicamente por conceptos presupuestales.',
+          title: '¿Qué son los ingresos no corrientes?',
+          content: 'Corresponde a los recursos apropiados en la ley bienal de presupuesto o mediante decreto, como rendimientos financieros, desahorro, multas y sanciones entre otros, que no dependen del recaudo por la explotación directa de los recursos naturales no renovables (RNNR) durante el bienio.',
           route: 'propuesta-resumen-sgr',
           value: '9'
-        }
+        },
+        {
+          title: '¿Qué es una instrucción de abono a cuenta (IAC)?',
+          content: 'Es una comunicación que remite el DNP al Ministerio de Hacienda y Crédito Público con los montos resultantes de la distribución de los recursos del SGR, para ser abonados a las cuentas de cada beneficiario de estos recursos,  para que efectúe los pagos a través del Sistema de Presupuesto y Giro de Regalías (SPGR) y ordene el pago de las obligaciones legalmente adquiridas directamente desde la cuenta única del SGR a las cuentas bancarias de los destinatarios finales. Las IAC pueden ser: i) mensuales, las cuales corresponden a la distribución de los ingresos corrientes, ii)  en cualquier momento del bienio, una vez se expida el decreto de apropiación presupuestal de otros ingresos no corrientes.',
+          route: 'propuesta-resumen-sgr',
+          value: '10'
+        },   
+        {
+          title: '¿Qué es el recaudo no aforado?',
+          content: 'Recursos recaudados por la explotación de los recursos naturales no renovables (RNNR) que superan la apropiación presupuestal corriente del bienio, es decir el monto aforado en la ley bienal de presupuesto.',
+          route: 'propuesta-resumen-sgr',
+          value: '11'
+        },          
+        {
+          title: '¿Qué es el recaudo no aforado de Asiganciones Directas?',
+          content: 'Recursos que superan la apropiación presupuestal corriente por beneficiario en esta asignación, durante la ejecución del presupuesto.  Al cierre del bienio, si el recaudo supera el presupuesto total corriente (el presupuestado para todo el Sistema), estos recursos no aforados se constituyen en mayor recaudo y se distribuyen según las reglas señaladas en la normativa vigente.',
+          route: 'propuesta-resumen-sgr',
+          value: '12'
+        },  
+        {
+          title: '¿Qué es el Plan de Recursos (PR)?',
+          content: 'Es una proyección de las fuentes de financiamiento a diez años del SGR por minería e hidrocarburos. Corresponde al MHCP elaborar el documento técnico de este plan. El DNP efectúa la distribución de la proyección de recursos contenida en el documento técnico del Plan de Recursos, entre asignaciones, beneficiarios y conceptos de gasto para cada uno de los diez años. De esta distribución, los dos primeros años constituyen el proyecto de presupuesto que se radica en el Congreso de la República para su aprobación.',
+          route: 'propuesta-resumen-sgr',
+          value: '13'
+        },
+        {
+          title: '¿Qué es el Plan Bienal de Caja (PBC)?',
+          content: 'Herramienta a través de la cual se determinan los flujos estimados de ingresos mensuales de recursos del presupuesto corriente bienal del SGR, durante los 24 meses de la ejecución presupuestal.',
+          route: 'propuesta-resumen-sgr',
+          value: '14'
+        },                    
+        {
+          title: '¿Qué son los recursos naturales no renovables (RNNR)?',
+          content: 'Recursos que existen en una cantidad concreta y limitada, que se han formado durante miles de años, por ejemplo, el petróleo, el carbón, el gas natural, entre otros. Producto de la explotación de estos recursos se genera a favor del Estado, una contraprestación económica a título de regalía.',
+          route: 'propuesta-resumen-sgr',
+          value: '15'
+        },                    
+        {
+          title: '¿Quién realiza la destinación de recursos para grupos étnicos?',
+          content: 'Los municipios y departamentos son los responsables de realizar el cálculo de destinaciones étnicas para la financiación de proyectos de inversión con enfoque diferencial, si cumplen con las siguientes condiciones: i) tener presupuesto corriente de Asignaciones Directas; ii) contar con Pueblos y Comu­nidades Indígenas y Comunidades Negras, Afrocolombianas, Rai­zales y Palenqueras acreditadas por el Ministerio del Interior, que residan en el territorio. El DNP publica las variables necesarias para la distribución y realiza un cálculo indicativo que debe ser validado por los municipios y gobernaciones. Estos recursos no se incluyen como apropiaciones presupuestales en la ley bienal de presupuesto.',
+          route: 'propuesta-resumen-sgr',
+          value: '16'
+        },
+        {
+          title: '¿Cuál entidad se encarga de realizar el giro de recursos de regalías?',
+          content: 'Los recursos del SGR no se giran a cuentas maestras de los beneficiarios de estos recursos.  La ejecución presupuestal se realiza a través del Sistema de Presupuesto y Giro de Regalías (SPGR) administrado por el Ministerio de Hacienda, desde donde se  ordena el pago de las obligaciones legalmente adquiridas a las cuentas bancarias de los destinatarios finales.',
+          route: 'propuesta-resumen-sgr',
+          value: '17'
+        },
+        {
+          title: '¿Dónde puede encontrar una entidad territorial información sobre su presupuesto del SGR?',
+          content: 'En los módulos de Sicodis del SGR. Puede ubicar una consulta que compara el presupuesto con el recaudo a la fecha. Todos los meses se comunican nuevos recursos del SGR para los beneficiarios del presupuesto corriente, el cual depende del recaudo de regalías por la explotación de minería e hidrocarburos. En el caso de las entidades productoras (donde se explotan minerales e hidrocarburos), depende el flujo de ingresos mensuales de Asignaciones Directas de la producción y comercialización de estas materias primas.',
+          route: 'propuesta-resumen-sgr',
+          value: '18'
+        },
+        {
+          title: '¿Cómo distribuye los recursos del SGR el DNP? ',
+          content: 'El DNP distribuye los recursos del SGR atendiendo los criterios de distribución y las variables certificadas por las entidades competentes, según lo señalado en la normativa vigente. Dentro de las variables requeridas para la distribución están la población, Índice de Necesidades Básicas Insatisfechas, desempleo, pasivo pensional no cubierto.',
+          route: 'propuesta-resumen-sgr',
+          value: '19'
+        },
+        {
+          title: '¿Quién distribuye el 2,32% para Grupos Étnicos? ',
+          content: 'Los distribuye el DNP para cada grupo étnico, a partir del total de las proyecciones de ingresos del SGR para el bienio así: 1% para Pueblos y Comunidades Indígenas; 1,1% para las Comunidades Negras, Afrocolombianas, Raizales y Palenqueras, 0,22% para el Pueblo Rrom o Gitano.',
+          route: 'propuesta-resumen-sgr',
+          value: '20'
+        },        
+        {
+          title: '¿Cuáles entidades son competentes para realizar la distribución de recursos del SGR?',
+          content: 'Las agencias Nacional de Minería y Nacional de Hidrocarburos distribuyen los recursos de Asignaciones Directas para cada beneficiario. El DNP distribuye los demás recursos que se destinan a inversión, ahorro y Sistema de Seguimiento.  En el caso de funcionamiento la determinación de las apropiaciones presupuestales por beneficiario la realiza la Comisión Rectora del SGR, y para fiscalización lo realiza el Ministerio de Minas y Energía.',
+          route: 'propuesta-resumen-sgr',
+          value: '21'
+        },        
+
       ]
     },
     // {
