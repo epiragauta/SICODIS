@@ -9,7 +9,7 @@ import { TableModule } from 'primeng/table';
 import { FormsModule } from '@angular/forms';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
-import { SGRFechaActualizacionCorte, SgrRecaudoItem, SicodisApiService } from '../../services/sicodis-api.service';
+import { DiccionarioItem, FuncionamientoSiglasDiccionario, SGRFechaActualizacionCorte, SgrRecaudoItem, SicodisApiService, SiglasItem } from '../../services/sicodis-api.service';
 import { departamentos } from '../../data/departamentos';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { MenuItem } from 'primeng/api';
@@ -46,6 +46,7 @@ export class SgrRecaudoDirectasComponent implements OnInit {
   showSiglasPopup: boolean = false;
   diccionarioContent: string = '';
   siglasContent: string = '';
+  private siglasDiccionarioData: FuncionamientoSiglasDiccionario | null = null;
 
   // Filtros
   selectedBienio: any = { id: 1, label: '2025 - 2026' };
@@ -212,7 +213,8 @@ export class SgrRecaudoDirectasComponent implements OnInit {
     }));
 
     this.townSelected = '0';
-
+        // Cargar datos de diccionario y siglas
+    this.cargarSiglasDiccionario();
     
 
     // Inicialización del componente
@@ -220,6 +222,20 @@ export class SgrRecaudoDirectasComponent implements OnInit {
     // this.initializeMonthlyComparisonData();
   }
 
+
+  /**
+   * Cargar los datos de diccionario y siglas usando el servicio
+   */
+  async cargarSiglasDiccionario(): Promise<void> {
+    try {
+      const data = await this.sicodisApiService.getSgrSiglasDiccionario().toPromise();
+      this.siglasDiccionarioData = data || null;
+      //console.log('Datos de diccionario y siglas cargados desde servicio:', this.siglasDiccionarioData);
+    } catch (error) {
+      console.error('Error cargando datos de diccionario y siglas desde API:', error);
+      this.siglasDiccionarioData = null;
+    }
+  }
 
   /**
    * Cargar las vigencias desde el servicio
@@ -584,7 +600,10 @@ private initializeLineCharts(): void {
           padding: 15,
           usePointStyle: true
         }
-      }
+      },
+    datalabels: {
+      display: false
+    },      
     },
     scales: {
       y: {
@@ -922,6 +941,25 @@ formatNumber(num: number): string {
   /**
    * Mostrar popup del diccionario
    */
+  showPopupDiccionario1(): void {
+    console.log('Mostrando diccionario de datos');
+    this.diccionarioContent = this.generarContenidoDiccionario();
+    this.showDiccionarioPopup = true;
+  }
+
+  /**
+   * Mostrar popup de siglas
+   */
+  showPopupSiglas1(): void {
+    console.log('Mostrando siglas');
+    this.siglasContent = this.generarContenidoSiglas();
+    this.showSiglasPopup = true;
+  }
+
+
+    /**
+   * Mostrar popup del diccionario
+   */
   showPopupDiccionario(): void {
     console.log('Mostrando diccionario de datos');
     this.diccionarioContent = this.generarContenidoDiccionario();
@@ -937,6 +975,8 @@ formatNumber(num: number): string {
     this.showSiglasPopup = true;
   }
 
+
+  
   /**
    * Cerrar popup del diccionario
    */
@@ -954,40 +994,91 @@ formatNumber(num: number): string {
   /**
    * Generar contenido del diccionario
    */
+  // private generarContenidoDiccionario(): string {
+  //   return `
+  //     <div style="font-size: 11px; line-height: 1.6;">
+  //       <h4 style="margin-bottom: 1rem; color: #333;">Diccionario de Conceptos - SGR Recaudo Directas</h4>
+  //       <ul style="list-style-type: none; padding: 0;">
+  //         <li style="margin-bottom: 0.5rem;"><strong>SGR Recaudo Directas:</strong> Sistema de seguimiento del recaudo de asignaciones directas</li>
+  //         <li style="margin-bottom: 0.5rem;"><strong>Asignaciones Directas:</strong> Recursos asignados directamente a entidades territoriales</li>
+  //         <li style="margin-bottom: 0.5rem;"><strong>Recaudo:</strong> Monto efectivamente recaudado de las asignaciones</li>
+  //         <li style="margin-bottom: 0.5rem;"><strong>Beneficiarios:</strong> Entidades habilitadas para recibir recursos directos del SGR</li>
+  //         <li style="margin-bottom: 0.5rem;"><strong>Bienio:</strong> Período de dos años consecutivos para análisis de recaudo</li>
+  //         <li style="margin-bottom: 0.5rem;"><strong>Entidad Territorial:</strong> Departamento, distrito o municipio beneficiario</li>
+  //       </ul>
+  //     </div>
+  //   `;
+  // }
+
+
+
+  
+  /**
+   * Generar contenido HTML para el diccionario
+   */
   private generarContenidoDiccionario(): string {
-    return `
-      <div style="font-size: 11px; line-height: 1.6;">
-        <h4 style="margin-bottom: 1rem; color: #333;">Diccionario de Conceptos - SGR Recaudo Directas</h4>
-        <ul style="list-style-type: none; padding: 0;">
-          <li style="margin-bottom: 0.5rem;"><strong>SGR Recaudo Directas:</strong> Sistema de seguimiento del recaudo de asignaciones directas</li>
-          <li style="margin-bottom: 0.5rem;"><strong>Asignaciones Directas:</strong> Recursos asignados directamente a entidades territoriales</li>
-          <li style="margin-bottom: 0.5rem;"><strong>Recaudo:</strong> Monto efectivamente recaudado de las asignaciones</li>
-          <li style="margin-bottom: 0.5rem;"><strong>Beneficiarios:</strong> Entidades habilitadas para recibir recursos directos del SGR</li>
-          <li style="margin-bottom: 0.5rem;"><strong>Bienio:</strong> Período de dos años consecutivos para análisis de recaudo</li>
-          <li style="margin-bottom: 0.5rem;"><strong>Entidad Territorial:</strong> Departamento, distrito o municipio beneficiario</li>
-        </ul>
-      </div>
-    `;
+    if (!this.siglasDiccionarioData?.diccionario?.data) {
+      return '<p>No se pudieron cargar los datos del diccionario.</p>';
+    }
+
+    let contenido = '<div style="font-size: 11px;"><table style="width: 100%; border-collapse: collapse;">';
+    contenido += '<thead><tr style="background-color: #f8f9fa;"><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Id </th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Concepto</th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Descripción</th></tr></thead>';
+    contenido += '<tbody>';
+
+    this.siglasDiccionarioData.diccionario.data.forEach((item: DiccionarioItem) => {
+      contenido += `<tr>
+        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top; font-weight: 100;"><strong>${item.id_concepto}</strong></td>
+        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top; font-weight: 500;"><strong>${item.concepto}</strong></td>
+        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top;">${item.descripcion}</td>
+      </tr>`;
+    });
+
+    contenido += '</tbody></table></div>';
+    return contenido;
   }
+
+
+
 
   /**
    * Generar contenido de siglas
    */
+  // private generarContenidoSiglas(): string {
+  //   return `
+  //     <div style="font-size: 11px; line-height: 1.6;">
+  //       <h4 style="margin-bottom: 1rem; color: #333;">Siglas y Abreviaciones</h4>
+  //       <ul style="list-style-type: none; padding: 0;">
+  //         <li style="margin-bottom: 0.5rem;"><strong>SGR:</strong> Sistema General de Regalías</li>
+  //         <li style="margin-bottom: 0.5rem;"><strong>DNP:</strong> Departamento Nacional de Planeación</li>
+  //         <li style="margin-bottom: 0.5rem;"><strong>PBC:</strong> Plan Bienal de Caja</li>
+  //         <li style="margin-bottom: 0.5rem;"><strong>FAEP:</strong> Fondo de Ahorro y Estabilización Petrolera</li>
+  //         <li style="margin-bottom: 0.5rem;"><strong>FONPET:</strong> Fondo Nacional de Pensiones de las Entidades Territoriales</li>
+  //         <li style="margin-bottom: 0.5rem;"><strong>ANH:</strong> Agencia Nacional de Hidrocarburos</li>
+  //         <li style="margin-bottom: 0.5rem;"><strong>ANM:</strong> Agencia Nacional de Minería</li>
+  //         <li style="margin-bottom: 0.5rem;"><strong>SICODIS:</strong> Sistema de Consulta y Distribución</li>
+  //       </ul>
+  //     </div>
+  //   `;
+  // }
+
   private generarContenidoSiglas(): string {
-    return `
-      <div style="font-size: 11px; line-height: 1.6;">
-        <h4 style="margin-bottom: 1rem; color: #333;">Siglas y Abreviaciones</h4>
-        <ul style="list-style-type: none; padding: 0;">
-          <li style="margin-bottom: 0.5rem;"><strong>SGR:</strong> Sistema General de Regalías</li>
-          <li style="margin-bottom: 0.5rem;"><strong>DNP:</strong> Departamento Nacional de Planeación</li>
-          <li style="margin-bottom: 0.5rem;"><strong>PBC:</strong> Plan Bienal de Caja</li>
-          <li style="margin-bottom: 0.5rem;"><strong>FAEP:</strong> Fondo de Ahorro y Estabilización Petrolera</li>
-          <li style="margin-bottom: 0.5rem;"><strong>FONPET:</strong> Fondo Nacional de Pensiones de las Entidades Territoriales</li>
-          <li style="margin-bottom: 0.5rem;"><strong>ANH:</strong> Agencia Nacional de Hidrocarburos</li>
-          <li style="margin-bottom: 0.5rem;"><strong>ANM:</strong> Agencia Nacional de Minería</li>
-          <li style="margin-bottom: 0.5rem;"><strong>SICODIS:</strong> Sistema de Consulta y Distribución</li>
-        </ul>
-      </div>
-    `;
+    if (!this.siglasDiccionarioData?.siglas?.data) {
+      return '<p>No se pudieron cargar los datos de las siglas.</p>';
+    }
+
+    let contenido = '<div style="font-size: 11px;"><table style="width: 100%; border-collapse: collapse;">';
+    contenido += '<thead><tr style="background-color: #f8f9fa;"><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Sigla</th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Descripción</th></tr></thead>';
+    contenido += '<tbody>';
+
+    this.siglasDiccionarioData.siglas.data.forEach((item: SiglasItem) => {
+      contenido += `<tr>
+        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top; font-weight: 500;"><strong>${item.sigla}</strong></td>
+        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top;">${item.descripcion}</td>
+      </tr>`;
+    });
+
+    contenido += '</tbody></table></div>';
+    return contenido;
   }
+
 }

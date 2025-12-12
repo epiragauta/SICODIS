@@ -444,7 +444,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
 
     // Register the plugin globally
     if (typeof Chart !== 'undefined') {
-      Chart.register(centerTextPlugin);
+      //Chart.register(centerTextPlugin);
     }
   }
 

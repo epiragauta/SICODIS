@@ -16,6 +16,12 @@ import { departamentos } from '../../data/departamentos';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { MenuItem } from 'primeng/api';
 
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { ChartModule } from 'primeng/chart';
+import { Chart } from 'chart.js';
+import { ChartData, ChartOptions } from 'chart.js';
+//Chart.register(ChartDataLabels);
+
 @Component({
   selector: 'app-pgn-regionalizacion-presupuesto-programacion',
   standalone: true,
@@ -29,7 +35,8 @@ import { MenuItem } from 'primeng/api';
     FloatLabel,
     ProgressSpinnerModule,
     TableModule,
-    Breadcrumb
+    Breadcrumb,
+    ChartModule        
   ],
   templateUrl: './pgn-inversion-por-sector.component.html',
   styleUrl: './pgn-inversion-por-sector.component.scss'
@@ -67,6 +74,19 @@ export class PgnInversionPorSectorComponent implements OnInit {
   // Table data
   departamentosData: any[] = [];
 
+  // Loading states
+  isLoadingData: boolean = false;
+  
+  gaugeData: ChartData<'doughnut'> = { labels: [], datasets: [] };
+  gaugeOptions: ChartOptions<'doughnut'> = {};    
+  // porcentajes que usaremos para mostrar dentro del gauge
+  compromisosPct: number = 0;
+  obligacionesPct: number = 0;
+  pagosPct: number = 0;  
+
+  sgpItems: any[] = [];
+
+
 
   constructor(
     private sicodisApiService: SicodisApiService
@@ -84,6 +104,63 @@ export class PgnInversionPorSectorComponent implements OnInit {
     ];
 
     this.home = { icon: 'pi pi-home', routerLink: '/' };
+
+    // opcional: valores por defecto para que el chart no quede vacío
+    this.gaugeData = {
+      labels: ['Regionalizado', 'Nacional', 'Por Regionalizar'],
+      datasets: [{ data: [100,90,100,100], backgroundColor: ['#0c9bd3','#e97132','#196b24'], borderWidth: 0 }]
+    };
+    
+    this.gaugeOptions = {
+      cutout: '60%',
+      rotation: -90,
+      circumference: 180,
+      maintainAspectRatio: false,
+      aspectRatio: 1.5,
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        },
+        tooltip: {
+          enabled: true,
+          callbacks: {
+            label: (context: any) => {
+              const value = context.parsed;
+              const formattedValue = new Intl.NumberFormat('es-CO', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+              }).format(value);
+              return `${formattedValue}`;
+            }
+          }
+        },
+
+        datalabels: {
+              color: 'white',
+              font: {
+                weight: 'bold',
+                size: 14
+              },
+              formatter: (value: any, ctx: any) => {
+                const idx = ctx.dataIndex;
+                // según index devolvemos el porcentaje correspondiente
+                const pct = idx === 0 ? this.compromisosPct
+                          : idx === 1 ? this.obligacionesPct
+                          : this.pagosPct;
+
+                // formateo
+                return new Intl.NumberFormat('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 1 }).format(pct) + '%';
+              },
+              anchor: 'center',
+              align: 'center'
+            }
+
+
+      }
+    };
+
+
 
       // Cargar datos necesarios desde API para los filtros del formularios
     await this.cargarVigencias();
@@ -317,6 +394,42 @@ export class PgnInversionPorSectorComponent implements OnInit {
       // Mapeamos los resultados
     this.resumen = response?.resumen || [];
     this.detalle = response?.detalle || [];
+
+    // AQUÍ es se arma los items de la tabla
+    const r = this.resumen[0]; // para abreviar
+
+    // ------------- Aquí se actualiza el gauge -------------
+    this.buildGaugeDataFromResumen(this.resumen);
+    // ----------------------------------------------------
+
+    this.sgpItems = [
+
+      {
+        concept: 'Compromisos',
+        amount: r.total_compromisos,
+        progress: r.porcentaje_regionalizado,
+        isTotal: false
+      },
+      {
+        concept: 'Obligaciones',
+        amount: r.total_obligaciones,
+        progress: r.porcentaje_nacional,
+        isTotal: false
+      },
+      {
+        concept: 'Pagos',
+        amount: r.total_pagos,
+        progress: r.porcentaje_por_regionalizar,
+        isTotal: false
+      },
+      {
+        concept: 'Total Apropiación Vigente',
+        amount: r.total_apropiacion_vigente,
+        progress: null,
+        isTotal: true
+      }
+    ];
+
     
 
     console.log('Resumen recibido:', this.resumen);
@@ -326,6 +439,35 @@ export class PgnInversionPorSectorComponent implements OnInit {
     } catch (error) {
       console.warn('Error cargando datos desde API, se usarán datos locales como fallback:', error);
     }
+  }
+
+
+    private buildGaugeDataFromResumen(r: any) {
+
+      const summary = Array.isArray(r) ? r[0] : r;
+
+      // LOS PORCENTAJES que quieres mostrar dentro del gauge
+      this.compromisosPct = summary?.porcentaje_total_compromisos ?? 0;
+      this.obligacionesPct= summary?.porcentaje_total_obligaciones ?? 0;
+      this.pagosPct = summary?.porcentaje_total_pagos ?? 0;
+
+      // los valores (si los necesitas en tooltip u otra parte)
+      const compromisosValue = summary?.total_compromisos ?? 0;
+      const obligacionesValue = summary?.total_obligaciones ?? 0;
+      const pagosValue = summary?.total_pagos ?? 0;
+
+      // Si tu gauge usa los VALORES para tamaño, mantenlos; si usa porcentajes, pon los porcentajes.
+      // Aquí respetamos lo que tenías: en tu código anterior estabas poniendo los valores en data.
+      this.gaugeData = {
+        labels: ['Compromisos', 'Obligaciones', 'Pagos'],
+        datasets: [
+          {
+            data: [compromisosValue, obligacionesValue, pagosValue],
+            backgroundColor: ['#0c9bd3','#e97132','#196b24'],
+            borderWidth: 0
+          }
+        ]
+      };
   }
 
 

@@ -119,8 +119,8 @@
 
   <div class="dates-buttons-container">
     <div style="width: 84%;">
-      <p class="date-update">Fecha de actualización: noviembre 30 de 2025</p>
-      <p class="date-update">Fecha de corte de recaudo: noviembre 15 de 2025</p>
+      <p class="date-update">Fecha de actualización: {{ fechaActualizacion }}</p>
+      <p class="date-update">Fecha de corte de recaudo: {{ fechaCorteRecaudo }}</p>      
     </div>
     <div style="position: relative; padding-bottom: .25rem;">
       <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 1.7rem; width: 90px;"
@@ -188,8 +188,12 @@
               <div class="metric-label">Pagos</div>
             </div>
             <div class="metric-item">
-              <div class="metric-value">{{formatMillions2(ejecucionData.recursoComprometer)}}</div>
-              <div class="metric-label">Saldo sin comprometer</div>
+              <div class="metric-value">{{formatMillions2(ejecucionData.saldo_por_comprometer)}}</div>
+              <div class="metric-label">Saldo por comprometer</div>
+            </div>            
+            <div class="metric-item">
+              <div class="metric-value">{{formatMillions2(ejecucionData.saldo_sin_afectacion)}}</div>
+              <div class="metric-label">Saldo sin afectación</div>
             </div>            
           </div>
         </mat-card-content>

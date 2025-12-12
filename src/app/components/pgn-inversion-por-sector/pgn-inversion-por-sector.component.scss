@@ -373,3 +373,10 @@
 .text-right {
   text-align: right !important;
 }
+.bold {
+  font-weight: 600;
+}
+
+:host ::ng-deep .p-datatable td {
+  font-variant-numeric: tabular-nums;
+}

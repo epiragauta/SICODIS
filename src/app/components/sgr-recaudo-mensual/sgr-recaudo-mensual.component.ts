@@ -8,7 +8,7 @@ import { ChartModule } from 'primeng/chart';
 import { TableModule } from 'primeng/table';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
-import { SGRFechaActualizacionCorte, SgrRecaudoItem, SicodisApiService } from '../../services/sicodis-api.service';
+import { DiccionarioItem, FuncionamientoSiglasDiccionario, SGRFechaActualizacionCorte, SgrRecaudoItem, SicodisApiService, SiglasItem } from '../../services/sicodis-api.service';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { MenuItem } from 'primeng/api';
 
@@ -40,6 +40,7 @@ export class SgrRecaudoMensualComponent implements OnInit {
   showSiglasPopup: boolean = false;
   diccionarioContent: string = '';
   siglasContent: string = '';
+  private siglasDiccionarioData: FuncionamientoSiglasDiccionario | null = null;
 
   // Estados de visualización
   showRecaudoView: boolean = true;
@@ -549,6 +550,8 @@ constructor(private sicodisApiService: SicodisApiService) { }
     this.initializeTable();
     this.initializeBehaviorTable();
     this.initializeDetailedTable();
+        // Cargar datos de diccionario y siglas
+    this.cargarSiglasDiccionario();    
   }
 
   /**
@@ -829,6 +832,9 @@ constructor(private sicodisApiService: SicodisApiService) { }
             }
           }
         },
+        datalabels: {
+          display: false
+        },        
         tooltip: {
           callbacks: {
             label: (context: any) => {
@@ -922,6 +928,9 @@ constructor(private sicodisApiService: SicodisApiService) { }
             }
           }
         },
+        datalabels: {
+          display: false
+        },        
         tooltip: {
           callbacks: {
             label: (context: any) => {
@@ -1029,6 +1038,9 @@ constructor(private sicodisApiService: SicodisApiService) { }
             }
           }
         },
+        datalabels: {
+          display: false
+        },        
         tooltip: {
           callbacks: {
             label: (context: any) => {
@@ -1128,6 +1140,9 @@ constructor(private sicodisApiService: SicodisApiService) { }
             }
           }
         },
+        datalabels: {
+          display: false
+        },        
         tooltip: {
           callbacks: {
             label: (context: any) => {
@@ -1210,44 +1225,71 @@ constructor(private sicodisApiService: SicodisApiService) { }
     this.showSiglasPopup = false;
   }
 
+  
+
   /**
-   * Generar contenido del diccionario
+   * Cargar los datos de diccionario y siglas usando el servicio
+   */
+  async cargarSiglasDiccionario(): Promise<void> {
+    try {
+      const data = await this.sicodisApiService.getSgrSiglasDiccionario().toPromise();
+      this.siglasDiccionarioData = data || null;
+      //console.log('Datos de diccionario y siglas cargados desde servicio:', this.siglasDiccionarioData);
+    } catch (error) {
+      console.error('Error cargando datos de diccionario y siglas desde API:', error);
+      this.siglasDiccionarioData = null;
+    }
+  }
+
+
+  /**
+   * Generar contenido HTML para el diccionario
    */
   private generarContenidoDiccionario(): string {
-    return `
-      <div style="font-size: 11px; line-height: 1.6;">
-        <h4 style="margin-bottom: 1rem; color: #333;">Diccionario de Conceptos - Recaudo Mensual SGR</h4>
-        <ul style="list-style-type: none; padding: 0;">
-          <li style="margin-bottom: 0.5rem;"><strong>Recaudo Mensual:</strong> Monto total de regalías recaudadas mensualmente</li>
-          <li style="margin-bottom: 0.5rem;"><strong>Ingresos Corrientes:</strong> Recaudos provenientes de la explotación de recursos naturales no renovables</li>
-          <li style="margin-bottom: 0.5rem;"><strong>Otros Ingresos:</strong> Recaudos provenientes de otras fuentes (rendimientos, reintegros, multas, etc.)</li>
-          <li style="margin-bottom: 0.5rem;"><strong>Inversión:</strong> Recursos destinados a proyectos de inversión territorial</li>
-          <li style="margin-bottom: 0.5rem;"><strong>Ahorro:</strong> Recursos destinados al Fondo de Ahorro y Estabilización</li>
-          <li style="margin-bottom: 0.5rem;"><strong>Administración:</strong> Recursos para gastos administrativos del sistema</li>
-          <li style="margin-bottom: 0.5rem;"><strong>Sector:</strong> Clasificación según el mineral o hidrocarburo de origen</li>
-        </ul>
-      </div>
-    `;
+    if (!this.siglasDiccionarioData?.diccionario?.data) {
+      return '<p>No se pudieron cargar los datos del diccionario.</p>';
+    }
+
+    let contenido = '<div style="font-size: 11px;"><table style="width: 100%; border-collapse: collapse;">';
+    contenido += '<thead><tr style="background-color: #f8f9fa;"><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Id </th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Concepto</th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Descripción</th></tr></thead>';
+    contenido += '<tbody>';
+
+    this.siglasDiccionarioData.diccionario.data.forEach((item: DiccionarioItem) => {
+      contenido += `<tr>
+        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top; font-weight: 100;"><strong>${item.id_concepto}</strong></td>
+        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top; font-weight: 500;"><strong>${item.concepto}</strong></td>
+        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top;">${item.descripcion}</td>
+      </tr>`;
+    });
+
+    contenido += '</tbody></table></div>';
+    return contenido;
   }
+
+
+
 
   /**
    * Generar contenido de siglas
-   */
+   */ 
   private generarContenidoSiglas(): string {
-    return `
-      <div style="font-size: 11px; line-height: 1.6;">
-        <h4 style="margin-bottom: 1rem; color: #333;">Siglas y Abreviaciones</h4>
-        <ul style="list-style-type: none; padding: 0;">
-          <li style="margin-bottom: 0.5rem;"><strong>SGR:</strong> Sistema General de Regalías</li>
-          <li style="margin-bottom: 0.5rem;"><strong>DNP:</strong> Departamento Nacional de Planeación</li>
-          <li style="margin-bottom: 0.5rem;"><strong>FAEP:</strong> Fondo de Ahorro y Estabilización Petrolera</li>
-          <li style="margin-bottom: 0.5rem;"><strong>FONPET:</strong> Fondo Nacional de Pensiones de las Entidades Territoriales</li>
-          <li style="margin-bottom: 0.5rem;"><strong>ANH:</strong> Agencia Nacional de Hidrocarburos</li>
-          <li style="margin-bottom: 0.5rem;"><strong>ANM:</strong> Agencia Nacional de Minería</li>
-          <li style="margin-bottom: 0.5rem;"><strong>SICODIS:</strong> Sistema de Consulta y Distribución</li>
-        </ul>
-      </div>
-    `;
+    if (!this.siglasDiccionarioData?.siglas?.data) {
+      return '<p>No se pudieron cargar los datos de las siglas.</p>';
+    }
+
+    let contenido = '<div style="font-size: 11px;"><table style="width: 100%; border-collapse: collapse;">';
+    contenido += '<thead><tr style="background-color: #f8f9fa;"><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Sigla</th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Descripción</th></tr></thead>';
+    contenido += '<tbody>';
+
+    this.siglasDiccionarioData.siglas.data.forEach((item: SiglasItem) => {
+      contenido += `<tr>
+        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top; font-weight: 500;"><strong>${item.sigla}</strong></td>
+        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top;">${item.descripcion}</td>
+      </tr>`;
+    });
+
+    contenido += '</tbody></table></div>';
+    return contenido;
   }
 
   /**

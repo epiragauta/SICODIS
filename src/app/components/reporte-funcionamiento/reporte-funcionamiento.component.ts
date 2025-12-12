@@ -111,6 +111,20 @@ export class ReporteFuncionamientoComponent implements OnInit {
   selectedDepartamento: any;
   selectedMunicipio: any;
 
+  fechaActualizacion: string = '';
+  fechaCorteRecaudo: string = '';  
+  
+  private vigenciasConfig: Record<number, { actualizacion: string; corte: string }> = {
+    1: { actualizacion: 'diciembre 31 de 2012', corte: 'diciembre 31 de 2012' },
+    2: { actualizacion: 'diciembre 31 de 2014', corte: 'diciembre 31 de 2014' },
+    3: { actualizacion: 'diciembre 31 de 2016', corte: 'diciembre 31 de 2016' },
+    4: { actualizacion: 'diciembre 31 de 2018', corte: 'septiembre 15 de 2018' },
+    5: { actualizacion: 'diciembre 31 de 2020', corte: 'diciembre 31 de 2020' },
+    6: { actualizacion: 'diciembre 31 de 2022', corte: 'agosto 15 de 2022' },
+    7: { actualizacion: 'diciembre 31 de 2024', corte: 'diciembre 15 de 2024' },
+    8: { actualizacion: 'noviembre 30 de 2025', corte: 'noviembre 15 de 2025' }
+  };  
+
   // Datos para las tarjetas (se actualizarán según la selección)
   presupuestoData = {
     presupuestoAsignado: 0,
@@ -123,7 +137,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
     cdp: 0,
     compromiso: 0,
     pagos: 0,
-    recursoComprometer: 0
+    saldo_sin_afectacion: 0,
+    saldo_por_comprometer: 0
   };
 
   situacionCajaData = {
@@ -296,6 +311,17 @@ export class ReporteFuncionamientoComponent implements OnInit {
       // Cargar datos iniciales desde API
       if (this.selectedVigencia) {
         await this.cargarDistribucionTotalDesdeAPI();
+        const config = this.vigenciasConfig[this.selectedVigencia.id];
+
+        if (!config) {
+          // Si la vigencia no existe, deja vacío o pon valores por defecto
+          this.fechaActualizacion = '';
+          this.fechaCorteRecaudo = '';
+          return;
+        }
+
+        this.fechaActualizacion = config.actualizacion;
+        this.fechaCorteRecaudo = config.corte;        
       } else {
         // Fallback a datos locales si no hay vigencia seleccionada
         this.cargarDatosTotalesInicial();
@@ -1368,6 +1394,18 @@ export class ReporteFuncionamientoComponent implements OnInit {
     console.log('Vigencia seleccionada:', event.value);
     this.selectedVigencia = event.value;
     
+    const config = this.vigenciasConfig[this.selectedVigencia.id];
+
+    if (!config) {
+      // Si la vigencia no existe, deja vacío o pon valores por defecto
+      this.fechaActualizacion = '';
+      this.fechaCorteRecaudo = '';
+      return;
+    }
+
+    this.fechaActualizacion = config.actualizacion;
+    this.fechaCorteRecaudo = config.corte;
+
     // Cargar datos de distribución total desde API basado en la vigencia seleccionada
     this.cargarDatosAPIIniciales();    
     this.cargarDistribucionTotalDesdeAPI();    
@@ -1735,7 +1773,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       'apropiacion_vigente_disponible',
       'iac_mr_saldos_reintegros',
       'iac_corriente',
-      'iac_iInformadas',
+      'iac_informadas',
       'caja_total',
       'cdp',
       'compromisos',
@@ -1831,12 +1869,13 @@ export class ReporteFuncionamientoComponent implements OnInit {
         cdp: convertirANumero(this.registroActual['cdp']) ,
         compromiso: convertirANumero(this.registroActual['compromisos']) ,
         pagos: convertirANumero(this.registroActual['pagos']) ,
-        recursoComprometer: convertirANumero(this.registroActual['saldo_sin_afectacion'])       };
+        saldo_sin_afectacion: convertirANumero(this.registroActual['saldo_sin_afectacion'])  ,
+        saldo_por_comprometer: convertirANumero(this.registroActual['saldo_por_comprometer'])     };
 
       // Actualizar datos de situación de caja
       this.situacionCajaData = {
         disponibilidadInicial: convertirANumero(this.registroActual['disponibilidad_inicial']) ,
-        recaudo: convertirANumero(this.registroActual['iac_corriente']) ,
+        recaudo: convertirANumero(this.registroActual['iac_informadas']) ,
         cajaTotal: convertirANumero(this.registroActual['caja_total']) ,
         cajaDisponible: convertirANumero(this.registroActual['caja_disponible'])       };
 
@@ -1877,7 +1916,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
       cdp: 0,
       compromiso: 0,
       pagos: 0,
-      recursoComprometer: 0
+      saldo_sin_afectacion: 0,
+      saldo_por_comprometer: 0
     };
 
     this.situacionCajaData = {
@@ -2160,6 +2200,9 @@ export class ReporteFuncionamientoComponent implements OnInit {
           color: textColor,
           font: { size: 12, weight: 'bold' }
         },
+        datalabels: {
+          display: false
+        },
         tooltip: {
           enabled: true,
           mode: 'point',
@@ -2236,6 +2279,9 @@ export class ReporteFuncionamientoComponent implements OnInit {
           color: textColor,
           font: { size: 12, weight: 'bold' }
         },
+        datalabels: {
+          display: false
+        },        
         tooltip: {
           enabled: true,
           mode: 'point',
@@ -2312,6 +2358,9 @@ export class ReporteFuncionamientoComponent implements OnInit {
           color: textColor,
           font: { size: 12, weight: 'bold' }
         },
+        datalabels: {
+          display: false
+        },        
         tooltip: {
           callbacks: {
             label: function(tooltipItem: any) {
@@ -2375,6 +2424,9 @@ export class ReporteFuncionamientoComponent implements OnInit {
           color: textColor,
           font: { size: 12, weight: 'bold' }
         },
+          datalabels: {
+            display: false
+          },        
         tooltip: {
           callbacks: {
             label: function(tooltipItem: any) {

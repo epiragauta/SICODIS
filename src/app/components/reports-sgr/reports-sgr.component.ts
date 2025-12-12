@@ -395,7 +395,7 @@ export class ReportsSgrComponent implements AfterViewInit, OnInit {
         ctx.restore();
       },
     };
-    Chart.register(customPlugin);
+    //Chart.register(customPlugin);
     new Chart(ctx, {
       type: 'doughnut',
       data: {

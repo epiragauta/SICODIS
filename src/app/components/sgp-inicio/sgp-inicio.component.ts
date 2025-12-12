@@ -48,7 +48,7 @@ import { MenuItem } from 'primeng/api';
 export class SgpInicioComponent implements OnInit, AfterViewInit {
 
   constructor(private sicodisApiService: SicodisApiService, private router: Router) {
-    Chart.register(...registerables, ChartDataLabels);
+    //Chart.register(...registerables, ChartDataLabels);
   }
 
   items: MenuItem[] | undefined;

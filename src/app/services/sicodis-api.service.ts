@@ -57,7 +57,7 @@ export interface DistribucionTotal {
   apropiacion_vigente_disponible: number;
   iac_mr_saldos_reintegros: number;
   iac_corriente: number;
-  iac_iInformadas: number;
+  iac_informadas: number;
   avance_iac_corriente: number;
   caja_total: number;
   cdp: number;
@@ -544,6 +544,33 @@ export class SicodisApiService {
     const url = `${this.baseUrl}/sgr/vigencias`;
     return this.http.get<Vigencia[]>(url);
   }
+
+  /**
+   * Obtiene las siglas y diccionario de sgr
+   * @returns Observable con los datos de siglas y diccionario estructurados
+   */
+  getSgrSiglasDiccionario(): Observable<FuncionamientoSiglasDiccionario> {
+    const siglasUrl = `${this.baseUrl}/sgr/siglas`;
+    const diccionarioUrl = `${this.baseUrl}/sgr/diccionario`;
+
+    // Headers para evitar caché del navegador
+    const httpOptions = { headers: this.getNoCacheHeaders() };
+
+    return forkJoin({
+      siglas: this.http.get<SiglasItem[]>(siglasUrl, httpOptions),
+      diccionario: this.http.get<DiccionarioItem[]>(diccionarioUrl, httpOptions)
+    }).pipe(
+      map(({ siglas, diccionario }) => ({
+        diccionario: {
+          data: diccionario || []
+        },
+        siglas: {
+          data: siglas || []
+        }
+      }))
+    );
+  }
+
 
 
   /**

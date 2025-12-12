@@ -448,6 +448,9 @@ sgpItems = [
           color: "#333",
           font: { size: 18, weight: 'bold' }
         },
+        datalabels: {
+          display: false
+        },        
         tooltip: {
           callbacks: {
             label: function(tooltipItem: any) {
@@ -497,6 +500,9 @@ sgpItems = [
           color: "#333",
           font: { size: 18, weight: 'bold' }
         },
+        datalabels: {
+          display: false
+        },        
         tooltip: {
           callbacks: {
             label: function(tooltipItem: any) {

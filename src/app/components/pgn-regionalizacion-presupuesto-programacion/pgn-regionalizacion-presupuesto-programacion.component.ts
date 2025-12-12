@@ -7,6 +7,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatGridListModule, MatGridTile } from '@angular/material/grid-list';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { ChartModule } from 'primeng/chart';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { Chart } from 'chart.js';
+
+
 
 
 
@@ -20,6 +25,9 @@ import { TableModule } from 'primeng/table';
 import { departamentos } from '../../data/departamentos';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { MenuItem } from 'primeng/api';
+import { ChartData, ChartOptions } from 'chart.js';
+//Chart.register(ChartDataLabels);
+
 
 @Component({
   selector: 'app-pgn-regionalizacion-presupuesto-programacion',
@@ -36,7 +44,8 @@ import { MenuItem } from 'primeng/api';
     TableModule,
     Breadcrumb,
     MatGridTile,
-    MatGridListModule
+    MatGridListModule,
+    ChartModule
 ],
   templateUrl: './pgn-regionalizacion-presupuesto-programacion.component.html',
   styleUrl: './pgn-regionalizacion-presupuesto-programacion.component.scss'
@@ -65,6 +74,15 @@ export class PgnRegionalizacionPresupuestoProgramacionComponent implements OnIni
   // Arreglos para el resultado
   resumen: any[] = [];
   detalle: any[] = [];
+
+  sgpItems: any[] = [];
+
+  gaugeData: ChartData<'doughnut'> = { labels: [], datasets: [] };
+  gaugeOptions: ChartOptions<'doughnut'> = {};  
+  // porcentajes que usaremos para mostrar dentro del gauge
+  regionalPct: number = 0;
+  nacionalPct: number = 0;
+  porRegionalizarPct: number = 0;    
 
   // Summary data
   resumenData = {
@@ -99,7 +117,76 @@ export class PgnRegionalizacionPresupuestoProgramacionComponent implements OnIni
 
     this.home = { icon: 'pi pi-home', routerLink: '/' };
 
-      // Cargar datos necesarios desde API para los filtros del formularios
+    // opcional: valores por defecto para que el chart no quede vacío
+    this.gaugeData = {
+      labels: ['Regionalizado', 'Nacional', 'Por Regionalizar'],
+      datasets: [{ data: [100,90,100,100], backgroundColor: ['#0c9bd3','#e97132','#196b24'], borderWidth: 0 }]
+    };
+
+ 
+
+    this.gaugeOptions = {
+      cutout: '60%',
+      rotation: -90,
+      circumference: 180,
+      maintainAspectRatio: false,
+      aspectRatio: 1.5,
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        },
+        tooltip: {
+          enabled: true,
+          callbacks: {
+            label: (context: any) => {
+              const value = context.parsed;
+              const formattedValue = new Intl.NumberFormat('es-CO', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+              }).format(value);
+              return `${formattedValue}`;
+            }
+          }
+        },
+        // datalabels: {
+        //   color: 'white',
+        //   font: {
+        //     weight: 'bold',
+        //     size: 12
+        //   },
+        //   formatter: (value: any) => {
+        //     return new Intl.NumberFormat('es-CO', {
+        //       minimumFractionDigits: 0,
+        //       maximumFractionDigits: 2
+        //     }).format(value);
+        //   }
+        // }
+        datalabels: {
+              color: 'white',
+              font: {
+                weight: 'bold',
+                size: 14
+              },
+              formatter: (value: any, ctx: any) => {
+                const idx = ctx.dataIndex;
+                // según index devolvemos el porcentaje correspondiente
+                const pct = idx === 0 ? this.regionalPct
+                          : idx === 1 ? this.nacionalPct
+                          : this.porRegionalizarPct;
+
+                // formateo
+                return new Intl.NumberFormat('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 1 }).format(pct) + '%';
+              },
+              anchor: 'center',
+              align: 'center'
+            }
+
+
+      }
+    };
+
+     // Cargar datos necesarios desde API para los filtros del formularios
     await this.cargarVigencias();
     await this.cargarPeriodos();
     await this.cargarDepartamentos();
@@ -326,7 +413,46 @@ export class PgnRegionalizacionPresupuestoProgramacionComponent implements OnIni
     this.resumen = response?.resumen || [];
     this.detalle = response?.detalle || [];
     
+    // AQUÍ es se arma los items de la tabla
+    const r = this.resumen[0]; // para abreviar
 
+    // ------------- Aquí se actualiza el gauge -------------
+    this.buildGaugeDataFromResumen(this.resumen);
+    // ----------------------------------------------------
+
+    this.sgpItems = [
+      // {
+      //   concept: 'Presupuesto Total PGN Inversión',
+      //   amount: r.total_presupuesto_pgn_inversion,
+      //   progress: r.porcentaje_total_presupuesto_pgn_inversion,
+      //   isTotal: false
+      // },
+      {
+        concept: 'Regionalizado',
+        amount: r.total_regionalizado,
+        progress: r.porcentaje_regionalizado,
+        isTotal: false
+      },
+      {
+        concept: 'Nacional',
+        amount: r.total_nacional,
+        progress: r.porcentaje_nacional,
+        isTotal: false
+      },
+      {
+        concept: 'Por regionalizar',
+        amount: r.total_por_regionalizar,
+        progress: r.porcentaje_por_regionalizar,
+        isTotal: false
+      },
+      {
+        concept: 'Presupuesto Total PGN Inversión',
+        amount: r.total_presupuesto_pgn_inversion,
+        progress: 100,
+        isTotal: true
+      }
+    ];
+    
     console.log('Resumen recibido:', this.resumen);
     console.log('Detalle recibido:', this.detalle);
 
@@ -336,6 +462,62 @@ export class PgnRegionalizacionPresupuestoProgramacionComponent implements OnIni
     }
   }
 
+    private buildGaugeDataFromResumen(r: any) {
+      
+      const summary = Array.isArray(r) ? r[0] : r;
+
+      // LOS PORCENTAJES que quieres mostrar dentro del gauge
+      this.regionalPct = summary?.porcentaje_regionalizado ?? 0;
+      this.nacionalPct = summary?.porcentaje_nacional ?? 0;
+      this.porRegionalizarPct = summary?.porcentaje_por_regionalizar ?? 0;
+
+      // los valores (si los necesitas en tooltip u otra parte)
+      const regionalValue = summary?.total_regionalizado ?? 0;
+      const nacionalValue = summary?.total_nacional ?? 0;
+      const porRegionalizarValue = summary?.total_por_regionalizar ?? 0;
+
+      // Si tu gauge usa los VALORES para tamaño, mantenlos; si usa porcentajes, pon los porcentajes.
+      // Aquí respetamos lo que tenías: en tu código anterior estabas poniendo los valores en data.
+      this.gaugeData = {
+        labels: ['Regionalizado', 'Nacional', 'Por Regionalizar'],
+        datasets: [
+          {
+            data: [regionalValue, nacionalValue, porRegionalizarValue],
+            backgroundColor: ['#0c9bd3','#e97132','#196b24'],
+            borderWidth: 0
+          }
+        ]
+      };
+
+
+  }
+
+
+  
+  // private buildGaugeDataFromResumen(r: any) {
+  //   // seguridad: si r es arreglo tomar el primer elemento
+  //   const summary = Array.isArray(r) ? r[0] : r;
+
+  //   const regional = summary?.porcentaje_regionalizado ?? 0;
+  //   const nacional = summary?.porcentaje_nacional ?? 0;
+  //   const porRegionalizar = summary?.porcentaje_por_regionalizar ?? 0;
+
+
+  //   const regionalValue = summary?.total_regionalizado ?? 0;
+  //   const nacionalValue = summary?.total_nacional ?? 0;
+  //   const porRegionalizarValue = summary?.total_por_regionalizar ?? 0;
+
+  //   this.gaugeData = {
+  //     labels: ['Regionalizado', 'Nacional', 'Por Regionalizar'],
+  //     datasets: [
+  //       {
+  //         data: [regionalValue, nacionalValue, porRegionalizarValue],
+  //         backgroundColor: ['#0c9bd3','#e97132','#196b24'],
+  //         borderWidth: 0
+  //       }
+  //     ]
+  //   };
+  // }
 
   /**
    * Descarga los datos de resumen y detalle de los departamentos de regionalización PGN a partir de los filtros seleccionados en un archivo
