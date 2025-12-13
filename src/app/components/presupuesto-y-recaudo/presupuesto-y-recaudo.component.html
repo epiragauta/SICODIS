@@ -1,5 +1,25 @@
 <div class="sicodis-container">
-  
+  <!-- LOADING OVERLAY -->
+<div *ngIf="isLoading" class="loading-overlay">
+  <p-progressSpinner></p-progressSpinner>
+  <p>Cargando información...</p>
+</div>
+
+  <!-- DEBUG LOADING -->
+  <!-- <div *ngIf="isLoading" style="
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: white;
+    ">
+    Cargando información...
+  </div> -->
+
   <!-- Popups para Diccionario y Siglas -->
   <app-info-popup 
     [infoText]="diccionarioContent" 
@@ -75,6 +95,23 @@
         </p-floatlabel>         
       </div>
 
+      <div class="p-field departamento-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select 
+            id="municipio" 
+            [options]="towns" 
+            inputId="municipioSelect"
+            [(ngModel)]="townSelected"
+            
+            optionValue="id"
+            optionLabel="label" 
+            placeholder="Municipio">
+          </p-select>
+          <label for="municipioSelect">Municipio</label>
+        </p-floatlabel>
+      </div>
+
+<!-- 
       <div *ngIf="selectedSearchType.id == 2" class="p-field dpto-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="dpto" inputId="dptoSelect" [options]="dptos" [(ngModel)]="selectedDpto" optionLabel="nombre" fluid="true"
@@ -96,7 +133,7 @@
           <p-select id="detailEntity" inputId="detailEntitySelect" [options]="detailEntitiesFiltered" fluid="true"
           placeholder="Seleccione detalle" [(ngModel)]="selectedDetailEntity" optionLabel="entidad" [showClear]="false"></p-select>
         </p-floatlabel>
-      </div>
+      </div> -->
 
       <div class="p-field apply-filters">
         <button pButton type="button"
@@ -125,7 +162,7 @@
       <p class="date-update">Fecha de corte de recaudo: octubre 31 de 2025</p>
     </div>
     <div style="position: relative; padding-bottom: .25rem;">
-      <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 2rem; width: 90px;"
+      <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 1.8rem; width: 96px;"
           (click)="showPopupDiccionario()">
       </button>
       <button pButton type="button" label="Siglas" class="p-button-secondary" style="width: 90px;"
@@ -198,8 +235,8 @@
               <div class="financial-card">
                 <h4 class="card-title">Recaudo Otros</h4>
                 <div class="card-value">
-                  <!-- {{ formatMillions2(financialData.caja_total) }} -->
-                    {{ formatMillions2(recaudo_otros) }}
+                  {{ formatMillions2(financialData.caja_otros) }}
+                    
                 </div>
               </div>
             </mat-grid-tile>

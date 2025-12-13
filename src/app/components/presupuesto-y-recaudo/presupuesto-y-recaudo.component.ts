@@ -24,9 +24,10 @@ import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { TooltipModule } from 'primeng/tooltip';
-import { SicodisApiService } from '../../services/sicodis-api.service';
+import { DiccionarioItem, FuncionamientoSiglasDiccionario, SicodisApiService, SiglasItem } from '../../services/sicodis-api.service';
 import { MultiSelectModule } from 'primeng/multiselect';
 import Chart from 'chart.js/auto';
+import { ProgressSpinner } from "primeng/progressspinner";
 
 
 interface FinancialData {
@@ -35,6 +36,7 @@ interface FinancialData {
   presupuesto_corriente: number;
   caja_corriente_informada: number;
   presupuesto_otros: number;
+  caja_otros: number;
 }
 
 @Component({
@@ -59,7 +61,8 @@ interface FinancialData {
     TooltipModule,
     NumberFormatPipe,
     MultiSelectModule,
-  ],
+    ProgressSpinner
+],
   templateUrl: './presupuesto-y-recaudo.component.html',
   styleUrl: './presupuesto-y-recaudo.component.scss'
 })
@@ -82,7 +85,8 @@ export class PresupuestoYRecaudoComponent implements OnInit {
     caja_total: 0,
     presupuesto_corriente: 0,
     caja_corriente_informada: 0,
-    presupuesto_otros: 0
+    presupuesto_otros: 0,
+    caja_otros: 0
   };
 
   // Configuración del gráfico
@@ -189,6 +193,11 @@ export class PresupuestoYRecaudoComponent implements OnInit {
   towns: any[] = [];
   townSelected: string = '';  
   vigencias: any[] = [];
+  resumen: any[] = [];
+
+  isLoading = false;
+
+  private siglasDiccionarioData: FuncionamientoSiglasDiccionario | null = null;
 
   urlSgrInformesRecaudo: string = "https://www.dnp.gov.co/LaEntidad_/subdireccion-general-inversiones-seguimiento-evaluacion/direccion-programacion-inversiones-publicas/Paginas/sistema-general-de-regalias.aspx#veinticincoseis"
 
@@ -221,19 +230,35 @@ export class PresupuestoYRecaudoComponent implements OnInit {
 
   ngOnInit():void {
     
+  
     this.cargarVigencias();
     this.cargarDepartamentos();
     //this.selectedVigencia = '0'
     this.departmentSelected = '0';
+
+
+
+    /// Inicializa en TODOS los municipios
+    const municipios = [
+                          { codigo: '0', nombre: 'Todos' },
+                       ];    
+
+    this.towns = municipios.map(m => ({
+      id: m.codigo,
+      label: m.nombre
+    }));
+
+    this.townSelected = '0';
+
     
     
     this.initializeMenuItems();
     this.initializeHistoricMenu();
     this.initializeCharts();
     //this.initializeTreeTableColumns();
-    this.loadFinancialData();
-    this.initializeChart();
-    this.initializeDonutCharts();
+    //this.loadFinancialData();
+    //this.initializeChart();
+//    this.initializeDonutCharts();
     //this.loadTreeTableData();
     this.colsA = [
         { field: 'concepto', header: 'Concepto', width: '32%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Descripción de la categoría presupuestal' },
@@ -271,42 +296,36 @@ export class PresupuestoYRecaudoComponent implements OnInit {
       this.selectedSearchType = this.searchTypes.find(st => st.id === 1) || this.searchTypes[0];
 
 
-      this.loadData().then(() => {
-        // this.queryData(); // Load initial data with default filters
-        console.log('Data loaded and ready for querying.');
-      });
+      // this.loadData().then(() => {
+      //   // this.queryData(); // Load initial data with default filters
+      //   console.log('Data loaded and ready for querying.');
+      // });
+        // Cargar datos de diccionario y siglas
+      this.cargarSiglasDiccionario();
 
-      // Cargar asignaciones desde API
-      //this.cargarAsignaciones();
 
-      // this.infoPopupContent = `
-      // <div style="font-size: 11px;">
-      //   <p>Información detallada sobre presupuestos, recaudos y distribución de recursos del Sistema General de Regalías de Colombia, organizada jerárquicamente por diferentes conceptos presupuestales.</p>
-      //   <br>
-      //   <ul>
-      //     <li><strong>Concepto</strong>: Descripción de la categoría presupuestal</li>
-      //     <li><strong>Presupuesto corriente</strong>: Monto presupuestado para ingresos corrientes</li>
-      //     <li><strong>Presupuesto otros</strong>: Montos presupuestados para otras fuentes de ingreso</li>
-      //     <li><strong>Presupuesto total vigente</strong>: Suma total del presupuesto vigente (corriente + otros)</li>
-      //     <li><strong>Recaudo corriente informada</strong>: Valores de recaudo reportados para los ingresos corrientes</li>
-      //     <li><strong>Recaudo total</strong>: Monto total de recaudo</li>
-      //     <li><strong>Disponibilidad inicial</strong>: Recursos disponibles al inicio del periodo</li>
-      //     <li><strong>Excedentes faep fonpet</strong>: Excedentes provenientes del Fondo de Ahorro y Estabilización (FAE) y del Fondo de Pensiones Territoriales (FONPET)</li>
-      //     <li><strong>Mineral sin identificacion de origen</strong>: Ingresos provenientes de minerales cuyo origen no está identificado</li>
-      //     <li><strong>MR</strong>: Categoría específica de ingresos</li>
-      //     <li><strong>Multas</strong>: Ingresos provenientes de sanciones o penalidades</li>
-      //     <li><strong>Reintegros</strong>: Devoluciones o retornos de recursos</li>
-      //     <li><strong>Rendimientos financieros</strong>: Ingresos generados por rendimientos de inversiones</li>
-      //     <li><strong>Porcentaje 1</strong> y <strong>Porcentaje 2</strong>: Indicadores porcentuales que miden proporciones entre valores</li>
-      //   </ul>          
-      // </div>
-      // `;
+
   }
 
 
     // Función para formatear números con separadores de miles
   formatNumber(value: number): string {
     return value.toLocaleString('es-CO');
+  }
+
+
+  /**
+   * Cargar los datos de diccionario y siglas usando el servicio
+   */
+  async cargarSiglasDiccionario(): Promise<void> {
+    try {
+      const data = await this.sicodisApiService.getSgrSiglasDiccionario().toPromise();
+      this.siglasDiccionarioData = data || null;
+      //console.log('Datos de diccionario y siglas cargados desde servicio:', this.siglasDiccionarioData);
+    } catch (error) {
+      console.error('Error cargando datos de diccionario y siglas desde API:', error);
+      this.siglasDiccionarioData = null;
+    }
   }
 
   /**
@@ -364,6 +383,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
       }
       
       console.log('Departamento cargadas desde API:', this.departments);
+      this.loadSgrData();
     } catch (error) {
       console.warn('Error cargando departamentos desde API, se usarán datos locales como fallback:', error);
       this.departments = [];
@@ -448,6 +468,79 @@ export class PresupuestoYRecaudoComponent implements OnInit {
     }
   }
 
+
+  loadSgrData(): void {
+    this.isLoading = true;
+    const selectedYear = parseInt(this.selectedVigencia);
+    const idVigencia = this.selectedVigencia.id;
+    const idDepto = this.departmentSelected;
+    const idMunicipio = this.townSelected;
+    let tipoConsulta: string;
+    let codigoEntidad: string;
+    const municipio = this.towns.find(d => d.id === this.townSelected);
+
+    // Regla para cambiar el tipo consulta
+    if (idDepto === '0' && idMunicipio === '0') {
+      tipoConsulta = '1';
+      codigoEntidad = idMunicipio;
+    } else if (idDepto !== '0' && idMunicipio === '0') {
+      tipoConsulta = '9';
+      codigoEntidad = idDepto;
+    } else {
+      tipoConsulta = '7';
+      codigoEntidad = idMunicipio;
+    }
+
+
+    // --- REGLA PARA CAMBIAR EL TÍTULO ---
+    const codigoMunicipio = municipio?.id ?? '';
+    const descripcionMunicipio = municipio?.label ?? '';
+    
+
+
+
+    console.log('Loading base data...');
+
+    this.sicodisApiService
+      .getSgrResumenPtoRecaudo(
+        idVigencia,
+        tipoConsulta,
+        codigoEntidad
+      )
+      .subscribe({
+        next: (response) => {
+          //  AQUÍ sí llegan los datos
+          this.detailedData = response;
+
+          // si ya usabas esto con el JSON de archivo, NO lo cambies
+          this.data = organizeCategoryData(this.detailedData);
+
+          const resumen = this.detailedData[0];
+
+          this.financialData = {
+            presupuesto_total_vigente: resumen.presupuesto_total_vigente,
+            caja_total: resumen.caja_total,
+            presupuesto_corriente: resumen.presupuesto_corriente,
+            caja_corriente_informada: resumen.caja_corriente_informada,
+            presupuesto_otros: resumen.presupuesto_otros,
+            caja_otros: resumen.caja_otros
+          };
+          this.initializeChart();
+          this.initializeDonutCharts();
+          this.isLoading = false;
+          console.log('Base data loaded successfully.');
+        },
+        error: (error) => {
+          console.error('Error fetching base data:', error);
+          this.detailedData = [];
+          this.data = [];
+        }
+      });
+
+      console.log('Datos cargados...');
+  }
+
+
   async loadData(): Promise<void> {
     console.log('Loading base data...');
     try {
@@ -468,7 +561,8 @@ export class PresupuestoYRecaudoComponent implements OnInit {
       caja_total: 48180173128862.1,
       presupuesto_corriente: 25536162427940,
       caja_corriente_informada: 9686627463144,
-      presupuesto_otros: 38493545665718.3
+      presupuesto_otros: 38493545665718.3,
+      caja_otros: 38493545665718
     };
   }
 
@@ -492,7 +586,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
           data: [
             this.financialData.caja_total,
             this.financialData.caja_corriente_informada,
-            this.recaudo_otros
+            this.financialData.caja_otros
           ],
           backgroundColor: '#60a5fa', // Azul claro para caja/recaudo
           borderColor: '#60a5fa',
@@ -515,8 +609,11 @@ export class PresupuestoYRecaudoComponent implements OnInit {
               family: '"Work Sans", sans-serif',
               size: 12
             }
-          }
+          },
         },
+        datalabels: {
+          display: false
+        },           
         tooltip: {
           callbacks: {
             label: (context: any) => {
@@ -565,16 +662,32 @@ export class PresupuestoYRecaudoComponent implements OnInit {
   /**
    * Formatear moneda como en presupuesto-y-recaudo
    */
-  private formatCurrency(value: number): string {
-    if (value === 0) return '0';
+  // private formatCurrency(value: number): string {
+  //   if (value === 0) return '0';
       
-    const millions = value / 1000000000;
-    if (millions >= 1) {
-      return millions.toFixed(1).replace('.', ',') + '';
-    }
+  //   const millions = value / 1000000000;
+  //   if (millions >= 1) {
+  //     return millions.toFixed(1).replace('.', ',') + '';
+  //   }
     
-    return new Intl.NumberFormat('es-CO').format(value);
+  //   return new Intl.NumberFormat('es-CO').format(value);
+  // }
+
+private formatCurrency(value: number): string {
+  if (!value) return '0';
+
+  const billions = value / 1_000_000_000;
+
+  if (billions >= 1) {
+    return new Intl.NumberFormat('es-CO', {
+      maximumFractionDigits: 0
+    }).format(billions);
   }
+
+  return new Intl.NumberFormat('es-CO', {
+    maximumFractionDigits: 0
+  }).format(value);
+}  
 
   private initializeDonutCharts(): void {
     const documentStyle = getComputedStyle(document.documentElement);
@@ -610,7 +723,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
           },
           xAlign: 'left',
           yAlign: 'bottom'
-        }
+        },
       },
       elements: {
         arc: {
@@ -623,7 +736,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
 
     // Gráfico 1: Avance recaudo corriente
     this.donutRecaudoCorrienteData = {
-      labels: ['Recaudo', 'Pendiente'],
+      labels: ['Recaudo', 'Restante'],
       datasets: [{
         data: [
           this.financialData.caja_corriente_informada,
@@ -649,7 +762,10 @@ export class PresupuestoYRecaudoComponent implements OnInit {
             const percentage = (recaudo / presupuesto * 100);
             return percentage.toFixed(2).replace('.', ',') + '%';
           }
-        }
+        },
+        datalabels: {
+        display: false
+      },      
       }
     };
 
@@ -657,7 +773,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
     const recaudoOtros = this.financialData.caja_total - this.financialData.caja_corriente_informada;
     
     this.donutRecaudoOtrosData = {
-      labels: ['Recaudo', 'Pendiente'],
+      labels: ['Recaudo', 'Restante'],
       datasets: [{
         data: [
           recaudoOtros,
@@ -682,7 +798,10 @@ export class PresupuestoYRecaudoComponent implements OnInit {
             const percentage = (recaudo / presupuesto * 100);
             return percentage.toFixed(2).replace('.', ',') + '%';
           }
-        }
+        },
+        datalabels: {
+        display: false
+      },      
       }
     };
   }
@@ -756,7 +875,8 @@ export class PresupuestoYRecaudoComponent implements OnInit {
     });
     
     // Call the query data method with current filters
-    this.queryData();
+    //this.queryData();
+    this.loadSgrData();
   }
 
   clearFilters() {
@@ -877,7 +997,8 @@ export class PresupuestoYRecaudoComponent implements OnInit {
           caja_total: newRow.caja_total,
           presupuesto_corriente: newRow.presupuesto_corriente,
           caja_corriente_informada: newRow.caja_corriente_informada,
-          presupuesto_otros: newRow.presupuesto_otros
+          presupuesto_otros: newRow.presupuesto_otros,
+          caja_otros: newRow.caja_otros
         };
       }
       return newRow;
@@ -981,48 +1102,50 @@ export class PresupuestoYRecaudoComponent implements OnInit {
 
 
   /**
-   * Generar contenido del diccionario
+   * Generar contenido HTML para el diccionario
    */
   private generarContenidoDiccionario(): string {
-    return `
-      <div style="font-size: 11px; line-height: 1.6;">
-        <h4 style="margin-bottom: 1rem; color: #333;">Diccionario de Conceptos</h4>
-        <ul style="list-style-type: none; padding: 0;">
-          <li style="margin-bottom: 0.5rem;"><strong>Presupuesto Total Vigente:</strong> Suma total del presupuesto vigente (corriente + otros)</li>
-          <li style="margin-bottom: 0.5rem;"><strong>Recaudo Total:</strong> Monto total de recaudo efectivamente recaudado</li>
-          <li style="margin-bottom: 0.5rem;"><strong>Presupuesto Corriente:</strong> Monto presupuestado para ingresos corrientes del SGR</li>
-          <li style="margin-bottom: 0.5rem;"><strong>Recaudo Corriente Informado:</strong> Valores de recaudo reportados para los ingresos corrientes</li>
-          <li style="margin-bottom: 0.5rem;"><strong>Presupuesto Otros:</strong> Montos presupuestados para otras fuentes de ingreso (rendimientos financieros, reintegros, etc.)</li>
-          <li style="margin-bottom: 0.5rem;"><strong>Rendimientos Financieros:</strong> Ingresos generados por rendimientos de inversiones</li>
-          <li style="margin-bottom: 0.5rem;"><strong>Reintegros:</strong> Devoluciones o retornos de recursos al SGR</li>
-          <li style="margin-bottom: 0.5rem;"><strong>Excedentes FAEP FONPET:</strong> Excedentes provenientes del Fondo de Ahorro y Estabilización y del Fondo de Pensiones Territoriales</li>
-          <li style="margin-bottom: 0.5rem;"><strong>Multas:</strong> Ingresos provenientes de sanciones o penalidades</li>
-          <li style="margin-bottom: 0.5rem;"><strong>Mineral Sin Identificación:</strong> Ingresos provenientes de minerales cuyo origen no está identificado</li>
-          <li style="margin-bottom: 0.5rem;"><strong>Porcentaje (%):</strong> Indicadores que miden la proporción del recaudo respecto al presupuesto</li>
-        </ul>
-      </div>
-    `;
+    if (!this.siglasDiccionarioData?.diccionario?.data) {
+      return '<p>No se pudieron cargar los datos del diccionario.</p>';
+    }
+
+    let contenido = '<div style="font-size: 11px;"><table style="width: 100%; border-collapse: collapse;">';
+    contenido += '<thead><tr style="background-color: #f8f9fa;"><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Id </th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Concepto</th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Descripción</th></tr></thead>';
+    contenido += '<tbody>';
+
+    this.siglasDiccionarioData.diccionario.data.forEach((item: DiccionarioItem) => {
+      contenido += `<tr>
+        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top; font-weight: 100;"><strong>${item.id_concepto}</strong></td>
+        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top; font-weight: 500;"><strong>${item.concepto}</strong></td>
+        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top;">${item.descripcion}</td>
+      </tr>`;
+    });
+
+    contenido += '</tbody></table></div>';
+    return contenido;
   }
 
-  /**
-   * Generar contenido de siglas
-   */
+
   private generarContenidoSiglas(): string {
-    return `
-      <div style="font-size: 11px; line-height: 1.6;">
-        <h4 style="margin-bottom: 1rem; color: #333;">Siglas y Abreviaciones</h4>
-        <ul style="list-style-type: none; padding: 0;">
-          <li style="margin-bottom: 0.5rem;"><strong>SGR:</strong> Sistema General de Regalías</li>
-          <li style="margin-bottom: 0.5rem;"><strong>DNP:</strong> Departamento Nacional de Planeación</li>
-          <li style="margin-bottom: 0.5rem;"><strong>FAEP:</strong> Fondo de Ahorro y Estabilización Petrolera</li>
-          <li style="margin-bottom: 0.5rem;"><strong>FONPET:</strong> Fondo Nacional de Pensiones de las Entidades Territoriales</li>
-          <li style="margin-bottom: 0.5rem;"><strong>MR:</strong> Mayor Recaudo</li>
-          <li style="margin-bottom: 0.5rem;"><strong>SICODIS:</strong> Sistema de Consulta y Distribución</li>
-          <li style="margin-bottom: 0.5rem;"><strong>SSEC:</strong> Sistema de Seguimiento, Evaluación y Control</li>
-        </ul>
-      </div>
-    `;
-  }
+    if (!this.siglasDiccionarioData?.siglas?.data) {
+      return '<p>No se pudieron cargar los datos de las siglas.</p>';
+    }
+
+    let contenido = '<div style="font-size: 11px;"><table style="width: 100%; border-collapse: collapse;">';
+    contenido += '<thead><tr style="background-color: #f8f9fa;"><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Sigla</th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Descripción</th></tr></thead>';
+    contenido += '<tbody>';
+
+    this.siglasDiccionarioData.siglas.data.forEach((item: SiglasItem) => {
+      contenido += `<tr>
+        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top; font-weight: 500;"><strong>${item.sigla}</strong></td>
+        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top;">${item.descripcion}</td>
+      </tr>`;
+    });
+
+    contenido += '</tbody></table></div>';
+    return contenido;
+  }  
+
 
   /**
    * Cargar asignaciones desde API

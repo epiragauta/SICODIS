@@ -1,6 +1,6 @@
 [
  {
-  "categoria": "-2",
+  "categoria": "1",
   "concepto": "TOTAL SGR (incluye aforado y no aforado)",
   "presupuesto_total_vigente": 64029708093658.3,
   "presupuesto_corriente": 25536162427940,
@@ -11,7 +11,7 @@
   "avance_iac_presupuesto": 0.3793
  },
  {
-  "categoria": "-1",
+  "categoria": "1,001",
   "concepto": "TOTAL AFORADO",
   "presupuesto_total_vigente": 64029708093658.3,
   "presupuesto_corriente": 25536162427940,
@@ -22,7 +22,7 @@
   "avance_iac_presupuesto": 0.3732
  },
  {
-  "categoria": "1",
+  "categoria": "1,01",
   "concepto": "INVERSIÓN",
   "presupuesto_total_vigente": 58862399828683.3,
   "presupuesto_corriente": 23620950245846,
@@ -495,7 +495,7 @@
   "avance_iac_presupuesto": 0
  },
  {
-  "categoria": "15.3",
+  "categoria": "15,3",
   "concepto": "Asignaciones Directas Anticipadas (5% del SGR) - Corrientes No Aforados",
   "presupuesto_total_vigente": 0,
   "presupuesto_corriente": 0,

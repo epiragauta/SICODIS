@@ -361,6 +361,21 @@ export interface SgrRecaudoItem {
   hidrocarburos_recaudo: number;
 }
 
+
+
+export interface SgrPtoRecaudoItem {
+  categoria: string;
+  concepto: string;
+  presupuesto_total_vigente: number;
+  presupuesto_corriente: number;
+  presupuesto_otros: number;
+  caja_corriente_informada: number;
+  caja_otros: number;
+  caja_total: number;
+  avance_iac_presupuesto: number;
+}
+
+
 // ========== Request Parameters Interfaces ==========
 export interface DistribucionTotalParams {
   idVigencia?: number;
@@ -636,6 +651,27 @@ export class SicodisApiService {
   getSgrDescargaDetallePBCRecaudoMensual(): Observable<Blob> {  
     const url = `${this.baseUrl}/sgr/descarga_detalle_pbc_recaudo_mensual`;
     return this.http.get(url, { responseType: 'blob' });  // responseType 'blob' indica que será un archivo binario
+  }
+
+
+
+  /**
+   * Obtiene el resumen de Presupuesto vs Recaudo
+   * @param idvigencia - vigencia de consulta
+   * @param codigoDepto - Código del departamento
+   * @param codigoMunicipio - Código del municipio
+   * @returns Observable con el resumen de participaciones
+   */
+  getSgrResumenPtoRecaudo(idvigencia : number, tipoConsulta: string, CodigoEntidad: string): Observable<SgrPtoRecaudoItem[]> {
+    const url = `${this.baseUrl}/sgr/resumen_pto_recaudo/${idvigencia }/${tipoConsulta}/${CodigoEntidad}`;
+    //return this.http.get<SgrPtoRecaudoItem[]>(url);
+    const response$ = this.http.get<SgrPtoRecaudoItem[]>(url);
+
+    response$.subscribe(data => {
+      console.log('🟢 Lo que trajo el servicio:', data);
+    });
+
+    return response$;    
   }
 
   // ========== SGP Methods ==========

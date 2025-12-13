@@ -91,11 +91,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
             label: 'Recaudo mensual',
             command: () => this.redirectUrl("sgr-recaudo-mensual")
           }
-          // ,
-          // {
-          //   label: 'Recaudo frente a presupuesto',
-          //   command: () => this.redirectUrl("sgr-presupuesto-y-recaudo")
-          // }
+          ,
+          {
+            label: 'Recaudo frente a presupuesto',
+            command: () => this.redirectUrl("sgr-presupuesto-y-recaudo")
+          }
           // ,
           // {
           //   label: 'Visor General de recursos AD hidrocarburos y minería',
