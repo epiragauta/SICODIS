@@ -190,6 +190,18 @@ tableDataBase: any[] =
     variacion_hidrocarburos: -26.5829463485191,
     variacion_total: -0.766899509823591,
   },
+  {
+    mes: "Noviembre de 2025",
+    pbc_mineria: 464917620452,
+    pbc_hidrocarburos: 694994469215,
+    pbc_total: 1159912089667,
+    recaudo_mineria: 174759410760,
+    recaudo_hidrocarburos: 475749145202,
+    recaudo_total: 650508555962,
+    variacion_mineria: -62.41,
+    variacion_hidrocarburos: -31.55,
+    variacion_total: -43.92,
+  },  
 ];
 
   tableColumns: any[] = [];
@@ -200,159 +212,7 @@ tableDataBase: any[] =
 
   // Configuración de tabla detallada (vista Tipo de Recurso)
   detailedTableData: any[] = [];
-//   detailedTableDataBase: any[] = [
-//   {
-//     periodo: "Enero de 2025",
-//     rc_inversion_aforada: 1108769155710.65,
-//     rc_ahorro: 55165627754.18,
-//     rc_administracion: 36777085169.88,
-//     rc_no_aforado: 25190970361.07,
-//     rc_total: 1225902838995.78,
-//     total_pbc: 1225343882351.01,
-//     avance: 1.00045616308436,
-//     ro_inversion: 293997375070,
-//     ro_ahorro: 0,
-//     ro_administracion: 0,
-//     ro_total: 293997375070,
-//     total_distribuido: 1519900214065.78,
-//   },
-//   {
-//     periodo: "Febrero de 2025",
-//     rc_inversion_aforada: 703007556076.26,
-//     rc_ahorro: 35170369377.64,
-//     rc_administracion: 23446912918.47,
-//     rc_no_aforado: 19938925576.67,
-//     rc_total: 781563763949.04,
-//     total_pbc: 902252787559.57,
-//     avance: 0.866235909409632,
-//     ro_inversion: 0,
-//     ro_ahorro: 0,
-//     ro_administracion: 0,
-//     ro_total: 0,
-//     total_distribuido: 781563763949.04,
-//   },
-//   {
-//     periodo: "Marzo de 2025",
-//     rc_inversion_aforada: 955233680976.37,
-//     rc_ahorro: 46835589482.08,
-//     rc_administracion: 31223726321.4,
-//     rc_no_aforado: 7497880600.27,
-//     rc_total: 1040790877380.12,
-//     total_pbc: 929487215867.01,
-//     avance: 1.11974738287206,
-//     ro_inversion: 3618312830497,
-//     ro_ahorro: 0,
-//     ro_administracion: 0,
-//     ro_total: 3618312830497,
-//     total_distribuido: 4659103707877.12,
-//   },
-//   {
-//     periodo: "Abril de 2025",
-//     rc_inversion_aforada: 873398583357.77,
-//     rc_ahorro: 42901765491.4,
-//     rc_administracion: 28601176994.28,
-//     rc_no_aforado: 8471040633.01,
-//     rc_total: 953372566476.46,
-//     total_pbc: 1117646851715.2,
-//     avance: 0.853017717549478,
-//     ro_inversion: 1533412273420.17,
-//     ro_ahorro: 315990852796,
-//     ro_administracion: 4738134,
-//     ro_total: 1849407864350.17,
-//     total_distribuido: 2802780430826.63,
-//   },
-//   {
-//     periodo: "Mayo de 2025",
-//     rc_inversion_aforada: 997690963296.71,
-//     rc_ahorro: 49118903875.1,
-//     rc_administracion: 32745935916.75,
-//     rc_no_aforado: 11975394136.57,
-//     rc_total: 1091531197225.13,
-//     total_pbc: 971752454011.01,
-//     avance: 1.12326055130576,
-//     ro_inversion: 70471254694,
-//     ro_ahorro: 0,
-//     ro_administracion: 0,
-//     ro_total: 70471254694,
-//     total_distribuido: 1162002451919.13,
-//   },
-//   {
-//     periodo: "Junio de 2025",
-//     rc_inversion_aforada: 771863851558.67,
-//     rc_ahorro: 37713338344.58,
-//     rc_administracion: 25142225563.11,
-//     rc_no_aforado: 3354769970.54,
-//     rc_total: 838074185436.9,
-//     total_pbc: 864055422131,
-//     avance: 0.969931052998865,
-//     ro_inversion: 0,
-//     ro_ahorro: 0,
-//     ro_administracion: 0,
-//     ro_total: 0,
-//     total_distribuido: 838074185436.9,
-//   },
-//   {
-//     periodo: "Julio de 2025",
-//     rc_inversion_aforada: 841997430050.15,
-//     rc_ahorro: 41189382933.28,
-//     rc_administracion: 27459588622.17,
-//     rc_no_aforado: 4673219133.52,
-//     rc_total: 915319620739.12,
-//     total_pbc: 1183078645150.81,
-//     avance: 0.773676056524917,
-//     ro_inversion: 0,
-//     ro_ahorro: 0,
-//     ro_administracion: 0,
-//     ro_total: 0,
-//     total_distribuido: 915319620739.12,
-//   },
-//   {
-//     periodo: "Agosto de 2025",
-//     rc_inversion_aforada: 694076570134.94,
-//     rc_ahorro: 33893438741.18,
-//     rc_administracion: 22595625827.55,
-//     rc_no_aforado: 2621892880.31,
-//     rc_total: 753187527583.98,
-//     total_pbc: 1140813407198.81,
-//     avance: 0.660219736927339,
-//     ro_inversion: 0,
-//     ro_ahorro: 0,
-//     ro_administracion: 0,
-//     ro_total: 0,
-//     total_distribuido: 753187527583.98,
-//   },
-//   {
-//     periodo: "Septiembre de 2025",
-//     rc_inversion_aforada: 798582058348.1,
-//     rc_ahorro: 39192217121.06,
-//     rc_administracion: 26128144747.38,
-//     rc_no_aforado: 7035738028.89,
-//     rc_total: 870938158245.43,
-//     total_pbc: 864055422131,
-//     avance: 1.00796561879961,
-//     ro_inversion: 0,
-//     ro_ahorro: 0,
-//     ro_administracion: 0,
-//     ro_total: 0,
-//     total_distribuido: 870938158245.43,
-//   },
-//   {
-//     periodo: "Octubre de 2025",
-//     rc_inversion_aforada: 1053500369754.46,
-//     rc_ahorro: 54717602719.84,
-//     rc_administracion: 36478401813.36,
-//     rc_no_aforado: 71250352824.11,
-//     rc_total: 1215946727111.77,
-//     total_pbc: 1225343883346.81,
-//     avance: 0.992331004901764,
-//     ro_inversion: 0,
-//     ro_ahorro: 0,
-//     ro_administracion: 0,
-//     ro_total: 0,
-//     total_distribuido: 1215946727111.77,
-//   }
-// ]  
-// ;
+
 
 detailedTableDataBase: any[] = [
 
@@ -507,19 +367,34 @@ detailedTableDataBase: any[] = [
   total_distribuido: 1215946727111.7703
  },
  {
+  periodo: "Noviembre de 2025",
+  rc_inversion_aforada: 595396758614.94,
+  rc_ahorro: 29272885018.34,
+  rc_administracion: 19515256678.89,
+  rc_no_aforado: 6323655650.47,
+  rc_total: 650508555962.64,
+  total_pbc: 1159912089667,
+  avance: 0.9923310049017643,
+  ro_inversion: 0,
+  ro_ahorro: 0,
+  ro_administracion: 0,
+  ro_total: 0,
+  total_distribuido: 650508555962.64
+ }, 
+ {
   periodo: "Total",
-  rc_inversion_aforada: 8803904477389.168,
-  rc_ahorro: 435898235840.33997,
-  rc_administracion: 290598823894.35,
-  rc_no_aforado: 156225926019.87,
-  rc_total: 9686627463143.73,
-  total_pbc: 10423829971462.23,
+  rc_inversion_aforada: 9399301236004,
+  rc_ahorro: 465171120859,
+  rc_administracion: 310114080573,
+  rc_no_aforado: 162549581670,
+  rc_total: 10337136019105.60,
+  total_pbc: 11583742061130,
   avance: 9.366841194373777,
   ro_inversion: 5460192909737.59,
   ro_ahorro: 315990852796,
   ro_administracion: -1306429294,
   ro_total: 5774877333239.59,
-  total_distribuido: 15461504796383.32
+  total_distribuido: 16112013352345.6
  }
 ]  
 ;
@@ -788,11 +663,11 @@ constructor(private sicodisApiService: SicodisApiService) { }
    */
   private initializeMiningChart(): void {
     // Datos mock para 5 períodos (Enero 2025 - Mayo 2025)
-    const periods = ['Junio 2025', 'Julio 2025', 'Agosto 2025', 'Septiembre 2025', 'Octubre 2025'];
+    const periods = [ 'Julio 2025', 'Agosto 2025', 'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025'];
     
     // Datos simulados en pesos colombianos
-    const recaudoMineria = [162378056399, 428193893327, 236606358724, 176744693700, 688694062304];
-    const pbcMineria = [169060952916, 464917620452, 422652382500, 169060952916, 507182858648];
+    const recaudoMineria = [ 428193893327, 236606358724, 176744693700, 688694062304, 174759410760];
+    const pbcMineria = [ 464917620452, 422652382500, 169060952916, 507182858648, 464917620452];
 
     this.miningChartData = {
       labels: periods,
@@ -884,11 +759,11 @@ constructor(private sicodisApiService: SicodisApiService) { }
    */
   private initializeHydrocarbonChart(): void {
     // Datos mock para 5 períodos (Enero 2025 - Mayo 2025)
-    const periods = ['Junio 2025', 'Julio 2025', 'Agosto 2025', 'Septiembre 2025', 'Octubre 2025'];
+    const periods = [ 'Julio 2025', 'Agosto 2025', 'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025'];
     
     // Datos simulados en pesos colombianos
-    const recaudoHidrocarburos = [675696129037, 487125727411, 516581168859, 694193464544, 527252664807];
-    const pbcHidrocarburos = [694994469215, 718161024698, 718161024698, 694994469215, 718161024698];
+    const recaudoHidrocarburos = [ 487125727411, 516581168859, 694193464544, 527252664807, 475749145202];
+    const pbcHidrocarburos = [718161024698, 718161024698, 694994469215, 718161024698, 694994469215];
 
     this.hydrocarbonChartData = {
       labels: periods,
@@ -1000,7 +875,7 @@ constructor(private sicodisApiService: SicodisApiService) { }
   private initializeConceptChart(): void {
     // Datos mock para conceptos: Inversión, Ahorro, Administración
     const presupuestoBienal = [ 23620950245846, 1149127309256 , 766084872838 ]; // En pesos
-    const recaudoAcumulado = [8803904477389, 435898235840, 290598823894]; // En pesos
+    const recaudoAcumulado = [9399301236004, 465171120859, 310114080573]; // En pesos
   
     this.conceptChartData = {
       labels: ['Inversión', 'Ahorro', 'Administración'],
@@ -1089,11 +964,11 @@ constructor(private sicodisApiService: SicodisApiService) { }
    */
   private initializeTrendChart(): void {
     // Datos ultimos 5 mees
-        const periods = ['Junio 2025', 'Julio 2025', 'Agosto 2025', 'Septiembre 2025', 'Octubre 2025'];
+        const periods = ['Julio 2025', 'Agosto 2025', 'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025'];
     
     // Datos simulados de Inversión (PBC vs Recaudo)
-    const inversionPBC = [864055422131, 1183078645150.81, 1140813407198.81, 864055422131, 1225343883346.81];
-    const inversionRecaudo = [838074185436.9, 915319620739.12, 753187527583.98, 870938158245.43, 1215946727111.77];
+    const inversionPBC = [1183078645150.81, 1140813407198.81, 864055422131, 1225343883346.81, 1159912089667];
+    const inversionRecaudo = [915319620739.12, 753187527583.98, 870938158245.43, 1215946727111.77, 650508555962.64];
 
     this.trendChartData = {
       labels: periods,

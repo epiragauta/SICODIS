@@ -24,7 +24,7 @@ import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { TooltipModule } from 'primeng/tooltip';
-import { DiccionarioItem, FuncionamientoSiglasDiccionario, SicodisApiService, SiglasItem } from '../../services/sicodis-api.service';
+import { DiccionarioItem, FuncionamientoSiglasDiccionario, SGRFechaActualizacionCorte, SicodisApiService, SiglasItem } from '../../services/sicodis-api.service';
 import { MultiSelectModule } from 'primeng/multiselect';
 import Chart from 'chart.js/auto';
 import { ProgressSpinner } from "primeng/progressspinner";
@@ -197,6 +197,9 @@ export class PresupuestoYRecaudoComponent implements OnInit {
 
   isLoading = false;
 
+  fechaActualizacion: string = '';
+  fechaCorteRecaudo: string = '';
+
   private siglasDiccionarioData: FuncionamientoSiglasDiccionario | null = null;
 
   urlSgrInformesRecaudo: string = "https://www.dnp.gov.co/LaEntidad_/subdireccion-general-inversiones-seguimiento-evaluacion/direccion-programacion-inversiones-publicas/Paginas/sistema-general-de-regalias.aspx#veinticincoseis"
@@ -250,7 +253,17 @@ export class PresupuestoYRecaudoComponent implements OnInit {
 
     this.townSelected = '0';
 
-    
+    this.sicodisApiService.getSGRFechasActualizacionCorteRecaudoIAC().subscribe({
+      next: (data: SGRFechaActualizacionCorte []) => {
+        if (data && data.length > 0) {
+          const registro = data[0];
+          this.fechaActualizacion = registro.fecha_actualizacion;
+          this.fechaCorteRecaudo = registro.fecha_corte_recaudo;
+        }
+
+      },
+      error: (err) => console.error('Error cargando fechas', err)
+    });    
     
     this.initializeMenuItems();
     this.initializeHistoricMenu();
@@ -1053,52 +1066,102 @@ private formatCurrency(value: number): string {
     window.open(this.urlSgrInformesRecaudo, '_blank');
   }
 
-  /**
-   * Exportar datos a Excel
+    /**
+   * Descargar datos en Excel
    */
-  exportExcel(): void {
-    console.log('Exportando a Excel...');
-    
-    if (!this.data || this.data.length === 0) {
-      console.warn('No hay datos para exportar');
-      alert('No hay datos disponibles para exportar');
-      return;
-    }
-
-    // Preparar datos para Excel (aplanar la estructura de árbol)
-    const flattenTreeData = (nodes: TreeNode[], level: number = 0): any[] => {
-      let result: any[] = [];
-      
-      nodes.forEach(node => {
-        if (node.data) {
-          const rowData = {
-            'Concepto': '  '.repeat(level) + node.data.concepto,
-            'Presupuesto Total Vigente': node.data.presupuesto_total_vigente || 0,
-            'Presupuesto Corriente': node.data.presupuesto_corriente || 0,
-            'Recaudo Corriente Informado': node.data.caja_corriente_informada || 0,
-            'Porcentaje Corriente': this.formatPercentage(node.data.porcentaje_1),
-            'Presupuesto Otros': node.data.presupuesto_otros || 0,
-            'Recaudo Total': node.data.caja_total || 0,
-            'Porcentaje Total': this.formatPercentage(node.data.porcentaje_2)
-          };
-          result.push(rowData);
-        }
-        
-        if (node.children && node.children.length > 0) {
-          result = result.concat(flattenTreeData(node.children, level + 1));
-        }
-      });
-      
-      return result;
-    };
-
-    const excelData = flattenTreeData(this.data);
-    console.log('Datos preparados para Excel:', excelData);
-    
-    // Aquí se implementaría la lógica real de descarga Excel
-    // Por ejemplo, usando una librería como SheetJS o similar
-    alert('Función de exportación Excel pendiente de implementación. Ver consola para datos.');
+  downloadExcel(): void {
+    console.log('Descargando Excel con datos de recaudo directas:');
+    // Aquí se implementaría la lógica de descarga del Excel
+    this.descargarDatosPtoRecaudo();
   }
+
+    /**
+   * Descarga del archivo excel de acuerdo con los datos del filtro
+   */
+  private async descargarDatosPtoRecaudo(): Promise<void> {
+    try {
+     
+        this.isLoading = true;
+        const selectedYear = parseInt(this.selectedVigencia);
+        const codigoSelectedDepartamento = this.departments.find(d => d.id === this.departmentSelected);
+        const codigoSelectedMunicipio = this.towns.find(d => d.id === this.townSelected);
+
+        const codigoSelectedNombreDepartamento = codigoSelectedDepartamento.label;
+        const codigoSelectedNombreMunicipio = codigoSelectedMunicipio.label;
+
+        const idVigencia = this.selectedVigencia.id;
+        const idDepto = this.departmentSelected;
+        const idMunicipio = this.townSelected;
+        let tipoConsulta: string;
+        let codigoEntidad: string;
+        const departamento = this.departmentSelected;
+        const municipio = this.towns.find(d => d.id === this.townSelected);
+              
+
+        // Regla para cambiar el tipo consulta
+        if (idDepto === '0' && idMunicipio === '0') {
+          tipoConsulta = '1';
+          codigoEntidad = idMunicipio;
+        } else if (idDepto !== '0' && idMunicipio === '0') {
+          tipoConsulta = '9';
+          codigoEntidad = idDepto;
+        } else {
+          tipoConsulta = '7';
+          codigoEntidad = idMunicipio;
+        }
+
+
+        // --- REGLA PARA CAMBIAR EL TÍTULO ---
+        const codigoMunicipio = municipio?.id ?? '';
+        const descripcionMunicipio = municipio?.label ?? '';
+
+
+      const archivo: Blob | undefined = await this.sicodisApiService.getSgrDescargaResumenPtoRecaudo( idVigencia
+                                                                                                      , tipoConsulta
+                                                                                                      , codigoEntidad
+                                                                                                      , this.selectedVigencia.label
+                                                                                                      , codigoSelectedNombreDepartamento
+                                                                                                      , codigoSelectedNombreMunicipio
+                                                                                                      , this.fechaActualizacion
+                                                                                                      , this.fechaCorteRecaudo).toPromise();
+
+      // Verificamos que sí tengamos archivo
+      if (!archivo) {
+        console.warn('No se recibió ningún archivo desde el servicio');
+        return;
+      }
+
+
+      // Forzar tipo MIME correcto para Excel
+      const excelBlob = new Blob([archivo], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+
+      const arrayBuffer = await excelBlob.arrayBuffer();
+      console.log('Tamaño de archivo:', arrayBuffer.byteLength);
+
+      // Crear enlace temporal para descargar
+      const url = window.URL.createObjectURL(excelBlob);
+      const a = document.createElement('a');
+      a.href = url;
+
+      const nombreArchivo = `ResumenPresupuestovsRecaudo.xlsx`;
+      a.download = nombreArchivo;
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+
+      console.log('Archivo descargado exitosamente');
+      this.isLoading = false;
+
+
+
+    } catch (error) {
+      console.warn('Error cargando fuentes desde API, se usarán datos locales como fallback:', error);
+    }
+  }
+
+
 
 
   /**

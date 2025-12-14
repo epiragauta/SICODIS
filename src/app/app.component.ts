@@ -11,19 +11,27 @@ import { PrimeNG } from 'primeng/config';
   standalone: true,
   imports: [RouterOutlet, HeaderComponent, FooterComponent, HomeComponent, MatSlideToggleModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
   title = 'SICODIS';
 
   constructor(private primeng: PrimeNG) {}
+
   ngOnInit() {
+    // Configuración PrimeNG
     this.primeng.ripple.set(true);
     this.primeng.zIndex = {
-            modal: 1100,    // dialog, sidebar
-            overlay: 1000,  // dropdown, overlaypanel
-            menu: 1000,     // overlay menus
-            tooltip: 1100   // tooltip
-        };
-}
+      modal: 1100,    // dialog, sidebar
+      overlay: 1000,  // dropdown, overlaypanel
+      menu: 1000,     // overlay menus
+      tooltip: 1100   // tooltip
+    };
+
+    // Recarga la app solo una vez al abrirla
+    if (!sessionStorage.getItem('appReloaded')) {
+      sessionStorage.setItem('appReloaded', 'true');
+      window.location.reload();
+    }
+  }
 }

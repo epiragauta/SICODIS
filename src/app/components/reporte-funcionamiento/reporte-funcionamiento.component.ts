@@ -1392,7 +1392,10 @@ export class ReporteFuncionamientoComponent implements OnInit {
    */
   onVigenciaChange(event: SelectChangeEvent): void {
     console.log('Vigencia seleccionada:', event.value);
+    this.clearFilters();
     this.selectedVigencia = event.value;
+    
+    this.showDetailInfo=false;
     
     const config = this.vigenciasConfig[this.selectedVigencia.id];
 

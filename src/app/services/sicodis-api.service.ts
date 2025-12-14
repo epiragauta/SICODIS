@@ -674,6 +674,32 @@ export class SicodisApiService {
     return response$;    
   }
 
+
+
+    /**
+   * Obtiene el archivo de resumen de PBC vs Recaudo
+   * @param idvigencia - vigencia de consulta
+   * @param codigoDepto - Código del departamento
+   * @param codigoMunicipio - Código del municipio
+   * @param vigencia - vigencia de consulta string
+   * @param departamento - Nombre del departamento
+   * @param municipio - Nombre del municipio
+   * @returns Observable con el resumen de participaciones
+   */
+  getSgrDescargaResumenPtoRecaudo( idvigencia: number
+                                   , tipoConsulta: string
+                                   , CodigoEntidad: string
+                                   , vigencia: string
+                                   , depto: string
+                                   , municipio: string
+                                   , fecha_actualizacion: string
+                                   , fecha_corte : string
+                                                ): Observable<Blob> {  
+    const url = `${this.baseUrl}/sgr/descarga_resumen_pto_recaudo/${idvigencia}/${tipoConsulta}/${CodigoEntidad}/${vigencia}/${depto}/${municipio}/${fecha_actualizacion}/${fecha_corte}`;
+    return this.http.get(url, { responseType: 'blob' });  // responseType 'blob' indica que será un archivo binario
+  }
+
+
   // ========== SGP Methods ==========
 
 

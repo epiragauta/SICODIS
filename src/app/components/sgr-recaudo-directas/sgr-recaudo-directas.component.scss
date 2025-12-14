@@ -612,3 +612,15 @@
     }
   }
 }
+
+:host ::ng-deep .comparative-table table {
+  table-layout: fixed !important;
+  width: 100% !important;
+}
+
+:host ::ng-deep .comparative-table th,
+:host ::ng-deep .comparative-table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
