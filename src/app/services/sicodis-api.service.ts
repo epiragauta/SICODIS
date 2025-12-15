@@ -560,6 +560,16 @@ export class SicodisApiService {
     return this.http.get<Vigencia[]>(url);
   }
 
+
+    /**
+   * Obtiene las vigencias registradas del SGR
+   * @returns Observable con el array de vigencias
+   * @note Este endpoint puede tener restricciones CORS en desarrollo local
+   */
+  getVigenciasSgrPbc(): Observable<Vigencia[]> {
+    const url = `${this.baseUrl}/sgr/vigenciaspbc`;
+    return this.http.get<Vigencia[]>(url);
+  }
   /**
    * Obtiene las siglas y diccionario de sgr
    * @returns Observable con los datos de siglas y diccionario estructurados

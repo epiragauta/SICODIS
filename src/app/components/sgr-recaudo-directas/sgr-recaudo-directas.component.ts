@@ -242,7 +242,7 @@ export class SgrRecaudoDirectasComponent implements OnInit {
    */
   async cargarVigencias(): Promise<void> {
     try {
-      const vigencias = await this.sicodisApiService.getSgrVigencias().toPromise();
+      const vigencias = await this.sicodisApiService.getVigenciasSgrPbc().toPromise();
       this.vigencias = vigencias?.map((vigencia: any) => ({
         id: vigencia.id_vigencia,
         label: vigencia.vigencia
