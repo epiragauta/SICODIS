@@ -273,10 +273,10 @@ export class HomeComponent implements OnInit {
   sgrPorcentajeOtros: string = '0,0';
 
   sgrItems = [
-    { concept: 'Inversión', amount: 23620950245846, progress: 37.27, isFirst: false, isTotal: false },
-    { concept: 'Ahorro', amount: 1149127309256, progress: 37.93, isFirst: false, isTotal: false },
-    { concept: 'Administración y SSEC', amount: 766084872838, progress: 37.93,isFirst: false, isTotal: false },    
-    { concept: 'Total Corrientes', amount: 25536162427940, progress: 37.32, isFirst: false, isTotal: true }
+    { concept: 'Inversión', amount: 23620950245846, progress: 39.79, isFirst: false, isTotal: false },
+    { concept: 'Ahorro', amount: 1149127309256, progress: 40.48, isFirst: false, isTotal: false },
+    { concept: 'Administración y SSEC', amount: 766084872838, progress: 40.48,isFirst: false, isTotal: false },    
+    { concept: 'Total Corrientes', amount: 25536162427940, progress: 39.84, isFirst: false, isTotal: true }
   ];
 
 sgpItems = [
@@ -571,10 +571,9 @@ sgpItems = [
   }
 
 
-
   private initializeSgrData() {
     // Datos de ejemplo para corrientes (naranja)
-    const corrientesDistribuido = 9530401537124;
+    const corrientesDistribuido = 10174586437436;
     const corrientesTotal = 25536162427940;
     const corrientesRestante = corrientesTotal - corrientesDistribuido;
     const corrientesPorcentaje = (corrientesDistribuido / corrientesTotal) * 100;
@@ -674,7 +673,7 @@ sgpItems = [
     this.sgpPorcentajeEjecucion = porcentaje.toFixed(1).replace('.', ',');
     
     this.donutSgpData = {
-      labels: ['Distribución', 'Restante'],
+      labels: ['Distribución', 'Presupuesto'],
       datasets: [
         {
           data: [sumaConceptos, restante],
@@ -699,6 +698,17 @@ sgpItems = [
     });
   }
 
+  redirectSGRInversion() {
+    this.route.navigate(['/sgr-presupuesto-y-recaudo']).then(() => {
+      window.scrollTo(0, 0);
+    });
+  }
+
+  redirectSGRFuncionamiento() {
+    this.route.navigate(['/reporte-funcionamiento']).then(() => {
+      window.scrollTo(0, 0);
+    });
+  }
   redirectTo(page: string){
     this.route.navigate([`/${page}`]).then(() => {
       window.scrollTo(0, 0);

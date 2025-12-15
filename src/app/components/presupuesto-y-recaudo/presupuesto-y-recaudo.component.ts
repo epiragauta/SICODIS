@@ -749,7 +749,7 @@ private formatCurrency(value: number): string {
 
     // Gráfico 1: Avance recaudo corriente
     this.donutRecaudoCorrienteData = {
-      labels: ['Recaudo', 'Restante'],
+      labels: ['Recaudo', 'Presupuesto'],
       datasets: [{
         data: [
           this.financialData.caja_corriente_informada,
@@ -786,7 +786,7 @@ private formatCurrency(value: number): string {
     const recaudoOtros = this.financialData.caja_total - this.financialData.caja_corriente_informada;
     
     this.donutRecaudoOtrosData = {
-      labels: ['Recaudo', 'Restante'],
+      labels: ['Recaudo', 'Presupuesto'],
       datasets: [{
         data: [
           recaudoOtros,

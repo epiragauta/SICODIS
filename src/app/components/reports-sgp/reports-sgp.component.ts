@@ -416,12 +416,18 @@ export class ReportsSgpComponent implements OnInit {
    */
   generateGreenColors(count: number): string[] {
     const baseColors = [
-      '#447721ff', // Verde muy oscuro
-      '#529767ff', // Verde oscuro
-      '#6dba6dff', // Verde medio
-      '#95dc43ff', // Verde claro
-      '#aff04eff', // Verde muy claro
-      '#d6fad7ff'  // Verde pastel
+      // '#447721ff', // Verde muy oscuro
+      // '#529767ff', // Verde oscuro
+      // '#6dba6dff', // Verde medio
+      // '#95dc43ff', // Verde claro
+      // '#aff04eff', // Verde muy claro
+      // '#d6fad7ff'  // Verde pastel
+
+      '#156082', //  - Educación
+      '#e97132', //  - Salud
+      '#0c9bd3', //  - Agua Potable
+      '#196b24', //  - Propósito General
+      '#a02b93'  //  Asignaciones Especiales      
     ];
 
     if (count <= baseColors.length) {

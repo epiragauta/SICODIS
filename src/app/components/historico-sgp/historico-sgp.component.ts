@@ -651,11 +651,11 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
   updateStackedBarChart(): void {
     // Colores verdes degradados para cada concepto
     const greenColors = [
-      '#31FCBC', //  - Educación
-      '#8FB8FA', //  - Salud
-      '#f7d0b6ff', //  - Agua Potable
-      '#FFD357', //  - Propósito General
-      '#E49EDD'  //  Asignaciones Especiales
+      '#156082', //  - Educación
+      '#e97132', //  - Salud
+      '#0c9bd3', //  - Agua Potable
+      '#196b24', //  - Propósito General
+      '#a02b93'  //  Asignaciones Especiales
     ];
 
     // Conceptos principales
