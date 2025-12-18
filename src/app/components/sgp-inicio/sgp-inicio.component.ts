@@ -112,7 +112,7 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
       boton: 'Consultar',
       link: 'sgp-comparativa',
       icon: 'assets/img/sgp/compare.png'
-    },
+    }
     
     // {
     //   titulo: 'Consulta de eficiencia',
@@ -121,14 +121,15 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
     //   link: 'sgp-eficiencia',
     //   icon: 'assets/img/sgp/efficiency.png'
     // }
-    // ,
-    // {
-    //   titulo: 'Resguardos Indígenas',
-    //   descripcion: 'Consulta resguardos indígenas',
-    //   boton: 'Consultar',
-    //   link: 'sgp-resguardos',
-    //   icon: 'assets/img/sgp/indigenous.png'
-    // }
+    ,
+    {
+      titulo: 'Resguardos Indígenas',
+      descripcion: 'Consulta resguardos indígenas',
+      boton: 'Consultar',
+      link: 'sgp-resguardos',
+      icon: 'assets/img/sgp/indigenous.png',
+      download: 'assets/data/sgp/sgp_variables.xlsx'
+    },
     // ,
     // {
     //   titulo: 'Distribuciones SGP',

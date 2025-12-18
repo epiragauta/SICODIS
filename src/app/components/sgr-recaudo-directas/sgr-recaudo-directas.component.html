@@ -189,18 +189,26 @@
 
   <ng-template pTemplate="header">
     <tr>
-      <th colspan="5" class="main-header">{{ titleTablaPBCRecaudo }}</th>
+      <th rowspan="3" class="mes-header" style="width: 12%">Mes</th>
+      <th colspan="4" class="main-header"> 20% Asignaciones Directas</th>
+      <th colspan="4" class="main-header">5% Asignaciones Directas Anticipadas</th>
     </tr>
     <tr>
-      <th rowspan="2" class="mes-header" style="width: 15%">Mes</th>
+      
       <th colspan="2" class="group-header mineria-header" style="width: 42.5%">Minería</th>
       <th colspan="2" class="group-header hidrocarburos-header" style="width: 42.5%">Hidrocarburos</th>
+      <th colspan="2" class="group-header mineria-header" style="width: 42.5%">Minería</th>
+      <th colspan="2" class="group-header hidrocarburos-header" style="width: 42.5%">Hidrocarburos</th>      
     </tr>
     <tr>
       <th class="sub-header mineria-sub" style="width: 21.25%">PBC</th>
       <th class="sub-header mineria-sub" style="width: 21.25%">Recaudo</th>
       <th class="sub-header hidrocarburos-sub" style="width: 21.25%">PBC</th>
       <th class="sub-header hidrocarburos-sub" style="width: 21.25%">Recaudo</th>
+      <th class="sub-header mineria-sub" style="width: 21.25%">PBC</th>
+      <th class="sub-header mineria-sub" style="width: 21.25%">Recaudo</th>
+      <th class="sub-header hidrocarburos-sub" style="width: 21.25%">PBC</th>
+      <th class="sub-header hidrocarburos-sub" style="width: 21.25%">Recaudo</th>      
     </tr>
   </ng-template>
 
@@ -211,6 +219,10 @@
       <td class="number-cell"> {{ rowData.mineria_recaudo | numberFormat }} </td>
       <td class="number-cell"> {{ rowData.hidrocarburos_pbc | numberFormat }} </td>
       <td class="number-cell"> {{ rowData.hidrocarburos_recaudo | numberFormat }} </td>
+      <td class="number-cell"> {{ rowData.mineria_pbc | numberFormat }} </td>
+      <td class="number-cell"> {{ rowData.mineria_recaudo | numberFormat }} </td>
+      <td class="number-cell"> {{ rowData.hidrocarburos_pbc | numberFormat }} </td>
+      <td class="number-cell"> {{ rowData.hidrocarburos_recaudo | numberFormat }} </td>      
     </tr>
   </ng-template>
 

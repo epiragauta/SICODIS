@@ -85,10 +85,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
           //   label: 'Plan Bienal de Caja',
           //   command: () => this.redirectUrl("sgr-programacion")
           // },
-          {
-            label: 'Recaudo directas',
-            command: () => this.redirectUrl("sgr-recaudo-directas")
-          },
+          // {
+          //   label: 'Recaudo directas',
+          //   command: () => this.redirectUrl("sgr-recaudo-directas")
+          // },
           {
             label: 'Recaudo mensual',
             command: () => this.redirectUrl("sgr-recaudo-mensual")

@@ -188,7 +188,7 @@
       </ng-template>
       <ng-template #body let-data>
         <tr>
-          <td>{{ data.fecha_distribucion | date}}</td>
+          <td>{{ data.fecha_distribucion}}</td>
           <td [innerHTML]="data.nombre | sgpBold"></td>
           <td>{{ data.anio }}</td>
           <td style="text-align: right;">{{ data.total_distribucion | numberFormat }}</td>

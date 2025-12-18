@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { Component, Renderer2, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -26,6 +27,7 @@ import { MenuItem } from 'primeng/api';
 @Component({
   selector: 'app-reports-sgp',
   standalone: true,
+  providers: [DatePipe],
   imports: [
     CommonModule,
     FormsModule,
