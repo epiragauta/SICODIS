@@ -128,7 +128,7 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
       boton: 'Consultar',
       link: 'sgp-resguardos',
       icon: 'assets/img/sgp/indigenous.png',
-      download: 'assets/data/sgp/sgp_variables.xlsx'
+      download: 'assets/data/sgp/sgp_resguardos_datos.xlsx'
     },
     // ,
     // {
