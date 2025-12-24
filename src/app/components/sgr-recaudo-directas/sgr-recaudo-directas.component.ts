@@ -579,7 +579,9 @@ private initializeLineCharts(): void {
   // ===============================
   // 2. Labels
   // ===============================
-  const monthLabels = this.dataRecaudo.map((d: SgrRecaudoItem) => d.mes);
+  //const monthLabels = this.dataRecaudo.map((d: SgrRecaudoItem) => d.mes);
+  const monthLabels = this.dataRecaudo.filter((d: SgrRecaudoItem) => d.mes !== 'TOTAL').map(d => d.mes);
+
 
   // ===============================
   // 3. FUNCIONES DE MAPEADO
@@ -610,7 +612,8 @@ private initializeLineCharts(): void {
   const mineriaPBCData = this.dataRecaudo.map((d: SgrRecaudoItem) => d.mineria_pbc);
   const mineriaRecaudoData = mapRecaudo(this.dataRecaudo.map(d => d.mineria_recaudo));
 
-  
+  const mineriaPBCChartData = mineriaPBCData.filter((_, i) => this.dataRecaudo[i].mes !== 'TOTAL');
+  const mineriaRecaudoChartData = mineriaRecaudoData.filter((_, i) => this.dataRecaudo[i].mes !== 'TOTAL');
 
   // ===============================
   // 5. Datos HIDROCARBUROS
@@ -618,6 +621,10 @@ private initializeLineCharts(): void {
   //const hidrocarburosPBCData = mapPBC(this.dataRecaudo.map(d => d.hidrocarburos_pbc));
   const hidrocarburosPBCData = this.dataRecaudo.map((d: SgrRecaudoItem) => d.hidrocarburos_pbc);
   const hidrocarburosRecaudoData = mapRecaudo(this.dataRecaudo.map(d => d.hidrocarburos_recaudo));
+
+  const hidrocarburosPBCChartData = hidrocarburosPBCData.filter((_, i) => this.dataRecaudo[i].mes !== 'TOTAL');
+  const hidrocarburosRecaudoChartData = hidrocarburosRecaudoData.filter((_, i) => this.dataRecaudo[i].mes !== 'TOTAL');
+
 
   // ===============================
   // 6. Detectar si hay datos > 0
@@ -638,7 +645,7 @@ private initializeLineCharts(): void {
     datasets: [
       {
         label: 'PBC',
-        data: mineriaPBCData,
+        data: mineriaPBCChartData,
         borderColor: '#f38135ff',
         backgroundColor: 'rgba(48, 30, 19, 0.1)',
         borderWidth: 2,
@@ -647,7 +654,7 @@ private initializeLineCharts(): void {
       },
       {
         label: 'Recaudo',
-        data: mineriaRecaudoData,
+        data: mineriaRecaudoChartData,
         borderColor: '#7991e8ff',
         backgroundColor: 'rgba(121, 145, 232, 0.1)',
         borderWidth: 2,
@@ -662,7 +669,7 @@ private initializeLineCharts(): void {
     datasets: [
       {
         label: 'PBC',
-        data: hidrocarburosPBCData,
+        data: hidrocarburosPBCChartData,
         borderColor: '#f38135ff',
         backgroundColor: 'rgba(243, 129, 53, 0.1)',
         borderWidth: 2,
@@ -671,7 +678,7 @@ private initializeLineCharts(): void {
       },
       {
         label: 'Recaudo',
-        data: hidrocarburosRecaudoData,
+        data: hidrocarburosRecaudoChartData,
         borderColor: '#7991e8ff',
         backgroundColor: 'rgba(121, 145, 232, 0.1)',
         borderWidth: 2,
