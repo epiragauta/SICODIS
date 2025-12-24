@@ -356,9 +356,19 @@ export interface PgnDatosSeguimientoResponse {
 export interface SgrRecaudoItem {
   mes: string;
   mineria_pbc: number;
-  mineria_recaudo: number;
+  mineria_recaudo: number; 
+  mineria_pbc20: number;
+  mineria_recaudo_ad20: number;  
+  mineria_pbc5: number;
+  mineria_recaudo_ad5: number;  
+  
   hidrocarburos_pbc: number;
   hidrocarburos_recaudo: number;
+  hidrocarburos_pbc20: number;
+  hidrocarburos_recaudo_ad20: number;
+  hidrocarburos_pbc5: number;
+  hidrocarburos_recaudo_ad5: number;  
+
 }
 
 

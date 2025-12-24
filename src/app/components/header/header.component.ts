@@ -80,15 +80,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
             label: 'Administración y Sistema de Seguimiento (SSEC)',
              command: () => this.redirectUrl("reporte-funcionamiento")
           }
-          ,          
-          // {
-          //   label: 'Plan Bienal de Caja',
-          //   command: () => this.redirectUrl("sgr-programacion")
-          // },
-          // {
-          //   label: 'Recaudo directas',
-          //   command: () => this.redirectUrl("sgr-recaudo-directas")
-          // },
+          ,
+          {
+            label: 'Recaudo directas',
+            command: () => this.redirectUrl("sgr-recaudo-directas")
+          },
           {
             label: 'Recaudo mensual',
             command: () => this.redirectUrl("sgr-recaudo-mensual")
@@ -98,6 +94,47 @@ export class HeaderComponent implements OnInit, OnDestroy {
             label: 'Recaudo frente a presupuesto',
             command: () => this.redirectUrl("sgr-presupuesto-y-recaudo")
           }
+          ,          
+          {
+            label: 'Programación',
+            items: [
+              {
+                label: 'Plan de Recursos',
+                items: [
+                  {
+                    label: '2025 - 2034',
+                    command: () => this.downloadFile('assets/data/sgr/plan-recursos-2025-2034.xlsx')
+                  },
+                  {
+                    label: '2023 - 2032',
+                    command: () => this.downloadFile('assets/data/sgr/plan-recursos-2023-2032.xlsx')
+                  },
+                  {
+                    label: '2021 - 2030',
+                    command: () => this.downloadFile('assets/data/sgr/plan-recursos-2021-2030.xlsx')
+                  }
+                ]
+              },
+              {
+                label: 'Plan Bienal de Caja',
+                items: [
+                  {
+                    label: '2025 - 2026',
+                    command: () => this.downloadFile('assets/data/sgr/plan-bienal-caja-2025-2026.xlsx')
+                  },
+                  {
+                    label: '2023 - 2024',
+                    command: () => this.downloadFile('assets/data/sgr/plan-bienal-caja-2023-2024.xlsx')
+                  },
+                  {
+                    label: '2021 - 2022',
+                    command: () => this.downloadFile('assets/data/sgr/plan-bienal-caja-2021-2022.xlsx')
+                  }
+                ]
+              }
+            ]
+          }
+
           // ,
           // {
           //   label: 'Visor General de recursos AD hidrocarburos y minería',
@@ -193,6 +230,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.renderer.removeClass(this.document.body, 'menu-is-sticky');
     }
   }
+
+
+downloadFile(path: string) {
+  const link = document.createElement('a');
+  link.href = path;
+  link.target = '_blank';
+  link.download = '';
+  link.click();
+}
+
 
   redirectHome() {
     this.route.navigate(['/']);

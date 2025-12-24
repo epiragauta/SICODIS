@@ -98,73 +98,153 @@ export class SgrRecaudoDirectasComponent implements OnInit {
   dataRecaudo: SgrRecaudoItem[] = [
   {
     mes: "Ene 2025",
-    mineria_pbc: 126795714413.05,
-    mineria_recaudo: 170520203403.32,
-    hidrocarburos_pbc: 179540256174.70,
-    hidrocarburos_recaudo: 135955506345.63
+    mineria_pbc: 0,
+    mineria_recaudo: 0,
+    mineria_pbc20: 0,
+    mineria_recaudo_ad20: 0,
+    mineria_pbc5: 0 ,
+    mineria_recaudo_ad5: 0,    
+    hidrocarburos_pbc: 0,
+    hidrocarburos_recaudo: 0,
+    hidrocarburos_pbc20: 0,
+    hidrocarburos_recaudo_ad20: 0,
+    hidrocarburos_pbc5: 0,
+    hidrocarburos_recaudo_ad5: 0    
   },
   {
     mes: "Feb 2025",
-    mineria_pbc: 63397857328.05,
-    mineria_recaudo: 51453810290.40,
-    hidrocarburos_pbc: 162165339561.84,
-    hidrocarburos_recaudo: 143937130696.86
+    mineria_pbc: 0,
+    mineria_recaudo: 0,
+    mineria_pbc20: 0,
+    mineria_recaudo_ad20: 0,
+    mineria_pbc5: 0 ,
+    mineria_recaudo_ad5: 0,    
+    hidrocarburos_pbc: 0,
+    hidrocarburos_recaudo: 0,
+    hidrocarburos_pbc20: 0,
+    hidrocarburos_recaudo_ad20: 0,
+    hidrocarburos_pbc5: 0,
+    hidrocarburos_recaudo_ad5: 0    
   },
   {
     mes: "Mar 2025",
-    mineria_pbc: 52831547792.05,
-    mineria_recaudo: 44884216214.08,
-    hidrocarburos_pbc: 179540256174.70,
-    hidrocarburos_recaudo: 258376203757.14
+    mineria_pbc: 0,
+    mineria_recaudo: 0,
+    mineria_pbc20: 0,
+    mineria_recaudo_ad20: 0,
+    mineria_pbc5: 0 ,
+    mineria_recaudo_ad5: 0,    
+    hidrocarburos_pbc: 0,
+    hidrocarburos_recaudo: 0,
+    hidrocarburos_pbc20: 0,
+    hidrocarburos_recaudo_ad20: 0,
+    hidrocarburos_pbc5: 0,
+    hidrocarburos_recaudo_ad5: 0    
   },
   {
     mes: "Abr 2025",
-    mineria_pbc: 105663095625.05,
-    mineria_recaudo: 110203177013.64,
-    hidrocarburos_pbc: 173748617303.75,
-    hidrocarburos_recaudo: 128139964605.48
+    mineria_pbc: 0,
+    mineria_recaudo: 0,
+    mineria_pbc20: 0,
+    mineria_recaudo_ad20: 0,
+    mineria_pbc5: 0 ,
+    mineria_recaudo_ad5: 0,    
+    hidrocarburos_pbc: 0,
+    hidrocarburos_recaudo: 0,
+    hidrocarburos_pbc20: 0,
+    hidrocarburos_recaudo_ad20: 0,
+    hidrocarburos_pbc5: 0,
+    hidrocarburos_recaudo_ad5: 0    
   },
   {
     mes: "May 2025",
-    mineria_pbc: 63397857328.05,
-    mineria_recaudo: 130524675218.82,
-    hidrocarburos_pbc: 179540256174.70,
-    hidrocarburos_recaudo: 142358124087.46
+    mineria_pbc: 0,
+    mineria_recaudo: 0,
+    mineria_pbc20: 0,
+    mineria_recaudo_ad20: 0,
+    mineria_pbc5: 0 ,
+    mineria_recaudo_ad5: 0,    
+    hidrocarburos_pbc: 0,
+    hidrocarburos_recaudo: 0,
+    hidrocarburos_pbc20: 0,
+    hidrocarburos_recaudo_ad20: 0,
+    hidrocarburos_pbc5: 0,
+    hidrocarburos_recaudo_ad5: 0    
   },
   {
     mes: "Jun 2025",
-    mineria_pbc: 42265238229.00,
-    mineria_recaudo: 40594514099.83,
-    hidrocarburos_pbc: 173748617303.75,
-    hidrocarburos_recaudo: 168924032259.40
+    mineria_pbc: 0,
+    mineria_recaudo: 0,
+    mineria_pbc20: 0,
+    mineria_recaudo_ad20: 0,
+    mineria_pbc5: 0 ,
+    mineria_recaudo_ad5: 0,    
+    hidrocarburos_pbc: 0,
+    hidrocarburos_recaudo: 0,
+    hidrocarburos_pbc20: 0,
+    hidrocarburos_recaudo_ad20: 0,
+    hidrocarburos_pbc5: 0,
+    hidrocarburos_recaudo_ad5: 0    
   },
   {
     mes: "Jul 2025",
-    mineria_pbc: 116229405113.00,
-    mineria_recaudo: 107048473331.95,
-    hidrocarburos_pbc: 179540256174.70,
-    hidrocarburos_recaudo: 121781431852.83
+    mineria_pbc: 0,
+    mineria_recaudo: 0,
+    mineria_pbc20: 0,
+    mineria_recaudo_ad20: 0,
+    mineria_pbc5: 0 ,
+    mineria_recaudo_ad5: 0,    
+    hidrocarburos_pbc: 0,
+    hidrocarburos_recaudo: 0,
+    hidrocarburos_pbc20: 0,
+    hidrocarburos_recaudo_ad20: 0,
+    hidrocarburos_pbc5: 0,
+    hidrocarburos_recaudo_ad5: 0    
   },
   {
     mes: "Ago 2025",
-    mineria_pbc: 105663095625.00,
-    mineria_recaudo: 59151589681.17,
-    hidrocarburos_pbc: 179540256174.70,
-    hidrocarburos_recaudo: 129145292214.83
+    mineria_pbc: 0,
+    mineria_recaudo: 0,
+    mineria_pbc20: 0,
+    mineria_recaudo_ad20: 0,
+    mineria_pbc5: 0 ,
+    mineria_recaudo_ad5: 0,    
+    hidrocarburos_pbc: 0,
+    hidrocarburos_recaudo: 0,
+    hidrocarburos_pbc20: 0,
+    hidrocarburos_recaudo_ad20: 0,
+    hidrocarburos_pbc5: 0,
+    hidrocarburos_recaudo_ad5: 0    
   },
   {
     mes: "Sep 2025",
-    mineria_pbc: 42265238229.00,
-    mineria_recaudo: 44186173425.12,
-    hidrocarburos_pbc: 173748617303.75,
-    hidrocarburos_recaudo: 173548366136.24
+    mineria_pbc: 0,
+    mineria_recaudo: 0,
+    mineria_pbc20: 0,
+    mineria_recaudo_ad20: 0,
+    mineria_pbc5: 0 ,
+    mineria_recaudo_ad5: 0,    
+    hidrocarburos_pbc: 0,
+    hidrocarburos_recaudo: 0,
+    hidrocarburos_pbc20: 0,
+    hidrocarburos_recaudo_ad20: 0,
+    hidrocarburos_pbc5: 0,
+    hidrocarburos_recaudo_ad5: 0    
   },
   {
     mes: "Oct 2025",
-    mineria_pbc: 126795714662.00,
-    mineria_recaudo: 172173515576.15,
-    hidrocarburos_pbc: 179540256174.70,
-    hidrocarburos_recaudo: 131813166201.79
+    mineria_pbc: 0,
+    mineria_recaudo: 0,
+    mineria_pbc20: 0,
+    mineria_recaudo_ad20: 0,
+    mineria_pbc5: 0 ,
+    mineria_recaudo_ad5: 0,    
+    hidrocarburos_pbc: 0,
+    hidrocarburos_recaudo: 0,
+    hidrocarburos_pbc20: 0,
+    hidrocarburos_recaudo_ad20: 0,
+    hidrocarburos_pbc5: 0,
+    hidrocarburos_recaudo_ad5: 0    
   }
 ];
 
@@ -361,7 +441,26 @@ export class SgrRecaudoDirectasComponent implements OnInit {
     
     this.sicodisApiService.getSgrDetallePBCRecaudo( idVigencia, this.departmentSelected, this.townSelected).subscribe({   
         next: (data: SgrRecaudoItem[]) => {
-          this.dataRecaudo = data;
+          //this.dataRecaudo = data;
+
+
+      this.dataRecaudo = data.map(item => ({
+        ...item,
+
+        // minería
+        mineria_pbc:
+          (item.mineria_pbc20 ?? 0) + (item.mineria_pbc5 ?? 0),
+
+        mineria_recaudo:
+          (item.mineria_recaudo_ad20 ?? 0) + (item.mineria_recaudo_ad5 ?? 0),
+
+        // hidrocarburos
+        hidrocarburos_pbc:
+          (item.hidrocarburos_pbc20 ?? 0) + (item.hidrocarburos_pbc5 ?? 0),
+
+        hidrocarburos_recaudo:
+          (item.hidrocarburos_recaudo_ad20 ?? 0) + (item.hidrocarburos_recaudo_ad5 ?? 0),
+      }));          
           
           this.initializeLineCharts();
           this.initializeMonthlyComparisonData();
@@ -818,19 +917,33 @@ formatNumber(num: number): string {
   private initializeMonthlyComparisonData(): void {
     // Usar los mismos datos de los gráficos
     const monthLabels = this.dataRecaudo.map((d: SgrRecaudoItem) => d.mes);
-    const mineriaPBCData = this.dataRecaudo.map((d: SgrRecaudoItem) => d.mineria_pbc);
-    const mineriaRecaudoData = this.dataRecaudo.map((d: SgrRecaudoItem) => d.mineria_recaudo);
-    const hidrocarburosPBCData = this.dataRecaudo.map((d: SgrRecaudoItem) => d.hidrocarburos_pbc);
-    const hidrocarburosRecaudoData = this.dataRecaudo.map((d: SgrRecaudoItem) => d.hidrocarburos_recaudo);    
+    const mineriaPBCData20 = this.dataRecaudo.map((d: SgrRecaudoItem) => d.mineria_pbc20);
+    const mineriaPBCData5 = this.dataRecaudo.map((d: SgrRecaudoItem) => d.mineria_pbc5);
+    
+    const mineriaRecaudoDataAD20 = this.dataRecaudo.map((d: SgrRecaudoItem) => d.mineria_recaudo_ad20);
+    const mineriaRecaudoDataAD5 = this.dataRecaudo.map((d: SgrRecaudoItem) => d.mineria_recaudo_ad5);
+    
+    const hidrocarburosPBCData20 = this.dataRecaudo.map((d: SgrRecaudoItem) => d.hidrocarburos_pbc20);
+    const hidrocarburosPBCData5 = this.dataRecaudo.map((d: SgrRecaudoItem) => d.hidrocarburos_pbc5);
+    
+    const hidrocarburosRecaudoDataAD20 = this.dataRecaudo.map((d: SgrRecaudoItem) => d.hidrocarburos_recaudo_ad20);    
+    const hidrocarburosRecaudoDataAD5 = this.dataRecaudo.map((d: SgrRecaudoItem) => d.hidrocarburos_recaudo_ad5);    
 
 
     // Construir datos de la tabla
     this.monthlyComparisonData = monthLabels.map((month, index) => ({
       mes: month,
-      mineria_pbc: mineriaPBCData[index] * 1, // Convertir a pesos
-      mineria_recaudo: mineriaRecaudoData[index] * 1,
-      hidrocarburos_pbc: hidrocarburosPBCData[index] * 1,
-      hidrocarburos_recaudo: hidrocarburosRecaudoData[index] * 1
+      mineria_pbc20: mineriaPBCData20[index] * 1,
+      mineria_pbc5: mineriaPBCData5[index] * 1,
+
+      mineria_recaudo_ad20: mineriaRecaudoDataAD20[index] * 1,
+      mineria_recaudo_ad5: mineriaRecaudoDataAD5[index] * 1,
+      
+      hidrocarburos_pbc20: hidrocarburosPBCData20[index] * 1,
+      hidrocarburos_pbc5: hidrocarburosPBCData5[index] * 1,
+
+      hidrocarburos_recaudo_ad20: hidrocarburosRecaudoDataAD20[index] * 1,
+      hidrocarburos_recaudo_ad5: hidrocarburosRecaudoDataAD5[index] * 1
     }));
   }
 
