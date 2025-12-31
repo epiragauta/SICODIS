@@ -6,7 +6,7 @@
   <div class="gradient-banner">    
     <div class="gradient-overlay"></div>
     <div class="banner-content">
-      <h1>Ficha comparativa Sistema General de Participaciones</h1>
+      <h1>Tablero comparativo Sistema General de Participaciones</h1>
       <p>
         Consulte para una o dos entidades territoriales, los recursos distribuidos del SGP en la vigencia 
         seleccionada frente a la vigencia anterior.
@@ -16,7 +16,7 @@
 
   <div class="dates-buttons-container">
     <div style="width: 84%;">
-      <p class="date-update">Fecha de actualización: octubre 01 de 2025</p>
+      <p class="date-update">Fecha de actualización: diciembre 30 de 2025</p>
     </div>
   </div>
 <!-- 
@@ -50,7 +50,7 @@
     <div class="filters-panel">
       <div class="filters-row">
         <!-- Vigencia a consultar (multi-select) -->
-        <div class="p-field vigencia-select">
+        <!-- <div class="p-field vigencia-select">
           <p-floatlabel class="w-full" variant="on">
             <p-select 
               id="vigencia" 
@@ -58,6 +58,22 @@
               inputId="vigenciaSelect" 
               [(ngModel)]="selected"
               (onChange)="onVigenciaChange($event)"
+              optionValue="id_vigencia"
+              optionLabel="vigencia" 
+              placeholder="Seleccionar vigencia"
+              styleClass="vigencia-select-custom">
+            </p-select>
+            <label for="vigenciaSelect">Vigencia</label>
+          </p-floatlabel>
+        </div> -->
+
+        <div class="p-field vigencia-select">
+          <p-floatlabel class="w-full" variant="on">
+            <p-select 
+              id="vigencia" 
+              [options]="infoResume" 
+              inputId="vigenciaSelect" 
+              [(ngModel)]="selected"
               optionValue="id_vigencia"
               optionLabel="vigencia" 
               placeholder="Seleccionar vigencia"
@@ -92,7 +108,7 @@
               [options]="towns" 
               inputId="municipioSelect"
               [(ngModel)]="townSelected"
-              (onChange)="onTownChange($event)"
+              
               optionValue="id"
               optionLabel="label"
               placeholder="Municipio"
@@ -127,7 +143,7 @@
               [options]="towns2" 
               inputId="municipioSelect2"
               [(ngModel)]="townSelected2"
-              (onChange)="onTown2Change($event)"
+              
               optionValue="id"
               optionLabel="label" 
               placeholder="Municipio 2"
@@ -136,12 +152,12 @@
             <label for="municipioSelect2">Municipio 2</label>
           </p-floatlabel>
         </div>
-        <!-- <button pButton type="button" 
+        <button pButton type="button" 
               icon="pi pi-filter" 
               label="Aplicar" 
               class="p-button-primary"
               (click)="applyFilters()">
-        </button> -->
+        </button>
         <button pButton type="button" 
                 icon="pi pi-eraser" 
                 label="Limpiar" 
@@ -191,7 +207,7 @@
   </div>
 
   <!-- Recursos tab content -->
-  <div class="tab-content recursos-tab" *ngIf="townSelected && townSelected2 && !isLoadingComparativeData && activeTab === 'recursos'">
+  <div class="tab-content recursos-tab" *ngIf="fichaComparativaData.length > 0 && !isLoadingComparativeData && activeTab === 'recursos'">
     <!-- Chart section -->
     <div class="graphics-section">
     <div class="dual-chart-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%;">
@@ -200,7 +216,8 @@
         <p-card class="chart-card">
           <ng-template pTemplate="header">
             <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
-              <h3 class="chart-title">{{ getSelectedMunicipalityName(1) }} - Distribución por conceptos principales</h3>
+              <h3 class="chart-title">Distribución por conceptos principales</h3>
+              <h3 class="chart-title">{{ getSelectedMunicipalityName(1) }}</h3>
             </div>
           </ng-template>
           <div class="chart-container" style="position: relative; height: 400px; width: 100%;">
@@ -214,7 +231,8 @@
         <p-card class="chart-card">
           <ng-template pTemplate="header">
             <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
-              <h3 class="chart-title">{{ getSelectedMunicipalityName(2) }} - Distribución por conceptos principales</h3>
+              <h3 class="chart-title">Distribución por conceptos principales</h3>
+              <h3 class="chart-title">{{ getSelectedMunicipalityName(2) }}</h3>
             </div>
           </ng-template>
           <div class="chart-container" style="position: relative; height: 400px; width: 100%;">
@@ -233,7 +251,7 @@
         <p-card class="table-card">
           <ng-template pTemplate="header">
             <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
-              <h3 class="table-title">{{ getSelectedMunicipalityName(1) }} - Vigencia {{ getSelectedVigenciaName() }}</h3>              
+              <h3 class="table-title">{{ getSelectedMunicipalityName(1) }}</h3>              
             </div>
           </ng-template>
           <p-treetable #treeTable
@@ -246,7 +264,7 @@
                        *ngIf="treeTableData.length > 0">
             <ng-template pTemplate="header">
               <tr>
-                <th class="table-header concept-header" style="width: 32%;">Participación</th>
+                <th class="table-header concept-header" style="width: 28%;">Participación</th>
                 <th class="table-header vigencia-header" style="width: 20%; text-align: right;">
                   {{ getSelectedVigenciaName() }}
                 </th>
@@ -256,7 +274,7 @@
                 <th class="table-header variation-pesos-header" style="width: 20%; text-align: right;">
                   Variación ($)
                 </th>
-                <th class="table-header variation-percent-header" style="width: 8%; text-align: right;">
+                <th class="table-header variation-percent-header" style="width: 12%; text-align: right;">
                   Variación (%)
                 </th>                
               </tr>
@@ -283,7 +301,7 @@
             </ng-template>
             <ng-template pTemplate="footer">
               <tr class="total-row">
-                <td class="concept-cell" style="width: 32%;"><strong>Total General</strong></td>
+                <td class="concept-cell" style="width: 28%;"><strong>Total General</strong></td>
                 <td class="vigencia-cell" style="width: 20%;">
                   <strong>{{ getTreeTableYearTotal() | numberFormat }}</strong>
                 </td>
@@ -293,7 +311,7 @@
                 <td class="variation-pesos-cell" style="width: 20%;">
                   <strong>{{ getTreeTableDifferenciaTotal() | numberFormat }}</strong>
                 </td>
-                <td class="variation-percent-cell" style="width: 6.5%;">
+                <td class="variation-percent-cell" style="width: 9%;">
                   <strong>{{ getTreeTablePorcentualTotal() === '-' ? '-' : getTreeTablePorcentualTotal() + '%' }}</strong>
                 </td>
               </tr>
@@ -317,7 +335,7 @@
         <p-card class="table-card">
           <ng-template pTemplate="header">
             <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
-              <h3 class="table-title">{{ getSelectedMunicipalityName(2) }} - Vigencia {{ getSelectedVigenciaName() }}</h3>              
+              <h3 class="table-title">{{ getSelectedMunicipalityName(2) }}</h3>              
             </div>
           </ng-template>
           <p-treetable #treeTable2
@@ -330,7 +348,7 @@
                        *ngIf="treeTableData2.length > 0">
             <ng-template pTemplate="header">
               <tr>
-                <th class="table-header concept-header" style="width: 32%;">Participación</th>
+                <th class="table-header concept-header" style="width: 28%;">Participación</th>
                 <th class="table-header vigencia-header" style="width: 20%; text-align: right;">
                   {{ getSelectedVigenciaName() }}
                 </th>
@@ -340,7 +358,7 @@
                 <th class="table-header variation-pesos-header" style="width: 20%; text-align: right;">
                   Variación ($)
                 </th>
-                <th class="table-header variation-percent-header" style="width: 8%; text-align: right;">
+                <th class="table-header variation-percent-header" style="width: 12%; text-align: right;">
                   Variación (%)
                 </th>                
               </tr>
@@ -367,7 +385,7 @@
             </ng-template>
             <ng-template pTemplate="footer">
               <tr class="total-row">
-                <td class="concept-cell" style="width: 32%;"><strong>Total General</strong></td>
+                <td class="concept-cell" style="width: 28%;"><strong>Total General</strong></td>
                 <td class="vigencia-cell" style="width: 20%;">
                   <strong>{{ getTreeTableYearTotal2() | numberFormat }}</strong>
                 </td>
@@ -377,7 +395,7 @@
                 <td class="variation-pesos-cell" style="width: 20%;">
                   <strong>{{ getTreeTableDifferenciaTotal2() | numberFormat }}</strong>
                 </td>
-                <td class="variation-percent-cell" style="width: 6.5%;">
+                <td class="variation-percent-cell" style="width: 9%;">
                   <strong>{{ getTreeTablePorcentualTotal2() === '-' ? '-' : getTreeTablePorcentualTotal2() + '%' }}</strong>
                 </td>
               </tr>

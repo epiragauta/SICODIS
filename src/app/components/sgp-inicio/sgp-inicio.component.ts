@@ -76,43 +76,65 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
 
   // Select options and selected value
   vigencias: any[] = [
+    { value: '2026', label: '2026' },    
     { value: '2025', label: '2025' },
     { value: '2024', label: '2024' },
     { value: '2023', label: '2023' },
     { value: '2022', label: '2022' },
     { value: '2021', label: '2021' }
   ];
-  selectedVigencia: any = { value: '2025', label: '2025' };
+  selectedVigencia: any = { value: '2026', label: '2026' };
 
   recursos = [
     {
-      titulo: 'Histórico SGP',
-      descripcion: 'Histórico Sistema General de Participaciones', //'Consulta y explora el detalle histórico del sistema',
-      boton: 'Consultar',
-      link: 'sgp-historico',
-      icon: 'assets/img/sgp/analysis.png'
-    },
-    {
       titulo: 'Documentos y Anexos',
-      descripcion: 'Documentos y anexos', //'Consulta dos documentos y anexos publicados',
+      descripcion: 'Documentos de distribución con detalle por cada vigencia, desde 2002.', //'Consulta dos documentos y anexos publicados',
       boton: 'Consultar',
       link: 'sgp-documentos-anexos',
       icon: 'assets/img/sgp/licensing.png'
-    },
+    },    
     {
       titulo: 'Detalle Presupuestal',
-      descripcion: 'Presupuesto - Sistema General de Participaciones', //'Consulta el detalle de la información presupuestal',
+      descripcion: 'Distribución diferenciada por la última doceava y las once doceavas.', //'Consulta el detalle de la información presupuestal',
       boton: 'Consultar',
       link: 'sgp-detalle-presupuestal',
       icon: 'assets/img/sgp/budgeting.png'
-    },
+    },      
     {
-      titulo: 'Ficha Comparativa',
-      descripcion: 'Ficha comparativa Sistema General de Participaciones', //'Compara vigencias y entidades',
+      titulo: 'Tablero Comparativo',
+      descripcion: 'Recursos distribuidos de una o dos entidades territoriales.', //'Compara vigencias y entidades',
       boton: 'Consultar',
       link: 'sgp-comparativa',
       icon: 'assets/img/sgp/compare.png'
+    },
+    {
+      titulo: 'Resguardos Indígenas',
+      descripcion: 'AESGPRI desagregada por entidad territorial y población certificada.',
+      boton: 'Consultar',
+      link: 'sgp-resguardos',
+      icon: 'assets/img/sgp/indigenous.png',
+      download: 'assets/data/sgp/sgp_resguardos_datos.xlsx'
+    },      
+    {
+      titulo: 'Variables Certificadas',
+      descripcion: 'Disponibles desde 2002 por entidad territorial.',
+      boton: 'Consultar',
+      link: 'reports-sgp-budget',
+      icon: 'assets/img/sgp/segmentation.png',
+      download: 'assets/data/sgp/sgp_variables.xlsx'
+    },     
+    {
+      titulo: 'Histórico',
+      descripcion: 'Distribuciones desde la vigencia 2002, por entidad territorial y por tipo de asignación (sectorial o especial).', //'Consulta y explora el detalle histórico del sistema',
+      boton: 'Consultar',
+      link: 'sgp-historico',
+      icon: 'assets/img/sgp/analysis.png'
     }
+
+    
+
+
+
     
     // {
     //   titulo: 'Consulta de eficiencia',
@@ -121,15 +143,6 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
     //   link: 'sgp-eficiencia',
     //   icon: 'assets/img/sgp/efficiency.png'
     // }
-    ,
-    {
-      titulo: 'Resguardos Indígenas',
-      descripcion: 'Consulta resguardos indígenas',
-      boton: 'Consultar',
-      link: 'sgp-resguardos',
-      icon: 'assets/img/sgp/indigenous.png',
-      download: 'assets/data/sgp/sgp_resguardos_datos.xlsx'
-    },
     // ,
     // {
     //   titulo: 'Distribuciones SGP',
@@ -138,14 +151,7 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
     //   link: 'reports-sgp-dist',
     //   icon: 'assets/img/sgp/forecast.png'
     // },
-    {
-      titulo: 'Presupuesto SGP',
-      descripcion: 'Descarga variables del sistema',
-      boton: 'Consultar',
-      link: 'reports-sgp-budget',
-      icon: 'assets/img/sgp/segmentation.png',
-      download: 'assets/data/sgp/sgp_variables.xlsx'
-    },    
+   
   ];
 
   ngOnInit(): void {
@@ -181,7 +187,7 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
 
   loadSgpData(): void {
     console.log("loadSgpData...");
-    const year = this.selectedVigencia?.value || 2025;
+    const year = this.selectedVigencia?.value || 2026;
     this.sicodisApiService.getSgpResumenGeneral(year).subscribe({
       next: (result: any) => {
         let resumen = result[0];
@@ -326,33 +332,33 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
 
           const rawValue = Number(value);
 
-          switch (rawValue) {
-            case 46158590355728:
-              return "58.50%";
+          // switch (rawValue) {
+          //   case 46158590355728:
+          //     return "58.50%";
 
-            case 19060914641273:
-              return "24.50%";
+          //   case 19060914641273:
+          //     return "24.50%";
 
-            case 9048433054643:
-              return "11.60%";
+          //   case 9048433054643:
+          //     return "11.60%";
 
-            case 4212201594403:
-              return "5.40%";
+          //   case 4212201594403:
+          //     return "5.40%";
 
-            case 3504042981515:
-              return "4.00%";
+          //   case 3504042981515:
+          //     return "4.00%";
 
-            default:
-              // fallback a lo que tenías antes
-              const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
-              const percentage = Math.round((value / total) * 100 * 100) / 100;
-              return `${percentage}%`;
-          }
+          //   default:
+          //     // fallback a lo que tenías antes
+          //     const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
+          //     const percentage = Math.round((value / total) * 100 * 100) / 100;
+          //     return `${percentage}%`;
+          // }
 
 
-            // const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
-            // const percentage = Math.round((value / total) * 100 * 100) / 100;
-            // return `${percentage}%`;
+            const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
+            const percentage = Math.round((value / total) * 100 * 100) / 100;
+            return `${percentage}%`;
           }
         }
       },

@@ -23,6 +23,7 @@ import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { SafeGaugeComponent } from './safe-gauge.component';
 import { SicodisApiService, ResumenParticipaciones } from '../../services/sicodis-api.service';
 import Chart from 'chart.js/auto';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-home',
@@ -43,8 +44,9 @@ import Chart from 'chart.js/auto';
     SafeGaugeComponent,
     TableModule,
     ChartModule,
-    RouterModule
-  ],
+    RouterModule,
+    DialogModule
+],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
@@ -276,16 +278,16 @@ export class HomeComponent implements OnInit {
     { concept: 'Inversión', amount: 23620950245846, progress: 39.79, isFirst: false, isTotal: false },
     { concept: 'Ahorro', amount: 1149127309256, progress: 40.48, isFirst: false, isTotal: false },
     { concept: 'Administración y SSEC', amount: 766084872838, progress: 40.48,isFirst: false, isTotal: false },    
-    { concept: 'Total Corrientes', amount: 25536162427940, progress: 39.84, isFirst: false, isTotal: true }
+    { concept: 'Total Corrientes', amount: 25536162427940, progress: 40.48, isFirst: false, isTotal: true }
   ];
 
 sgpItems = [
-    { concept: 'Educación', amount: 46158590355728, progress: 58.5, isFirst: false, isTotal: false },
-    { concept: 'Salud', amount: 19060914641273, progress: 24.5, isFirst: false, isTotal: false },
-    { concept: 'Agua Potable', amount: 4212201594403, progress: 5.4,isFirst: false, isTotal: false },    
-    { concept: 'Propósito General', amount: 9048433054643, progress: 11.6, isFirst: false, isTotal: false },
-    { concept: 'Asignaciones Especiales', amount: 3504042981515, progress: 4, isFirst: false, isTotal: false },
-    { concept: 'Total SGP', amount: 81984182627562, progress: 100, isFirst: false, isTotal: true }
+    { concept: 'Educación', amount: 49616610963034, progress: 0, isFirst: false, isTotal: false },
+    { concept: 'Salud', amount: 20622281544600, progress: 2.85, isFirst: false, isTotal: false },
+    { concept: 'Agua Potable', amount: 4556339605748, progress: 2.84,isFirst: false, isTotal: false },    
+    { concept: 'Propósito General', amount: 9787692486422, progress: 2.84, isFirst: false, isTotal: false },
+    { concept: 'Asignaciones Especiales', amount: 3769581570516, progress: 2.65, isFirst: false, isTotal: false },
+    { concept: 'Total SGP', amount: 88352506170320, progress: 1.20, isFirst: false, isTotal: true }
   ];
 
   isBrowser: boolean = false;
@@ -306,6 +308,8 @@ sgpItems = [
     "85": { color: '#555', size: 4, type: 'line'},
     "100": { color: '#555', size: 8, label: '100', type: 'line'},
   }
+  showVideo = false;
+  showPlayer = false;
 
   constructor(private route: Router,
     private breakpointObserver: BreakpointObserver,
@@ -394,7 +398,28 @@ sgpItems = [
     
     this.loadSgpData();
     this.initializeSgrData();
+
+    window.addEventListener('unload', () => {});
+    setTimeout(() => {
+      this.showVideo = true;
+    }, 300);
+
+
   }
+
+  createVideo(): void {
+    // crea un VIDEO NUEVO
+    this.showPlayer = false;
+    setTimeout(() => {
+      this.showPlayer = true;
+    });
+  }
+
+  destroyVideo(): void {
+    // elimina el video del DOM
+    this.showPlayer = false;
+  }
+
 
   private initializeDonutChart() {
     // Register custom plugin for center text in donut charts
@@ -465,7 +490,7 @@ sgpItems = [
           text: () => {
             const value = this.sgpPorcentajeEjecucion;
             if (!value || value === 'Infinity' || value === 'NaN' || isNaN(parseFloat(value.replace(',', '.')))) {
-              return '0,0%';
+              return '0,00%';
             }
             return value + '%';
           }
@@ -517,7 +542,7 @@ sgpItems = [
           text: () => {
             const value = this.sgrPorcentajeCorrientes;
             if (!value || value === 'Infinity' || value === 'NaN' || isNaN(parseFloat(value.replace(',', '.')))) {
-              return '0,0%';
+              return '0,00%';
             }
             return value + '%';
           }
@@ -573,12 +598,12 @@ sgpItems = [
 
   private initializeSgrData() {
     // Datos de ejemplo para corrientes (naranja)
-    const corrientesDistribuido = 10174586437436;
+    const corrientesDistribuido = 10337136019106;
     const corrientesTotal = 25536162427940;
     const corrientesRestante = corrientesTotal - corrientesDistribuido;
     const corrientesPorcentaje = (corrientesDistribuido / corrientesTotal) * 100;
     
-    this.sgrPorcentajeCorrientes = corrientesPorcentaje.toFixed(1).replace('.', ',');
+    this.sgrPorcentajeCorrientes = corrientesPorcentaje.toFixed(2).replace('.', ',');
     
     this.donutSgrCorrientesData = {
       labels: ['Distribución', 'Presupuesto'],
@@ -616,7 +641,7 @@ sgpItems = [
   }
 
   loadSgpData() {
-    this.sicodisApiService.getSgpResumenParticipaciones(2025, '0', '0').subscribe({
+    this.sicodisApiService.getSgpResumenParticipaciones(2026, '0', '0').subscribe({
       next: (response: any) => {
         if (Array.isArray(response)) {
           this.processSgpData(response);
@@ -634,6 +659,7 @@ sgpItems = [
     // Buscar el registro con id_concepto = 99 (total)
     const totalRecord = data.find(item => item.id_concepto == 99);
     const totalAmount = totalRecord ? totalRecord.total : 1;
+
     
     // Filtrar solo conceptos principales (4 dígitos) excluyendo el total
     const principalRecords = data.filter(item => 
@@ -663,7 +689,7 @@ sgpItems = [
     // }
     
     // Calcular datos para el gráfico donut
-    this.updateDonutChart(sumaConcepts, totalAmount);
+    this.updateDonutChart(sumaConcepts, 88352506170320);
   }
 
   private updateDonutChart(sumaConceptos: number, totalAmount: number) {

@@ -44,6 +44,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
         label: 'SGP',
         items: [
           {
+            label: 'Resumen',
+            command: () => this.redirectUrl("sgp-inicio")
+          },          
+          {
             label: 'Documentos y Anexos',
             command: () => this.redirectUrl("sgp-documentos-anexos")
           },
@@ -52,19 +56,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
             command: () => this.redirectUrl("sgp-detalle-presupuestal")
           },
           {
-            label: 'Ficha Comparativa',
+            label: 'Tablero Comparativo',
             command: () => this.redirectUrl("sgp-comparativa")
           },
-          // {
-          //   label: 'Distribución SGP para los Resguardos Indígenas',
-          //   command: () => this.redirectUrl("reports-sgp-budget")
-          // },
-          // {
-          //   label: 'Consulta de eficiencia',
-          //   command: () => this.redirectUrl("sgp-eficiencia")
-          // },
           {
-            label: 'Histórico SGP',
+            label: 'Resguardos Indígenas',
+            command: () => this.downloadFile('assets/data/sgp/sgp_resguardos_datos.xlsx')
+          },
+          {
+            label: 'Variables Certificadas',
+            command: () => this.downloadFile('assets/data/sgp/sgp_variables.xlsx')
+          },
+          {
+            label: 'Histórico',
             command: () => this.redirectUrl("sgp-historico")
           }
         ]
@@ -80,11 +84,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
             label: 'Administración y Sistema de Seguimiento (SSEC)',
              command: () => this.redirectUrl("reporte-funcionamiento")
           }
+          // ,
+          // {
+          //   label: 'Recaudo directas',
+          //   command: () => this.redirectUrl("sgr-recaudo-directas")
+          // }
           ,
-          {
-            label: 'Recaudo directas',
-            command: () => this.redirectUrl("sgr-recaudo-directas")
-          },
           {
             label: 'Recaudo mensual',
             command: () => this.redirectUrl("sgr-recaudo-mensual")

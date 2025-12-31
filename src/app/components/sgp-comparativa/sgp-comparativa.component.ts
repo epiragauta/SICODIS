@@ -69,6 +69,7 @@ export class SgpComparativaComponent {
   
   // Estado de carga
   isLoadingComparativeData: boolean = false;
+  
 
   barChartInstance: any;
   barChart2Instance: any;
@@ -170,7 +171,7 @@ export class SgpComparativaComponent {
         console.log('Vigencias cargadas:', vigencias);
         this.infoResume = vigencias;
         if (vigencias.length > 0) {
-          this.selected = vigencias[0].id_vigencia;
+          this.selected = vigencias[1].id_vigencia;
           this.infoToResume = vigencias.find(v => v.id_vigencia === this.selected);
         }
       },
@@ -786,8 +787,8 @@ export class SgpComparativaComponent {
       }, 500);
       
       // Recargar datos de la tabla
-      this.loadSgpData();
-      this.loadSgpData2();
+      //this.loadSgpData();
+      //this.loadSgpData2();
       this.loadDistributionData();
       this.loadDataForYear();
     }
@@ -954,7 +955,7 @@ export class SgpComparativaComponent {
     this.updateTowns2List();
     
     // Cargar datos comparativos si está listo
-    this.loadComparativeDataIfReady();
+//    this.loadComparativeDataIfReady();
   }
 
   /**
@@ -966,7 +967,7 @@ export class SgpComparativaComponent {
     this.filterDataByLocation();
     
     // Cargar datos comparativos si está listo
-    this.loadComparativeDataIfReady();
+    //this.loadComparativeDataIfReady();
   }
 
   /**
@@ -993,7 +994,8 @@ export class SgpComparativaComponent {
     console.log('Municipio:', this.townSelected);
     console.log('Municipio 2:', this.townSelected2);
     
-    this.loadFilteredData();
+    //this.loadFilteredData();
+    this.loadComparativeDataIfReady();
   }
 
   /**
@@ -1191,7 +1193,9 @@ export class SgpComparativaComponent {
       
       this.sicodisApiService.getSgpFichaComparativaEntidad(
         this.selected,
+        this.departmentSelected,
         this.townSelected,
+        this.departmentSelected2,
         this.townSelected2
       ).subscribe({
         next: (data) => {
@@ -1419,11 +1423,19 @@ export class SgpComparativaComponent {
     if (municipalityNumber === 1) {
       if (!this.townSelected) return 'Sin seleccionar';
       const municipality = this.towns.find(town => town.id === this.townSelected);
-      return municipality ? municipality.label : 'Municipio 1';
+      const departamento = this.departments.find(departament => departament.id === this.departmentSelected);
+      //return municipality ? municipality.label : 'Municipio 1';
+      return municipality
+        ? `${departamento?.label} - ${municipality.label}`
+        : 'Municipio 1';      
     } else {
       if (!this.townSelected2) return 'Sin seleccionar';
       const municipality = this.towns2.find(town => town.id === this.townSelected2);
-      return municipality ? municipality.label : 'Municipio 2';
+      //return municipality ? municipality.label : 'Municipio 2';
+      const departamento = this.departments.find(departament => departament.id === this.departmentSelected2);
+      return municipality
+        ? `${departamento?.label} - ${municipality.label}`
+        : 'Municipio 2';         
     }
   }
 

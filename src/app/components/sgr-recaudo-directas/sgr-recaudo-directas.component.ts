@@ -738,7 +738,7 @@ private initializeLineCharts(): void {
       x: {
         title: {
           display: true,
-          text: 'Cifras en miles de millones de pesos corrientes',
+          text: 'Cifras en pesos corrientes',
           font: {
             size: 11,
             family: 'Work Sans'

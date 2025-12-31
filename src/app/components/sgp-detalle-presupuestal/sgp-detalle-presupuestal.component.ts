@@ -365,6 +365,28 @@ export class SgpDetallePresupuestalComponent implements OnInit {
     
     // Reset metrics to default values
     this.resetMetricsToDefault();
+
+    //this.cargarVigencias();
+    //this.cargarDepartamentos();
+
+   this.selectedVigencia = this.vigencias[0].id;
+    this.selectedDepartamento = this.departamentos[0].id;
+
+    /// Inicializa en TODOS los municipios
+    const municipios = [
+                          { codigo: '0', nombre: 'Todos' },
+                       ];
+
+    this.municipios = municipios.map(m => ({
+      id: m.codigo,
+      label: m.nombre
+    }));
+
+    this.selectedMunicipio = '0';    
+
+    this.loadSgpData();
+    this.loadTableData();
+
   }
 
   // Función para formatear números con separadores de miles
@@ -567,11 +589,13 @@ export class SgpDetallePresupuestalComponent implements OnInit {
 	    // Usar método histórico original
       console.log('Descargando  datos ultima y once');
   	  const idvigencia = this.selectedVigencia;
+      const vigencia = this.vigencias.find(d => d.id === idvigencia);
 	    
       const selectedDepartamento = this.departamentos.find(d => d.id === this.selectedDepartamento);
       const selectedMunicipio = this.municipios.find(d => d.id === this.selectedMunicipio);
 
       const archivo: Blob | undefined = await this.sicodisApiService.getSgpDescargarResumenParticipacionesUltimaOnce( idvigencia
+                                                                                                                     , vigencia.label
                                                                                                                      , selectedDepartamento.id
                                                                                                                      , selectedMunicipio.id
                                                                                                                      , selectedDepartamento.label
@@ -597,7 +621,7 @@ export class SgpDetallePresupuestalComponent implements OnInit {
       const a = document.createElement('a');
       a.href = url;
 
-      const nombreArchivo = `ResumenDsitribucionSGPHistorico.xlsx`;
+      const nombreArchivo = `ResumenDistribucionSGPUltimaYOnce.xlsx`;
       a.download = nombreArchivo;
       a.click();
 

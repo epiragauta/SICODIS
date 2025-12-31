@@ -968,12 +968,13 @@ export class SicodisApiService {
    * @returns Observable con el resumen de participaciones de la última once
    */
   getSgpDescargarResumenParticipacionesUltimaOnce( idvigencia: number
+                                                , vigencia: string
                                                 , codigoDepto: string
                                                 , codigoMunicipio: string
                                                 , departamento: string
                                                 , municipio: string
                                                 ): Observable<Blob> {  
-    const url = `${this.baseUrl}/sgp/archivo_resumen_participaciones_ultima_once/${idvigencia}/${codigoDepto}/${codigoMunicipio}/${departamento}/${municipio}`;
+    const url = `${this.baseUrl}/sgp/archivo_resumen_participaciones_ultima_once/${idvigencia}/${vigencia}/${codigoDepto}/${codigoMunicipio}/${departamento}/${municipio}`;
     return this.http.get(url, { responseType: 'blob' });  // responseType 'blob' indica que será un archivo binario
   }
 
@@ -983,12 +984,14 @@ export class SicodisApiService {
   /**
    * Obtiene la ficha comparativa entre dos entidades del SGP
    * @param idVigencia - ID de la vigencia
+   * @param codigoDepto1 - Código depto de la primera entidad
    * @param codigoEntidad1 - Código de la primera entidad
+   * @param codigoDepto2 - Código depto de la segunda entidad 
    * @param codigoEntidad2 - Código de la segunda entidad
    * @returns Observable con la ficha comparativa de las entidades
    */
-  getSgpFichaComparativaEntidad(idVigencia: number, codigoEntidad1: string, codigoEntidad2: string): Observable<FichaComparativaEntidad[]> {
-    const url = `${this.baseUrl}/sgp/ficha_comparativa_entidad/${idVigencia}/${codigoEntidad1}/${codigoEntidad2}`;
+  getSgpFichaComparativaEntidad(idVigencia: number, codigoDepto1: string, codigoEntidad1: string, codigoDepto2: string, codigoEntidad2: string): Observable<FichaComparativaEntidad[]> {
+    const url = `${this.baseUrl}/sgp/ficha_comparativa_entidad/${idVigencia}/${codigoDepto1}/${codigoEntidad1}/${codigoDepto2}/${codigoEntidad2}`;
     return this.http.get<FichaComparativaEntidad[]>(url);
   }
 

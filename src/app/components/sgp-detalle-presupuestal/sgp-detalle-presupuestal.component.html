@@ -91,7 +91,7 @@
 
   <div class="dates-buttons-container">
     <div style="width: 84%;">
-      <p class="date-update">Fecha de actualización: octubre 01 de 2025</p>
+      <p class="date-update">Fecha de actualización: diciembre 30 de 2025</p>
     </div>    
   </div>
 
@@ -176,7 +176,10 @@
              <!-- Notas -->
        <div class="table-notes">
          <h4>NOTAS</h4>
-         <p>(1) Cifras en pesos corrientes.</p>         
+         <p>(1) Cifras en pesos corrientes.</p>    
+        <p class="final-note" *ngIf="this.selectedVigencia == 13">
+          (2) Los recursos pendientes por distribuir corresponden a las doce doceavas de la participación para  educación por valor de $49.617 miles de millones y las once doceavas del resto por valor de $38.736 miles de millones.
+        </p>                    
        </div>
 
        <!-- Botón Descargar -->
