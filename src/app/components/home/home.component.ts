@@ -282,12 +282,12 @@ export class HomeComponent implements OnInit {
   ];
 
 sgpItems = [
-    { concept: 'Educación', amount: 49616610963034, progress: 0, isFirst: false, isTotal: false },
+    { concept: 'Educación', amount:  29377413250777, progress: 59.21, isFirst: false, isTotal: false },
     { concept: 'Salud', amount: 20622281544600, progress: 2.85, isFirst: false, isTotal: false },
     { concept: 'Agua Potable', amount: 4556339605748, progress: 2.84,isFirst: false, isTotal: false },    
     { concept: 'Propósito General', amount: 9787692486422, progress: 2.84, isFirst: false, isTotal: false },
     { concept: 'Asignaciones Especiales', amount: 3769581570516, progress: 2.65, isFirst: false, isTotal: false },
-    { concept: 'Total SGP', amount: 88352506170320, progress: 1.20, isFirst: false, isTotal: true }
+    { concept: 'Total SGP', amount: 88352506170320, progress: 34.50, isFirst: false, isTotal: true }
   ];
 
   isBrowser: boolean = false;

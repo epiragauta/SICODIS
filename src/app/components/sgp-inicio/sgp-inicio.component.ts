@@ -332,33 +332,33 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
 
           const rawValue = Number(value);
 
-          // switch (rawValue) {
-          //   case 46158590355728:
-          //     return "58.50%";
+          switch (rawValue) {
+            case 29377413250777:
+              return "59.21%";
 
-          //   case 19060914641273:
-          //     return "24.50%";
+            case 586856794933:
+              return "2.85%";
 
-          //   case 9048433054643:
-          //     return "11.60%";
+            case 277858727396:
+              return "2.84%";
 
-          //   case 4212201594403:
-          //     return "5.40%";
+            case 129348028271:
+              return "2.84%";
 
-          //   case 3504042981515:
-          //     return "4.00%";
+            case 99805577369:
+              return "2.65%";
 
-          //   default:
-          //     // fallback a lo que tenías antes
-          //     const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
-          //     const percentage = Math.round((value / total) * 100 * 100) / 100;
-          //     return `${percentage}%`;
-          // }
+            default:
+              // fallback a lo que tenías antes
+              const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
+              const percentage = Math.round((value / total) * 100 * 100) / 100;
+              return `${percentage}%`;
+          }
 
 
-            const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
-            const percentage = Math.round((value / total) * 100 * 100) / 100;
-            return `${percentage}%`;
+            // const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
+            // const percentage = Math.round((value / total) * 100 * 100) / 100;
+            // return `${percentage}%`;
           }
         }
       },

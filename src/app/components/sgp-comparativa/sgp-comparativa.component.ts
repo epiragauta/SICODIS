@@ -171,7 +171,7 @@ export class SgpComparativaComponent {
         console.log('Vigencias cargadas:', vigencias);
         this.infoResume = vigencias;
         if (vigencias.length > 0) {
-          this.selected = vigencias[1].id_vigencia;
+          this.selected = vigencias[0].id_vigencia;
           this.infoToResume = vigencias.find(v => v.id_vigencia === this.selected);
         }
       },
