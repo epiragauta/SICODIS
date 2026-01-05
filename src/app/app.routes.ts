@@ -63,7 +63,7 @@ export const routes: Routes = [
     { path: 'sgr-recaudo-mensual', component: SgrRecaudoMensualComponent },
     { path: 'sgr-comparativo', component: SgrComparativoComponent },
     { path: 'sgr-programacion', component: SgrProgramacionComponent },
-    //{ path: 'sgr-recaudo-directas', component: SgrRecaudoDirectasComponent },
+    { path: 'sgr-recaudo-directas', component: SgrRecaudoDirectasComponent },
     { path: 'sgr-montos-corrientes-constantes', component: SgrMontosCorrientesConstantesComponent },
     { path: 'pgn-inversion-por-sector', component:PgnInversionPorSectorComponent},
     { path: 'pgn-regionalizacion', component: PgnRegionalizacionPresupuestoProgramacionComponent },

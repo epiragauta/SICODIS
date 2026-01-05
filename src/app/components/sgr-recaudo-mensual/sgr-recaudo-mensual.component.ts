@@ -365,7 +365,8 @@ detailedTableDataBase: any[] = [
   ro_administracion: 0,
   ro_total: 0,
   total_distribuido: 1215946727111.7703
- },
+ }
+ ,
  {
   periodo: "Noviembre de 2025",
   rc_inversion_aforada: 595396758614.94,
@@ -380,20 +381,37 @@ detailedTableDataBase: any[] = [
   ro_administracion: 0,
   ro_total: 0,
   total_distribuido: 650508555962.64
+ }
+ ,
+ {
+  periodo: "Diciembre de 2025",
+  rc_inversion_aforada: 0,
+  rc_ahorro: 0,
+  rc_administracion: 0,
+  rc_no_aforado: -57952978634,
+  rc_total: -57952978634,
+  total_pbc: 1098548168758.76,
+  avance: 0,
+  ro_inversion: 57952978634,
+  ro_ahorro: 0,
+  ro_administracion: 0,
+  ro_total: 57952978634,
+  total_distribuido: 0
  }, 
+
  {
   periodo: "Total",
   rc_inversion_aforada: 9399301236004,
   rc_ahorro: 465171120859,
   rc_administracion: 310114080573,
-  rc_no_aforado: 162549581670,
+  rc_no_aforado: 104596603036,
   rc_total: 10337136019105.60,
   total_pbc: 11583742061130,
   avance: 9.366841194373777,
   ro_inversion: 5460192909737.59,
   ro_ahorro: 315990852796,
   ro_administracion: -1306429294,
-  ro_total: 5774877333239.59,
+  ro_total: 5832830311874,
   total_distribuido: 16112013352345.6
  }
 ]  
@@ -437,7 +455,7 @@ constructor(private sicodisApiService: SicodisApiService) { }
     const currentMonth = new Date().getMonth(); // getMonth() returns 0-11
     
     // Período desde: enero del año actual
-    this.selectedPeriodoDesde = new Date(currentYear, 0); // Enero = mes 0
+    this.selectedPeriodoDesde = new Date(currentYear-1, 0); // Enero = mes 0
     
     // Período hasta: mes actual del año actual
     this.selectedPeriodoHasta = new Date(currentYear, currentMonth-1);
@@ -1183,11 +1201,11 @@ constructor(private sicodisApiService: SicodisApiService) { }
     ];
 
     // Datos mock para la única fila
-    const inversionAforada = 8803904477389.168; 
-    const ahorro = 435898235840.33997; 
-    const administracion = 290598823894.35; 
-    const noAforado = 156225926019.87; 
-    const otros = 5774877333239.59; 
+    const inversionAforada = 9399301236004; 
+    const ahorro = 465171120859; 
+    const administracion = 310114080573; 
+    const noAforado = 104596603036; 
+    const otros = 5832830311874; 
     const total = inversionAforada + ahorro + administracion + noAforado + otros;
 
     this.behaviorTableData = [

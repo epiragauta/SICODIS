@@ -30,7 +30,7 @@ import { DialogModule } from 'primeng/dialog';
   standalone: true,
   imports: [
     CommonModule,
-    ReportsTargetComponent,
+    //ReportsTargetComponent,
     MatGridListModule,
     MatCardModule,
     MatButtonModule,
@@ -41,7 +41,7 @@ import { DialogModule } from 'primeng/dialog';
     CarouselModule,
     TagModule,
     NumberFormatPipe,
-    SafeGaugeComponent,
+    //SafeGaugeComponent,
     TableModule,
     ChartModule,
     RouterModule,
@@ -278,7 +278,7 @@ export class HomeComponent implements OnInit {
     { concept: 'Inversión', amount: 23620950245846, progress: 39.79, isFirst: false, isTotal: false },
     { concept: 'Ahorro', amount: 1149127309256, progress: 40.48, isFirst: false, isTotal: false },
     { concept: 'Administración y SSEC', amount: 766084872838, progress: 40.48,isFirst: false, isTotal: false },    
-    { concept: 'Total Corrientes', amount: 25536162427940, progress: 40.48, isFirst: false, isTotal: true }
+    { concept: 'Total Corrientes', amount: 25536162427940, progress: 40.25, isFirst: false, isTotal: true }
   ];
 
 sgpItems = [
