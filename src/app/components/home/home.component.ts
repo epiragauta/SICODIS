@@ -598,7 +598,7 @@ sgpItems = [
 
   private initializeSgrData() {
     // Datos de ejemplo para corrientes (naranja)
-    const corrientesDistribuido = 10337136019106;
+    const corrientesDistribuido = 10279183040472;
     const corrientesTotal = 25536162427940;
     const corrientesRestante = corrientesTotal - corrientesDistribuido;
     const corrientesPorcentaje = (corrientesDistribuido / corrientesTotal) * 100;
