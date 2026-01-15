@@ -84,11 +84,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
             label: 'Administración y Sistema de Seguimiento (SSEC)',
              command: () => this.redirectUrl("reporte-funcionamiento")
           }
-          ,
-          {
-            label: 'Recaudo directas',
-            command: () => this.redirectUrl("sgr-recaudo-directas")
-          }
+          // ,
+          // {
+          //   label: 'Recaudo directas',
+          //   command: () => this.redirectUrl("sgr-recaudo-directas")
+          // }
           ,
           {
             label: 'Recaudo mensual',
