@@ -75,7 +75,7 @@ tableDataBase: any[] =
     pbc_mineria: 507182857652.2,
     pbc_hidrocarburos: 718161024698.81,
     pbc_total: 1225343882351.01,
-    recaudo_mineria: 682080813613.28,
+    recaudo_mineria: 664831650395.21,
     recaudo_hidrocarburos: 543822025382.50,
     recaudo_total: 1225902838995.78,
     variacion_mineria: 34.4842009784597,
@@ -87,7 +87,7 @@ tableDataBase: any[] =
     pbc_mineria: 253591429312.2,
     pbc_hidrocarburos: 648661358247.37,
     pbc_total: 902252787559.57,
-    recaudo_mineria: 205815241161.59,
+    recaudo_mineria: 186885011253.2,
     recaudo_hidrocarburos: 575748522787.45,
     recaudo_total: 781563763949.04,
     variacion_mineria: -18.8398276235874,
@@ -99,7 +99,7 @@ tableDataBase: any[] =
     pbc_mineria: 211326191168.2,
     pbc_hidrocarburos: 718161024698.81,
     pbc_total: 929487215867.01,
-    recaudo_mineria: 179536864856.32,
+    recaudo_mineria: 175163497960.92,
     recaudo_hidrocarburos: 861254012523.80,
     recaudo_total: 1040790877380.12,
     variacion_mineria: -15.0427763525904,
@@ -111,7 +111,7 @@ tableDataBase: any[] =
     pbc_mineria: 422652382500.2,
     pbc_hidrocarburos: 694994469215,
     pbc_total: 1117646851715.2,
-    recaudo_mineria: 440812708054.56,
+    recaudo_mineria: 434384392675.03,
     recaudo_hidrocarburos: 512559858421.90,
     recaudo_total: 953372566476.46,
     variacion_mineria: 4.2967522025861,
@@ -123,7 +123,7 @@ tableDataBase: any[] =
     pbc_mineria: 253591429312.2,
     pbc_hidrocarburos: 718161024698.81,
     pbc_total: 971752454011.01,
-    recaudo_mineria: 522098700875.28,
+    recaudo_mineria: 512564751554.5,
     recaudo_hidrocarburos: 569432496349.85,
     recaudo_total: 1091531197225.13,
     variacion_mineria: 105.881840049301,
@@ -135,7 +135,7 @@ tableDataBase: any[] =
     pbc_mineria: 169060952916,
     pbc_hidrocarburos: 694994469215,
     pbc_total: 864055422131,
-    recaudo_mineria: 162378056399.30,
+    recaudo_mineria: 160940102487.33,
     recaudo_hidrocarburos: 675696129037.60,
     recaudo_total: 838074185436.90,
     variacion_mineria: -3.9529509336319,
@@ -147,7 +147,7 @@ tableDataBase: any[] =
     pbc_mineria: 464917620452,
     pbc_hidrocarburos: 718161024698.81,
     pbc_total: 1183078645150.81,
-    recaudo_mineria: 428193893327.82,
+    recaudo_mineria: 425752002588.97,
     recaudo_hidrocarburos: 487125727411.30,
     recaudo_total: 915319620739.12,
     variacion_mineria: -7.89897511057478,
@@ -159,7 +159,7 @@ tableDataBase: any[] =
     pbc_mineria: 422652382500,
     pbc_hidrocarburos: 718161024698.81,
     pbc_total: 1140813407198.81,
-    recaudo_mineria: 236606358724.68,
+    recaudo_mineria: 236193100047.13,
     recaudo_hidrocarburos: 516581168859.30,
     recaudo_total: 753187527583.98,
     variacion_mineria: -44.018685680855,
@@ -171,7 +171,7 @@ tableDataBase: any[] =
     pbc_mineria: 169060952916,
     pbc_hidrocarburos: 694994469215,
     pbc_total: 864055422131,
-    recaudo_mineria: 176744693700.48,
+    recaudo_mineria: 171455897654.19,
     recaudo_hidrocarburos: 694193464544.95,
     recaudo_total: 870938158245.43,
     variacion_mineria: 4.54495296042592,
@@ -183,7 +183,7 @@ tableDataBase: any[] =
     pbc_mineria: 507182858648,
     pbc_hidrocarburos: 718161024698.81,
     pbc_total: 1225343883346.81,
-    recaudo_mineria: 688694062304.62,
+    recaudo_mineria: 619827900327.6,
     recaudo_hidrocarburos: 527252664807.15,
     recaudo_total: 1215946727111.77,
     variacion_mineria: 35.788118735021,
@@ -195,13 +195,25 @@ tableDataBase: any[] =
     pbc_mineria: 464917620452,
     pbc_hidrocarburos: 694994469215,
     pbc_total: 1159912089667,
-    recaudo_mineria: 174759410760,
+    recaudo_mineria: 172406309231.12,
     recaudo_hidrocarburos: 475749145202,
     recaudo_total: 650508555962,
     variacion_mineria: -62.41,
     variacion_hidrocarburos: -31.55,
     variacion_total: -43.92,
   },  
+  {
+    mes: "Diciembre de 2025",
+    pbc_mineria: 380387144060,
+    pbc_hidrocarburos: 718161024699,
+    pbc_total: 1098548168759,
+    recaudo_mineria: 237282886640.16,
+    recaudo_hidrocarburos: 588626745061,
+    recaudo_total: 827582672939,
+    variacion_mineria: -37.18,
+    variacion_hidrocarburos: -18.04,
+    variacion_total: -24.67,
+  },    
 ];
 
   tableColumns: any[] = [];
@@ -385,26 +397,26 @@ detailedTableDataBase: any[] = [
  ,
  {
   periodo: "Diciembre de 2025",
-  rc_inversion_aforada: 0,
-  rc_ahorro: 0,
-  rc_administracion: 0,
-  rc_no_aforado: -57952978634,
-  rc_total: -57952978634,
+  rc_inversion_aforada: 755547599732.32,
+  rc_ahorro: 37241220281.82,
+  rc_administracion: 24827480188.17,
+  rc_no_aforado: -47986605897.76,
+  rc_total: 769629694304.55,
   total_pbc: 1098548168758.76,
   avance: 0,
   ro_inversion: 57952978634,
   ro_ahorro: 0,
   ro_administracion: 0,
   ro_total: 57952978634,
-  total_distribuido: 0
+  total_distribuido: 827582672938.55
  }, 
 
  {
   periodo: "Total",
-  rc_inversion_aforada: 9399301236004,
-  rc_ahorro: 465171120859,
-  rc_administracion: 310114080573,
-  rc_no_aforado: 104596603036,
+  rc_inversion_aforada: 10154848835736.3,
+  rc_ahorro: 502412341140.16,
+  rc_administracion: 334941560760.06,
+  rc_no_aforado: 114562975773.71,
   rc_total: 10337136019105.60,
   total_pbc: 11583742061130,
   avance: 9.366841194373777,
@@ -681,11 +693,11 @@ constructor(private sicodisApiService: SicodisApiService) { }
    */
   private initializeMiningChart(): void {
     // Datos mock para 5 períodos (Enero 2025 - Mayo 2025)
-    const periods = [ 'Julio 2025', 'Agosto 2025', 'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025'];
+    const periods = [ 'Agosto 2025', 'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025', 'Diciembre 2025'];
     
     // Datos simulados en pesos colombianos
-    const recaudoMineria = [ 428193893327, 236606358724, 176744693700, 688694062304, 174759410760];
-    const pbcMineria = [ 464917620452, 422652382500, 169060952916, 507182858648, 464917620452];
+    const recaudoMineria = [ 236606358724, 176744693700, 688694062304, 174759410760,238955927877.65];
+    const pbcMineria = [ 422652382500, 169060952916, 507182858648, 464917620452,380387144060];
 
     this.miningChartData = {
       labels: periods,
@@ -777,11 +789,11 @@ constructor(private sicodisApiService: SicodisApiService) { }
    */
   private initializeHydrocarbonChart(): void {
     // Datos mock para 5 períodos (Enero 2025 - Mayo 2025)
-    const periods = [ 'Julio 2025', 'Agosto 2025', 'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025'];
+    const periods = [ 'Agosto 2025', 'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025','Diciembre 2025'];
     
     // Datos simulados en pesos colombianos
-    const recaudoHidrocarburos = [ 487125727411, 516581168859, 694193464544, 527252664807, 475749145202];
-    const pbcHidrocarburos = [718161024698, 718161024698, 694994469215, 718161024698, 694994469215];
+    const recaudoHidrocarburos = [ 516581168859, 694193464544, 527252664807, 475749145202,588626745060,90];
+    const pbcHidrocarburos = [ 718161024698, 694994469215, 718161024698, 694994469215,718161024698.81];
 
     this.hydrocarbonChartData = {
       labels: periods,
@@ -893,7 +905,7 @@ constructor(private sicodisApiService: SicodisApiService) { }
   private initializeConceptChart(): void {
     // Datos mock para conceptos: Inversión, Ahorro, Administración
     const presupuestoBienal = [ 23620950245846, 1149127309256 , 766084872838 ]; // En pesos
-    const recaudoAcumulado = [9399301236004, 465171120859, 310114080573]; // En pesos
+    const recaudoAcumulado = [10154848835736.3, 502412341140.16, 334941560760.06]; // En pesos
   
     this.conceptChartData = {
       labels: ['Inversión', 'Ahorro', 'Administración'],
@@ -982,11 +994,11 @@ constructor(private sicodisApiService: SicodisApiService) { }
    */
   private initializeTrendChart(): void {
     // Datos ultimos 5 mees
-        const periods = ['Julio 2025', 'Agosto 2025', 'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025'];
+        const periods = [ 'Agosto 2025', 'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025', 'Diciembre 2025'];
     
     // Datos simulados de Inversión (PBC vs Recaudo)
-    const inversionPBC = [1183078645150.81, 1140813407198.81, 864055422131, 1225343883346.81, 1159912089667];
-    const inversionRecaudo = [915319620739.12, 753187527583.98, 870938158245.43, 1215946727111.77, 650508555962.64];
+    const inversionPBC = [ 1140813407198.81, 864055422131, 1225343883346.81, 1159912089667,1098548168758.76];
+    const inversionRecaudo = [ 753187527583.98, 870938158245.43, 1215946727111.77, 650508555962.64, 769629694304.55];
 
     this.trendChartData = {
       labels: periods,
@@ -1201,10 +1213,10 @@ constructor(private sicodisApiService: SicodisApiService) { }
     ];
 
     // Datos mock para la única fila
-    const inversionAforada = 9399301236004; 
-    const ahorro = 465171120859; 
-    const administracion = 310114080573; 
-    const noAforado = 104596603036; 
+    const inversionAforada = 10154848835736.3; 
+    const ahorro = 502412341140.16; 
+    const administracion = 334941560760.06; 
+    const noAforado = 114562975773.71; 
     const otros = 5832830311874; 
     const total = inversionAforada + ahorro + administracion + noAforado + otros;
 

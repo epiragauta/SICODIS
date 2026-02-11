@@ -9,11 +9,12 @@ import { ButtonModule } from 'primeng/button';
 import { Menubar } from 'primeng/menubar';
 import { MenuItem } from 'primeng/api';
 import { DOCUMENT } from '@angular/common';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatMenuModule, ButtonModule, Menubar],
+  imports: [CommonModule, MatButtonModule, MatMenuModule, ButtonModule, Menubar, DialogModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
@@ -23,6 +24,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private isScrolled = false;
   private scrollThreshold = 100; // Píxeles de scroll antes de aplicar efectos (aumentado para mejor UX)
   private isBrowser: boolean;
+  showVideo: boolean = false;
+
 
   constructor(
     private route: Router,
@@ -176,6 +179,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
             label: 'Preguntas Frecuentes',
             command: () => this.redirectFAQ()
           }
+          ,
+          {
+            label: 'Guía rápida de usuario',
+            command: () => this.redirectGuiaRapida()
+          }
           // ,{
           //   label: 'Manual de usuario'
           // }
@@ -277,4 +285,9 @@ downloadFile(path: string) {
     };
     window.open(urls[item], '_blank');
   }
+
+  redirectGuiaRapida() {
+    this.showVideo = true;
+  }
+
 }

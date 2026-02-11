@@ -16,7 +16,7 @@
 
   <div class="dates-buttons-container">
     <div style="width: 84%;">
-      <p class="date-update">Fecha de actualización: enero 02 de 2026</p>
+      <p class="date-update">Fecha de actualización: enero 30 de 2026</p>
     </div>
   </div>
 <!-- 
@@ -74,6 +74,7 @@
               [options]="infoResume" 
               inputId="vigenciaSelect" 
               [(ngModel)]="selected"
+              (onChange)="onVigenciaChange($event)"
               optionValue="id_vigencia"
               optionLabel="vigencia" 
               placeholder="Seleccionar vigencia"
@@ -420,7 +421,7 @@
         <h4>NOTAS</h4>
         <p>(1) Cifras en pesos corrientes.</p>     
         <p class="final-note" *ngIf="this.selected == 13">
-          (2) Los recursos pendientes por distribuir corresponden a las doce doceavas de la participación para educación por valor de $ 20.239 miles de millones y las once doceavas del resto por valor de $ 38.736 miles de millones.
+          (2) Los recursos pendientes por distribuir corresponden a las doce doceavas de la participación para educación ($ 20.239 miles de millones) y las once doceavas de la participación para salud ($ 20.035 miles de millones), participación para agua ($ 4.427 miles de millones) y asignación especial para el FONPET ($ 2.731 miles de millones)
         </p>             
       </div>
     </div>

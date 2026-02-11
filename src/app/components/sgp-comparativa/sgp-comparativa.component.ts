@@ -778,23 +778,23 @@ export class SgpComparativaComponent {
       (item: any) => item.id_vigencia === event.value
     );
     
-    // Only load charts and data if both municipalities are selected
-    if (this.townSelected && this.townSelected2) {
-      // Crear los gráficos después de un pequeño delay para asegurar que el DOM esté listo
-      setTimeout(() => {
-        this.createBarChart();
-        this.createBarChart2();
-      }, 500);
+    // // Only load charts and data if both municipalities are selected
+    // if (this.townSelected && this.townSelected2) {
+    //   // Crear los gráficos después de un pequeño delay para asegurar que el DOM esté listo
+    //   setTimeout(() => {
+    //     this.createBarChart();
+    //     this.createBarChart2();
+    //   }, 500);
       
-      // Recargar datos de la tabla
-      //this.loadSgpData();
-      //this.loadSgpData2();
-      this.loadDistributionData();
-      this.loadDataForYear();
-    }
+    //   // Recargar datos de la tabla
+    //   //this.loadSgpData();
+    //   //this.loadSgpData2();
+    //   this.loadDistributionData();
+    //   this.loadDataForYear();
+    // }
     
-    // Si ambos municipios están seleccionados, cargar datos comparativos
-    this.loadComparativeDataIfReady();
+    // // Si ambos municipios están seleccionados, cargar datos comparativos
+    // this.loadComparativeDataIfReady();
   }
 
   /**

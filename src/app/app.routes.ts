@@ -29,7 +29,7 @@ import { SgpEficienciasComponent } from './components/sgp-eficiencias/sgp-eficie
 import { SgrRecaudoMensualComponent } from './components/sgr-recaudo-mensual/sgr-recaudo-mensual.component';
 import { SgrComparativoComponent } from './components/sgr-comparativo/sgr-comparativo.component';
 import { SgrProgramacionComponent } from './components/sgr-programacion/sgr-programacion.component';
-import { SgrRecaudoDirectasComponent } from './components/sgr-recaudo-directas/sgr-recaudo-directas.component';
+//import { SgrRecaudoDirectasComponent } from './components/sgr-recaudo-directas/sgr-recaudo-directas.component';
 import { SgrMontosCorrientesConstantesComponent } from './components/sgr-montos-corrientes-constantes/sgr-montos-corrientes-constantes.component';
 import { PgnInversionPorSectorComponent } from './components/pgn-inversion-por-sector/pgn-inversion-por-sector.component';
 import { PgnRegionalizacionPresupuestoSeguimientoComponent } from './components/pgn-regionalizacion-presupuesto-seguimiento/pgn-regionalizacion-presupuesto-seguimiento.component';
@@ -63,7 +63,7 @@ export const routes: Routes = [
     { path: 'sgr-recaudo-mensual', component: SgrRecaudoMensualComponent },
     { path: 'sgr-comparativo', component: SgrComparativoComponent },
     { path: 'sgr-programacion', component: SgrProgramacionComponent },
-    { path: 'sgr-recaudo-directas', component: SgrRecaudoDirectasComponent },
+    //{ path: 'sgr-recaudo-directas', component: SgrRecaudoDirectasComponent },
     { path: 'sgr-montos-corrientes-constantes', component: SgrMontosCorrientesConstantesComponent },
     { path: 'pgn-inversion-por-sector', component:PgnInversionPorSectorComponent},
     { path: 'pgn-regionalizacion', component: PgnRegionalizacionPresupuestoProgramacionComponent },

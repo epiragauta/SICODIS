@@ -275,19 +275,19 @@ export class HomeComponent implements OnInit {
   sgrPorcentajeOtros: string = '0,0';
 
   sgrItems = [
-    { concept: 'Inversión', amount: 23620950245846, progress: 39.79, isFirst: false, isTotal: false },
-    { concept: 'Ahorro', amount: 1149127309256, progress: 40.48, isFirst: false, isTotal: false },
-    { concept: 'Administración y SSEC', amount: 766084872838, progress: 40.48,isFirst: false, isTotal: false },    
-    { concept: 'Total Corrientes', amount: 25536162427940, progress: 40.25, isFirst: false, isTotal: true }
+    { concept: 'Inversión', amount: 23620950245846, progress: 42.99, isFirst: false, isTotal: false },
+    { concept: 'Ahorro', amount: 1149127309256, progress: 43.72, isFirst: false, isTotal: false },
+    { concept: 'Administración y SSEC', amount: 766084872838, progress: 43.72,isFirst: false, isTotal: false },    
+    { concept: 'Total Corrientes', amount: 25536162427940, progress: 43.49, isFirst: false, isTotal: true }
   ];
 
 sgpItems = [
     { concept: 'Educación', amount:  29377413250777, progress: 59.21, isFirst: false, isTotal: false },
-    { concept: 'Salud', amount: 20622281544600, progress: 2.85, isFirst: false, isTotal: false },
+    { concept: 'Salud', amount: 20622281544600, progress: 87.34, isFirst: false, isTotal: false },
     { concept: 'Agua Potable', amount: 4556339605748, progress: 2.84,isFirst: false, isTotal: false },    
-    { concept: 'Propósito General', amount: 9787692486422, progress: 2.84, isFirst: false, isTotal: false },
-    { concept: 'Asignaciones Especiales', amount: 3769581570516, progress: 2.65, isFirst: false, isTotal: false },
-    { concept: 'Total SGP', amount: 88352506170320, progress: 34.50, isFirst: false, isTotal: true }
+    { concept: 'Propósito General', amount: 9787692486422, progress: 100, isFirst: false, isTotal: false },
+    { concept: 'Asignaciones Especiales', amount: 3769581570516, progress: 27.57, isFirst: false, isTotal: false },
+    { concept: 'Total SGP', amount: 88352506170320, progress: 46.32, isFirst: false, isTotal: true }
   ];
 
   isBrowser: boolean = false;
@@ -401,7 +401,7 @@ sgpItems = [
 
     window.addEventListener('unload', () => {});
     setTimeout(() => {
-      this.showVideo = true;
+      this.showVideo = false;
     }, 300);
 
 
@@ -411,7 +411,7 @@ sgpItems = [
     // crea un VIDEO NUEVO
     this.showPlayer = false;
     setTimeout(() => {
-      this.showPlayer = true;
+      this.showPlayer = false;
     });
   }
 
@@ -598,7 +598,7 @@ sgpItems = [
 
   private initializeSgrData() {
     // Datos de ejemplo para corrientes (naranja)
-    const corrientesDistribuido = 10279183040472;
+    const corrientesDistribuido = 11106765713411;
     const corrientesTotal = 25536162427940;
     const corrientesRestante = corrientesTotal - corrientesDistribuido;
     const corrientesPorcentaje = (corrientesDistribuido / corrientesTotal) * 100;

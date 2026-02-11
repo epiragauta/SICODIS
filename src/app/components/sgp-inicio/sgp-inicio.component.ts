@@ -316,7 +316,41 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
                 minimumFractionDigits: 0, 
                 maximumFractionDigits: 0 
               }).format(value);
-              return `${context.label}: ${formattedValue}`;
+
+            switch (value) {
+              case 29377413250777:
+                return [`${context.label}: ${formattedValue}`,
+                `Avance: 59.21%`
+                ];
+ 
+              case 18011176327143:
+                return [`${context.label}: ${formattedValue}`,
+                `Avance: 87.34%`
+                ];
+
+              case 129348028271:
+                return [`${context.label}: ${formattedValue}`,
+                `Avance: 2.84%`
+                ];
+              
+              case  9787692486422:
+                return [`${context.label}: ${formattedValue}`,
+                `Avance: 100%`
+                ];
+
+              case 1039174932157:
+                return [`${context.label}: ${formattedValue}`,
+                `Avance: 27.57%`
+                ];
+              
+              default:
+                return "";                
+
+            }
+
+           
+              
+              //return `${context.label}: ${formattedValue} +`;
             }
           }
         },
@@ -334,25 +368,31 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
 
           switch (rawValue) {
             case 29377413250777:
-              return "59.21%";
+              //return "59.21%";
+              return "";
 
             case 586856794933:
-              return "2.85%";
-
-            case 277858727396:
-              return "2.84%";
+              //return "2.85%";
+              return "";
 
             case 129348028271:
-              return "2.84%";
+              //return "2.84%";
+              return "";
+            
+            case  9787692486422:
+              //return "100%";
+              return "";
 
-            case 99805577369:
-              return "2.65%";
+            case 1039174932157:
+              //return "27.57%";
+              return "";
 
             default:
               // fallback a lo que tenías antes
               const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
               const percentage = Math.round((value / total) * 100 * 100) / 100;
-              return `${percentage}%`;
+              //return `${percentage}%`;
+              return "";
           }
 
 
