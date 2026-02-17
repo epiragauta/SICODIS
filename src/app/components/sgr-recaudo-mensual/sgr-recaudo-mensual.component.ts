@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
-import { DatePicker } from 'primeng/datepicker';
+import { DatePicker, DatePickerYearChangeEvent } from 'primeng/datepicker';
 import { FloatLabel } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
 import { ChartModule } from 'primeng/chart';
@@ -11,10 +11,16 @@ import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { DiccionarioItem, FuncionamientoSiglasDiccionario, SGRFechaActualizacionCorte, SgrRecaudoItem, SicodisApiService, SiglasItem } from '../../services/sicodis-api.service';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { MenuItem } from 'primeng/api';
+import { Select, SelectChangeEvent } from 'primeng/select';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { ViewChild, ElementRef } from '@angular/core';
+
 
 @Component({
   selector: 'app-sgr-recaudo-mensual',
   standalone: true,
+  providers: [MessageService],
   imports: [
     CommonModule,
     ButtonModule,
@@ -25,7 +31,9 @@ import { MenuItem } from 'primeng/api';
     TableModule,
     InfoPopupComponent,
     NumberFormatPipe,
-    Breadcrumb
+    Breadcrumb,
+    Select,
+    ToastModule
   ],
   templateUrl: './sgr-recaudo-mensual.component.html',
   styleUrl: './sgr-recaudo-mensual.component.scss'
@@ -42,6 +50,10 @@ export class SgrRecaudoMensualComponent implements OnInit {
   siglasContent: string = '';
   private siglasDiccionarioData: FuncionamientoSiglasDiccionario | null = null;
 
+  vigencias: any[] = [];
+  selectedVigencia: any; // Seleccionar el primer elemento por defecto
+
+
   // Estados de visualización
   showRecaudoView: boolean = true;
   showTipoRecursoView: boolean = false;
@@ -49,6 +61,9 @@ export class SgrRecaudoMensualComponent implements OnInit {
   // Filtros de período usando DatePicker
   selectedPeriodoDesde: Date | null = null;
   selectedPeriodoHasta: Date | null = null;
+  @ViewChild('miningScroll') miningScroll!: ElementRef;
+  @ViewChild('hydroScroll') hydroScroll!: ElementRef;
+  @ViewChild('trendScroll') trendScroll!: ElementRef;
 
   // Configuración de gráficos - Vista Recaudo
   miningChartData: any;
@@ -463,7 +478,9 @@ detailedTableColumns: any[] = [];
 
   
 
-constructor(private sicodisApiService: SicodisApiService) { }
+constructor(private sicodisApiService: SicodisApiService,
+              private messageService: MessageService
+) { }
 
   ngOnInit(): void {
     this.items = [
@@ -476,7 +493,7 @@ constructor(private sicodisApiService: SicodisApiService) { }
     this.tableData = [...this.tableDataBase];
     this.detailedTableData = [...this.detailedTableDataBase];
 
-
+    this.cargarVigencias();
     this.setDefaultPeriods();
     this.initializeCharts();
     this.initializeTable();
@@ -533,9 +550,10 @@ constructor(private sicodisApiService: SicodisApiService) { }
   /**
    * Limpiar filtros
    */
-  clearFilters(): void {
+  async clearFilters(): Promise<void> {
     console.log('Limpiando filtros...');
-    this.setDefaultPeriods();
+    this.cargarVigencias();
+    //this.setDefaultPeriods();
     this.updateChartsData();
   }
 
@@ -720,11 +738,11 @@ constructor(private sicodisApiService: SicodisApiService) { }
    */
   private initializeMiningChart(): void {
     // Datos mock para 5 períodos (Enero 2025 - Mayo 2025)
-    const periods = [ 'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025', 'Diciembre 2025', 'Enero 2026'];
+    const periods = [ 'Enero de 2025','Febrero de 2025','Marzo de 2025','Abril de 2025','Mayo de 2025','Junio de 2025','Julio de 2025' ,'Agosto de 2025' , 'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025', 'Diciembre 2025', 'Enero 2026'];
     
     // Datos simulados en pesos colombianos
-    const recaudoMineria = [  176744693700, 688694062304, 174759410760,238955927877.65, 357648355355];
-    const pbcMineria = [  169060952916, 507182858648, 464917620452,380387144060, 406554681320];
+    const recaudoMineria = [682080813613, 205815241162, 179536864856, 440812708055,522098700875, 162378056399 ,428193893328, 236606358725, 176744693700, 688694062304, 174759410760,238955927877.65, 357648355355];
+    const pbcMineria = [ 507182857652, 253591429312,211326191168,422652382500,253591429312,169060952916, 464917620452, 422652382500 ,169060952916, 507182858648, 464917620452,380387144060, 406554681320];
 
     this.miningChartData = {
       labels: periods,
@@ -809,6 +827,13 @@ constructor(private sicodisApiService: SicodisApiService) { }
         }
       }
     };
+
+    // Al final del método, scroll al fondo
+    setTimeout(() => {
+      if (this.miningScroll?.nativeElement) {
+        this.miningScroll.nativeElement.scrollTop = this.miningScroll.nativeElement.scrollHeight;
+      }
+    }, 100);    
   }
 
   /**
@@ -816,11 +841,11 @@ constructor(private sicodisApiService: SicodisApiService) { }
    */
   private initializeHydrocarbonChart(): void {
     // Datos mock para 5 períodos (Enero 2025 - Mayo 2025)
-    const periods = [ 'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025','Diciembre 2025', 'Enero 2026'];
+    const periods = [ 'Enero de 2025','Febrero de 2025','Marzo de 2025','Abril de 2025','Mayo de 2025','Junio de 2025','Julio de 2025' ,'Agosto de 2025' ,'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025','Diciembre 2025', 'Enero 2026'];
     
     // Datos simulados en pesos colombianos
-    const recaudoHidrocarburos = [ 694193464544, 527252664807, 475749145202,588626745060.90, 408052316983];
-    const pbcHidrocarburos = [ 694994469215, 718161024698, 694994469215,718161024698.81, 746405760774.72];
+    const recaudoHidrocarburos = [ 543822025383,575748522787,861254012524,512559858422,569432496350,675696129038,487125727411,516581168859,694193464544, 527252664807, 475749145202,588626745060.90, 408052316983];
+    const pbcHidrocarburos = [ 507182857652,253591429312,211326191168,422652382500,253591429312,169060952916,464917620452,422652382500,694994469215, 718161024698, 694994469215,718161024698.81, 746405760774.72];
 
     this.hydrocarbonChartData = {
       labels: periods,
@@ -905,6 +930,12 @@ constructor(private sicodisApiService: SicodisApiService) { }
         }
       }
     };
+    // Al final del método, scroll al fondo
+    setTimeout(() => {
+      if (this.hydroScroll?.nativeElement) {
+        this.hydroScroll.nativeElement.scrollTop = this.hydroScroll.nativeElement.scrollHeight;
+      }
+    }, 100);      
   }
 
   /**
@@ -986,11 +1017,12 @@ constructor(private sicodisApiService: SicodisApiService) { }
           stacked: false,
           beginAtZero: true,
           title: {
-            display: true,           
+            display: true,          
+            text: 'Cifras en miles de millones de pesos corrientes', 
             font: {
               family: '"Work Sans", sans-serif',
-              size: 12,
-              weight: 'bold'
+              size: 12
+              //weight: 'bold'
             }
           },
           ticks: {
@@ -1021,12 +1053,13 @@ constructor(private sicodisApiService: SicodisApiService) { }
    */
   private initializeTrendChart(): void {
     // Datos ultimos 5 mees
-        const periods = [ 'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025', 'Diciembre 2025', 'Enero 2026'];
+    const periods = [ 'Enero de 2025','Febrero de 2025','Marzo de 2025','Abril de 2025','Mayo de 2025','Junio de 2025','Julio de 2025' ,'Agosto de 2025' ,'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025','Diciembre 2025', 'Enero 2026'];
     
     // Datos simulados de Inversión (PBC vs Recaudo)
-    const inversionPBC = [  864055422131, 1225343883346.81, 1159912089667,1098548168758.76, 1152960442094.72];
-    const inversionRecaudo = [  870938158245.43, 1215946727111.77, 650508555962.64, 769629694304.55, 765700672338];
+    const inversionPBC = [  1225343882351,902252787560,929487215867,1117646851715,971752454011,864055422131,1183078645151,1140813407199,864055422131, 1225343883346.81, 1159912089667,1098548168758.76, 1152960442094.72];
+    const inversionRecaudo = [  1225902838996, 781563763949,1040790877380,953372566476,1091531197225,838074185437,915319620739,753187527584,870938158245.43, 1215946727111.77, 650508555962.64, 769629694304.55, 765700672338];
 
+    
     this.trendChartData = {
       labels: periods,
       datasets: [
@@ -1058,7 +1091,7 @@ constructor(private sicodisApiService: SicodisApiService) { }
     };
 
     this.trendChartOptions = {
-      responsive: true,
+      responsive: false,
       maintainAspectRatio: false,
       aspectRatio: 2,
       plugins: {
@@ -1123,6 +1156,11 @@ constructor(private sicodisApiService: SicodisApiService) { }
         }
       }
     };
+setTimeout(() => {
+  if (this.trendScroll?.nativeElement) {
+    this.trendScroll.nativeElement.scrollLeft = this.trendScroll.nativeElement.scrollWidth;
+  }
+}, 3500);
   }
 
   /**
@@ -1361,4 +1399,144 @@ constructor(private sicodisApiService: SicodisApiService) { }
     //   };
     // });
   }
+
+
+  /**
+   * Cargar las vigencias desde el servicio
+   */
+  async cargarVigencias(): Promise<void> {
+    try {
+      const vigencias = await this.sicodisApiService.getVigenciasSgrPbc().toPromise();
+      this.vigencias = vigencias?.map((vigencia: any) => ({
+        id: vigencia.id_vigencia,
+        label: vigencia.vigencia
+      })) || [];
+      
+      if (this.vigencias.length > 0) {
+        this.selectedVigencia = this.vigencias[0];
+        this.setPeriodsFromVigencia(this.selectedVigencia); // 👈 agrega esto
+      }
+      
+    } catch (error) {
+      this.vigencias = [
+        { id: 1, label: "2023 - 2024" },
+        { id: 2, label: "2024 - 2025" },
+        { id: 3, label: "2025 - 2026" }
+      ];
+      this.selectedVigencia = this.vigencias[2];
+      this.setPeriodsFromVigencia(this.selectedVigencia); // 👈 y aquí también
+    }
+  }
+
+
+  /**
+   * Evento cuando cambia la vigencia seleccionada
+   */
+  onVigenciaChange(event: SelectChangeEvent): void {
+    console.log('Vigencia seleccionada:', event.value);
+    //this.clearFilters();
+    this.selectedVigencia = event.value;  
+    this.setPeriodsFromVigencia(event.value); // 👈 aquí estaba el error
+  }
+
+
+
+  private setPeriodsFromVigencia(vigencia: { id: number; label: string }): void {
+    const years = vigencia.label.split('-').map(y => parseInt(y.trim(), 10));
+    const [startYear, endYear] = years;
+
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth();
+
+    // 👇 Normaliza a medianoche para evitar conflictos de hora
+    this.minDate = new Date(startYear, 0, 1, 0, 0, 0, 0);
+
+    if (endYear >= currentYear) {
+      this.selectedPeriodoDesde = new Date(startYear, 0, 1, 0, 0, 0, 0);
+      this.selectedPeriodoHasta = new Date(currentYear, currentMonth - 1, 1, 0, 0, 0, 0);
+      this.maxDate = new Date(currentYear, currentMonth - 1, 1, 0, 0, 0, 0);
+    } else {
+      this.selectedPeriodoDesde = new Date(startYear, 0, 1, 0, 0, 0, 0);
+      this.selectedPeriodoHasta = new Date(endYear, 11, 1, 0, 0, 0, 0);
+      this.maxDate = new Date(endYear, 11, 1, 0, 0, 0, 0);
+    }
+  }
+
+  
+currentYearDesde: number = 0;
+currentYearHasta: number = 0;
+
+  onYearChange(event: DatePickerYearChangeEvent, control: 'desde' | 'hasta'): void {
+    if (control === 'desde') {
+      this.currentYearDesde = event.year ?? 0;
+    } else {
+      this.currentYearHasta = event.year ?? 0;
+    }
+  }
+
+  get startYear(): number {
+    if (!this.selectedVigencia?.label) return new Date().getFullYear();
+    return parseInt(this.selectedVigencia.label.split('-')[0].trim(), 10);
+  }
+
+  get endYear(): number {
+    if (!this.selectedVigencia?.label) return new Date().getFullYear();
+    return parseInt(this.selectedVigencia.label.split('-')[1].trim(), 10);
+  }
+
+  onPeriodoDesdeChange(date: Date): void {
+    if (!date || !this.selectedPeriodoHasta) return;
+
+    const desde = new Date(date.getFullYear(), date.getMonth(), 1);
+    const hasta = new Date(this.selectedPeriodoHasta.getFullYear(), this.selectedPeriodoHasta.getMonth(), 1);
+
+    if (desde > hasta) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Período inválido',
+        detail: 'El período desde no puede ser mayor al período hasta.',
+        life: 3000
+      });
+      setTimeout(() => this.selectedPeriodoDesde = this.selectedPeriodoHasta, 0);
+    }
+  }
+
+  onPeriodoHastaChange(date: Date): void {
+    if (!date || !this.selectedPeriodoDesde) return;
+
+    const hasta = new Date(date.getFullYear(), date.getMonth(), 1);
+    const desde = new Date(this.selectedPeriodoDesde.getFullYear(), this.selectedPeriodoDesde.getMonth(), 1);
+
+    if (hasta < desde) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Período inválido',
+        detail: 'El período hasta no puede ser menor al período desde.',
+        life: 3000
+      });
+      setTimeout(() => this.selectedPeriodoHasta = this.selectedPeriodoDesde, 0);
+    }
+  }
+
+  get miningChartHeight(): string {
+    const items = this.miningChartData?.labels?.length ?? 0;
+    const rowHeight = 50; // px por cada fila de barras
+    const padding = 60;   // espacio para leyenda y ejes
+    return `${(items * rowHeight) + padding}px`;
+  }  
+
+  get hydroChartHeight(): string {
+    const items = this.hydrocarbonChartData?.labels?.length ?? 0;
+    const rowHeight = 50; // px por cada fila de barras
+    const padding = 60;   // espacio para leyenda y ejes
+    return `${(items * rowHeight) + padding}px`;
+  }    
+
+  get trendChartWidth(): string {
+    const items = this.trendChartData?.labels?.length ?? 0;
+    const colWidth = 100; // 👈 más espacio entre puntos
+    return `${items * colWidth}px`;
+  }
+  
 }

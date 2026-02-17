@@ -48,33 +48,63 @@
   <!-- Panel de filtros -->
   <div class="filters-panel">
     <div class="filters-row">
+      <div class="p-field bienio-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="bienio" 
+                    [options]="vigencias" 
+                    inputId="bienioSelect" 
+                    [(ngModel)]="selectedVigencia"
+                    (onChange)="onVigenciaChange($event)"
+                    optionLabel="label" 
+                    placeholder="Bienio">
+          </p-select>
+          <label for="bienioSelect">Bienio</label>
+        </p-floatlabel>
+      </div>
+
+   
+
+
       <div class="p-field periodo-desde-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-datepicker id="periodoDesde" inputId="periodoDesdeSelect" [(ngModel)]="selectedPeriodoDesde"
-            view="month" 
-            dateFormat="mm/yy" 
-            [showIcon]="true" 
-            [minDate]="minDate"
-            [maxDate]="maxDate"
-            placeholder="Seleccione período desde">
-          </p-datepicker>
+        <p-datepicker 
+          [(ngModel)]="selectedPeriodoDesde"
+          view="month" 
+          dateFormat="mm/yy" 
+          [showIcon]="true" 
+          [minDate]="minDate"
+          [maxDate]="maxDate"
+          (onYearChange)="onYearChange($event, 'desde')"
+          (onSelect)="onPeriodoDesdeChange($event)"
+          [ngClass]="{
+            'hide-prev': currentYearDesde <= startYear,
+            'hide-next': currentYearDesde >= endYear
+          }">
+        </p-datepicker>
           <label for="periodoDesdeSelect">Período desde</label>
         </p-floatlabel>
       </div>
 
       <div class="p-field periodo-hasta-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-datepicker id="periodoHasta" inputId="periodoHastaSelect" [(ngModel)]="selectedPeriodoHasta"
-            view="month" 
-            dateFormat="mm/yy" 
-            [showIcon]="true" 
-            [minDate]="minDate"
-            [maxDate]="maxDate"            
-            placeholder="Seleccione período hasta">
-          </p-datepicker>
+        <p-datepicker 
+          [(ngModel)]="selectedPeriodoHasta"
+          view="month" 
+          dateFormat="mm/yy" 
+          [showIcon]="true" 
+          [minDate]="minDate"
+          [maxDate]="maxDate"
+          (onYearChange)="onYearChange($event, 'hasta')"
+          (onSelect)="onPeriodoHastaChange($event)"
+          [ngClass]="{
+            'hide-prev': currentYearHasta <= startYear,
+            'hide-next': currentYearHasta >= endYear
+          }">
+        </p-datepicker>
           <label for="periodoHastaSelect">Período hasta</label>
         </p-floatlabel>
       </div>
+      <p-toast></p-toast>
 
       <div class="p-field apply-filters">
         <button pButton type="button"
@@ -119,13 +149,15 @@
       <div class="chart-card">
         <h3 class="chart-title">Recaudo y PBC</h3>
         <div class="chart-content">
-          <p-chart 
-            type="bar" 
-            [data]="miningChartData" 
-            [options]="miningChartOptions"
-            width="570px"
-            height="300px">
-          </p-chart>
+          <div #miningScroll style="overflow-y: auto; max-height: 310px;">
+            <p-chart 
+              type="bar" 
+              [data]="miningChartData" 
+              [options]="miningChartOptions"
+              width="570px"
+              [height]="miningChartHeight">
+            </p-chart>
+          </div>
         </div>
         <div class="chart-footer">
           <p class="source-note">Por defecto, se muestran los últimos 5 meses. Para más detalle, consulte la tabla de datos más abajo.</p>
@@ -138,13 +170,17 @@
       <div class="chart-card">
         <h3 class="chart-title">Recaudo y PBC</h3>
         <div class="chart-content">
-          <p-chart 
-            type="bar" 
-            [data]="hydrocarbonChartData" 
-            [options]="hydrocarbonChartOptions"
-            width="570px"
-            height="300px">
-          </p-chart>
+
+          <div #hydroScroll style="overflow-y: auto; max-height: 310px;">
+            <p-chart 
+              type="bar" 
+              [data]="hydrocarbonChartData" 
+              [options]="hydrocarbonChartOptions"
+              width="570px"
+              [height]="hydroChartHeight">
+            </p-chart>
+          </div>
+
         </div>
         <div class="chart-footer">
           <p class="source-note">Por defecto, se muestran los últimos 5 meses. Para más detalle, consulte la tabla de datos más abajo. </p>
@@ -178,16 +214,19 @@
       <div class="chart-card">
         <h3 class="chart-title">Tendencia mensual del PBC frente al recaudo</h3>
         <div class="chart-content">
-          <p-chart 
-            type="line" 
-            [data]="trendChartData" 
-            [options]="trendChartOptions"
-            width="570px"
-            height="300px">
-          </p-chart>
+          <div #trendScroll style="overflow-x: auto; max-width: 570px;">  <!-- 👈 falta esto -->
+            <div [style.width]="trendChartWidth">
+              <p-chart 
+                type="line" 
+                [data]="trendChartData" 
+                [options]="trendChartOptions"
+                height="300px"
+                style="display: block; width: 100%;">
+              </p-chart>
+            </div>
+          </div>       
         </div>
         <div class="chart-footer">
-          <p class="source-note">Por defecto, se muestran los últimos 5 meses. Para más detalle, consulte la tabla de datos más abajo.</p>
           <p class="source-note">Fuente de información: Sistema General de Regalías</p>
         </div>
       </div>

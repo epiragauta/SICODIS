@@ -84,11 +84,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
           //   command: () => this.redirectUrl("sgr-comparativo")
           // },
           // ,
-          // {
-          //   label: 'Recaudo directas',
-          //   command: () => this.redirectUrl("sgr-recaudo-directas")
-          // }
-          
+          {
+            label: 'Recaudo directas',
+            command: () => this.redirectUrl("sgr-recaudo-directas")
+          }
+          , 
           {
             label: 'Recaudo mensual',
             command: () => this.redirectUrl("sgr-recaudo-mensual")

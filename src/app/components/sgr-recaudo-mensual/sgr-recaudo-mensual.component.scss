@@ -734,4 +734,9 @@
       }
     }
   }
+  ::ng-deep .p-datepicker-prev-button,
+::ng-deep .p-datepicker-next-button {
+  pointer-events: none !important;
+  opacity: 0.3 !important;
+}
 }
