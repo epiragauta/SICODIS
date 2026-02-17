@@ -1,4 +1,4 @@
-import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
+﻿import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SicodisApiService } from '../../services/sicodis-api.service';
 import type { DiccionarioItem, SiglasItem, FuncionamientoSiglasDiccionario } from '../../services/sicodis-api.service';
@@ -155,19 +155,21 @@ export class ReporteFuncionamientoComponent implements OnInit {
   }
 
   // Datos para los gráficos
-  barChartData: any;
   horizontalBarAfectacionData: any;
   horizontalBarAfectacionOptions: any;
-  donutSituacionCajaOpts: any;
+  hBarSituacionCajaOpts: any;
   donutAvanceEjecucionData: any;
   donutAvanceEjecucionOptions: any;
-  donutSituacionCajaData: any;
-  donutOptions2: any;
+  hBarSituacionCajaData: any;
   donutAvanceRecaudoData: any;
   donutAvanceRecaudoOptions: any;
+  donutAvanceRecaudoInCardOptions: any;
+  donutAvanceProyeccionPBCData: any;
+  donutAvanceProyeccionPBCOptions: any;
+  detailChartData: any;
+  detailChartOptions: any;
 
   compromisoPorcentaje: string = '0.0';
-  avanceRecaudoPorcentaje: string = '0.0';
   
   distribucionTotal: any = [];
   distribucionTotalMultiple: any[] = [];
@@ -197,7 +199,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
   private readonly funcionamientoDataUrl = "/assets/data/funcionamiento-base.json";
   private readonly funcionamientoDataEntitiesUrl = "/assets/data/funcionamiento-base-entities.json"
 
-  infoPopupContent: string = '';
 
   // Variables para controlar los popups de diccionario y siglas
   showDiccionarioPopup: boolean = false;
@@ -217,7 +218,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
     if (totalSeleccionado && otrasOpcionesSeleccionadas) {
       // Si TOTAL está seleccionado junto con otras opciones, remover TOTAL
       const resultado = selecciones.filter((item: any) => item.label !== "TOTAL");
-      console.log(`TOTAL removido automáticamente de ${tipo}. Selecciones finales:`, resultado);
       return resultado;
     } else if (totalSeleccionado && !otrasOpcionesSeleccionadas) {
       // Si solo TOTAL está seleccionado, mantenerlo
@@ -336,29 +336,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
     // Cargar datos de diccionario y siglas
     this.cargarSiglasDiccionario();
     
-    this.infoPopupContent = `
-      <div style="font-size: 10px;">
-        <p>Información detallada sobre presupuestos, recaudos y distribución de recursos del Sistema General de Regalías de Colombia, organizada jerárquicamente por diferentes conceptos presupuestales.</p>
-        <br>
-        <ul>
-          <li><strong>Concepto</strong>: Descripción de la categoría presupuestal</li>
-          <li><strong>Presupuesto corriente</strong>: Monto presupuestado para ingresos corrientes</li>
-          <li><strong>Presupuesto otros</strong>: Montos presupuestados para otras fuentes de ingreso</li>
-          <li><strong>Presupuesto total vigente</strong>: Suma total del presupuesto vigente (corriente + otros)</li>
-          <li><strong>Recaudo corriente informada</strong>: Valores de recaudo reportados para los ingresos corrientes</li>
-          <li><strong>Recaudo total</strong>: Monto total de recaudo</li>
-          <li><strong>Disponibilidad inicial</strong>: Recursos disponibles al inicio del periodo</li>
-          <li><strong>Excedentes faep fonpet</strong>: Excedentes provenientes del Fondo de Ahorro y Estabilización (FAE) y del Fondo de Pensiones Territoriales (FONPET)</li>
-          <li><strong>Mineral sin identificacion de origen</strong>: Ingresos provenientes de minerales cuyo origen no está identificado</li>
-          <li><strong>MR</strong>: Categoría específica de ingresos</li>
-          <li><strong>Multas</strong>: Ingresos provenientes de sanciones o penalidades</li>
-          <li><strong>Reintegros</strong>: Devoluciones o retornos de recursos</li>
-          <li><strong>Rendimientos financieros</strong>: Ingresos generados por rendimientos de inversiones</li>
-          <li><strong>Porcentaje 1</strong> y <strong>Porcentaje 2</strong>: Indicadores porcentuales que miden proporciones entre valores</li>
-        </ul>          
-      </div>
-      `;
-
     this.initializeMenuItems();
   }
 
@@ -367,7 +344,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
   private initializeMenuItems() {
     this.menuItems = [
       {
-        label: 'Históricos',
+        label: 'Históricos y Resumen',
         command: () => this.clickMenuItem('historico')
       },
       {
@@ -379,7 +356,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
   }
 
   clickMenuItem(option: string): void {
-    console.log('Opción del menú seleccionada:', option);
     if (option === 'historico') {
       window.open(this.urlTrimestralReport, '_blank');
     }else{
@@ -415,13 +391,10 @@ export class ReporteFuncionamientoComponent implements OnInit {
       // Seleccionar la primera vigencia por defecto
       if (this.vigencias.length > 0) {
         this.selectedVigencia = this.vigencias[0];
-        console.log('Vigencia seleccionada por defecto:', this.selectedVigencia);
       }
       
-      console.log('Vigencias cargadas desde API:', this.vigencias);
     } catch (error) {
-      console.warn('No se pudieron cargar las vigencias desde la API debido a restricciones CORS en desarrollo:', error);
-      console.info('Usando vigencias por defecto. En producción, este endpoint debería funcionar correctamente.');
+      console.info('Usando vigencias por defecto. En producción, este endpoint deberá funcionar correctamente.');
       
       // Fallback a vigencias por defecto en caso de error CORS
       this.vigencias = [
@@ -430,9 +403,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         { id: 3, label: "2025 - 2026" }
       ];
       this.selectedVigencia = this.vigencias[2]; // Seleccionar la más reciente por defecto
-      console.log('Vigencia seleccionada por defecto (fallback):', this.selectedVigencia);
       
-      console.log('Vigencias por defecto configuradas:', this.vigencias);
     }
   }
 
@@ -487,7 +458,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
    * Mostrar popup del diccionario
    */
   showPopupDiccionario(): void {
-    console.log('Mostrando diccionario de datos');
     this.diccionarioContent = this.generarContenidoDiccionario();
     this.showDiccionarioPopup = true;
   }
@@ -496,7 +466,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
    * Mostrar popup de siglas
    */
   showPopupSiglas(): void {
-    console.log('Mostrando siglas');
     this.siglasContent = this.generarContenidoSiglas();
     this.showSiglasPopup = true;
   }
@@ -522,7 +491,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
     try {
       const response = await fetch(this.funcionamientoDataUrl);
       this.funcionamientoData = await response.json();
-      console.log('Datos de funcionamiento cargados:', this.funcionamientoData.length, 'registros');
     } catch (error) {
       console.error('Error cargando datos de funcionamiento:', error);
       this.funcionamientoData = [];
@@ -530,7 +498,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
   }
 
   /**
-   * Cargar datos totales al inicializar la página
+   * Cargar datos totales al inicializar la pÃ¡gina
    */
   private cargarDatosTotalesInicial(): void {
     try {
@@ -538,7 +506,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
       const registroTotales = this.funcionamientoDataConTotales.find(item => item.id === "TOTAL");
       
       if (registroTotales) {
-        console.log('Cargando datos totales iniciales:', registroTotales);
         
         // Establecer el registro de totales como registro actual
         this.registroActual = registroTotales;
@@ -572,14 +539,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
           this.actualizarGraficos();
         }, 100);
         
-        console.log('Datos totales cargados correctamente');
-        console.log('Filtros seleccionados:', {
-          fuente: this.selectedFuente,
-          concepto: this.selectedConcepto,
-          beneficiario: this.selectedBeneficiario
-        });
       } else {
-        console.warn('No se encontró registro de totales');
       }
       
     } catch (error) {
@@ -589,7 +549,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
   private generarRegistroTotales(): void {
     if (!this.funcionamientoData || this.funcionamientoData.length === 0) {
-      console.warn('No hay datos para generar totales');
       this.funcionamientoDataConTotales = [];
       return;
     }
@@ -682,8 +641,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
       // Agregar el registro de totales a los datos
       this.funcionamientoDataConTotales = [...this.funcionamientoData, registroTotales];
       
-      console.log('Registro de totales generado:', registroTotales);
-      console.log('Datos con totales:', this.funcionamientoDataConTotales.length, 'registros');
       
     } catch (error) {
       console.error('Error generando registro de totales:', error);
@@ -700,9 +657,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       const idVigencia = parseInt(this.selectedVigencia.id);
     
       this.fuentesAsignacionesAPI = await this.sicodisApiService.getFuentesAsignaciones(idVigencia).toPromise() || [];
-      console.log('Fuentes API cargadas:', this.fuentesAsignacionesAPI);
     } catch (error) {
-      console.warn('Error cargando fuentes desde API, se usarán datos locales como fallback:', error);
       this.fuentesAsignacionesAPI = [];
     }
 
@@ -711,7 +666,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
       this.departamentosAPI = await this.sicodisApiService.getDepartamentosFuncionamiento().toPromise() || [];
       //console.log('Departamentos API cargados:', this.departamentosAPI);
     } catch (error) {
-      console.warn('Error cargando departamentos desde API, se usarán datos locales como fallback:', error);
       this.departamentosAPI = [];
     }
   }
@@ -731,7 +685,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
           }))
         ];
         
-        console.log('Fuentes inicializadas desde API ya cargada (ordenadas):', this.fuentes);
       } else {
         // Fallback a datos locales si el API no tiene datos
         const fuentesUnicas = getFuentes(this.funcionamientoDataConTotales);
@@ -743,7 +696,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
           }))
         ];
         
-        console.log('Fuentes inicializadas desde datos locales (fallback, ordenadas):', this.fuentes);
       }
       
       // Inicializar los otros selects como vacíos
@@ -770,8 +722,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
    * Evento cuando cambia la fuente seleccionada
    */
   onFuenteChange(event: MultiSelectChangeEvent): void {
-    console.log('Fuentes seleccionadas:', event.value);
-    console.log('Item actual:', event.itemValue);    
     this.showDetailInfo = false;
 
     // --- Si ya estaba TOTAL y el usuario intenta desmarcarlo, no hacer nada ---
@@ -926,7 +876,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
           }))
         ];
         
-        console.log('Conceptos cargados desde API y mapa fuente-concepto actualizado:', this.fuenteConceptoMap);
       } else {
         // Fallback a datos locales
         this.usarConceptosLocales();
@@ -936,7 +885,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
       // Los totales se calculan automáticamente via API cuando se cambian filtros
       
     } catch (error) {
-      console.warn('Error cargando conceptos desde API, usando datos locales:', error);
       this.usarConceptosLocales();
     }
   }
@@ -963,7 +911,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
       }))
     ];
     
-    console.log('Conceptos cargados desde datos locales (fallback, ordenados):', this.conceptos);
     
     // Los totales se calculan automáticamente via API cuando se cambian filtros
   }
@@ -972,8 +919,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
    * Evento cuando cambia el concepto seleccionado
    */
   onConceptoChange(event: MultiSelectChangeEvent): void {
-    console.log('Conceptos seleccionados:', event.value);
-    console.log('Item actual:', event.itemValue);    
     this.showDetailInfo = false;
 
     // --- Si ya estaba TOTAL y el usuario intenta desmarcarlo, no hacer nada ---
@@ -1181,9 +1126,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
           }))
         ];
         
-        console.log('Beneficiarios cargados y mapas actualizados:');
-        console.log('- Concepto-Beneficiario Map:', this.conceptoBeneficiarioMap);
-        console.log('- Beneficiario-Fuente Map:', this.beneficiarioFuenteMap);
       } else {
         // Fallback a datos locales
         this.usarBeneficiariosLocales();
@@ -1226,7 +1168,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
       }))
     ];
     
-    console.log('Beneficiarios cargados desde datos locales (fallback):', this.beneficiarios);
     
     // Los totales se calculan automáticamente via API cuando se cambian filtros
   }
@@ -1245,7 +1186,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
           }))
           .sort((a, b) => a.label.localeCompare(b.label));
         
-        console.log('Departamentos inicializados desde API (ordenados):', this.departamentos);
       } else {
         // Fallback a datos locales si el API no tiene datos
         this.departamentos = departamentos.map(dpto => ({
@@ -1253,7 +1193,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
           label: dpto.nombre
         })).sort((a, b) => a.label.localeCompare(b.label));
         
-        console.log('Departamentos inicializados desde datos locales (fallback, ordenados):', this.departamentos);
       }
     } catch (error) {
       console.error('Error inicializando departamentos:', error);
@@ -1266,7 +1205,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
   }
   
   onDepartamentoChange(event: SelectChangeEvent): void {
-    console.log('Departamento seleccionado:', event.value, this.selectedDepartamento);
     let codDpto = event.value.value;
     if (event.value.value.length == 2)
      codDpto += "000";
@@ -1299,7 +1237,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
           }))
           .sort((a: any, b: any) => a.label.localeCompare(b.label));
         
-        console.log('Municipios cargados desde API (ordenados):', this.municipios);
       } else {
         // Fallback a datos locales
         this.usarMunicipiosLocales(codigoDepartamento);
@@ -1324,11 +1261,9 @@ export class ReporteFuncionamientoComponent implements OnInit {
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
     
-    console.log('Municipios cargados desde datos locales (fallback, ordenados):', this.municipios);
   }
 
   onMunicipioChange(event: MultiSelectChangeEvent): void {
-    console.log('Municipio seleccionado:', event.value);
 
     // Llamar a la API para actualizar los datos con los nuevos filtros
     this.cargarDistribucionTotalDesdeAPI();
@@ -1338,7 +1273,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
    * Evento cuando cambia el beneficiario seleccionado
    */
   onBeneficiarioChange(event: MultiSelectChangeEvent): void {
-    console.log('Beneficiarios seleccionados:', event.value);
     
     try {
       // Si no hay asignaciones o conceptos seleccionados, no hacer nada
@@ -1353,7 +1287,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
       // CASO 1: No hay beneficiarios seleccionados
       // Calcular totales basado solo en asignaciones y conceptos
       if (!event.value || event.value.length === 0) {
-        console.log('Sin beneficiarios seleccionados, llamando API con filtros actuales');
         this.selectedBeneficiario = [];
         this.cargarDistribucionTotalDesdeAPI();
         return;
@@ -1391,7 +1324,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
    * Evento cuando cambia la vigencia seleccionada
    */
   onVigenciaChange(event: SelectChangeEvent): void {
-    console.log('Vigencia seleccionada:', event.value);
     this.clearFilters();
     this.selectedVigencia = event.value;
     
@@ -1427,7 +1359,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
           // Construir parámetros específicos para este beneficiario
           const params = this.construirParametrosAPIParaBeneficiario(beneficiario);
           
-          console.log(`Llamando API getDistribucionTotal para beneficiario ${beneficiario.label}:`, params);
           
           // Llamar al API para este beneficiario específico
           const distribucionBeneficiario = await this.sicodisApiService.getDistribucionTotal(params).toPromise();
@@ -1456,12 +1387,13 @@ export class ReporteFuncionamientoComponent implements OnInit {
       }
       
       if (this.distribucionTotalMultiple.length > 0) {
-        console.log('Datos de distribución total múltiple recibidos:', this.distribucionTotalMultiple);
         // Usar el primer registro para actualizar la interfaz (comportamiento original)
         // this.actualizarInterfazConDatosAPI([this.distribucionTotalMultiple[0]]);
+        // Actualizar gráfico de detalle con los datos Múltiples
+        this.actualizarGraficoDetalle();
       } else {
-        console.warn('No se recibieron datos para ningún beneficiario');
         this.limpiarDatos();
+        this.detailChartData = null;
       }
       
     } catch (error) {
@@ -1489,7 +1421,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
       
       // Si no se encuentra en el mapa, usar fallback
       if (this.selectedFuente && this.selectedFuente.length > 0) {
-        console.warn(`No se encontró fuente específica para beneficiario ${beneficiario.label}, usando primera fuente disponible`);
         return this.selectedFuente.find(f => f.value !== "TOTAL") || this.selectedFuente[0];
       }
       
@@ -1590,17 +1521,14 @@ export class ReporteFuncionamientoComponent implements OnInit {
       // Construir parámetros para la API
       const params = this.construirParametrosAPI();
       
-      console.log('Llamando API getDistribucionTotal con parámetros:', params);
       
       // Llamar al API
       this.distribucionTotal = await this.sicodisApiService.getDistribucionTotal(params).toPromise();
       
       if (this.distribucionTotal && this.distribucionTotal.length > 0) {
         // Usar datos del API para actualizar la interfaz
-        console.log('Datos de distribución total recibidos del API:', this.distribucionTotal);
         this.actualizarInterfazConDatosAPI(this.distribucionTotal);
       } else {
-        console.warn('No se recibieron datos del API getDistribucionTotal');
         // Limpiar datos si no hay resultados
         this.limpiarDatos();
       }
@@ -1667,7 +1595,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
     }
     
     // 4. Beneficiarios (idsBeneficiario)
-    // Lógica especial para Municipios y Departamentos
+    // lógica especial para Municipios y Departamentos
     if (this.selectedBeneficiario && this.selectedBeneficiario.length === 1 && 
         this.selectedBeneficiario[0].label.trim() === "Municipios" &&
         this.selectedMunicipio) {
@@ -1701,7 +1629,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
     // 5. Tipo de entidad
     params.tipoEntidad = this.determinarTipoEntidad();
     
-    console.log('Parámetros construidos para API:', params);
     return params;
   }
 
@@ -1732,7 +1659,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
    */
   private actualizarInterfazConDatosAPI(datosAPI: any[]): void {
     try {
-      // Si hay múltiples registros, calcular totales
+      // Si hay Múltiples registros, calcular totales
       let datosConsolidados: any = {};
       
       if (datosAPI.length === 1) {
@@ -1749,7 +1676,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
       // Actualizar todos los componentes de la interfaz
       this.actualizarDatosDelRegistro();
       
-      console.log('Interfaz actualizada con datos del API:', this.registroActual);
       
     } catch (error) {
       console.error('Error actualizando interfaz con datos del API:', error);
@@ -1757,7 +1683,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
   }
 
   /**
-   * Consolidar múltiples registros del API en un solo objeto de totales
+   * Consolidar Múltiples registros del API en un solo objeto de totales
    */
   private consolidarDatosAPI(registros: any[]): any {
     const consolidado: any = {
@@ -1819,7 +1745,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
    * Limpiar filtros
    */
   clearFilters(): void {
-    console.log('Limpiando filtros y cargando datos totales');
     
     // Limpiar todas las selecciones
     this.selectedVigencia = this.vigencias.length > 0 ? this.vigencias[0] : null;
@@ -1889,24 +1814,73 @@ export class ReporteFuncionamientoComponent implements OnInit {
         avance: convertirANumero(this.registroActual['avance_iac_corriente'] / 100)
       };
 
-      
+
       // Actualizar gráficos con datos reales
       this.actualizarGraficos();
-
-      console.log('Datos actualizados:', {
-        presupuesto: this.presupuestoData,
-        ejecucion: this.ejecucionData,
-        caja: this.situacionCajaData,
-        recaudo: this.avanceRecaudoData
-      });
+      this.actualizarGraficoDetalle();
 
     } catch (error) {
       console.error('Error actualizando datos del registro:', error);
     }
   }
 
-  // Resto de métodos (limpiarDatos, limpiarTodosDatos, formatMillions, etc.) permanecen igual...
-  
+  /**
+   * Actualizar gráfico de detalle con datos de distribución
+   */
+  private actualizarGraficoDetalle(): void {
+    try {
+      // Determinar qué datos usar
+      const datosParaGrafico = this.selectedBeneficiario.length > 0
+        ? this.distribucionTotalMultiple
+        : this.distribucionTotal;
+
+      // Validar que haya datos
+      if (!datosParaGrafico || datosParaGrafico.length === 0) {
+        this.detailChartData = null;
+        return;
+      }
+
+      // Convertir strings a números
+      const convertirANumero = (valor: any): number => {
+        if (typeof valor === 'number') return valor;
+        if (typeof valor === 'string') {
+          return parseFloat(valor.replace(/\./g, '').replace(',', '.')) || 0;
+        }
+        return 0;
+      };
+
+      // Generar un chart data por cada registro
+      this.detailChartData = datosParaGrafico.map((registro: any) => ({
+        labels: [registro.beneficiario_seleccionado || registro.fuente_principal || 'S/N'],
+        datasets: [
+          {
+            label: 'Compromisos',
+            data: [convertirANumero(registro.compromisos)],
+            backgroundColor: 'rgba(40, 167, 69, 0.85)',
+            borderColor: 'rgba(40, 167, 69, 1)',
+            borderWidth: 2,
+            barThickness: 20,
+            order: 1
+          },
+          {
+            label: 'Presupuesto disponible',
+            data: [convertirANumero(registro.apropiacion_vigente_disponible)],
+            backgroundColor: 'rgba(220, 220, 220, 0.8)',
+            borderColor: 'rgba(180, 180, 180, 1)',
+            borderWidth: 2,
+            barThickness: 35,
+            order: 2
+          }
+        ]
+      }));
+
+
+    } catch (error) {
+      console.error('Error actualizando gráfico de detalle:', error);
+      this.detailChartData = null;
+    }
+  }
+
   private limpiarDatos(): void {
     this.presupuestoData = {
       presupuestoAsignado: 0,
@@ -1935,6 +1909,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
       iacCorriente: 0,
       avance: 0
     };
+
+    this.detailChartData = null;
   }
 
   private limpiarTodosDatos(): void {
@@ -1943,13 +1919,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
     this.conceptos = [];
     this.beneficiarios = [];
     
-  }
-
-  // Método para formatear números en pesos
-  formatMillions(value: number): string {
-    if (value === 0) return '$0';
-    
-    return `$ ${value.toFixed(0)}`;
   }
 
   /**
@@ -2004,38 +1973,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
         return 0;
       };
 
-      // Datos para gráfico de barras (Ejecución vs Presupuesto)
-      const presupuestoTotal = convertirANumero(this.registroActual['apropiacion_vigente']);
-      const cdpEjecutado = convertirANumero(this.registroActual['cdp']);
-      const compromisosEjecutados = convertirANumero(this.registroActual['compromisos']);
-      const pagosEjecutados = convertirANumero(this.registroActual['pagos']);
-
-      // Calcular porcentajes para el gráfico
-      const porcentajeCDP = presupuestoTotal > 0 ? (cdpEjecutado / presupuestoTotal) * 100 : 0;
-      const porcentajeCompromisos = presupuestoTotal > 0 ? (compromisosEjecutados / presupuestoTotal) * 100 : 0;
-      const porcentajePagos = presupuestoTotal > 0 ? (pagosEjecutados / presupuestoTotal) * 100 : 0;
-
-      // Actualizar gráfico de barras verticales
-      this.barChartData = {
-          datasets: [
-          {
-            label: 'CDP',
-            backgroundColor: '#3366CC',
-            data: [porcentajeCDP]
-          },
-          {
-            label: 'Compromisos',
-            backgroundColor: '#fd7e14',
-            data: [porcentajeCompromisos]
-          },
-          {
-            label: 'Pagos',
-            backgroundColor: '#28a745',
-            data: [porcentajePagos]
-          }
-        ]
-      };
-
       // Actualizar gráfico de barras horizontales (Disponibilidad vs Ejecutado)
       const cdp = convertirANumero(this.registroActual['cdp']) ; // Full peso values
       let pagos = convertirANumero(this.registroActual['pagos']) ; // Full peso values
@@ -2047,28 +1984,28 @@ export class ReporteFuncionamientoComponent implements OnInit {
         datasets: [
           {
             label: 'Pagos',
-            backgroundColor: '#e8a58c',
+            backgroundColor: '#D9520A',
             borderColor: '#CCCCCC',
             borderWidth: 1,
             data: [pagos]
           },
           {
             label: 'Compromisos por pagar',
-            backgroundColor: '#ee825a',
+            backgroundColor: '#E07800',
             borderColor: '#CCCCCC',
             borderWidth: 1,
             data: [compromisoSinAfectacion]
           },
           {
             label: 'CDP por comprometer',
-            backgroundColor: '#F74E11',
+            backgroundColor: '#F0A500',
             borderColor: '#CCCCCC',
             borderWidth: 1,
             data: [cdpSinAfectacion]
           },
           {
-            label: 'Saldo sin afect.',
-            backgroundColor: '#eceae9',
+            label: 'Saldo sin afectación',
+            backgroundColor: '#AFC7D6',
             borderColor: '#CCCCCC',
             borderWidth: 1,
             data: [saldoSinAfectacion]
@@ -2083,15 +2020,13 @@ export class ReporteFuncionamientoComponent implements OnInit {
             
       let compromisoPorcentaje = compromiso > 0 ? (compromiso / (presupuestoDisponible)) * 100 : 0;
       this.compromisoPorcentaje = compromisoPorcentaje.toFixed(1).replace('.', ',');
-      console.log("Compromiso: ", compromiso);
-      console.log("Presupuesto disponible: ", presupuestoDisponible);
       this.donutAvanceEjecucionData = {
         labels: ['Compromiso', 'Presupuesto disponible'],
         datasets: [
           {
             data: [compromiso, presupuestoDisponible],
-            backgroundColor: ['#ee825a', '#eceae9'],
-            hoverBackgroundColor: ['#e85c16', '#dee2e6'],
+            backgroundColor: ['#D9520A', '#AFC7D6'],
+            hoverBackgroundColor: ['#B34200', '#99B5C6'],
             borderColor: '#CCCCCC',
             borderWidth: 1,
           }
@@ -2099,22 +2034,20 @@ export class ReporteFuncionamientoComponent implements OnInit {
       };
 
       let cajaDisponible = convertirANumero(this.registroActual['caja_disponible']) ; // Full peso values
-      let pagosPorcentaje = pagos > 0 ? ((pagos) / cajaDisponible) * 100 : 0;
-      this.avanceRecaudoPorcentaje = pagosPorcentaje.toFixed(1).replace(".", ",");
-      this.donutSituacionCajaData = {
+      this.hBarSituacionCajaData = {
         labels: [''],
         datasets: [
           {
             label: 'Pagos',
             data: [pagos],
-            backgroundColor: '#e8a58c',
+            backgroundColor: '#D9520A',
             borderColor: '#CCCCCC',
             borderWidth: 1,
           },
           {
             label: 'Caja Disponible',
             data: [cajaDisponible],
-            backgroundColor: '#eceae9',
+            backgroundColor: '#AFC7D6',
             borderColor: '#CCCCCC',
             borderWidth: 1,        
           }
@@ -2128,20 +2061,29 @@ export class ReporteFuncionamientoComponent implements OnInit {
             data: [
               this.avanceRecaudoData.iacCorriente, this.avanceRecaudoData.presupuestoCorriente
             ],
-            backgroundColor: ['#FF8D00', '#eceae9'],
-            hoverBackgroundColor: ['#db5c21ff', '#dee2e6'],
+            backgroundColor: ['#E07800', '#AFC7D6'],
+            hoverBackgroundColor: ['#C06500', '#99B5C6'],
             borderColor: '#CCCCCC',
             borderWidth: 1,
           }
         ]
       };
 
-      console.log('Gráficos actualizados con datos:', {
-        barChart: this.barChartData,
-        horizontalBar: this.horizontalBarAfectacionData,
-        donut1: this.donutAvanceEjecucionData,
-        donut2: this.donutSituacionCajaData
-      });
+      this.donutAvanceProyeccionPBCData = {
+        labels: ['Recaudo corriente', 'Presupuesto corriente'],
+        datasets: [
+          {
+            data: [
+              this.avanceRecaudoData.iacCorriente, this.avanceRecaudoData.presupuestoCorriente
+            ],
+            backgroundColor: ['#E07800', '#AFC7D6'],
+            hoverBackgroundColor: ['#C06500', '#99B5C6'],
+            borderColor: '#CCCCCC',
+            borderWidth: 1,
+          }
+        ]
+      };
+
 
     } catch (error) {
       console.error('Error actualizando gráficos:', error);
@@ -2160,7 +2102,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
           
           ctx.save();
           ctx.font = 'bold 22px Arial';
-          ctx.fillStyle = '#47454';
+          ctx.fillStyle = '#0943b5';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           
@@ -2177,7 +2119,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
     }
 
     const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--p-text-color') || '#000';
+    const textColor = '#0943b5';
     const surfaceBorder = documentStyle.getPropertyValue('--p-content-border-color') || '#dee2e6';
 
     // Opciones para gráfico de barras horizontales
@@ -2185,23 +2127,32 @@ export class ReporteFuncionamientoComponent implements OnInit {
       indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
-      aspectRatio: 2,
+      devicePixelRatio: window.devicePixelRatio || 2,
+      layout: {
+        padding: {
+          top: 5,
+          bottom: 5,
+          left: 5,
+          right: 5
+        }
+      },
       plugins: {
         legend: {
           position: 'bottom',
           labels: {
             color: textColor,
-            font: { size: 10 },
+            font: { size: 11 },
             boxWidth: 20,
+            padding: 8
           },
           maxWidth: 100,
-          
+
         },
         title: {
           display: true,
           text: 'Afectación presupuestal',
-          color: textColor,
-          font: { size: 12, weight: 'bold' }
+          color: '#28a745',
+          font: { size: 14, weight: 'bold' }
         },
         datalabels: {
           display: false
@@ -2228,13 +2179,13 @@ export class ReporteFuncionamientoComponent implements OnInit {
         x: {
           ticks: { 
             maxTicksLimit: 6,
-            color: textColor, font: { size: 8 } 
+            color: textColor, font: { size: 11 } 
           },
           grid: { color: surfaceBorder },
           stacked: true
         },
         y: {
-          ticks: { color: textColor, font: { size: 8 } },
+          ticks: { color: textColor, font: { size: 11 } },
           grid: { color: surfaceBorder },
           stacked: true
         }
@@ -2260,27 +2211,36 @@ export class ReporteFuncionamientoComponent implements OnInit {
       }      
     };
 
-    this.donutSituacionCajaOpts = {
+    this.hBarSituacionCajaOpts = {
       indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
-      aspectRatio: 2,
+      devicePixelRatio: window.devicePixelRatio || 2,
+      layout: {
+        padding: {
+          top: 5,
+          bottom: 5,
+          left: 5,
+          right: 5
+        }
+      },
       plugins: {
         legend: {
           position: 'bottom',
           labels: {
             color: textColor,
-            font: { size: 10 },
+            font: { size: 11 },
             boxWidth: 20,
+            padding: 8
           },
           maxWidth: 100,
-          
+
         },
         title: {
           display: true,
           text: 'Situación de Caja',
-          color: textColor,
-          font: { size: 12, weight: 'bold' }
+          color: '#28a745',
+          font: { size: 14, weight: 'bold' }
         },
         datalabels: {
           display: false
@@ -2307,13 +2267,13 @@ export class ReporteFuncionamientoComponent implements OnInit {
         x: {
           ticks: { 
             maxTicksLimit: 6,
-            color: textColor, font: { size: 8 } 
+            color: textColor, font: { size: 11 } 
           },
           grid: { color: surfaceBorder },
           stacked: true
         },
         y: {
-          ticks: { color: textColor, font: { size: 8 } },
+          ticks: { color: textColor, font: { size: 11 } },
           grid: { color: surfaceBorder },
           stacked: true
         }
@@ -2340,26 +2300,27 @@ export class ReporteFuncionamientoComponent implements OnInit {
     };
 
     // Opciones para gráficos de dona
-    this.donutAvanceEjecucionOptions = {  
-      cutout: '60%',    
+    this.donutAvanceEjecucionOptions = {
+      cutout: '60%',
       rotation: -90,
       circumference: 180,
       maintainAspectRatio: false,
-      aspectRatio: 1.5,
+      aspectRatio: 1.65,
       responsive: true,
+      devicePixelRatio: window.devicePixelRatio || 2,
       plugins: {
         legend: {
           position: 'right',
           labels: {
             color: textColor,
-            font: { size: 10 }
+            font: { size: 11 }
           }
         },
         title: {
           display: true,
           text: 'Avance de Ejecución',
-          color: textColor,
-          font: { size: 12, weight: 'bold' }
+          color: '#28a745',
+          font: { size: 14, weight: 'bold' }
         },
         datalabels: {
           display: false
@@ -2374,7 +2335,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
           yAlign: 'bottom'
         },
         centerText: {
-          display: true,
+          display: true,          
           text: () => {
             if (this.isLoadingData) return 'Cargando...';
             const value = this.compromisoPorcentaje;
@@ -2406,34 +2367,83 @@ export class ReporteFuncionamientoComponent implements OnInit {
       }
     };
 
-    this.donutAvanceRecaudoOptions = {  
-      cutout: '60%',    
+    this.donutAvanceRecaudoInCardOptions = {
+      cutout: '60%',
       rotation: -90,
       circumference: 180,
       maintainAspectRatio: false,
-      aspectRatio: 1.5,
-      responsive: true,      
+      aspectRatio: 1.25,
+      responsive: true,
+      devicePixelRatio: window.devicePixelRatio || 2,
       plugins: {
         legend: {
           position: 'right',
           labels: {
             color: textColor,
-            font: { size: 10 }
+            font: { size: 11 },
+            boxWidth: 14,
+            padding: 6
+          }
+        },
+        title: { 
+          display: true,
+          text: 'Avance de Recaudo',
+          color: '#28a745',
+          font: { size: 14, weight: 'bold' }
+        },
+        datalabels: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(tooltipItem: any) {
+              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')}`;
+            }
+          }
+        },
+        centerText: {
+          display: true,
+          text: () => {
+            if (this.isLoadingData) return 'Cargando...';
+            const avance = this.avanceRecaudoData.avance * 100;
+            if (!isFinite(avance) || isNaN(avance)) return '0.00%';
+            return avance.toFixed(2).replace(".", ",") + '%';
+          }
+        }
+      },
+      elements: {
+        arc: { borderWidth: 1, borderColor: '#BBBBBB' }
+      },
+      animation: { animateRotate: true, animateScale: true, duration: 2000, easing: 'easeOutQuart' }
+    };
+
+    this.donutAvanceProyeccionPBCOptions = {
+      cutout: '60%',
+      rotation: -90,
+      circumference: 180,
+      maintainAspectRatio: false,
+      aspectRatio: 1.65,
+      responsive: true,
+      devicePixelRatio: window.devicePixelRatio || 2,
+      plugins: {
+        legend: {
+          position: 'right',
+          labels: {
+            color: textColor,
+            font: { size: 11 }
           }
         },
         title: {
           display: true,
-          text: 'Avance de Recaudo',
-          color: textColor,
-          font: { size: 12, weight: 'bold' }
+          text: 'Avance Proyección PBC',
+          color: '#28a745',
+          font: { size: 14, weight: 'bold' }
         },
-          datalabels: {
-            display: false
-          },        
+        datalabels: {
+          display: false
+        },
         tooltip: {
           callbacks: {
             label: function(tooltipItem: any) {
-              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')}`;            
+              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')}`;
             }
           },
           xAlign: 'left',
@@ -2470,7 +2480,84 @@ export class ReporteFuncionamientoComponent implements OnInit {
         intersect: false,
         axis: 'r'
       }
-    };   
+    };
+
+    // Configurar opciones para el gráfico de detalle
+    this.detailChartOptions = {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      devicePixelRatio: window.devicePixelRatio || 2,
+      layout: {
+        padding: {
+          top: 10,
+          bottom: 10,
+          left: 10,
+          right: 10
+        }
+      },
+      plugins: {
+        legend: {
+          position: 'top',
+          labels: {
+            color: textColor,
+            font: { size: 11 },
+            boxWidth: 20,
+            padding: 10
+          }
+        },
+        title: {
+          display: false
+        },
+        datalabels: {
+          display: false
+        },
+        tooltip: {
+          enabled: true,
+          mode: 'index',
+          intersect: false,
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          titleColor: '#ffffff',
+          bodyColor: '#ffffff',
+          borderColor: textColor,
+          borderWidth: 1,
+          callbacks: {
+            label: function(tooltipItem: any) {
+              const label = tooltipItem.dataset.label || '';
+              const value = Math.ceil(tooltipItem.raw).toLocaleString('es-CO');
+              return `${label}: $${value}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          stacked: false,
+          beginAtZero: true,
+          ticks: {
+            color: textColor,
+            font: { size: 11 },
+            callback: function(value: any) {
+              return '$' + (value / 1000000).toFixed(0) + 'M';
+            }
+          },
+          grid: {
+            color: surfaceBorder
+          }
+        },
+        y: {
+          stacked: true,
+          ticks: {
+            color: textColor,
+            font: { size: 11 }
+          },
+          grid: {
+            color: surfaceBorder,
+            display: false
+          }
+        }
+      }
+    };
 
     // Inicializar gráficos con datos por defecto si hay registro actual
     if (this.registroActual) {
@@ -2592,27 +2679,16 @@ export class ReporteFuncionamientoComponent implements OnInit {
   }
 
 
-  // Métodos de eventos de botones
-  onAdministracionClick(): void {
-    console.log('Administración - SSEC clicked');
-  }
-
-  onComisionRectoraClick(): void {
-    console.log('Comisión Rectora clicked');
-  }
-
+  // métodos de eventos de botones
   onDetalleGestionClick(): void {
-    console.log('Detalle Gestión Financiera clicked');
     this.downloadAssetFile(this.managementReportXlsFile);
   }
 
   onDetalleRecaudoClick(): void {
-    console.log('Detalle de Recaudo clicked');
     this.downloadAssetFile(this.detailReportXlsFile);
   }
 
   onInformeTrimestraClick(): void {
-    console.log('Informe Trimestral clicked');
     this.openInNewTab(this.urlTrimestralReport);
   }
 }

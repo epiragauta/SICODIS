@@ -242,7 +242,7 @@
 
     // Columna izquierda (60%)
     .left-column {
-      flex: 0 0 58%;
+      flex: 0 0 67.2%;
       display: flex;
       flex-direction: column;
       gap: 1rem;
@@ -285,9 +285,10 @@
         }
 
         .metrics-row {
-          display: contents;
+          display: flex;
           justify-content: space-between;
-          gap: .25rem;
+          align-items: center;
+          gap: .125rem;
           flex-wrap: wrap;
           width: 100%;
 
@@ -306,7 +307,7 @@
             }
 
             .metric-label {
-              font-size: 0.65rem;
+              font-size: 0.825rem;
               line-height: 1.2;
               word-wrap: break-word;
             }
@@ -314,9 +315,7 @@
 
           .metric-item-2 {
             flex: 1;
-            text-align: center;
-            min-width: 245px;
-            max-width: 262px;
+            text-align: center;            
             color: #0943b5;
 
             .metric-value {
@@ -327,7 +326,7 @@
             }
 
             .metric-label {
-              font-size: 0.75rem;
+              font-size: 0.825rem;
               line-height: 1.2;
               word-wrap: break-word;
             }
@@ -349,8 +348,8 @@
       }
 
       .chart-container {
-        background-color: #fff;
-        border-radius: 8px;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        border-radius: 12px;
         padding: 0.5rem;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         border: 1px solid #e0e0e0;
@@ -361,19 +360,28 @@
         /*align-items: center;*/
         overflow: hidden;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: translateZ(0);
+        will-change: transform;
 
         &:hover {
-          transform: translateY(-4px);
-          box-shadow: 
+          transform: translateY(-4px) translateZ(0);
+          box-shadow:
             0 12px 40px rgba(0, 0, 0, 0.15),
             0 6px 20px rgba(0, 0, 0, 0.1);
         }
 
         .chart {
           width: 100%;
-          height: 180px;
-          max-height: 180px;
+          height: 188px;
+          max-height: 188px;
           overflow: hidden;
+        }
+
+        &.horizontal-bar-container {
+          .chart.horizontal-bar-chart {
+            height: 188px !important;
+            max-height: 188px !important;
+          }
         }
 
         
@@ -434,13 +442,13 @@
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 1rem;
       width: 100%;
-      margin-bottom: 1rem;
+      margin-bottom: .5rem;
       
       .detail-item {
         padding: 0.5rem;
         background-color: #f8f9fa;
         border-radius: 4px;
-        font-size: 0.75rem;
+        font-size: 0.825rem;
         width: 100%;
         
         strong {
@@ -451,10 +459,30 @@
       }
     }
 
+    .detail-chart-container {
+      margin-top: .5rem;
+      margin-bottom: 0.5rem;
+      width: 100%;
+
+      .chart-section-title {
+        color: #28a745;
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+
+      .detail-chart {
+        width: 100%;
+        height: 350px;
+        max-height: 350px;
+      }
+    }
+
     .final-note {
       font-size: 0.75rem;
       color: #495057;
-      margin-bottom: 0.25rem;      
+      margin-bottom: 0.25rem;
       line-height: 1.4;
       padding-left: 15px;
     }
@@ -564,6 +592,14 @@
     flex-direction: column;
   }
 
+  .mat-mdc-card.info-card-recaudo {
+    height: 200px;
+    min-height: 200px;
+    max-height: 200px;
+    overflow: hidden;
+    width: 100%;
+  }
+
   .mat-mdc-card-header {
     padding-bottom: 0.5rem;
     flex-shrink: 0;
@@ -574,6 +610,41 @@
     flex-grow: 1;
     display: flex;
     align-items: center;
+  }
+
+  .mat-mdc-card-content.card-content-recaudo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0 0.5rem 0;
+    overflow: hidden;
+    height: 100%;
+
+    .recaudo-metrics {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      width: 100%;
+    }
+
+    .recaudo-chart {
+      flex: 1 1 auto;
+      height: 175px;
+      overflow: hidden;
+      transform: translateZ(0);
+
+      .chart-recaudo {
+        width: 100%;
+        height: 175px;
+        max-height: 175px;
+      }
+    }
   }
 
   // Estilos para select deshabilitado
@@ -665,26 +736,26 @@
   .p-chart {
     width: 100% !important;
     height: 100% !important;
-    max-height: 180px !important;
+    max-height: 188px !important;
     overflow: hidden !important;
+    transform: translateZ(0) !important;
+    -webkit-font-smoothing: antialiased !important;
 
     canvas {
       max-width: 100% !important;
-      max-height: 160px !important;
+      max-height: 188px !important;
       width: auto !important;
       height: auto !important;
-      border: 2px solid #4a4a4a !important;
-      border-radius: 8px !important;
-      transition: all 0.3s ease !important;
-      
-      &:hover {
-        filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25)) !important;
-        border-color: #2a2a2a !important;
-      }
+      image-rendering: auto !important;
+      transform: translateZ(0) !important;
+      backface-visibility: hidden !important;
+      -webkit-font-smoothing: antialiased !important;
+      -moz-osx-font-smoothing: grayscale !important;
+      font-smooth: always !important;
     }
 
     .p-chart-canvas {
-      max-height: 160px !important;
+      max-height: 188px !important;
       max-width: 100% !important;
     }
   }
@@ -694,9 +765,31 @@
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
-    
+
     canvas {
       object-fit: contain !important;
+      image-rendering: auto !important;
+    }
+  }
+
+  // Gráfico integrado dentro de la tarjeta de recaudo
+  .card-content-recaudo .chart-recaudo {
+    canvas {
+      max-height: 175px !important;
+      height: 175px !important;
+    }
+  }
+
+  // Específico para gráficos de barras horizontales
+  .horizontal-bar-container {
+    .horizontal-bar-chart {
+      height: 188px !important;
+      min-height: 188px !important;
+
+      canvas {
+        height: 180px !important;
+        min-height: 180px !important;
+      }
     }
   }
 }

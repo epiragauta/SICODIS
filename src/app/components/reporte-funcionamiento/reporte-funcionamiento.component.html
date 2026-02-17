@@ -123,10 +123,10 @@
       <p class="date-update">Fecha de corte de recaudo: {{ fechaCorteRecaudo }}</p>      
     </div>
     <div style="position: relative; padding-bottom: .25rem;">
-      <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 1.7rem; width: 90px;"
+      <button pButton type="button" label="Diccionario" class="p-button-primary" style="margin-right: 1.7rem; width: 90px;"
           (click)="showPopupDiccionario()">
       </button>
-      <button pButton type="button" label="Siglas" class="p-button-secondary" style="width: 90px;"
+      <button pButton type="button" label="Siglas" class="p-button-primary" style="width: 90px;"
           (click)="showPopupSiglas()">
       </button>
     </div> 
@@ -227,33 +227,44 @@
       </mat-card>
 
       <!-- Tarjeta 4: Avance de Recaudo -->
-      <mat-card class="info-card" [class.loading]="isLoadingData">
-        <mat-card-header class="card-header-avance-recaudo">
-          <mat-card-title class="card-title card-main" card-main>Avance del recaudo de ingresos corrientes</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="metrics-row">
-            <div class="metric-item-2">
-              <div class="metric-value">{{formatMillions2(avanceRecaudoData.presupuestoCorriente)}}</div>
-              <div class="metric-label">Presupuesto corriente</div>
-            </div>
-          </div>
-          <div class="metrics-row">
-            <div class="metric-item-2">
-              <div class="metric-value">{{formatMillions2(avanceRecaudoData.iacCorriente)}}</div>
-              <div class="metric-label">Recaudo corriente</div>
-            </div>
-          </div>
-          <div class="metrics-row">
-            <div class="metric-item-2">
-              <div class="metric-value">
-                {{avanceRecaudoData.avance | percentFormat:2}}
+      <div style="display: flex;gap: 0.25rem">
+        <mat-card class="info-card info-card-recaudo" [class.loading]="isLoadingData">
+          <mat-card-header class="card-header-avance-recaudo">
+            <mat-card-title class="card-title card-main">Avance del recaudo de ingresos corrientes</mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="card-content-recaudo">
+            <div class="recaudo-metrics">
+              <div class="metrics-row">
+                <div class="metric-item-2">
+                  <div class="metric-value">{{formatMillions2(avanceRecaudoData.presupuestoCorriente)}}</div>
+                  <div class="metric-label">Presupuesto corriente</div>
+                </div>
               </div>
-              <div class="metric-label">Avance</div>
+              <div class="metrics-row">
+                <div class="metric-item-2">
+                  <div class="metric-value">{{formatMillions2(avanceRecaudoData.iacCorriente)}}</div>
+                  <div class="metric-label">Recaudo corriente</div>
+                </div>
+              </div>
+              <!--div class="metrics-row">
+                <div class="metric-item-2">
+                  <div class="metric-value">
+                    {{avanceRecaudoData.avance | percentFormat:2}}
+                  </div>
+                  <div class="metric-label">Avance</div>
+                </div>
+              </div-->
+            </div>            
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="info-card info-card-recaudo" [class.loading]="isLoadingData">          
+          <mat-card-content class="card-content-recaudo">            
+            <div class="recaudo-chart">
+              <p-chart type="doughnut" [data]="donutAvanceRecaudoData" [options]="donutAvanceRecaudoInCardOptions" class="chart-recaudo"></p-chart>
             </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
+          </mat-card-content>
+        </mat-card>
+      </div>
     </div>
 
     <!-- Columna derecha (40%) - Gráficos -->
@@ -269,18 +280,18 @@
       </div>
 
       <!-- Gráfico 2: Barra horizontal -->
-      <div class="chart-container" [class.loading]="isLoadingData">        
-        <p-chart type="bar" [data]="horizontalBarAfectacionData" [options]="horizontalBarAfectacionOptions" class="chart">
-        </p-chart>        
+      <div class="chart-container horizontal-bar-container" [class.loading]="isLoadingData">
+        <p-chart type="bar" [data]="horizontalBarAfectacionData" [options]="horizontalBarAfectacionOptions" class="chart horizontal-bar-chart">
+        </p-chart>
       </div>
 
-      <!-- Gráfico 3: Dona 180 grados -->
-      <div class="chart-container" [class.loading]="isLoadingData">        
-        <p-chart type="bar" [data]="donutSituacionCajaData" [options]="donutSituacionCajaOpts" class="chart"></p-chart>        
+      <!-- Gráfico 3: Barra horizontal -->
+      <div class="chart-container horizontal-bar-container" [class.loading]="isLoadingData">
+        <p-chart type="bar" [data]="hBarSituacionCajaData" [options]="hBarSituacionCajaOpts" class="chart horizontal-bar-chart"></p-chart>
       </div>
-      <!-- Gráfico 4: Dona 180 grados -->
-      <div class="chart-container" [class.loading]="isLoadingData">        
-        <p-chart type="doughnut" [data]="donutAvanceRecaudoData" [options]="donutAvanceRecaudoOptions" class="chart"></p-chart>
+      <!-- Gráfico 4: Dona Avance Proyección PBC -->
+      <div class="chart-container" [class.loading]="isLoadingData">
+        <p-chart type="doughnut" [data]="donutAvanceProyeccionPBCData" [options]="donutAvanceProyeccionPBCOptions" class="chart"></p-chart>
       </div> 
     </div>
   </div>
@@ -322,7 +333,7 @@
       </mat-card-header>
       <mat-card-content>
         <div style="display: table-row;width: 100%;;">
-          <div *ngFor="let registro of (selectedBeneficiario.length > 0 ? distribucionTotalMultiple : distribucionTotal)">
+          <div *ngFor="let registro of (selectedBeneficiario.length > 0 ? distribucionTotalMultiple : distribucionTotal); let i = index">
             <div class="detail-grid">
               <div class="detail-item">
                 <strong>Fuente:</strong> {{registro.fuente_principal || 'N/A'}}
@@ -331,38 +342,42 @@
                 <strong>Beneficiario:</strong> {{registro.beneficiario_seleccionado || registro.beneficiario || selectedBeneficiario[0]?.label || 'N/A'}}
               </div>
               <div class="detail-item">
-                <strong>Presupuesto disponible:</strong> 
+                <strong>Presupuesto disponible:</strong>
                 <div style="text-align: right;">
                   {{formatMillions2(registro.apropiacion_vigente_disponible, {}) || 'N/A'}}
-                </div>            
+                </div>
               </div>
               <div class="detail-item">
-                <strong>Compromisos:</strong> 
+                <strong>Compromisos:</strong>
                 <div style="text-align:right;">
                   {{formatMillions2(registro.compromisos, {}) || 'N/A'}}
-                </div>            
+                </div>
               </div>
               <div class="detail-item">
-                <strong>Saldo por comprometer:</strong> 
+                <strong>Saldo por comprometer:</strong>
                 <div style="text-align:right;">
                   {{formatMillions2(registro.saldo_por_comprometer, {}) || 'N/A'}}
-                </div>            
+                </div>
               </div>
               <div class="detail-item">
-                <strong>Avance de ejecución:</strong> 
+                <strong>Avance de ejecución:</strong>
                 <div style="text-align:right;">
                   {{(registro.compromisos / registro.apropiacion_vigente_disponible)  | percentFormat:2 }}
-                </div>            
+                </div>
               </div>
             </div>
-          </div>    
+            <!-- Gráfico de comparación por registro -->
+            <div class="detail-chart-container" *ngIf="detailChartData && detailChartData[i]">
+              <p-chart type="bar" [data]="detailChartData[i]" [options]="detailChartOptions" class="detail-chart"></p-chart>
+            </div>
+          </div>
         </div>
-            
+
       </mat-card-content>
+      
       <p class="final-note">
-        <strong>Cifras en pesos corrientes.</strong>        
+        <strong>Cifras en pesos corrientes.</strong>
       </p>
-    </mat-card>    
-  </div>
-  
+    </mat-card>
+  </div>  
 </div>
