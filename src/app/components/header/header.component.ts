@@ -83,16 +83,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
           //   label: 'Comparativo Avance vs Presupuesto',
           //   command: () => this.redirectUrl("sgr-comparativo")
           // },
-          {
-            label: 'Administración y Sistema de Seguimiento (SSEC)',
-             command: () => this.redirectUrl("reporte-funcionamiento")
-          }
           // ,
           // {
           //   label: 'Recaudo directas',
           //   command: () => this.redirectUrl("sgr-recaudo-directas")
           // }
-          ,
+          
           {
             label: 'Recaudo mensual',
             command: () => this.redirectUrl("sgr-recaudo-mensual")
@@ -142,6 +138,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
               }
             ]
           }
+          ,
+          {
+            label: 'Administración y Sistema de Seguimiento (SSEC)',
+             command: () => this.redirectUrl("reporte-funcionamiento")
+          }
+
 
           // ,
           // {

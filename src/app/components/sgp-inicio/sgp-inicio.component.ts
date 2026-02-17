@@ -323,14 +323,14 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
                 `Avance: 59.21%`
                 ];
  
-              case 18011176327143:
+              case  20622281544600:
                 return [`${context.label}: ${formattedValue}`,
-                `Avance: 87.34%`
+                `Avance: 100%`
                 ];
 
-              case 129348028271:
+              case  4556339605748:
                 return [`${context.label}: ${formattedValue}`,
-                `Avance: 2.84%`
+                `Avance: 100%`
                 ];
               
               case  9787692486422:

@@ -213,7 +213,19 @@ tableDataBase: any[] =
     variacion_mineria: -37.18,
     variacion_hidrocarburos: -18.04,
     variacion_total: -24.67,
-  },    
+  },   
+  {
+    mes: "Enero de 2026",
+    pbc_mineria: 406554681320,
+    pbc_hidrocarburos: 746405760774.72,
+    pbc_total: 1152960442094.72,
+    recaudo_mineria: 357648355355,
+    recaudo_hidrocarburos: 408052316983,
+    recaudo_total: 765700672338,
+    variacion_mineria: -12.03,
+    variacion_hidrocarburos: -45.33,
+    variacion_total: -30.30,
+  },      
 ];
 
   tableColumns: any[] = [];
@@ -410,21 +422,36 @@ detailedTableDataBase: any[] = [
   ro_total: 57952978634,
   total_distribuido: 827582672938.55
  }, 
-
+ 
+ {
+  periodo: "Enero de 2026",
+  rc_inversion_aforada: 698119036519.69,
+  rc_ahorro: 34456530255.34,
+  rc_administracion: 22971020170.14,
+  rc_no_aforado: 10154085392.83,
+  rc_total: 765700672338,
+  total_pbc: 1152960442094.64,
+  avance: 0,
+  ro_inversion: 0,
+  ro_ahorro: 0,
+  ro_administracion: 0,
+  ro_total: 0,
+  total_distribuido: 765700672338
+ }, 
  {
   periodo: "Total",
-  rc_inversion_aforada: 10154848835736.3,
-  rc_ahorro: 502412341140.16,
-  rc_administracion: 334941560760.06,
-  rc_no_aforado: 114562975773.71,
-  rc_total: 10337136019105.60,
-  total_pbc: 11583742061130,
+  rc_inversion_aforada: 10852967872255.9,
+  rc_ahorro: 536868871395.5,
+  rc_administracion: 357912580930.2,
+  rc_no_aforado: 124717061166.54,
+  rc_total: 11872466385748.20,
+  total_pbc: 13835250671983.40,
   avance: 9.366841194373777,
-  ro_inversion: 5460192909737.59,
+  ro_inversion: 5518145888372,
   ro_ahorro: 315990852796,
   ro_administracion: -1306429294,
   ro_total: 5832830311874,
-  total_distribuido: 16112013352345.6
+  total_distribuido: 17705296697622.2
  }
 ]  
 ;
@@ -693,11 +720,11 @@ constructor(private sicodisApiService: SicodisApiService) { }
    */
   private initializeMiningChart(): void {
     // Datos mock para 5 períodos (Enero 2025 - Mayo 2025)
-    const periods = [ 'Agosto 2025', 'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025', 'Diciembre 2025'];
+    const periods = [ 'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025', 'Diciembre 2025', 'Enero 2026'];
     
     // Datos simulados en pesos colombianos
-    const recaudoMineria = [ 236606358724, 176744693700, 688694062304, 174759410760,238955927877.65];
-    const pbcMineria = [ 422652382500, 169060952916, 507182858648, 464917620452,380387144060];
+    const recaudoMineria = [  176744693700, 688694062304, 174759410760,238955927877.65, 357648355355];
+    const pbcMineria = [  169060952916, 507182858648, 464917620452,380387144060, 406554681320];
 
     this.miningChartData = {
       labels: periods,
@@ -789,11 +816,11 @@ constructor(private sicodisApiService: SicodisApiService) { }
    */
   private initializeHydrocarbonChart(): void {
     // Datos mock para 5 períodos (Enero 2025 - Mayo 2025)
-    const periods = [ 'Agosto 2025', 'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025','Diciembre 2025'];
+    const periods = [ 'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025','Diciembre 2025', 'Enero 2026'];
     
     // Datos simulados en pesos colombianos
-    const recaudoHidrocarburos = [ 516581168859, 694193464544, 527252664807, 475749145202,588626745060,90];
-    const pbcHidrocarburos = [ 718161024698, 694994469215, 718161024698, 694994469215,718161024698.81];
+    const recaudoHidrocarburos = [ 694193464544, 527252664807, 475749145202,588626745060.90, 408052316983];
+    const pbcHidrocarburos = [ 694994469215, 718161024698, 694994469215,718161024698.81, 746405760774.72];
 
     this.hydrocarbonChartData = {
       labels: periods,
@@ -905,7 +932,7 @@ constructor(private sicodisApiService: SicodisApiService) { }
   private initializeConceptChart(): void {
     // Datos mock para conceptos: Inversión, Ahorro, Administración
     const presupuestoBienal = [ 23620950245846, 1149127309256 , 766084872838 ]; // En pesos
-    const recaudoAcumulado = [10154848835736.3, 502412341140.16, 334941560760.06]; // En pesos
+    const recaudoAcumulado = [10852967872255.9, 536868871395.5, 357912580930.2]; // En pesos
   
     this.conceptChartData = {
       labels: ['Inversión', 'Ahorro', 'Administración'],
@@ -994,11 +1021,11 @@ constructor(private sicodisApiService: SicodisApiService) { }
    */
   private initializeTrendChart(): void {
     // Datos ultimos 5 mees
-        const periods = [ 'Agosto 2025', 'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025', 'Diciembre 2025'];
+        const periods = [ 'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025', 'Diciembre 2025', 'Enero 2026'];
     
     // Datos simulados de Inversión (PBC vs Recaudo)
-    const inversionPBC = [ 1140813407198.81, 864055422131, 1225343883346.81, 1159912089667,1098548168758.76];
-    const inversionRecaudo = [ 753187527583.98, 870938158245.43, 1215946727111.77, 650508555962.64, 769629694304.55];
+    const inversionPBC = [  864055422131, 1225343883346.81, 1159912089667,1098548168758.76, 1152960442094.72];
+    const inversionRecaudo = [  870938158245.43, 1215946727111.77, 650508555962.64, 769629694304.55, 765700672338];
 
     this.trendChartData = {
       labels: periods,
@@ -1213,10 +1240,10 @@ constructor(private sicodisApiService: SicodisApiService) { }
     ];
 
     // Datos mock para la única fila
-    const inversionAforada = 10154848835736.3; 
-    const ahorro = 502412341140.16; 
-    const administracion = 334941560760.06; 
-    const noAforado = 114562975773.71; 
+    const inversionAforada = 10852967872255.9; 
+    const ahorro = 536868871395.5; 
+    const administracion = 357912580930.2; 
+    const noAforado = 124717061166.54; 
     const otros = 5832830311874; 
     const total = inversionAforada + ahorro + administracion + noAforado + otros;
 

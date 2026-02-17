@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable, forkJoin } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 import { HttpResponse } from '@angular/common/http';
+
+
 
 // ========== SGR Funcionamiento Interfaces ==========
 export interface DiccionarioItem {
@@ -400,6 +402,7 @@ export interface DistribucionTotalParams {
 })
 export class SicodisApiService {
   private readonly baseUrl = 'https://sicodis.dnp.gov.co/apiws/ApiSicodisNew';
+  private token: string | null = null;
 
   constructor(private http: HttpClient) {}
 
@@ -415,6 +418,16 @@ export class SicodisApiService {
     });
   }
 
+
+
+
+  private getAuthHeaders(): HttpHeaders {
+  let headers = this.getNoCacheHeaders(); // tus headers anti-caché
+  if (this.token) {
+    headers = headers.set('Authorization', `Bearer ${this.token}`);
+  }
+  return headers;
+}
   // ========== SGR Funcionamiento Methods ==========
 
   /**
@@ -1223,5 +1236,18 @@ export class SicodisApiService {
     const url = `${this.baseUrl}/pgn/descargadatosseguimiento_por_vigencia_periodo_region_depto_fuente/${id_vigencia}/${id_periodo}/${codigo_region}/${codigo_dane_depto}/${id_fuente}`;
     return this.http.get(url, { responseType: 'blob' });  // responseType 'blob' indica que será un archivo binario
   }   
+
+
+
+    login(usuario: string, password: string): Observable<string> {
+      return this.http.post<{ token: string }>('https://sicodis.dnp.gov.co/apiws/auth/login', { usuario, password })
+        .pipe(
+          tap((resp: { token: string }) => {
+            this.token = resp.token; // ahora TypeScript sabe que resp tiene propiedad token
+          }),
+          map(resp => resp.token) // opcional: si quieres devolver solo el token
+        );
+    }
+
 
 }
