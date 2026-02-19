@@ -2076,8 +2076,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
             data: [
               this.avanceRecaudoData.iacCorriente, this.avanceRecaudoData.presupuestoCorriente
             ],
-            backgroundColor: ['#E07800', '#AFC7D6'],
-            hoverBackgroundColor: ['#C06500', '#99B5C6'],
+            backgroundColor: ['#0943b5', '#AFC7D6'],
+            hoverBackgroundColor: ['#1e5cda', '#98c0d8'],
             borderColor: '#CCCCCC',
             borderWidth: 1,
           }
