@@ -388,6 +388,71 @@ export interface SgrPtoRecaudoItem {
 }
 
 
+export interface SgrPtoRecaudoItem {
+  categoria: string;
+  concepto: string;
+  presupuesto_total_vigente: number;
+  presupuesto_corriente: number;
+  presupuesto_otros: number;
+  caja_corriente_informada: number;
+  caja_otros: number;
+  caja_total: number;
+  avance_iac_presupuesto: number;
+}
+
+
+export interface SgrRecaudoMensualSectorResumen {
+  concepto: string;
+  inversion_aforada: number;
+  ahorro: number;
+  administracion: number;
+  no_aforado: number;
+  otros: number;
+  total: number;
+  presupuesto_inversion: number;
+  presupuesto_ahorro: number;
+  presupuesto_otros: number;
+}
+
+
+export interface SgrRecaudoMensualDetallePeriodo {
+  periodo: string;
+  rc_inversion_aforada: number;
+  rc_ahorro: number;
+  rc_administracion: number;
+  rc_no_aforado: number;
+  rc_total: number;
+  total_pbc: number;
+  ro_inversion: number;
+  ro_ahorro: number;
+  ro_administracion: number;
+  ro_no_aforado_otros: number;
+  ro_total: number;
+  observacion: string;
+  total_distribuido: number;
+}
+
+
+	export interface SgrRecaudoMensualSectorDetallePeriodo {
+  periodo: string;
+  pbc_mineria: number;
+  pbc_hidrocarburos: number;
+  pbc_total: number;
+  recaudo_mineria: number;
+  recaudo_hidrocarburos: number;
+  recaudo_total: number;
+  variacion_mineria: number;
+  variacion_hidrocarburos: number;
+  variacion_total: number;
+
+}
+
+export interface SgrRecaudoMensualResponse {
+  resumen: SgrRecaudoMensualSectorResumen[];
+  detalle: SgrRecaudoMensualDetallePeriodo[];
+  detallesector: SgrRecaudoMensualSectorDetallePeriodo[];
+}
+
 // ========== Request Parameters Interfaces ==========
 export interface DistribucionTotalParams {
   idVigencia?: number;
@@ -733,6 +798,34 @@ export class SicodisApiService {
   }
 
 
+
+/**
+ * Consulta la información del recaudo mensual por id de vigencia
+ * @param idvigencia id de la vigencia
+ * @returns Observable con la información de recaudo mensual
+ */
+getSgrDetallePBCRecaudoMensual(idvigencia: number): Observable<SgrRecaudoMensualResponse> {
+  const url = `${this.baseUrl}/sgr/resumen_pbc_recaudo_mensual/${idvigencia}`;
+  return this.http.get<SgrRecaudoMensualResponse>(url);
+}
+
+
+/**
+ * Descarga el archivo de recaudo mensual
+ * @param idvigencia - Id de la vigencia
+ * @param vigencia - vigencia texto
+ * @param fecha_actualizacion - fecha de actualización de la información
+ * @param fecha_corte - fecha de corte de la información
+ * @returns Observable - Archivo
+ */
+getSgrDescargaResumenPbcRecaudoMensual( idvigencia: number
+                                        , vigencia: string
+                                        , fecha_actualizacion: string
+                                        , fecha_corte : string
+                                        ): Observable<Blob> {  
+    const url = `${this.baseUrl}/sgr/descarga_resumen_pbc_recaudo_mensual/${idvigencia}/${vigencia}/${fecha_actualizacion}/${fecha_corte}`;
+    return this.http.get(url, { responseType: 'blob' });  // responseType 'blob' indica que será un archivo binario
+  }
   // ========== SGP Methods ==========
 
 

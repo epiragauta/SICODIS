@@ -129,8 +129,9 @@
   <!-- Sección de botones Diccionario y Siglas -->
   <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0;">
     <div style="width: 83%;">
-      <p class="date-update">Fecha de actualización: febrero 12 de 2026</p>
-      <p class="date-update">Fecha de corte de recaudo: enero 31 de 2026</p>
+      <p class="date-update">Fecha de actualización: {{ fechaActualizacion }}</p>
+      <p class="date-update">Fecha de corte de recaudo: {{ fechaCorteRecaudo }}</p>
+
     </div>
     <div style="position: relative; padding-bottom: .25rem;">
       <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 2rem; width: 96px;"
@@ -151,6 +152,7 @@
         <div class="chart-content">
           <div #miningScroll style="overflow-y: auto; max-height: 310px;">
             <p-chart 
+              *ngIf="miningChartData"
               type="bar" 
               [data]="miningChartData" 
               [options]="miningChartOptions"
@@ -173,12 +175,13 @@
 
           <div #hydroScroll style="overflow-y: auto; max-height: 310px;">
             <p-chart 
+              *ngIf="hydrocarbonChartData"
               type="bar" 
               [data]="hydrocarbonChartData" 
               [options]="hydrocarbonChartOptions"
               width="570px"
               [height]="hydroChartHeight">
-            </p-chart>
+            </p-chart>            
           </div>
 
         </div>
@@ -201,8 +204,8 @@
             type="bar" 
             [data]="conceptChartData" 
             [options]="conceptChartOptions"
-            width="570px"
-            height="300px">
+            width="580px"
+            height="315px">
           </p-chart>
         </div>
         <div class="chart-footer">
@@ -271,7 +274,7 @@
     
     <p-table [value]="detailedTableData" 
              [paginator]="true" 
-             [rows]="13" 
+             [rows]="24" 
              [showCurrentPageReport]="true" 
              currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
              [scrollable]="true" 
@@ -285,7 +288,7 @@
           <th colspan="5" class="group-header rc-header">Recaudo Corriente</th>
           <th rowspan="2" class="individual-header">Total PBC</th>
           <!-- <th rowspan="2" class="individual-header">Avance</th> -->
-          <th colspan="4" class="group-header ro-header">Recaudo Otros</th>
+          <th colspan="6" class="group-header ro-header">Recaudo Otros</th>
           <th rowspan="2" class="individual-header">Total distribuido</th>
         </tr>
         <tr>
@@ -299,7 +302,10 @@
           <th class="sub-header ro-sub">Inversión</th>
           <th class="sub-header ro-sub">Ahorro</th>
           <th class="sub-header ro-sub">Administración y SSEC</th>
+          <th class="sub-header ro-sub">No aforado - 
+                                        Vigencias Anteriores</th>
           <th class="sub-header ro-sub">Total recaudo otros</th>
+          <th class="sub-header ro-sub">Observaciones</th>
         </tr>
       </ng-template>
       
@@ -320,7 +326,9 @@
           <td class="number-cell">{{rowData.ro_inversion | numberFormat}}</td>
           <td class="number-cell">{{rowData.ro_ahorro | numberFormat}}</td>
           <td class="number-cell">{{rowData.ro_administracion | numberFormat}}</td>
+          <td class="number-cell">{{rowData.ro_no_aforado_otros | numberFormat}}</td>
           <td class="number-cell total-cell">{{rowData.ro_total | numberFormat}}</td>
+          <td class="number-cell" style="text-align: left;">{{rowData.observacion}}</td>
           <!-- Final total -->
           <td class="number-cell total-cell">{{rowData.total_distribuido | numberFormat}}</td>
         </tr>
@@ -374,7 +382,7 @@
       <!-- Encabezados agrupados -->
       <ng-template pTemplate="header">
         <tr>
-          <th rowspan="2" class="month-header">Mes</th>
+          <th rowspan="2" class="month-header">Periodo</th>
           <th colspan="3" class="group-header pbc-header">PBC</th>
           <th colspan="3" class="group-header recaudo-header">Recaudo</th>
           <th colspan="3" class="group-header variacion-header">Variación</th>
@@ -398,7 +406,7 @@
       <!-- Filas de datos -->
       <ng-template pTemplate="body" let-rowData>
         <tr>
-          <td class="month-cell">{{rowData.mes}}</td>
+          <td class="month-cell">{{rowData.periodo}}</td>
           <!-- PBC data -->
           <td class="number-cell">{{rowData.pbc_mineria | numberFormat}}</td>
           <td class="number-cell">{{rowData.pbc_hidrocarburos | numberFormat}}</td>

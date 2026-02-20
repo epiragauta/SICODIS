@@ -808,7 +808,7 @@ private formatCurrency(value: number): string {
             const recaudo = this.financialData.caja_total - this.financialData.caja_corriente_informada;
             const presupuesto = this.financialData.presupuesto_otros;
             if (presupuesto === 0) return '0.00%';
-            const percentage = (recaudo / presupuesto * 100);
+            const percentage = Math.min((recaudo / presupuesto) * 100, 100);
             return percentage.toFixed(2).replace('.', ',') + '%';
           }
         },
