@@ -215,13 +215,21 @@ constructor(private sicodisApiService: SicodisApiService,
    */
   applyFilters(): void {
     console.log('Aplicando filtros...', {
+      vigencia: this.selectedVigencia.id,
       desde: this.selectedPeriodoDesde,
       hasta: this.selectedPeriodoHasta,
       vista: this.showRecaudoView ? 'Recaudo' : 'Tipo de Recurso'
     });
     
     // Aquí se puede agregar lógica para actualizar los gráficos basado en el rango de fechas
-    this.updateChartsData();
+    //--this.updateChartsData();
+    this.loadSgrData(); // 👈 aquí, ya tiene selectedVigencia
+    this.setPeriodsFromVigencia(this.selectedVigencia); // 👈 agrega esto
+    //this.initializeCharts();
+    this.initializeTable();
+    this.initializeBehaviorTable();
+    //this.initializeDetailedTable();
+    this.cargarSiglasDiccionario();      
   }
 
   /**
