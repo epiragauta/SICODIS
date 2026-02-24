@@ -122,7 +122,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
     5: { actualizacion: 'diciembre 31 de 2020', corte: 'diciembre 31 de 2020' },
     6: { actualizacion: 'diciembre 31 de 2022', corte: 'agosto 15 de 2022' },
     7: { actualizacion: 'diciembre 31 de 2024', corte: 'diciembre 15 de 2024' },
-    8: { actualizacion: 'enero 31 de 2026', corte: 'enero 15 de 2026' }
+    8: { actualizacion: 'febrero 15 de 2026', corte: 'febrero 15 de 2026' }
   };  
 
   // Datos para las tarjetas (se actualizarán según la selección)

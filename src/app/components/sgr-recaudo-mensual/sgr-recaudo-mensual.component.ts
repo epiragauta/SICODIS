@@ -8,7 +8,7 @@ import { ChartModule } from 'primeng/chart';
 import { TableModule } from 'primeng/table';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
-import { DiccionarioItem, FuncionamientoSiglasDiccionario, SGRFechaActualizacionCorte, SgrRecaudoItem, SicodisApiService, SiglasItem } from '../../services/sicodis-api.service';
+import { DiccionarioItem, FuncionamientoSiglasDiccionario, SGRFechaActualizacionCorte, SgrRecaudoItem, SgrRecaudoMensualResponse, SicodisApiService, SiglasItem } from '../../services/sicodis-api.service';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { MenuItem } from 'primeng/api';
 import { Select, SelectChangeEvent } from 'primeng/select';
@@ -83,165 +83,7 @@ export class SgrRecaudoMensualComponent implements OnInit {
 
   // Configuración de tabla (vista Recaudo)
 tableData: any[] = [];
-tableDataBase: any[] =
-[
-  {
-    mes: "Enero de 2025",
-    pbc_mineria: 507182857652.2,
-    pbc_hidrocarburos: 718161024698.81,
-    pbc_total: 1225343882351.01,
-    recaudo_mineria: 664831650395.21,
-    recaudo_hidrocarburos: 543822025382.50,
-    recaudo_total: 1225902838995.78,
-    variacion_mineria: 34.4842009784597,
-    variacion_hidrocarburos: -24.2757533924131,
-    variacion_total: 0.0456163084356022,
-  },
-  {
-    mes: "Febrero de 2025",
-    pbc_mineria: 253591429312.2,
-    pbc_hidrocarburos: 648661358247.37,
-    pbc_total: 902252787559.57,
-    recaudo_mineria: 186885011253.2,
-    recaudo_hidrocarburos: 575748522787.45,
-    recaudo_total: 781563763949.04,
-    variacion_mineria: -18.8398276235874,
-    variacion_hidrocarburos: -11.2405085539432,
-    variacion_total: -13.3764090590367,
-  },
-  {
-    mes: "Marzo de 2025",
-    pbc_mineria: 211326191168.2,
-    pbc_hidrocarburos: 718161024698.81,
-    pbc_total: 929487215867.01,
-    recaudo_mineria: 175163497960.92,
-    recaudo_hidrocarburos: 861254012523.80,
-    recaudo_total: 1040790877380.12,
-    variacion_mineria: -15.0427763525904,
-    variacion_hidrocarburos: 19.9249169620423,
-    variacion_total: 11.9747382872058,
-  },
-  {
-    mes: "Abril de 2025",
-    pbc_mineria: 422652382500.2,
-    pbc_hidrocarburos: 694994469215,
-    pbc_total: 1117646851715.2,
-    recaudo_mineria: 434384392675.03,
-    recaudo_hidrocarburos: 512559858421.90,
-    recaudo_total: 953372566476.46,
-    variacion_mineria: 4.2967522025861,
-    variacion_hidrocarburos: -26.2497931816869,
-    variacion_total: -14.6982282450522,
-  },
-  {
-    mes: "Mayo de 2025",
-    pbc_mineria: 253591429312.2,
-    pbc_hidrocarburos: 718161024698.81,
-    pbc_total: 971752454011.01,
-    recaudo_mineria: 512564751554.5,
-    recaudo_hidrocarburos: 569432496349.85,
-    recaudo_total: 1091531197225.13,
-    variacion_mineria: 105.881840049301,
-    variacion_hidrocarburos: -20.7096351979468,
-    variacion_total: 12.3260551305758,
-  },
-  {
-    mes: "Junio de 2025",
-    pbc_mineria: 169060952916,
-    pbc_hidrocarburos: 694994469215,
-    pbc_total: 864055422131,
-    recaudo_mineria: 160940102487.33,
-    recaudo_hidrocarburos: 675696129037.60,
-    recaudo_total: 838074185436.90,
-    variacion_mineria: -3.9529509336319,
-    variacion_hidrocarburos: -2.77676169124016,
-    variacion_total: -3.00689470011345,
-  },
-  {
-    mes: "Julio de 2025",
-    pbc_mineria: 464917620452,
-    pbc_hidrocarburos: 718161024698.81,
-    pbc_total: 1183078645150.81,
-    recaudo_mineria: 425752002588.97,
-    recaudo_hidrocarburos: 487125727411.30,
-    recaudo_total: 915319620739.12,
-    variacion_mineria: -7.89897511057478,
-    variacion_hidrocarburos: -32.1704032023186,
-    variacion_total: -22.6323943475083,
-  },
-  {
-    mes: "Agosto de 2025",
-    pbc_mineria: 422652382500,
-    pbc_hidrocarburos: 718161024698.81,
-    pbc_total: 1140813407198.81,
-    recaudo_mineria: 236193100047.13,
-    recaudo_hidrocarburos: 516581168859.30,
-    recaudo_total: 753187527583.98,
-    variacion_mineria: -44.018685680855,
-    variacion_hidrocarburos: -28.0688938701527,
-    variacion_total: -33.9780263072661,
-  },
-  {
-    mes: "Septiembre de 2025",
-    pbc_mineria: 169060952916,
-    pbc_hidrocarburos: 694994469215,
-    pbc_total: 864055422131,
-    recaudo_mineria: 171455897654.19,
-    recaudo_hidrocarburos: 694193464544.95,
-    recaudo_total: 870938158245.43,
-    variacion_mineria: 4.54495296042592,
-    variacion_hidrocarburos: -0.115253387693112,
-    variacion_total: 0.796561879960815,
-  },
-  {
-    mes: "Octubre de 2025",
-    pbc_mineria: 507182858648,
-    pbc_hidrocarburos: 718161024698.81,
-    pbc_total: 1225343883346.81,
-    recaudo_mineria: 619827900327.6,
-    recaudo_hidrocarburos: 527252664807.15,
-    recaudo_total: 1215946727111.77,
-    variacion_mineria: 35.788118735021,
-    variacion_hidrocarburos: -26.5829463485191,
-    variacion_total: -0.766899509823591,
-  },
-  {
-    mes: "Noviembre de 2025",
-    pbc_mineria: 464917620452,
-    pbc_hidrocarburos: 694994469215,
-    pbc_total: 1159912089667,
-    recaudo_mineria: 172406309231.12,
-    recaudo_hidrocarburos: 475749145202,
-    recaudo_total: 650508555962,
-    variacion_mineria: -62.41,
-    variacion_hidrocarburos: -31.55,
-    variacion_total: -43.92,
-  },  
-  {
-    mes: "Diciembre de 2025",
-    pbc_mineria: 380387144060,
-    pbc_hidrocarburos: 718161024699,
-    pbc_total: 1098548168759,
-    recaudo_mineria: 237282886640.16,
-    recaudo_hidrocarburos: 588626745061,
-    recaudo_total: 827582672939,
-    variacion_mineria: -37.18,
-    variacion_hidrocarburos: -18.04,
-    variacion_total: -24.67,
-  },   
-  {
-    mes: "Enero de 2026",
-    pbc_mineria: 406554681320,
-    pbc_hidrocarburos: 746405760774.72,
-    pbc_total: 1152960442094.72,
-    recaudo_mineria: 357648355355,
-    recaudo_hidrocarburos: 408052316983,
-    recaudo_total: 765700672338,
-    variacion_mineria: -12.03,
-    variacion_hidrocarburos: -45.33,
-    variacion_total: -30.30,
-  },      
-];
+tableDataBase: any[] = [];
 
   tableColumns: any[] = [];
 
@@ -253,227 +95,14 @@ tableDataBase: any[] =
   detailedTableData: any[] = [];
 
 
-detailedTableDataBase: any[] = [
+  detailedTableDataBase: any[] = [];
 
- {
-  periodo: "Enero de 2025",
-  rc_inversion_aforada: 1114553413835.74,
-  rc_ahorro: 55165627754.18,
-  rc_administracion: 36777085169.88,
-  rc_no_aforado: 19406712235.98,
-  rc_total: 1225902838995.7798,
-  total_pbc: 1225343882351.01,
-  avance: 1.0004561630843558,
-  ro_inversion: 293997375070,
-  ro_ahorro: 0,
-  ro_administracion: 0,
-  ro_total: 293997375070,
-  total_distribuido: 1519900214065.7798
- },
- {
-  periodo: "Febrero de 2025",
-  rc_inversion_aforada: 703007556076.26,
-  rc_ahorro: 35170369377.64,
-  rc_administracion: 23446912918.47,
-  rc_no_aforado: 19938925576.67,
-  rc_total: 781563763949.04,
-  total_pbc: 902252787559.5701,
-  avance: 0.8662359094096324,
-  ro_inversion: 0,
-  ro_ahorro: 0,
-  ro_administracion: 0,
-  ro_total: 0,
-  total_distribuido: 781563763949.04
- },
- {
-  periodo: "Marzo de 2025",
-  rc_inversion_aforada: 955233680976.37,
-  rc_ahorro: 46835589482.08,
-  rc_administracion: 31223726321.4,
-  rc_no_aforado: 7497880600.27,
-  rc_total: 1040790877380.12,
-  total_pbc: 929487215867.01,
-  avance: 1.1197473828720579,
-  ro_inversion: 3618312830497,
-  ro_ahorro: 0,
-  ro_administracion: 0,
-  ro_total: 3618312830497,
-  total_distribuido: 4659103707877.12
- },
- {
-  periodo: "Abril de 2025",
-  rc_inversion_aforada: 873398583357.77,
-  rc_ahorro: 42901765491.4,
-  rc_administracion: 28601176994.28,
-  rc_no_aforado: 8471040633.01,
-  rc_total: 953372566476.4601,
-  total_pbc: 1117646851715.2,
-  avance: 0.8530177175494783,
-  ro_inversion: 394804644941.59,
-  ro_ahorro: 315990852796,
-  ro_administracion: 4738134,
-  ro_total: 710800235871.5901,
-  total_distribuido: 1664172802348.0503
- },
- {
-  periodo: "Mayo de 2025",
-  rc_inversion_aforada: 997690963296.71,
-  rc_ahorro: 49118903875.1,
-  rc_administracion: 32745935916.75,
-  rc_no_aforado: 11975394136.57,
-  rc_total: 1091531197225.1299,
-  total_pbc: 971752454011.01,
-  avance: 1.1232605513057574,
-  ro_inversion: 70471254694,
-  ro_ahorro: 0,
-  ro_administracion: 0,
-  ro_total: 70471254694,
-  total_distribuido: 1162002451919.13
- },
- {
-  periodo: "Junio de 2025",
-  rc_inversion_aforada: 771863851558.67,
-  rc_ahorro: 37713338344.58,
-  rc_administracion: 25142225563.11,
-  rc_no_aforado: 3354769970.54,
-  rc_total: 838074185436.9,
-  total_pbc: 864055422131,
-  avance: 0.9699310529988655,
-  ro_inversion: 0,
-  ro_ahorro: 0,
-  ro_administracion: 0,
-  ro_total: 0,
-  total_distribuido: 838074185436.9
- },
- {
-  periodo: "Julio de 2025",
-  rc_inversion_aforada: 841997430050.15,
-  rc_ahorro: 41189382933.28,
-  rc_administracion: 27459588622.17,
-  rc_no_aforado: 4673219133.52,
-  rc_total: 915319620739.1201,
-  total_pbc: 1183078645150.81,
-  avance: 0.7736760565249168,
-  ro_inversion: 1311167428,
-  ro_ahorro: 0,
-  ro_administracion: -1311167428,
-  ro_total: 0,
-  total_distribuido: 915319620739.1201
- },
- {
-  periodo: "Agosto de 2025",
-  rc_inversion_aforada: 694076570134.94,
-  rc_ahorro: 33893438741.18,
-  rc_administracion: 22595625827.55,
-  rc_no_aforado: 2621892880.31,
-  rc_total: 753187527583.9801,
-  total_pbc: 1140813407198.81,
-  avance: 0.6602197369273394,
-  ro_inversion: 1081295637107,
-  ro_ahorro: 0,
-  ro_administracion: 0,
-  ro_total: 1081295637107,
-  total_distribuido: 1834483164690.98
- },
- {
-  periodo: "Septiembre de 2025",
-  rc_inversion_aforada: 798582058348.1,
-  rc_ahorro: 39192217121.06,
-  rc_administracion: 26128144747.38,
-  rc_no_aforado: 7035738028.89,
-  rc_total: 870938158245.4299,
-  total_pbc: 864055422131,
-  avance: 1.007965618799608,
-  ro_inversion: 0,
-  ro_ahorro: 0,
-  ro_administracion: 0,
-  ro_total: 0,
-  total_distribuido: 870938158245.4299
- },
- {
-  periodo: "Octubre de 2025",
-  rc_inversion_aforada: 1053500369754.46,
-  rc_ahorro: 54717602719.84,
-  rc_administracion: 36478401813.36,
-  rc_no_aforado: 71250352824.11,
-  rc_total: 1215946727111.7703,
-  total_pbc: 1225343883346.81,
-  avance: 0.9923310049017643,
-  ro_inversion: 0,
-  ro_ahorro: 0,
-  ro_administracion: 0,
-  ro_total: 0,
-  total_distribuido: 1215946727111.7703
- }
- ,
- {
-  periodo: "Noviembre de 2025",
-  rc_inversion_aforada: 595396758614.94,
-  rc_ahorro: 29272885018.34,
-  rc_administracion: 19515256678.89,
-  rc_no_aforado: 6323655650.47,
-  rc_total: 650508555962.64,
-  total_pbc: 1159912089667,
-  avance: 0.9923310049017643,
-  ro_inversion: 0,
-  ro_ahorro: 0,
-  ro_administracion: 0,
-  ro_total: 0,
-  total_distribuido: 650508555962.64
- }
- ,
- {
-  periodo: "Diciembre de 2025",
-  rc_inversion_aforada: 755547599732.32,
-  rc_ahorro: 37241220281.82,
-  rc_administracion: 24827480188.17,
-  rc_no_aforado: -47986605897.76,
-  rc_total: 769629694304.55,
-  total_pbc: 1098548168758.76,
-  avance: 0,
-  ro_inversion: 57952978634,
-  ro_ahorro: 0,
-  ro_administracion: 0,
-  ro_total: 57952978634,
-  total_distribuido: 827582672938.55
- }, 
- 
- {
-  periodo: "Enero de 2026",
-  rc_inversion_aforada: 698119036519.69,
-  rc_ahorro: 34456530255.34,
-  rc_administracion: 22971020170.14,
-  rc_no_aforado: 10154085392.83,
-  rc_total: 765700672338,
-  total_pbc: 1152960442094.64,
-  avance: 0,
-  ro_inversion: 0,
-  ro_ahorro: 0,
-  ro_administracion: 0,
-  ro_total: 0,
-  total_distribuido: 765700672338
- }, 
- {
-  periodo: "Total",
-  rc_inversion_aforada: 10852967872255.9,
-  rc_ahorro: 536868871395.5,
-  rc_administracion: 357912580930.2,
-  rc_no_aforado: 124717061166.54,
-  rc_total: 11872466385748.20,
-  total_pbc: 13835250671983.40,
-  avance: 9.366841194373777,
-  ro_inversion: 5518145888372,
-  ro_ahorro: 315990852796,
-  ro_administracion: -1306429294,
-  ro_total: 5832830311874,
-  total_distribuido: 17705296697622.2
- }
-]  
-;
   
 
 
-detailedTableColumns: any[] = [];
+  detailedTableColumns: any[] = [];
+  fechaActualizacion: string = '';
+  fechaCorteRecaudo: string = '';
 
 
   
@@ -490,19 +119,67 @@ constructor(private sicodisApiService: SicodisApiService,
 
     this.home = { icon: 'pi pi-home', routerLink: '/' };
 
-    this.tableData = [...this.tableDataBase];
-    this.detailedTableData = [...this.detailedTableDataBase];
+    //this.tableData = [...this.tableDataBase];
+    //this.detailedTableData = [...this.detailedTableDataBase];
+
+    this.sicodisApiService.getSGRFechasActualizacionCorteRecaudoIAC().subscribe({
+      next: (data: SGRFechaActualizacionCorte []) => {
+        if (data && data.length > 0) {
+          const registro = data[0];
+          this.fechaActualizacion = registro.fecha_actualizacion;
+          this.fechaCorteRecaudo = registro.fecha_corte_recaudo;
+        }
+
+      },
+      error: (err) => console.error('Error cargando fechas', err)
+    }); 
 
     this.cargarVigencias();
     this.setDefaultPeriods();
-    this.initializeCharts();
+    //this.initializeCharts();
     this.initializeTable();
     this.initializeBehaviorTable();
-    this.initializeDetailedTable();
-        // Cargar datos de diccionario y siglas
+    //this.initializeDetailedTable();
     this.cargarSiglasDiccionario();    
+    
   }
 
+
+
+  private loadSgrData() {
+  const idVigencia = this.selectedVigencia.id;
+    console.log('1. idVigencia:', idVigencia);
+
+  this.sicodisApiService
+    .getSgrDetallePBCRecaudoMensual(idVigencia)
+    .subscribe({
+      next: (response: SgrRecaudoMensualResponse) => {
+
+      console.log('2. response completo:', response);
+      console.log('3. detalle:', response.detalle);
+      console.log('4. resumen:', response.resumen);
+
+      
+      this.behaviorTableData = response.resumen;
+      this.detailedTableDataBase = response.detalle;
+      this.tableDataBase = response.detallesector;
+
+      console.log('5. detailedTableDataBase:', this.detailedTableDataBase);
+      console.log('6. selectedPeriodoDesde:', this.selectedPeriodoDesde);
+      console.log('7. selectedPeriodoHasta:', this.selectedPeriodoHasta);
+
+      this.updateTableData()
+      this.updateDetailedTableData();
+      this.initializeMiningChart();
+      this.initializeHydrocarbonChart()
+      this.initializeTrendChart();
+      this.initializeConceptChart();
+
+      console.log('8. detailedTableData después de filtrar:', this.detailedTableData)
+      },
+      error: err => console.error('Error cargando datos', err)
+    });
+}
   /**
    * Establecer períodos por defecto para Month Picker
    */
@@ -538,13 +215,21 @@ constructor(private sicodisApiService: SicodisApiService,
    */
   applyFilters(): void {
     console.log('Aplicando filtros...', {
+      vigencia: this.selectedVigencia.id,
       desde: this.selectedPeriodoDesde,
       hasta: this.selectedPeriodoHasta,
       vista: this.showRecaudoView ? 'Recaudo' : 'Tipo de Recurso'
     });
     
     // Aquí se puede agregar lógica para actualizar los gráficos basado en el rango de fechas
-    this.updateChartsData();
+    //--this.updateChartsData();
+    this.loadSgrData(); // 👈 aquí, ya tiene selectedVigencia
+    this.setPeriodsFromVigencia(this.selectedVigencia); // 👈 agrega esto
+    //this.initializeCharts();
+    this.initializeTable();
+    this.initializeBehaviorTable();
+    //this.initializeDetailedTable();
+    this.cargarSiglasDiccionario();      
   }
 
   /**
@@ -576,7 +261,7 @@ constructor(private sicodisApiService: SicodisApiService,
    */
   private initializeTable(): void {
     this.tableColumns = [
-      { field: 'mes', header: 'Mes', width: '12%', group: null },
+      { field: 'periodo', header: 'Periodo', width: '12%', group: null },
       // Grupo PBC
       { field: 'pbc_mineria', header: 'Minería', width: '10%', group: 'PBC' },
       { field: 'pbc_hidrocarburos', header: 'Hidrocarburos', width: '10%', group: 'PBC' },
@@ -591,38 +276,57 @@ constructor(private sicodisApiService: SicodisApiService,
       { field: 'variacion_total', header: 'Total', width: '10%', group: 'Variación' }
     ];
 
-    this.updateTableData();
+    //this.updateTableData();
   }
 
   /**
    * Actualizar datos de la tabla basado en el rango de fechas
    */
+  // private updateTableData1(): void {
+  //   if (!this.selectedPeriodoDesde || !this.selectedPeriodoHasta) {
+  //     this.tableData = [];
+  //     return;
+  //   }
+
+  //   const months = this.getMonthsInRange(this.selectedPeriodoDesde, this.selectedPeriodoHasta);
+    
+  //     // Obtiene todos los meses en el rango seleccionado
+  //   const monthsInRange = this.getMonthsInRange(this.selectedPeriodoDesde, this.selectedPeriodoHasta);
+
+  //   // Filtra los datos de tableDataBase según los meses seleccionados
+  //   this.tableData = this.tableDataBase.filter(row => {
+  //     // Extrae mes y año del registro
+  //     const [nombreMes, anioStr] = row.mes.split(' de ');
+  //     const year = parseInt(anioStr, 10);
+
+  //     // Convierte el nombre del mes a índice (0 = Enero, 1 = Febrero, ...)
+  //     const monthIndex = this.getMonthIndexByName(nombreMes);
+
+  //     // Retorna true si el mes y año del registro están en monthsInRange
+  //     return monthsInRange.some(d => d.getFullYear() === year && d.getMonth() === monthIndex);
+  //   });
+    
+
+  // }
+
   private updateTableData(): void {
     if (!this.selectedPeriodoDesde || !this.selectedPeriodoHasta) {
       this.tableData = [];
       return;
     }
 
-    const months = this.getMonthsInRange(this.selectedPeriodoDesde, this.selectedPeriodoHasta);
-    
-      // Obtiene todos los meses en el rango seleccionado
     const monthsInRange = this.getMonthsInRange(this.selectedPeriodoDesde, this.selectedPeriodoHasta);
 
-    // Filtra los datos de tableDataBase según los meses seleccionados
     this.tableData = this.tableDataBase.filter(row => {
-      // Extrae mes y año del registro
-      const [nombreMes, anioStr] = row.mes.split(' de ');
-      const year = parseInt(anioStr, 10);
-
-      // Convierte el nombre del mes a índice (0 = Enero, 1 = Febrero, ...)
+      // El servicio retorna "Enero 2025" (sin "de")
+      const partes = row.periodo.split(' ');
+      const nombreMes = partes[0];
+      const year = parseInt(partes[partes.length - 1], 10);
       const monthIndex = this.getMonthIndexByName(nombreMes);
 
-      // Retorna true si el mes y año del registro están en monthsInRange
       return monthsInRange.some(d => d.getFullYear() === year && d.getMonth() === monthIndex);
     });
-    
-
-  }
+  }  
 
 
 
@@ -671,10 +375,61 @@ constructor(private sicodisApiService: SicodisApiService,
   }
 
 
-    /**
+
+      /**
    * Descarga del archivo excel de acuerdo con los datos del filtro
    */
   private async descargarDatosPBCRecaudoMensual(): Promise<void> {
+    try {
+     
+	    // Usar método histórico original
+      console.log('Descargando  ');
+  	  const idvigencia = parseInt(this.selectedVigencia.id );    
+      console.log('Vigencia seleccionada:', idvigencia);
+
+      const archivo: Blob | undefined = await this.sicodisApiService.getSgrDescargaResumenPbcRecaudoMensual( idvigencia
+                                                                                                             , this.selectedVigencia.label
+                                                                                                             , this.fechaActualizacion
+                                                                                                             , this.fechaCorteRecaudo).toPromise();
+
+      // Verificamos que sí tengamos archivo
+      if (!archivo) {
+        console.warn('No se recibió ningún archivo desde el servicio');
+        return;
+      }
+
+
+      // Forzar tipo MIME correcto para Excel
+      const excelBlob = new Blob([archivo], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+
+      const arrayBuffer = await excelBlob.arrayBuffer();
+      console.log('Tamaño de archivo:', arrayBuffer.byteLength);
+
+      // Crear enlace temporal para descargar
+      const url = window.URL.createObjectURL(excelBlob);
+      const a = document.createElement('a');
+      a.href = url;
+
+      const nombreArchivo = `ResumenPBCvsRecaudoMensual.xlsx`;
+      a.download = nombreArchivo;
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+
+      console.log('Archivo descargado exitosamente');
+
+
+
+    } catch (error) {
+      console.warn('Error cargando fuentes desde API, se usarán datos locales como fallback:', error);
+    }
+  }
+    /**
+   * Descarga del archivo excel de acuerdo con los datos del filtro
+   */
+  private async descargarDatosPBCRecaudoMensualOld(): Promise<void> {
     try {
      
 	    // Usar método histórico original
@@ -738,11 +493,23 @@ constructor(private sicodisApiService: SicodisApiService,
    */
   private initializeMiningChart(): void {
     // Datos mock para 5 períodos (Enero 2025 - Mayo 2025)
-    const periods = [ 'Enero de 2025','Febrero de 2025','Marzo de 2025','Abril de 2025','Mayo de 2025','Junio de 2025','Julio de 2025' ,'Agosto de 2025' , 'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025', 'Diciembre 2025', 'Enero 2026'];
+    //  const periods = [ 'Enero de 2025','Febrero de 2025','Marzo de 2025','Abril de 2025','Mayo de 2025','Junio de 2025','Julio de 2025' ,'Agosto de 2025' , 'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025', 'Diciembre 2025', 'Enero 2026'];
     
-    // Datos simulados en pesos colombianos
-    const recaudoMineria = [682080813613, 205815241162, 179536864856, 440812708055,522098700875, 162378056399 ,428193893328, 236606358725, 176744693700, 688694062304, 174759410760,238955927877.65, 357648355355];
-    const pbcMineria = [ 507182857652, 253591429312,211326191168,422652382500,253591429312,169060952916, 464917620452, 422652382500 ,169060952916, 507182858648, 464917620452,380387144060, 406554681320];
+    // // Datos simulados en pesos colombianos
+    // const recaudoMineria = [682080813613, 205815241162, 179536864856, 440812708055,522098700875, 162378056399 ,428193893328, 236606358725, 176744693700, 688694062304, 174759410760,238955927877.65, 357648355355];
+    // const pbcMineria = [ 507182857652, 253591429312,211326191168,422652382500,253591429312,169060952916, 464917620452, 422652382500 ,169060952916, 507182858648, 464917620452,380387144060, 406554681320];
+
+
+    console.log('tableDataBase length:', this.tableDataBase.length);
+    console.log('tableDataBase:', this.tableDataBase);
+    const periods = this.tableDataBase.map(row => row.periodo);
+    const recaudoMineria = this.tableDataBase.map(row => row.recaudo_mineria);
+    const pbcMineria = this.tableDataBase.map(row => row.pbc_mineria);
+    console.log('periods:', periods);
+    console.log('recaudoMineria:', recaudoMineria);
+    console.log('pbcMineria:', pbcMineria);
+
+    this.miningChartData = null; // 👈 destruye el chart del DOM
 
     this.miningChartData = {
       labels: periods,
@@ -841,11 +608,18 @@ constructor(private sicodisApiService: SicodisApiService,
    */
   private initializeHydrocarbonChart(): void {
     // Datos mock para 5 períodos (Enero 2025 - Mayo 2025)
-    const periods = [ 'Enero de 2025','Febrero de 2025','Marzo de 2025','Abril de 2025','Mayo de 2025','Junio de 2025','Julio de 2025' ,'Agosto de 2025' ,'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025','Diciembre 2025', 'Enero 2026'];
+    // const periods = [ 'Enero de 2025','Febrero de 2025','Marzo de 2025','Abril de 2025','Mayo de 2025','Junio de 2025','Julio de 2025' ,'Agosto de 2025' ,'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025','Diciembre 2025', 'Enero 2026'];
     
-    // Datos simulados en pesos colombianos
-    const recaudoHidrocarburos = [ 543822025383,575748522787,861254012524,512559858422,569432496350,675696129038,487125727411,516581168859,694193464544, 527252664807, 475749145202,588626745060.90, 408052316983];
-    const pbcHidrocarburos = [ 507182857652,253591429312,211326191168,422652382500,253591429312,169060952916,464917620452,422652382500,694994469215, 718161024698, 694994469215,718161024698.81, 746405760774.72];
+    // // Datos simulados en pesos colombianos
+    // const recaudoHidrocarburos = [ 543822025383,575748522787,861254012524,512559858422,569432496350,675696129038,487125727411,516581168859,694193464544, 527252664807, 475749145202,588626745060.90, 408052316983];
+    // const pbcHidrocarburos = [ 507182857652,253591429312,211326191168,422652382500,253591429312,169060952916,464917620452,422652382500,694994469215, 718161024698, 694994469215,718161024698.81, 746405760774.72];
+
+
+    const periods = this.tableDataBase.map(row => row.periodo);
+    const recaudoHidrocarburos = this.tableDataBase.map(row => row.recaudo_hidrocarburos);
+    const pbcHidrocarburos = this.tableDataBase.map(row => row.pbc_hidrocarburos);
+
+    this.hydrocarbonChartData = null; // 👈 destruye el chart del DOM
 
     this.hydrocarbonChartData = {
       labels: periods,
@@ -962,8 +736,21 @@ constructor(private sicodisApiService: SicodisApiService,
    */
   private initializeConceptChart(): void {
     // Datos mock para conceptos: Inversión, Ahorro, Administración
-    const presupuestoBienal = [ 23620950245846, 1149127309256 , 766084872838 ]; // En pesos
-    const recaudoAcumulado = [10852967872255.9, 536868871395.5, 357912580930.2]; // En pesos
+    // const presupuestoBienal = [ 23620950245846, 1149127309256 , 766084872838 ]; // En pesos
+    // const recaudoAcumulado = [10852967872255.9, 536868871395.5, 357912580930.2]; // En pesos
+
+    const presupuestoBienal = [
+      this.behaviorTableData[0]?.presupuesto_inversion ?? 0,
+      this.behaviorTableData[0]?.presupuesto_ahorro ?? 0,
+      this.behaviorTableData[0]?.presupuesto_otros ?? 0
+    ];
+
+    const recaudoAcumulado = [
+      this.behaviorTableData[0]?.inversion_aforada ?? 0,
+      this.behaviorTableData[0]?.ahorro ?? 0,
+      this.behaviorTableData[0]?.administracion ?? 0
+    ];
+
   
     this.conceptChartData = {
       labels: ['Inversión', 'Ahorro', 'Administración'],
@@ -1053,13 +840,18 @@ constructor(private sicodisApiService: SicodisApiService,
    */
   private initializeTrendChart(): void {
     // Datos ultimos 5 mees
-    const periods = [ 'Enero de 2025','Febrero de 2025','Marzo de 2025','Abril de 2025','Mayo de 2025','Junio de 2025','Julio de 2025' ,'Agosto de 2025' ,'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025','Diciembre 2025', 'Enero 2026'];
+    // const periods = [ 'Enero de 2025','Febrero de 2025','Marzo de 2025','Abril de 2025','Mayo de 2025','Junio de 2025','Julio de 2025' ,'Agosto de 2025' ,'Septiembre 2025', 'Octubre 2025', 'Noviembre 2025','Diciembre 2025', 'Enero 2026'];
     
-    // Datos simulados de Inversión (PBC vs Recaudo)
-    const inversionPBC = [  1225343882351,902252787560,929487215867,1117646851715,971752454011,864055422131,1183078645151,1140813407199,864055422131, 1225343883346.81, 1159912089667,1098548168758.76, 1152960442094.72];
-    const inversionRecaudo = [  1225902838996, 781563763949,1040790877380,953372566476,1091531197225,838074185437,915319620739,753187527584,870938158245.43, 1215946727111.77, 650508555962.64, 769629694304.55, 765700672338];
+    // // Datos simulados de Inversión (PBC vs Recaudo)
+    // const inversionPBC = [  1225343882351,902252787560,929487215867,1117646851715,971752454011,864055422131,1183078645151,1140813407199,864055422131, 1225343883346.81, 1159912089667,1098548168758.76, 1152960442094.72];
+    // const inversionRecaudo = [  1225902838996, 781563763949,1040790877380,953372566476,1091531197225,838074185437,915319620739,753187527584,870938158245.43, 1215946727111.77, 650508555962.64, 769629694304.55, 765700672338];
 
-    
+    const periods = this.detailedTableData.map(row => row.periodo);
+    const inversionPBC = this.detailedTableData.map(row => row.total_pbc);
+    const inversionRecaudo = this.detailedTableData.map(row => row.rc_total);
+
+
+    this.trendChartData = null;
     this.trendChartData = {
       labels: periods,
       datasets: [
@@ -1277,25 +1069,25 @@ setTimeout(() => {
       { field: 'total', header: 'Total', width: '15%' }
     ];
 
-    // Datos mock para la única fila
-    const inversionAforada = 10852967872255.9; 
-    const ahorro = 536868871395.5; 
-    const administracion = 357912580930.2; 
-    const noAforado = 124717061166.54; 
-    const otros = 5832830311874; 
-    const total = inversionAforada + ahorro + administracion + noAforado + otros;
+    // // Datos mock para la única fila
+    // const inversionAforada = 10852967872255.9; 
+    // const ahorro = 536868871395.5; 
+    // const administracion = 357912580930.2; 
+    // const noAforado = 124717061166.54; 
+    // const otros = 5832830311874; 
+    // const total = inversionAforada + ahorro + administracion + noAforado + otros;
 
-    this.behaviorTableData = [
-      {
-        concepto: 'Total recaudo corrientes y otros',
-        inversion_aforada: inversionAforada,
-        ahorro: ahorro,
-        administracion: administracion,
-        no_aforado: noAforado,
-        otros: otros,
-        total: total
-      }
-    ];
+    // this.behaviorTableData = [
+    //   {
+    //     concepto: 'Total recaudo corrientes y otros',
+    //     inversion_aforada: inversionAforada,
+    //     ahorro: ahorro,
+    //     administracion: administracion,
+    //     no_aforado: noAforado,
+    //     otros: otros,
+    //     total: total
+    //   }
+    // ];
   }
 
   /**
@@ -1323,7 +1115,7 @@ setTimeout(() => {
       { field: 'total_distribuido', header: 'Total distribuido', width: '8%', group: null }
     ];
 
-    this.updateDetailedTableData();
+    //this.updateDetailedTableData();
   }
 
   /**
@@ -1335,71 +1127,18 @@ setTimeout(() => {
       return;
     }
 
-    const months = this.getMonthsInRange(this.selectedPeriodoDesde, this.selectedPeriodoHasta);
-    // Obtiene todos los meses en el rango seleccionado
     const monthsInRange = this.getMonthsInRange(this.selectedPeriodoDesde, this.selectedPeriodoHasta);
 
-    // Filtra los datos de tableDataBase según los meses seleccionados
     this.detailedTableData = this.detailedTableDataBase.filter(row => {
-      // Extrae mes y año del registro
-      const [nombreMes, anioStr] = row.periodo.split(' de ');
-      const year = parseInt(anioStr, 10);
-
-      // Convierte el nombre del mes a índice (0 = Enero, 1 = Febrero, ...)
+      // El servicio retorna "Enero 2025" (sin "de")
+      const partes = row.periodo.split(' ');
+      const nombreMes = partes[0];
+      const year = parseInt(partes[partes.length - 1], 10);
       const monthIndex = this.getMonthIndexByName(nombreMes);
 
-      // Retorna true si el mes y año del registro están en monthsInRange
       return monthsInRange.some(d => d.getFullYear() === year && d.getMonth() === monthIndex);
-    });    
-
-    // this.detailedTableData = months.map((monthDate, index) => {
-    //   const monthName = monthDate.toLocaleDateString('es-ES', { 
-    //     month: 'long', 
-    //     year: 'numeric' 
-    //   });
-
-    //   // Datos mock para Recaudo Corriente
-    //   const rcInversionAforada = 8200000000000 + (Math.random() * 2000000000000);
-    //   const rcAhorro = 1950000000000 + (Math.random() * 500000000000);
-    //   const rcAdministracion = 520000000000 + (Math.random() * 200000000000);
-    //   const rcNoAforado = 1250000000000 + (Math.random() * 400000000000);
-    //   const rcTotal = rcInversionAforada + rcAhorro + rcAdministracion + rcNoAforado;
-
-    //   // Datos mock adicionales
-    //   const totalPBC = rcTotal + (Math.random() * 1000000000000);
-    //   const avance = ((rcTotal / totalPBC) * 100);
-
-    //   // Datos mock para Recaudo Otros
-    //   const roInversion = 2800000000000 + (Math.random() * 800000000000);
-    //   const roAhorro = 650000000000 + (Math.random() * 200000000000);
-    //   const roAdministracion = 180000000000 + (Math.random() * 80000000000);
-    //   const roTotal = roInversion + roAhorro + roAdministracion;
-
-    //   // Total distribuido
-    //   const totalDistribuido = rcTotal + roTotal;
-
-    //   return {
-    //     periodo: monthName.charAt(0).toUpperCase() + monthName.slice(1),
-    //     // Recaudo Corriente
-    //     rc_inversion_aforada: rcInversionAforada,
-    //     rc_ahorro: rcAhorro,
-    //     rc_administracion: rcAdministracion,
-    //     rc_no_aforado: rcNoAforado,
-    //     rc_total: rcTotal,
-    //     // Individuales
-    //     total_pbc: totalPBC,
-    //     avance: avance,
-    //     // Recaudo Otros
-    //     ro_inversion: roInversion,
-    //     ro_ahorro: roAhorro,
-    //     ro_administracion: roAdministracion,
-    //     ro_total: roTotal,
-    //     // Total final
-    //     total_distribuido: totalDistribuido
-    //   };
-    // });
+    });
   }
-
 
   /**
    * Cargar las vigencias desde el servicio
@@ -1415,6 +1154,7 @@ setTimeout(() => {
       if (this.vigencias.length > 0) {
         this.selectedVigencia = this.vigencias[0];
         this.setPeriodsFromVigencia(this.selectedVigencia); // 👈 agrega esto
+        this.loadSgrData(); // 👈 aquí, ya tiene selectedVigencia
       }
       
     } catch (error) {
