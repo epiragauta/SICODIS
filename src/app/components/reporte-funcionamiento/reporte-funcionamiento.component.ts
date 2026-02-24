@@ -161,11 +161,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
   donutAvanceEjecucionData: any;
   donutAvanceEjecucionOptions: any;
   hBarSituacionCajaData: any;
-  donutAvanceRecaudoData: any;
-  donutAvanceRecaudoOptions: any;
-  donutAvanceRecaudoInCardOptions: any;
-  donutAvanceProyeccionPBCData: any;
-  donutAvanceProyeccionPBCOptions: any;
+  hBarAvanceRecaudoData: any;
+  hBarAvanceRecaudoOptions: any;
   detailChartData: any;
   detailChartOptions: any;
 
@@ -1987,30 +1984,33 @@ export class ReporteFuncionamientoComponent implements OnInit {
             backgroundColor: '#D9520A',
             borderColor: '#CCCCCC',
             borderWidth: 1,
-            data: [pagos]
+            data: [pagos],
+            barThickness: 35
           },
           {
-            label: 'Compromisos por pagar',
+            label: ['Compromisos', 'por pagar'],
             backgroundColor: '#E07800',
             borderColor: '#CCCCCC',
             borderWidth: 1,
-            data: [compromisoSinAfectacion]
+            data: [compromisoSinAfectacion],
+            barThickness: 35
           },
           {
-            label: 'CDP por comprometer',
+            label: ['CDP por', 'comprometer'],
             backgroundColor: '#F0A500',
             borderColor: '#CCCCCC',
             borderWidth: 1,
-            data: [cdpSinAfectacion]
+            data: [cdpSinAfectacion],
+            barThickness: 35
           },
           {
-            label: 'Saldo sin afectación',
+            label: ['Saldo sin', 'afectación'],
             backgroundColor: '#AFC7D6',
             borderColor: '#CCCCCC',
             borderWidth: 1,
-            data: [saldoSinAfectacion]
-          }
-          
+            data: [saldoSinAfectacion],
+            barThickness: 35
+          }          
         ]
       };
 
@@ -2043,47 +2043,41 @@ export class ReporteFuncionamientoComponent implements OnInit {
             backgroundColor: '#D9520A',
             borderColor: '#CCCCCC',
             borderWidth: 1,
+            barThickness: 35
           },
           {
             label: 'Caja Disponible',
             data: [cajaDisponible],
             backgroundColor: '#AFC7D6',
             borderColor: '#CCCCCC',
-            borderWidth: 1,        
+            borderWidth: 1,
+            barThickness: 35       
           }
         ]
       };
 
-      this.donutAvanceRecaudoData = {
-        labels: ['Recaudo corriente', 'Presupuesto corriente'],
+      this.hBarAvanceRecaudoData = {
+        labels: [['Avance de','Recaudo'], 'PBC'],
         datasets: [
           {
-            data: [
-              this.avanceRecaudoData.iacCorriente, this.avanceRecaudoData.presupuestoCorriente
-            ],
-            backgroundColor: ['#E07800', '#AFC7D6'],
-            hoverBackgroundColor: ['#C06500', '#99B5C6'],
+            label: 'Recaudo Corriente',
+            data: [this.avanceRecaudoData.iacCorriente, this.avanceRecaudoData.iacCorriente],
+            backgroundColor: '#E07800',
             borderColor: '#CCCCCC',
             borderWidth: 1,
-          }
-        ]
-      };
-
-      this.donutAvanceProyeccionPBCData = {
-        labels: ['Recaudo corriente', 'Presupuesto corriente'],
-        datasets: [
+            barThickness: 20
+          },
           {
-            data: [
-              this.avanceRecaudoData.iacCorriente, this.avanceRecaudoData.presupuestoCorriente
-            ],
-            backgroundColor: ['#0943b5', '#AFC7D6'],
-            hoverBackgroundColor: ['#1e5cda', '#98c0d8'],
+            label: 'Presupuesto Corriente',
+            data: [this.avanceRecaudoData.presupuestoCorriente, this.avanceRecaudoData.presupuestoCorriente],
+            backgroundColor: '#AFC7D6',
             borderColor: '#CCCCCC',
             borderWidth: 1,
+            barThickness: 20
           }
-        ]
+        ],
+        
       };
-
 
     } catch (error) {
       console.error('Error actualizando gráficos:', error);
@@ -2130,10 +2124,10 @@ export class ReporteFuncionamientoComponent implements OnInit {
       devicePixelRatio: window.devicePixelRatio || 2,
       layout: {
         padding: {
-          top: 5,
-          bottom: 5,
-          left: 5,
-          right: 5
+          top: 4,
+          bottom: 25,
+          left: 4,
+          right: 4
         }
       },
       plugins: {
@@ -2142,11 +2136,11 @@ export class ReporteFuncionamientoComponent implements OnInit {
           labels: {
             color: textColor,
             font: { size: 11 },
-            boxWidth: 20,
-            padding: 8
-          },
-          maxWidth: 100,
-
+            boxWidth: 12,
+            boxHeight: 18,
+            padding: 10,
+            textAlign: 'center'
+          }
         },
         title: {
           display: true,
@@ -2267,7 +2261,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
         x: {
           ticks: { 
             maxTicksLimit: 6,
-            color: textColor, font: { size: 11 } 
+            color: textColor, font: { size: 11 }, 
+            count: 5
           },
           grid: { color: surfaceBorder },
           stacked: true
@@ -2367,118 +2362,90 @@ export class ReporteFuncionamientoComponent implements OnInit {
       }
     };
 
-    this.donutAvanceRecaudoInCardOptions = {
-      cutout: '60%',
-      rotation: -90,
-      circumference: 180,
+    this.hBarAvanceRecaudoOptions = {
+      indexAxis: 'y',
       maintainAspectRatio: false,
       aspectRatio: 1.25,
       responsive: true,
       devicePixelRatio: window.devicePixelRatio || 2,
+      scales: {
+        x: {
+          beginAtZero: true,
+          stacked: true,
+          ticks: {
+            color: textColor,
+            font: { size: 10 },
+            callback: function(value: any) {
+              return (value).toLocaleString('es-CO');
+            },
+            count: 4
+          },
+          grid: {
+            color: surfaceBorder,
+            drawBorder: false
+          }
+        },
+        y: {
+          stacked: true,
+          ticks: {
+            color: textColor,
+            font: { size: 11 }
+          },
+          grid: {
+            display: false
+          }
+        }
+      },
       plugins: {
         legend: {
+          display: false,
           position: 'right',
           labels: {
             color: textColor,
             font: { size: 11 },
             boxWidth: 14,
-            padding: 6
+            padding: 8
           }
         },
-        title: { 
+        title: {
           display: true,
           text: 'Avance de Recaudo',
           color: '#28a745',
           font: { size: 14, weight: 'bold' }
         },
-        datalabels: { display: false },
-        tooltip: {
-          callbacks: {
-            label: function(tooltipItem: any) {
-              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')}`;
-            }
-          }
-        },
-        centerText: {
+        datalabels: { 
           display: true,
-          text: () => {
-            if (this.isLoadingData) return 'Cargando...';
-            const avance = this.avanceRecaudoData.avance * 100;
-            if (!isFinite(avance) || isNaN(avance)) return '0.00%';
-            return avance.toFixed(2).replace(".", ",") + '%';
-          }
-        }
-      },
-      elements: {
-        arc: { borderWidth: 1, borderColor: '#BBBBBB' }
-      },
-      animation: { animateRotate: true, animateScale: true, duration: 2000, easing: 'easeOutQuart' }
-    };
-
-    this.donutAvanceProyeccionPBCOptions = {
-      cutout: '60%',
-      rotation: -90,
-      circumference: 180,
-      maintainAspectRatio: false,
-      aspectRatio: 1.65,
-      responsive: true,
-      devicePixelRatio: window.devicePixelRatio || 2,
-      plugins: {
-        legend: {
-          position: 'right',
-          labels: {
-            color: textColor,
-            font: { size: 11 }
-          }
-        },
-        title: {
-          display: true,
-          text: 'Avance Proyección PBC',
-          color: '#28a745',
-          font: { size: 14, weight: 'bold' }
-        },
-        datalabels: {
-          display: false
-        },
-        tooltip: {
-          callbacks: {
-            label: function(tooltipItem: any) {
-              return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')}`;
-            }
+          anchor: 'end',     // Se ancla al final de la barra
+          align: 'right',    // Se posiciona hacia la derecha
+          offset: 6,         // Separación del borde
+          color: textColor,
+          font: {
+            weight: 'bold',
+            size: 11
           },
-          xAlign: 'left',
-          yAlign: 'bottom'
-        },
-        centerText: {
-          display: true,
-          text: () => {
-            if (this.isLoadingData) return 'Cargando...';
-            const avance = this.avanceRecaudoData.avance * 100;
-            if (!isFinite(avance) || isNaN(avance)) {
-              return '0.00%';
+          formatter: function(value : any, context: any) {
+            // Mostrar solo en el último dataset del stack
+            const datasets = context.chart.data.datasets;
+            if (context.datasetIndex === datasets.length - 1) {
+              const val = (datasets[0].data[0] / datasets[1].data[0]) * 100;
+              return val.toFixed(2) + '%';
             }
-            return avance.toFixed(2).replace(".", ",") + '%';
+            return null;
           }
-        }
-      },
-      elements: {
-        arc: {
-          borderWidth: 2,
-          borderColor: '#BBBBBB',
-          hoverBorderWidth: 2,
-          hoverBorderColor: '#BBBBBB'
+        },
+        tooltip: {
+          callbacks: {
+            label: function(tooltipItem: any) {
+              const label = tooltipItem.dataset.label || '';
+              const value = Math.ceil(tooltipItem.raw).toLocaleString('es-CO');
+              return `${label}: ${value}`;
+            }
+          }
         }
       },
       animation: {
-        animateRotate: true,
-        animateScale: true,
         duration: 2000,
         easing: 'easeOutQuart'
-      },
-      interaction: {
-        mode: 'nearest',
-        intersect: false,
-        axis: 'r'
       }
     };
 

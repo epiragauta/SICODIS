@@ -312,25 +312,6 @@
               word-wrap: break-word;
             }
           }
-
-          .metric-item-2 {
-            flex: 1;
-            text-align: center;            
-            color: #0943b5;
-
-            .metric-value {
-              font-size: 1.25rem;
-              font-weight: bold;
-              line-height: 1.2;
-              margin-bottom: 0.3rem;
-            }
-
-            .metric-label {
-              font-size: 0.825rem;
-              line-height: 1.2;
-              word-wrap: break-word;
-            }
-          }
         }
       }
     }
@@ -607,44 +588,10 @@
 
   .mat-mdc-card-content {
     padding-top: 0.5rem;
+    padding: 0 6px;
     flex-grow: 1;
     display: flex;
     align-items: center;
-  }
-
-  .mat-mdc-card-content.card-content-recaudo {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0 0.5rem 0;
-    overflow: hidden;
-    height: 100%;
-
-    .recaudo-metrics {
-      flex: 0 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      width: 100%;
-    }
-
-    .recaudo-chart {
-      flex: 1 1 auto;
-      height: 175px;
-      overflow: hidden;
-      transform: translateZ(0);
-
-      .chart-recaudo {
-        width: 100%;
-        height: 175px;
-        max-height: 175px;
-      }
-    }
   }
 
   // Estilos para select deshabilitado
@@ -772,14 +719,6 @@
     }
   }
 
-  // Gráfico integrado dentro de la tarjeta de recaudo
-  .card-content-recaudo .chart-recaudo {
-    canvas {
-      max-height: 175px !important;
-      height: 175px !important;
-    }
-  }
-
   // Específico para gráficos de barras horizontales
   .horizontal-bar-container {
     .horizontal-bar-chart {
@@ -787,8 +726,8 @@
       min-height: 188px !important;
 
       canvas {
-        height: 180px !important;
-        min-height: 180px !important;
+        height: 188px !important;
+        min-height: 188px !important;
       }
     }
   }

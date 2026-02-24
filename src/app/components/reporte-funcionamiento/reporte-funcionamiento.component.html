@@ -232,38 +232,31 @@
           <mat-card-header class="card-header-avance-recaudo">
             <mat-card-title class="card-title card-main">Avance del recaudo de ingresos corrientes</mat-card-title>
           </mat-card-header>
-          <mat-card-content class="card-content-recaudo">
-            <div class="recaudo-metrics">
-              <div class="metrics-row">
-                <div class="metric-item-2">
+          <mat-card-content>
+            <!-- <div class="recaudo-metrics"> -->
+              <div class="metrics-row" style="justify-content: center">
+                <div class="metric-item">
                   <div class="metric-value">{{formatMillions2(avanceRecaudoData.presupuestoCorriente)}}</div>
                   <div class="metric-label">Presupuesto corriente</div>
                 </div>
               </div>
-              <div class="metrics-row">
-                <div class="metric-item-2">
+              <div class="metrics-row" style="justify-content: center">
+                <div class="metric-item">
                   <div class="metric-value">{{formatMillions2(avanceRecaudoData.iacCorriente)}}</div>
                   <div class="metric-label">Recaudo corriente</div>
                 </div>
               </div>
-              <!--div class="metrics-row">
-                <div class="metric-item-2">
+              <div class="metrics-row" style="justify-content: center">
+                <div class="metric-item">
                   <div class="metric-value">
                     {{avanceRecaudoData.avance | percentFormat:2}}
                   </div>
                   <div class="metric-label">Avance</div>
                 </div>
-              </div-->
-            </div>            
+              </div>
+            <!-- </div> -->
           </mat-card-content>
-        </mat-card>
-        <mat-card class="info-card info-card-recaudo" [class.loading]="isLoadingData">          
-          <mat-card-content class="card-content-recaudo">            
-            <div class="recaudo-chart">
-              <p-chart type="doughnut" [data]="donutAvanceRecaudoData" [options]="donutAvanceRecaudoInCardOptions" class="chart-recaudo"></p-chart>
-            </div>
-          </mat-card-content>
-        </mat-card>
+        </mat-card>        
       </div>
     </div>
 
@@ -289,9 +282,9 @@
       <div class="chart-container horizontal-bar-container" [class.loading]="isLoadingData">
         <p-chart type="bar" [data]="hBarSituacionCajaData" [options]="hBarSituacionCajaOpts" class="chart horizontal-bar-chart"></p-chart>
       </div>
-      <!-- Gráfico 4: Dona Avance Proyección PBC -->
-      <div class="chart-container" [class.loading]="isLoadingData">
-        <p-chart type="doughnut" [data]="donutAvanceProyeccionPBCData" [options]="donutAvanceProyeccionPBCOptions" class="chart"></p-chart>
+      <!-- Gráfico 4: Barras Horizontales Avance de Recaudo -->
+      <div class="chart-container horizontal-bar-container" [class.loading]="isLoadingData">
+        <p-chart type="bar" [data]="hBarAvanceRecaudoData" [options]="hBarAvanceRecaudoOptions" class="chart horizontal-bar-chart"></p-chart>
       </div> 
     </div>
   </div>
