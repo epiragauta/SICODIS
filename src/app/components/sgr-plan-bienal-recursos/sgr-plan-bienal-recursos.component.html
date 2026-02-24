@@ -1,0 +1,204 @@
+<div class="sicodis-container">
+
+  <!-- Popups para Diccionario y Siglas -->
+  <app-info-popup
+    [infoText]="diccionarioContent"
+    contentTitle="Diccionario de Conceptos"
+    [showPopup]="showDiccionarioPopup"
+    (onClose)="closeDiccionarioPopup()">
+  </app-info-popup>
+
+  <app-info-popup
+    [infoText]="siglasContent"
+    contentTitle="Siglas y Abreviaciones"
+    [showPopup]="showSiglasPopup"
+    (onClose)="closeSiglasPopup()">
+  </app-info-popup>
+
+  <!-- Banner -->
+  <div class="gradient-banner">
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h1>Programacion plan de recursos</h1>
+      <p>Acceda al plan de recursos y plan bienal de caja por bienos, asignaciones y beneficiarios.</p>
+    </div>
+  </div>
+
+  <!-- Panel de filtros -->
+  <div class="filters-panel">
+    <div class="filters-row">
+      <div class="p-field plan-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="plan"
+                    [options]="planes"
+                    inputId="planSelect"
+                    [(ngModel)]="selectedPlan"
+                    optionLabel="label"
+                    placeholder="Plan">
+          </p-select>
+          <label for="planSelect">Plan</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field vigencia-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="vigencia"
+                    [options]="vigencias"
+                    inputId="vigenciaSelect"
+                    [(ngModel)]="selectedVigencia"
+                    optionLabel="label"
+                    placeholder="Vigencia">
+          </p-select>
+          <label for="vigenciaSelect">Vigencia</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field beneficiario-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="beneficiario"
+                    [options]="beneficiarios"
+                    inputId="beneficiarioSelect"
+                    [(ngModel)]="selectedBeneficiario"
+                    optionLabel="label">
+          </p-select>
+          <label for="beneficiarioSelect">Beneficiarios</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field departamento-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="departamento"
+                    [options]="departamentosList"
+                    inputId="departamentoSelect"
+                    [(ngModel)]="selectedDepartamento"
+                    optionLabel="nombre">
+          </p-select>
+          <label for="departamentoSelect">Departamentos</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field apply-filters">
+        <button pButton type="button"
+            icon="pi pi-check"
+            label="Aplicar filtros"
+            class="p-button-primary"
+            (click)="applyFilters()">
+        </button>
+      </div>
+
+      <div class="p-field clear-filters">
+        <button pButton type="button"
+            icon="pi pi-eraser"
+            label="Limpiar filtros"
+            class="p-button-secondary"
+            (click)="clearFilters()">
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seccion de fechas y botones Diccionario/Siglas -->
+  <div class="info-strip">
+    <div class="info-strip-left">
+      <p class="date-update">Fecha de actualizacion: febrero 12 de 2026</p>
+      <p class="date-update">Fecha de corte de recaudo: enero 31 de 2026</p>
+    </div>
+    <div class="info-strip-right">
+      <button pButton type="button" label="Diccionario" class="p-button-secondary"
+          (click)="showPopupDiccionario()">
+      </button>
+      <button pButton type="button" label="Siglas" class="p-button-secondary"
+          (click)="showPopupSiglas()">
+      </button>
+    </div>
+  </div>
+
+  <!-- Seccion del grafico -->
+  <div class="chart-section">
+    <h2 class="section-title">PLAN DE RECURSOS</h2>
+    <p class="section-subtitle">Totales plan de recursos (PR) por 10 años de proyección</p>
+
+    <div class="chart-card">
+      <div class="chart-content">
+        <p-chart
+          type="bar"
+          [data]="barChartData"
+          [options]="barChartOptions"
+          height="400px">
+        </p-chart>
+      </div>
+      <div class="chart-footer">
+        <p class="source-note">(1) Cifras en pesos corrientes.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seccion de tabla -->
+  <div class="table-section">
+    <div class="table-header">
+      <h2 class="table-title">Plan de recursos 2025 - 2034</h2>
+    </div>
+
+    <p-table [value]="tableData"
+             [scrollable]="true"
+             scrollDirection="horizontal"
+             styleClass="p-datatable-sm plan-recursos-table">
+
+      <!-- Encabezados -->
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="concept-header">Concepto</th>
+          <th class="year-header" *ngFor="let year of years">{{year}}</th>
+        </tr>
+      </ng-template>
+
+      <!-- Filas de datos -->
+      <ng-template pTemplate="body" let-rowData>
+        <tr [ngClass]="{
+          'header-row': rowData.isHeader,
+          'total-row': rowData.section === 'total',
+          'section-inversion': rowData.section === 'inversion',
+          'section-ahorro': rowData.section === 'ahorro',
+          'section-otros': rowData.section === 'otros'
+        }">
+          <td class="concept-cell" [ngClass]="{'font-bold': rowData.isHeader}">
+            {{rowData.concepto}}
+          </td>
+          <td class="number-cell" *ngFor="let year of years"
+              [ngClass]="{'font-bold': rowData.isHeader}">
+            {{rowData[year] | numberFormat}}
+          </td>
+        </tr>
+      </ng-template>
+
+      <!-- Template cuando no hay datos -->
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td [attr.colspan]="years.length + 1" class="empty-message">
+            No se encontraron registros.
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <!-- Botones de acción -->
+    <div class="action-buttons">
+      <p-button label="Exportar excel" icon="pi pi-file-excel" class="detail-button"
+        (click)="exportarExcel()">
+      </p-button>
+      <p-button label="Informes de recaudo" icon="pi pi-money-bill" class="detail-button"
+        (click)="verInformesRecaudo()">
+      </p-button>
+    </div>
+
+    <!-- Notas -->
+    <div class="notes-section">
+      <h3 class="notes-title">NOTAS</h3>
+      <div class="notes-content">
+        <p class="note-item">(1) Cifras en pesos corrientes.</p>
+        <p class="note-item">(2) Fuente: Ley 2441 de 2024, Sistema General de Regalias.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
