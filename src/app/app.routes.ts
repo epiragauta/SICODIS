@@ -5,10 +5,8 @@ import { ReportsSgpComponent } from './components/reports-sgp/reports-sgp.compon
 import { ReportsMapComponent } from './components/reports-map/reports-map.component';
 import { ReportsSgpDistComponent } from './components/reports-sgp-dist/reports-sgp-dist.component';
 import { ReportsSgpBudgetComponent } from './components/reports-sgp-budget/reports-sgp-budget.component';
-import { ReportsSgrBienalComponent } from './components/reports-sgr-bienal/reports-sgr-bienal.component';
 import { ReportsSgrComparativeComponent } from './components/reports-sgr-comparative/reports-sgr-comparative.component';
 import { IacComparativeVsBudgetComponent} from './components/iac-comparative-vs-budget/iac-comparative-vs-budget.component';
-import { ReportsSgrResumenPlanRecursosComponent} from './components/reports-sgr-resumen-plan-recursos/reports-sgr-resumen-plan-recursos.component';
 import { FaqComponent } from './components/faq/faq.component';
 import { ToolsComponent } from './components/tools/tools.component';
 import { ComparativoIacVsPresupuestoComponent } from './components/comparativo-iac-vs-presupuesto/comparativo-iac-vs-presupuesto.component';
@@ -33,17 +31,17 @@ import { SgrRecaudoDirectasComponent } from './components/sgr-recaudo-directas/s
 import { SgrMontosCorrientesConstantesComponent } from './components/sgr-montos-corrientes-constantes/sgr-montos-corrientes-constantes.component';
 import { PgnInversionPorSectorComponent } from './components/pgn-inversion-por-sector/pgn-inversion-por-sector.component';
 import { PgnRegionalizacionPresupuestoSeguimientoComponent } from './components/pgn-regionalizacion-presupuesto-seguimiento/pgn-regionalizacion-presupuesto-seguimiento.component';
+import { SgrPlanBienalCajaComponent } from './components/sgr-plan-bienal-caja/sgr-plan-bienal-caja.component';
+import { SgrPlanBienalRecursosComponent } from './components/sgr-plan-bienal-recursos/sgr-plan-bienal-recursos.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
     { path: 'reports-sgr', component: ReportsSgrComponent },    
     { path: 'reports-sgp-dist', component: ReportsSgpDistComponent },
-    { path: 'reports-sgp-budget', component: ReportsSgpBudgetComponent },
-    { path: 'reports-sgr-bienal', component: ReportsSgrBienalComponent },
+    { path: 'reports-sgp-budget', component: ReportsSgpBudgetComponent },    
     { path: 'reports-sgr-comparative', component: ReportsSgrComparativeComponent },    
     { path: 'iac-comparative-vs-budget', component: IacComparativeVsBudgetComponent },
-    { path: 'comparativo-iac-presupuesto', component: ComparativoIacVsPresupuestoComponent },
-    { path: 'reports-sgr-resumen-plan-recursos', component: ReportsSgrResumenPlanRecursosComponent },
+    { path: 'comparativo-iac-presupuesto', component: ComparativoIacVsPresupuestoComponent },    
     { path: 'faq', component: FaqComponent },
     { path: 'tools', component: ToolsComponent },
     { path: 'dashboard', component: DashboardComponent },
@@ -65,6 +63,8 @@ export const routes: Routes = [
     { path: 'sgr-programacion', component: SgrProgramacionComponent },
     { path: 'sgr-recaudo-directas', component: SgrRecaudoDirectasComponent },
     { path: 'sgr-montos-corrientes-constantes', component: SgrMontosCorrientesConstantesComponent },
+    { path: 'sgr-plan-recursos', component: SgrPlanBienalRecursosComponent },
+    { path: 'sgr-bienal-de-caja', component: SgrPlanBienalCajaComponent },
     { path: 'pgn-inversion-por-sector', component:PgnInversionPorSectorComponent},
     { path: 'pgn-regionalizacion', component: PgnRegionalizacionPresupuestoProgramacionComponent },
     { path: 'pgn-seguimiento', component: PgnRegionalizacionPresupuestoSeguimientoComponent },

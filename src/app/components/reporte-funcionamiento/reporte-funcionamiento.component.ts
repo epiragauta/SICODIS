@@ -1853,8 +1853,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
           {
             label: 'Compromisos',
             data: [convertirANumero(registro.compromisos)],
-            backgroundColor: 'rgba(40, 167, 69, 0.85)',
-            borderColor: 'rgba(40, 167, 69, 1)',
+            backgroundColor: '#E07800',
+            borderColor: '#eb8006',
             borderWidth: 2,
             barThickness: 20,
             order: 1
@@ -1862,8 +1862,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
           {
             label: 'Presupuesto disponible',
             data: [convertirANumero(registro.apropiacion_vigente_disponible)],
-            backgroundColor: 'rgba(220, 220, 220, 0.8)',
-            borderColor: 'rgba(180, 180, 180, 1)',
+            backgroundColor: '#fff',
+            borderColor: '#eee',
             borderWidth: 2,
             barThickness: 35,
             order: 2
@@ -1982,7 +1982,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
           {
             label: 'Pagos',
             backgroundColor: '#D9520A',
-            borderColor: '#CCCCCC',
+            borderColor: '#eae1e1',
             borderWidth: 1,
             data: [pagos],
             barThickness: 35
@@ -1990,7 +1990,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
           {
             label: ['Compromisos', 'por pagar'],
             backgroundColor: '#E07800',
-            borderColor: '#CCCCCC',
+            borderColor: '#eae1e1',
             borderWidth: 1,
             data: [compromisoSinAfectacion],
             barThickness: 35
@@ -1998,15 +1998,15 @@ export class ReporteFuncionamientoComponent implements OnInit {
           {
             label: ['CDP por', 'comprometer'],
             backgroundColor: '#F0A500',
-            borderColor: '#CCCCCC',
+            borderColor: '#eae1e1',
             borderWidth: 1,
             data: [cdpSinAfectacion],
             barThickness: 35
           },
           {
             label: ['Saldo sin', 'afectación'],
-            backgroundColor: '#AFC7D6',
-            borderColor: '#CCCCCC',
+            backgroundColor: '#eae1e1',
+            borderColor: '#eae1e1',
             borderWidth: 1,
             data: [saldoSinAfectacion],
             barThickness: 35
@@ -2025,9 +2025,9 @@ export class ReporteFuncionamientoComponent implements OnInit {
         datasets: [
           {
             data: [compromiso, presupuestoDisponible],
-            backgroundColor: ['#D9520A', '#AFC7D6'],
-            hoverBackgroundColor: ['#B34200', '#99B5C6'],
-            borderColor: '#CCCCCC',
+            backgroundColor: ['#E07800', '#eae1e1'],
+            hoverBackgroundColor: ['#e98007', '#99B5C6'],
+            borderColor: '#eae1e1',
             borderWidth: 1,
           }
         ]
@@ -2041,15 +2041,15 @@ export class ReporteFuncionamientoComponent implements OnInit {
             label: 'Pagos',
             data: [pagos],
             backgroundColor: '#D9520A',
-            borderColor: '#CCCCCC',
+            borderColor: '#eae1e1',
             borderWidth: 1,
             barThickness: 35
           },
           {
             label: 'Caja Disponible',
             data: [cajaDisponible],
-            backgroundColor: '#AFC7D6',
-            borderColor: '#CCCCCC',
+            backgroundColor: '#eae1e1',
+            borderColor: '#eae1e1',
             borderWidth: 1,
             barThickness: 35       
           }
@@ -2063,17 +2063,17 @@ export class ReporteFuncionamientoComponent implements OnInit {
             label: 'Recaudo Corriente',
             data: [this.avanceRecaudoData.iacCorriente, this.avanceRecaudoData.iacCorriente],
             backgroundColor: '#E07800',
-            borderColor: '#CCCCCC',
+            borderColor: '#eae1e1',
             borderWidth: 1,
-            barThickness: 20
+            barThickness: 27
           },
           {
             label: 'Presupuesto Corriente',
             data: [this.avanceRecaudoData.presupuestoCorriente, this.avanceRecaudoData.presupuestoCorriente],
-            backgroundColor: '#AFC7D6',
-            borderColor: '#CCCCCC',
+            backgroundColor: '#eae1e1',
+            borderColor: '#eae1e1',
             borderWidth: 1,
-            barThickness: 20
+            barThickness: 27
           }
         ],
         
@@ -2096,7 +2096,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
           
           ctx.save();
           ctx.font = 'bold 22px Arial';
-          ctx.fillStyle = '#0943b5';
+          ctx.fillStyle = ' #2c2d2f';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           
@@ -2113,7 +2113,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
     }
 
     const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = '#0943b5';
+    const textColor = '#303135';
     const surfaceBorder = documentStyle.getPropertyValue('--p-content-border-color') || '#dee2e6';
 
     // Opciones para gráfico de barras horizontales
@@ -2136,16 +2136,17 @@ export class ReporteFuncionamientoComponent implements OnInit {
           labels: {
             color: textColor,
             font: { size: 11 },
-            boxWidth: 12,
-            boxHeight: 18,
-            padding: 10,
-            textAlign: 'center'
+            boxWidth: 8,
+            boxHeight: 25,
+            padding: 4,
+            textAlign: 'left',
+            usePointStyle: false,
           }
         },
         title: {
           display: true,
           text: 'Afectación presupuestal',
-          color: '#28a745',
+          color: '#262826',
           font: { size: 14, weight: 'bold' }
         },
         datalabels: {
@@ -2233,7 +2234,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         title: {
           display: true,
           text: 'Situación de Caja',
-          color: '#28a745',
+          color: '#262826 ',
           font: { size: 14, weight: 'bold' }
         },
         datalabels: {
@@ -2262,7 +2263,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
           ticks: { 
             maxTicksLimit: 6,
             color: textColor, font: { size: 11 }, 
-            count: 5
+            count: 3
           },
           grid: { color: surfaceBorder },
           stacked: true
@@ -2314,7 +2315,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         title: {
           display: true,
           text: 'Avance de Ejecución',
-          color: '#28a745',
+          color: '#262826',
           font: { size: 14, weight: 'bold' }
         },
         datalabels: {
@@ -2410,7 +2411,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         title: {
           display: true,
           text: 'Avance de Recaudo',
-          color: '#28a745',
+          color: '#262826',
           font: { size: 14, weight: 'bold' }
         },
         datalabels: { 
