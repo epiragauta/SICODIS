@@ -2338,7 +2338,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
         },        
         tooltip: {
           enabled: true,
-          mode: 'point',
+          mode: 'index',
+          position: 'nearest',
           intersect: true,
           backgroundColor: 'rgba(0, 0, 0, 0.8)',
           titleColor: '#ffffff',
@@ -2531,6 +2532,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
           }
         },
         tooltip: {
+          mode: 'index',
+          position: 'nearest',      
           callbacks: {
             title: function(tooltipItems: any) {
               const label = tooltipItems[0].label;
@@ -2542,8 +2545,12 @@ export class ReporteFuncionamientoComponent implements OnInit {
             },
             label: function(tooltipItem: any) {
               const label = tooltipItem.dataset.label || '';
-              const value = Math.ceil(tooltipItem.raw).toLocaleString('es-CO');
-              return `${label}: ${value}`;
+              if (tooltipItem.raw != 0){
+                const value = Math.ceil(tooltipItem.raw).toLocaleString('es-CO');
+                return `${label}: ${value}`;
+              }else{
+                return null;
+              }
             }
           }
         }
@@ -2584,15 +2591,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
         datalabels: {
           display: false
         },
-        tooltip: {
-          enabled: true,
-          mode: 'index',
-          intersect: false,
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
-          titleColor: '#ffffff',
-          bodyColor: '#ffffff',
-          borderColor: textColor,
-          borderWidth: 1,
+        tooltip: {          
+          mode: 'index',          
           callbacks: {
             label: function(tooltipItem: any) {
               const label = tooltipItem.dataset.label || '';
