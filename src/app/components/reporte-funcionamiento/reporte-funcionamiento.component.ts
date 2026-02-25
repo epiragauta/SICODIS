@@ -2108,8 +2108,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
           {
             data: [compromiso, presupuestoDisponible],
             backgroundColor: ['#E07800', '#eae1e1'],
-            hoverBackgroundColor: ['#e98007', '#99B5C6'],
-            borderColor: '#eae1e1',
+            hoverBackgroundColor: ['#d77607', '#dfc4c4'],
+            borderColor: '#eae6e1',
             borderWidth: 1,
           }
         ]
@@ -2261,7 +2261,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
             label: function(tooltipItem: any) {
               const label = tooltipItem.dataset.label || '';
               const value = Math.ceil(tooltipItem.raw).toLocaleString('es-CO');
-              return `${label}: $${value}`;
+              return `${label}: ${value}`;
             }
           }
         }
@@ -2350,7 +2350,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
             label: function(tooltipItem: any) {
               const label = tooltipItem.dataset.label || '';
               const value = Math.ceil(tooltipItem.raw).toLocaleString('es-CO');
-              return `${label}: $${value}`;
+              return `${label}: ${value}`;
             }
           }
         }
@@ -2597,7 +2597,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
             label: function(tooltipItem: any) {
               const label = tooltipItem.dataset.label || '';
               const value = Math.ceil(tooltipItem.raw).toLocaleString('es-CO');
-              return `${label}: $${value}`;
+              return `${label}: ${value}`;
             }
           }
         }
