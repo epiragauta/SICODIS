@@ -260,6 +260,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
     else {
       this.showDptos = false;
       this.showMpios = false;
+      this.showEntidadesCR = false;
     }
   }
 
@@ -791,6 +792,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
       }
     }
 
+    this.hideOptionalSelect();
+
     try {
       // Limpiar selecciones dependientes
       this.selectedConcepto = [];
@@ -987,6 +990,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
         this.selectedConcepto = [total];
       }
     }
+
+    this.hideOptionalSelect();
 
     try {
       // Limpiar selección de beneficiario
@@ -1339,10 +1344,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       // Calcular totales basado solo en asignaciones y conceptos
       if (!event.value || event.value.length === 0) {
         this.selectedBeneficiario = [];
-        this.showDptos = false;
-        this.showMpios = false;
-        this.selectedDepartamento = null;
-        this.selectedMunicipio = null;
+        this.hideOptionalSelect();
         await this.cargarDistribucionTotalDesdeAPI();
         return;
       }
@@ -1383,6 +1385,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
     this.selectedVigencia = event.value;
     
     this.showDetailInfo=false;
+
+    this.hideOptionalSelect();
     
     const config = this.vigenciasConfig[this.selectedVigencia.id];
 
@@ -2135,7 +2139,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       };
 
       this.hBarAvanceRecaudoData = {
-        labels: [['Avance de','Recaudo'], 'PBC'],
+        labels: [['Avance de' , 'Recaudo'], 'PBC'],
         datasets: [
           {
             label: 'Recaudo Corriente',
@@ -2246,6 +2250,14 @@ export class ReporteFuncionamientoComponent implements OnInit {
           borderColor: textColor,
           borderWidth: 1,
           callbacks: {
+            title: function(tooltipItems: any) {
+              const label = tooltipItems[0].dataset.label;
+              // Si el label es un array, unirlo con espacio en lugar de coma
+              if (Array.isArray(label)) {
+                return label.join(' ');
+              }
+              return label.replace(',', ' '); // Reemplazar coma por espacio para mejor legibilidad
+            },
             label: function(tooltipItem: any) {
               const label = tooltipItem.dataset.label || '';
               const value = Math.ceil(tooltipItem.raw).toLocaleString('es-CO');
@@ -2520,6 +2532,14 @@ export class ReporteFuncionamientoComponent implements OnInit {
         },
         tooltip: {
           callbacks: {
+            title: function(tooltipItems: any) {
+              const label = tooltipItems[0].label;
+              // Si el label es un array, unirlo con espacio en lugar de coma
+              if (Array.isArray(label)) {
+                return label.join(' ');
+              }
+              return label.replace(',', ' '); // Reemplazar coma por espacio para mejor legibilidad
+            },
             label: function(tooltipItem: any) {
               const label = tooltipItem.dataset.label || '';
               const value = Math.ceil(tooltipItem.raw).toLocaleString('es-CO');
@@ -2743,5 +2763,18 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
   onInformeTrimestraClick(): void {
     this.openInNewTab(this.urlTrimestralReport);
+  }
+
+  /**
+   * Ocultar select de departamentos, municipios y entidades CR al cambiar beneficiario 
+   * a una opción diferente de DNP CR, o al limpiar beneficiario
+   */
+  hideOptionalSelect(): void {
+    this.showDptos = false;
+    this.showMpios = false;
+    this.showEntidadesCR = false;
+    this.selectedDepartamento = null;
+    this.selectedMunicipio = null;
+    this.selectedEntidadCR = null;
   }
 }
