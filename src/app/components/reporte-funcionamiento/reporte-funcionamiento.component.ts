@@ -208,6 +208,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
   siglasContent: string = '';
 
   DNP_CR = 'Departamento Nacional de Planeación - Comisión Rectora';
+  DEPARTAMENTO = 'DEPARTAMENTO';
+  MUNICIPIO = 'MUNICIPIO';
 
   /**
    * Utility method to handle TOTAL selection exclusion logic
@@ -235,7 +237,9 @@ export class ReporteFuncionamientoComponent implements OnInit {
    * Configurar visibilidad de controles de departamentos y municipios
    */
   private configurarVisibilidadDepartamentosMunicipios(): void {
-    if (this.selectedBeneficiario.length === 1 && this.selectedBeneficiario[0].label.trim() === "Departamentos") {
+    if (this.selectedBeneficiario.length === 1 && 
+      this.selectedVigencia == this.vigencias[0] && // Solo mostrar en última vigencia
+      this.selectedBeneficiario[0].label.trim() === "Departamentos") {
       this.showDptos = true;
       this.showMpios = false;
       this.showEntidadesCR = false;
@@ -245,7 +249,9 @@ export class ReporteFuncionamientoComponent implements OnInit {
       this.showMpios = true;
       this.showEntidadesCR = false;
       this.cargarEntidadesSiNecesario();
-    } else if (this.selectedBeneficiario.length === 1 && this.selectedBeneficiario[0].label.trim() === this.DNP_CR) {
+    } else if (this.selectedBeneficiario.length === 1 && 
+      this.selectedVigencia == this.vigencias[0] && // Solo mostrar en última vigencia
+      this.selectedBeneficiario[0].label.trim() === this.DNP_CR) {
       this.showEntidadesCR = true;
       this.showDptos = false;
       this.showMpios = false;
@@ -955,8 +961,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
       return;
     }
 
-
-
     // Si seleccionó TOTAL → dejar solo TOTAL
     if (event.itemValue.label === 'TOTAL') {
       this.selectedConcepto = [event.itemValue];
@@ -983,7 +987,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
         this.selectedConcepto = [total];
       }
     }
-
 
     try {
       // Limpiar selección de beneficiario
@@ -1146,6 +1149,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
             label: nombre
           }))
         ];
+        this.selectedBeneficiario = [{ value: "0", label: "TOTAL" }];
         
       } else {
         // Fallback a datos locales
@@ -1297,8 +1301,30 @@ export class ReporteFuncionamientoComponent implements OnInit {
   /**
    * Evento cuando cambia el beneficiario seleccionado
    */
-  onBeneficiarioChange(event: MultiSelectChangeEvent): void {
+  async onBeneficiarioChange(event: MultiSelectChangeEvent): Promise<void> {
     
+    // --- Si ya estaba TOTAL y el usuario intenta desmarcarlo, no hacer nada ---
+    if (
+      (!event.value || event.value.length === 0) &&
+      event.itemValue?.label === 'TOTAL'
+    ) {
+      // Restaurar TOTAL y salir sin hacer nada más
+      setTimeout(() => {
+        const total = this.conceptos.find((f: any) => f.label === 'TOTAL');
+        this.selectedBeneficiario = [total];
+      });
+      return;
+    }
+
+    // Si seleccionó TOTAL → dejar solo TOTAL
+    if (event.itemValue.label === 'TOTAL') {
+      this.selectedBeneficiario = [event.itemValue];
+    }
+    // Si seleccionó otro y ya estaba TOTAL → quitar TOTAL
+    else {
+      this.selectedBeneficiario = event.value.filter((f: any) => f.label !== 'TOTAL');
+    }
+
     try {
       // Si no hay asignaciones o conceptos seleccionados, no hacer nada
       if (!this.selectedFuente || this.selectedFuente.length === 0 || 
@@ -1313,17 +1339,21 @@ export class ReporteFuncionamientoComponent implements OnInit {
       // Calcular totales basado solo en asignaciones y conceptos
       if (!event.value || event.value.length === 0) {
         this.selectedBeneficiario = [];
-        this.cargarDistribucionTotalDesdeAPI();
+        this.showDptos = false;
+        this.showMpios = false;
+        this.selectedDepartamento = null;
+        this.selectedMunicipio = null;
+        await this.cargarDistribucionTotalDesdeAPI();
         return;
       }
 
       // CASO 2: Manejo de exclusión mutua con TOTAL
-      this.selectedBeneficiario = this.manejarSeleccionTOTAL(event.value, 'beneficiario');
+      // this.selectedBeneficiario = this.manejarSeleccionTOTAL(event.value, 'beneficiario');
       
       if (this.selectedBeneficiario.length === 1 && this.selectedBeneficiario[0].label === "TOTAL") {
         // Si solo TOTAL está seleccionado, usar datos totales
-        this.cargarDatosTotalesInicial();
-        return;
+        // this.cargarDatosTotalesInicial();
+        // return;
       } else {
         // Configurar visibilidad de departamentos y municipios
         this.configurarVisibilidadDepartamentosMunicipios();
@@ -1333,9 +1363,9 @@ export class ReporteFuncionamientoComponent implements OnInit {
       
       if (this.selectedBeneficiario.length > 0) {
         // Si hay más de un beneficiario seleccionado, llamar getDistribucionTotal por cada uno
-        this.cargarDistribucionTotalPorCadaBeneficiario();
+        await this.cargarDistribucionTotalPorCadaBeneficiario();
       } 
-      this.cargarDistribucionTotalDesdeAPI();
+      await this.cargarDistribucionTotalDesdeAPI();
       this.showDetailInfo = true;
 
     } catch (error) {
@@ -1514,7 +1544,9 @@ export class ReporteFuncionamientoComponent implements OnInit {
     
     // 5. Tipo de entidad
     params.tipoEntidad = this.determinarTipoEntidadParaBeneficiario(beneficiario);
-    
+    if (params.tipoEntidad === this.DEPARTAMENTO || params.tipoEntidad === this.MUNICIPIO) {
+      params.idsBeneficiario = ""; 
+    }
     return params;
   }
 
@@ -1524,12 +1556,12 @@ export class ReporteFuncionamientoComponent implements OnInit {
   private determinarTipoEntidadParaBeneficiario(beneficiario: any): string {
     // Si beneficiario es "Departamentos"
     if (beneficiario.label.trim() === "Departamentos") {
-      return "DEPARTAMENTO";
+      return this.DEPARTAMENTO;
     }
     
     // Si beneficiario es "Municipios"
     if (beneficiario.label.trim() === "Municipios") {
-      return "MUNICIPIO";
+      return this.MUNICIPIO;
     }
     
     // En cualquier otro caso, vacío
@@ -1658,7 +1690,13 @@ export class ReporteFuncionamientoComponent implements OnInit {
     
     // 5. Tipo de entidad
     params.tipoEntidad = this.determinarTipoEntidad();
-    
+
+    // 6. Si tipo de entidad es "", forzar idsBeneficiario a "" y validar si selectedBeneficiario es DEPARTAMENTO o MUNICIPIO
+
+    if (this.selectedBeneficiario && this.selectedBeneficiario.length === 1 && this.selectedDepartamento == null && this.selectedMunicipio == null &&
+       (this.selectedBeneficiario[0].label.trim() === "Departamentos" || this.selectedBeneficiario[0].label.trim() === "Municipios")) {
+       params.idsBeneficiario = "";
+    }
     return params;
   }
 
@@ -1668,16 +1706,14 @@ export class ReporteFuncionamientoComponent implements OnInit {
   private determinarTipoEntidad(): string {
     // Si beneficiario es "Departamentos" y se seleccionó un departamento
     if (this.selectedBeneficiario && this.selectedBeneficiario.length === 1 && 
-        this.selectedBeneficiario[0].label.trim() === "Departamentos" &&
-        this.selectedDepartamento) {
-      return "DEPARTAMENTO";
+        this.selectedBeneficiario[0].label.trim() === "Departamentos") {
+      return this.DEPARTAMENTO;
     }
     
     // Si beneficiario es "Municipios" y se seleccionó un municipio
     if (this.selectedBeneficiario && this.selectedBeneficiario.length === 1 && 
-        this.selectedBeneficiario[0].label.trim() === "Municipios" &&
-        this.selectedMunicipio) {
-      return "MUNICIPIO";
+        this.selectedBeneficiario[0].label.trim() === "Municipios") {
+      return this.MUNICIPIO;
     }
 
     // Si beneficiario es DNP CR y se seleccionó al menos una entidad CR
@@ -1897,7 +1933,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
             backgroundColor: '#E07800',
             borderColor: '#eb8006',
             borderWidth: 2,
-            barThickness: 20,
+            barThickness: 33,
             order: 1
           },
           {

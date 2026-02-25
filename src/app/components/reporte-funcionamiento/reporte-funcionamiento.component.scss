@@ -465,6 +465,11 @@
         height: 350px;
         max-height: 350px;
       }
+
+      &.detail-chart-aligned {
+        width: calc((100% / 6 * 4) + (1rem * 3));
+        margin-left: calc((100% / 6) + 1rem);
+      }
     }
 
     .final-note {

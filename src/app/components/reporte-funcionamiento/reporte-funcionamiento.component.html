@@ -365,7 +365,7 @@
               </div>
             </div>
             <!-- Gráfico de comparación por registro -->
-            <div class="detail-chart-container" *ngIf="detailChartData && detailChartData[i]">
+            <div class="detail-chart-container detail-chart-aligned" *ngIf="detailChartData && detailChartData[i]">
               <p-chart type="bar" [data]="detailChartData[i]" [options]="detailChartOptions" class="detail-chart"></p-chart>
             </div>
           </div>
