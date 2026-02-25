@@ -85,6 +85,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
   // Datos originales cargados desde el JSON
   private funcionamientoData: any[] = [];
   private funcionamientoDataEntities: any[] = [];
+  funcionamientoDataEntitiesCR: any[] = [];
   
   // Datos con el registro de totales incluido
   private funcionamientoDataConTotales: any[] = [];
@@ -110,6 +111,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
   selectedBeneficiario: any[] = [];
   selectedDepartamento: any;
   selectedMunicipio: any;
+  selectedEntidadCR: any;
 
   fechaActualizacion: string = '';
   fechaCorteRecaudo: string = '';  
@@ -151,7 +153,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
   avanceRecaudoData = {
     presupuestoCorriente: 0,
     iacCorriente: 0,
-    avance: 0
+    avance: 0,
+    avanceIacPbc: 0
   }
 
   // Datos para los gráficos
@@ -186,6 +189,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
   showDptos: boolean = false;
   showMpios: boolean = false;
+  showEntidadesCR: boolean = false;
   showDetailInfo: boolean = false;
 
   urlTrimestralReport: string = "https://www.dnp.gov.co/LaEntidad_/subdireccion-general-inversiones-seguimiento-evaluacion/direccion-programacion-inversiones-publicas/Paginas/sistema-general-de-regalias.aspx#funveinticincoseis"
@@ -202,6 +206,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
   showSiglasPopup: boolean = false;
   diccionarioContent: string = '';
   siglasContent: string = '';
+
+  DNP_CR = 'Departamento Nacional de Planeación - Comisión Rectora';
 
   /**
    * Utility method to handle TOTAL selection exclusion logic
@@ -232,12 +238,20 @@ export class ReporteFuncionamientoComponent implements OnInit {
     if (this.selectedBeneficiario.length === 1 && this.selectedBeneficiario[0].label.trim() === "Departamentos") {
       this.showDptos = true;
       this.showMpios = false;
+      this.showEntidadesCR = false;
       this.cargarEntidadesSiNecesario();
     } else if (this.selectedBeneficiario.length === 1 && this.selectedBeneficiario[0].label.trim() === "Municipios") {
       this.showDptos = true;
       this.showMpios = true;
+      this.showEntidadesCR = false;
       this.cargarEntidadesSiNecesario();
-    } else {
+    } else if (this.selectedBeneficiario.length === 1 && this.selectedBeneficiario[0].label.trim() === this.DNP_CR) {
+      this.showEntidadesCR = true;
+      this.showDptos = false;
+      this.showMpios = false;
+      this.cargarEntidadesComisionRectora();
+    }
+    else {
       this.showDptos = false;
       this.showMpios = false;
     }
@@ -258,6 +272,17 @@ export class ReporteFuncionamientoComponent implements OnInit {
         });
     }
   }
+
+  /**
+   * Cargar entidades de la Comisión Rectora desde API si no están cargadas
+   */
+  private async cargarEntidadesComisionRectora(): Promise<void> {
+    if (this.funcionamientoDataEntitiesCR.length === 0) {
+      const entitiesCR = await this.sicodisApiService.getEntidadesComisionRectora().toPromise();
+      this.funcionamientoDataEntitiesCR = entitiesCR || [];
+    }
+  }
+
 
   constructor(
     private sicodisApiService: SicodisApiService
@@ -302,7 +327,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
               this.selectedBeneficiario = [totalBeneficiario];
             }
           }
-
         }
       }      
       // Cargar datos iniciales desde API
@@ -1058,7 +1082,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       const todasLasEntidades: any[] = [];
       for (const idConcepto of idsConceptosSeleccionados) {
         try {
-          const entidadesConcepto = await this.sicodisApiService.getEntidadesConceptos(idConcepto).toPromise();
+          const entidadesConcepto = await this.sicodisApiService.getEntidadesConceptosVigencia(idConcepto, this.selectedVigencia.id).toPromise();
           if (entidadesConcepto && entidadesConcepto.length > 0) {
             todasLasEntidades.push(...entidadesConcepto);
           }
@@ -1213,7 +1237,11 @@ export class ReporteFuncionamientoComponent implements OnInit {
       // Llamar a la API para actualizar los datos con los nuevos filtros
       this.cargarDistribucionTotalDesdeAPI();
     }
+  }
 
+  onEntidadCRChange(event: MultiSelectChangeEvent): void {
+    // Llamar a la API para actualizar los datos con los nuevos filtros
+    this.cargarDistribucionTotalDesdeAPI();
   }
 
   /**
@@ -1516,8 +1544,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
     
     try {
       // Construir parámetros para la API
-      const params = this.construirParametrosAPI();
-      
+      const params = this.construirParametrosAPI();      
       
       // Llamar al API
       this.distribucionTotal = await this.sicodisApiService.getDistribucionTotal(params).toPromise();
@@ -1605,7 +1632,13 @@ export class ReporteFuncionamientoComponent implements OnInit {
       // Si beneficiario es "Departamentos" y hay departamento seleccionado, usar ID del departamento
       params.idsBeneficiario = this.selectedDepartamento.value;
       
-    } else if (this.selectedBeneficiario && this.selectedBeneficiario.length > 0 && !this.selectedBeneficiario.some(b => b.value === "TOTAL")) {
+    } else if (this.selectedBeneficiario && this.selectedBeneficiario.length === 1 && 
+               this.selectedBeneficiario[0].label.trim() === this.DNP_CR &&
+               this.selectedEntidadCR) {
+      // Si beneficiario es DNP_CR y hay entidad CR seleccionada, usar ID de la entidad CR
+      params.idsBeneficiario = this.selectedEntidadCR.codigo_entidad;
+      
+    }else if (this.selectedBeneficiario && this.selectedBeneficiario.length > 0 && !this.selectedBeneficiario.some(b => b.value === "TOTAL")) {
       // Para otros beneficiarios, usar los IDs de beneficiarios seleccionados
       const idsBeneficiarios: (string | number)[] = [];
       this.selectedBeneficiario.forEach((beneficiarioSeleccionado: any) => {
@@ -1645,6 +1678,13 @@ export class ReporteFuncionamientoComponent implements OnInit {
         this.selectedBeneficiario[0].label.trim() === "Municipios" &&
         this.selectedMunicipio) {
       return "MUNICIPIO";
+    }
+
+    // Si beneficiario es DNP CR y se seleccionó al menos una entidad CR
+   if (this.selectedBeneficiario && this.selectedBeneficiario.length === 1 && 
+        this.selectedBeneficiario[0].label.trim() === this.DNP_CR &&
+        this.selectedEntidadCR) {
+      return "CR";
     }
     
     // En cualquier otro caso, vacío
@@ -1808,7 +1848,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
       this.avanceRecaudoData = {
         presupuestoCorriente: convertirANumero(this.registroActual['distribucion_presupuesto_corriente']) ,
         iacCorriente: convertirANumero(this.registroActual['iac_corriente']) ,
-        avance: convertirANumero(this.registroActual['avance_iac_corriente'] / 100)
+        avance: convertirANumero(this.registroActual['avance_iac_corriente'] / 100),
+        avanceIacPbc: convertirANumero(this.registroActual['avance_iac_pbc'] / 100),
       };
 
 
@@ -1904,7 +1945,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
     this.avanceRecaudoData = {
       presupuestoCorriente: 0,
       iacCorriente: 0,
-      avance: 0
+      avance: 0,
+      avanceIacPbc: 0
     };
 
     this.detailChartData = null;
@@ -1940,7 +1982,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
     } = options;
 
     // Convert to miles of millions
-    const valueInMilesOfMillions = num;
+    const valueInMilesOfMillions = num ? num : 0;
 
     // Format the number
     const formattedValue = valueInMilesOfMillions.toLocaleString('en-US', {
@@ -2061,8 +2103,16 @@ export class ReporteFuncionamientoComponent implements OnInit {
         datasets: [
           {
             label: 'Recaudo Corriente',
-            data: [this.avanceRecaudoData.iacCorriente, this.avanceRecaudoData.iacCorriente],
-            backgroundColor: '#E07800',
+            data: [this.avanceRecaudoData.iacCorriente, 0],
+            backgroundColor: '#D74641',
+            borderColor: '#eae1e1',
+            borderWidth: 1,
+            barThickness: 27
+          },
+          {
+            label: 'PBC',
+            data: [0, (this.avanceRecaudoData.presupuestoCorriente * this.avanceRecaudoData.avanceIacPbc)],
+            backgroundColor: '#8F2B2B',
             borderColor: '#eae1e1',
             borderWidth: 1,
             barThickness: 27
@@ -2075,10 +2125,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
             borderWidth: 1,
             barThickness: 27
           }
-        ],
-        
+        ],        
       };
-
     } catch (error) {
       console.error('Error actualizando gráficos:', error);
     }
@@ -2145,7 +2193,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         },
         title: {
           display: true,
-          text: 'Afectación presupuestal',
+          text: 'Afectación Presupuestal',
           color: '#262826',
           font: { size: 14, weight: 'bold' }
         },
@@ -2428,7 +2476,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
             // Mostrar solo en el último dataset del stack
             const datasets = context.chart.data.datasets;
             if (context.datasetIndex === datasets.length - 1) {
-              const val = (datasets[0].data[0] / datasets[1].data[0]) * 100;
+              const val = (datasets[context.dataIndex].data[context.dataIndex] / datasets[2].data[context.dataIndex]) * 100;
               return val.toFixed(2) + '%';
             }
             return null;
@@ -2466,7 +2514,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       },
       plugins: {
         legend: {
-          position: 'top',
+          position: 'bottom',
           labels: {
             color: textColor,
             font: { size: 11 },
@@ -2506,8 +2554,9 @@ export class ReporteFuncionamientoComponent implements OnInit {
             color: textColor,
             font: { size: 11 },
             callback: function(value: any) {
-              return '$' + (value / 1000000).toFixed(0) + 'M';
-            }
+              return value.toLocaleString('es-CO');
+            },
+            count: 5
           },
           grid: {
             color: surfaceBorder

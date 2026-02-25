@@ -583,6 +583,27 @@ export class SicodisApiService {
   }
 
   /**
+   * Obtiene las entidades asociadas a un concepto específico por Vigencia
+   * @param idConcepto - ID del concepto
+   * @param idVigencia - ID de la vigencia
+   * @returns Observable con el array de entidades
+   */
+  getEntidadesConceptosVigencia(idConcepto: number, idVigencia: number): Observable<EntidadConcepto[]> {
+    const url = `${this.baseUrl}/sgrfun/entidades_conceptos_vigencia/${idConcepto}/${idVigencia}`;
+    return this.http.get<EntidadConcepto[]>(url);
+  }
+
+  /**
+   * Obtiene las entidades de la comisión rectora del SGR
+   * @returns Observable con el array de entidades de la comisión rectora del SGR
+   */
+  getEntidadesComisionRectora(): Observable<EntidadConcepto[]> {
+    const url = `${this.baseUrl}/sgrfun/entidades_comisioncr`;
+    return this.http.get<EntidadConcepto[]>(url);
+  }
+
+
+  /**
    * Obtiene los departamentos para fortalecimiento de funcionamiento
    * @returns Observable con el array de departamentos
    */
