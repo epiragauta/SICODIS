@@ -2495,8 +2495,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
       },
       plugins: {
         legend: {
-          display: false,
-          position: 'right',
+          display: true,
+          position: 'bottom',
           labels: {
             color: textColor,
             font: { size: 11 },
