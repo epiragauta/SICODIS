@@ -2103,10 +2103,10 @@ export class ReporteFuncionamientoComponent implements OnInit {
       let compromisoPorcentaje = compromiso > 0 ? (compromiso / (presupuestoDisponible)) * 100 : 0;
       this.compromisoPorcentaje = compromisoPorcentaje.toFixed(1).replace('.', ',');
       this.donutAvanceEjecucionData = {
-        labels: ['Compromiso', 'Presupuesto disponible'],
+        labels: ['Compromiso', ['Presupuesto Disponible','(restante)']],
         datasets: [
           {
-            data: [compromiso, presupuestoDisponible],
+            data: [compromiso, presupuestoDisponible - compromiso],
             backgroundColor: ['#E07800', '#eae1e1'],
             hoverBackgroundColor: ['#d77607', '#dfc4c4'],
             borderColor: '#eae6e1',
@@ -2129,7 +2129,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
           },
           {
             label: 'Caja Disponible',
-            data: [cajaDisponible],
+            data: [cajaDisponible - pagos],
             backgroundColor: '#eae1e1',
             borderColor: '#eae1e1',
             borderWidth: 1,
@@ -2137,6 +2137,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
           }
         ]
       };
+
+      const pbcValor = this.avanceRecaudoData.presupuestoCorriente * this.avanceRecaudoData.avanceIacPbc;
 
       this.hBarAvanceRecaudoData = {
         labels: [['Avance de' , 'Recaudo'], 'PBC'],
@@ -2151,21 +2153,21 @@ export class ReporteFuncionamientoComponent implements OnInit {
           },
           {
             label: 'PBC',
-            data: [0, (this.avanceRecaudoData.presupuestoCorriente * this.avanceRecaudoData.avanceIacPbc)],
+            data: [0, pbcValor],
             backgroundColor: '#8F2B2B',
             borderColor: '#eae1e1',
             borderWidth: 1,
             barThickness: 27
           },
           {
-            label: 'Presupuesto Corriente',
-            data: [this.avanceRecaudoData.presupuestoCorriente, this.avanceRecaudoData.presupuestoCorriente],
+            label: 'Presupuesto Restante',
+            data: [this.avanceRecaudoData.presupuestoCorriente - this.avanceRecaudoData.iacCorriente, this.avanceRecaudoData.presupuestoCorriente - pbcValor],
             backgroundColor: '#eae1e1',
             borderColor: '#eae1e1',
             borderWidth: 1,
             barThickness: 27
           }
-        ],        
+        ],
       };
     } catch (error) {
       console.error('Error actualizando gráficos:', error);
@@ -2269,7 +2271,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       scales: {
         x: {
           ticks: { 
-            maxTicksLimit: 6,
+            maxTicksLimit: 4,
             color: textColor, font: { size: 11 } 
           },
           grid: { color: surfaceBorder },
@@ -2394,7 +2396,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
     // Opciones para gráficos de dona
     this.donutAvanceEjecucionOptions = {
-      cutout: '60%',
+      /*cutout: '60%',*/
       rotation: -90,
       circumference: 180,
       maintainAspectRatio: false,
@@ -2419,6 +2421,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
           display: false
         },        
         tooltip: {
+          mode: 'index',
           callbacks: {
             label: function(tooltipItem: any) {
               return `${Math.ceil(tooltipItem.raw).toLocaleString('es-CO')}`;
@@ -2474,7 +2477,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
             color: textColor,
             font: { size: 10 },
             callback: function(value: any) {
-              return (value).toLocaleString('es-CO');
+              return Math.round(value).toLocaleString('es-CO');
             },
             count: 4
           },
@@ -2523,12 +2526,28 @@ export class ReporteFuncionamientoComponent implements OnInit {
           },
           formatter: function(value : any, context: any) {
             // Mostrar solo en el último dataset del stack
-            const datasets = context.chart.data.datasets;
-            if (context.datasetIndex === datasets.length - 1) {
-              const val = (datasets[context.dataIndex].data[context.dataIndex] / datasets[2].data[context.dataIndex]) * 100;
-              return val.toFixed(2) + '%';
+            if (context.datasetIndex !== context.chart.data.datasets.length - 1) {
+              return null;
             }
-            return null;
+
+            const dataIndex = context.dataIndex;
+            const datasets = context.chart.data.datasets;
+
+            // Calcular el total de la barra sumando todos los datasets
+            let total = 0;
+            for (let i = 0; i < datasets.length; i++) {
+              total += datasets[i].data[dataIndex] || 0;
+            }
+
+            // Calcular la suma de los valores comprometidos (todos excepto el último que es "Presupuesto Restante")
+            let valorCompromiso = 0;
+            for (let i = 0; i < datasets.length - 1; i++) {
+              valorCompromiso += datasets[i].data[dataIndex] || 0;
+            }
+
+            // Calcular porcentaje
+            const porcentaje = total > 0 ? (valorCompromiso / total) * 100 : 0;
+            return porcentaje.toFixed(2) + '%';
           }
         },
         tooltip: {
