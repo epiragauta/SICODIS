@@ -2115,7 +2115,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
         ]
       };
 
-      let cajaDisponible = convertirANumero(this.registroActual['caja_disponible']) ; // Full peso values
+      let cajaDisponible = convertirANumero(this.registroActual['caja_total']) ; // Full peso values
       this.hBarSituacionCajaData = {
         labels: [''],
         datasets: [
@@ -2128,7 +2128,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
             barThickness: 35
           },
           {
-            label: 'Caja Disponible (restante)',
+            label: 'Caja Disponible',
             data: [cajaDisponible - pagos],
             backgroundColor: '#eae1e1',
             borderColor: '#eae1e1',
