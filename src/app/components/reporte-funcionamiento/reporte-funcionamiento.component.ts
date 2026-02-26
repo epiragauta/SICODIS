@@ -1827,20 +1827,14 @@ export class ReporteFuncionamientoComponent implements OnInit {
     this.selectedVigencia = this.vigencias.length > 0 ? this.vigencias[0] : null;
     this.selectedFuente = [];
     this.selectedConcepto = [];
-    this.selectedBeneficiario = [];
-    this.selectedDepartamento = null;
-    this.selectedMunicipio = null;
-    this.showDptos = false;
-    this.showMpios = false;
+    this.selectedBeneficiario = [];    
     this.municipios = [];
     this.registroActual = null;
-    
+    this.hideOptionalSelect();    
     // Limpiar datos iniciales
     this.limpiarDatos();
-
     // Reinicializar las listas con TOTAL como opción
-    this.inicializarFuentesVacio();
-    
+    this.inicializarFuentesVacio();    
     // Cargar datos desde API con filtros limpios
     this.cargarDistribucionTotalDesdeAPI();
   }
@@ -2103,7 +2097,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       let compromisoPorcentaje = compromiso > 0 ? (compromiso / (presupuestoDisponible)) * 100 : 0;
       this.compromisoPorcentaje = compromisoPorcentaje.toFixed(1).replace('.', ',');
       this.donutAvanceEjecucionData = {
-        labels: ['Compromiso', ['Presupuesto Disponible','(restante)']],
+        labels: ['Compromiso', ['Presupuesto restante']],
         datasets: [
           {
             data: [compromiso, presupuestoDisponible - compromiso],
@@ -2547,7 +2541,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
             // Calcular porcentaje
             const porcentaje = total > 0 ? (valorCompromiso / total) * 100 : 0;
-            return porcentaje.toFixed(2) + '%';
+            return porcentaje.toFixed(1) + '%';
           }
         },
         tooltip: {
