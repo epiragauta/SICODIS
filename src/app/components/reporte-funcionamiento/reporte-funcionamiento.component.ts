@@ -2128,7 +2128,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
             barThickness: 35
           },
           {
-            label: 'Caja Disponible',
+            label: 'Caja Disponible (restante)',
             data: [cajaDisponible - pagos],
             backgroundColor: '#eae1e1',
             borderColor: '#eae1e1',
