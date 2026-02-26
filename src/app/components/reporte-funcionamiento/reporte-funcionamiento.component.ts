@@ -112,6 +112,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
   selectedDepartamento: any;
   selectedMunicipio: any;
   selectedEntidadCR: any;
+  isEntidadCRSelected: boolean = false;
 
   fechaActualizacion: string = '';
   fechaCorteRecaudo: string = '';  
@@ -1249,6 +1250,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
   }
 
   onEntidadCRChange(event: MultiSelectChangeEvent): void {
+    // Actualizar la bandera que indica si hay una entidad CR seleccionada
+    this.isEntidadCRSelected = this.selectedEntidadCR !== null && this.selectedEntidadCR !== undefined;
     // Llamar a la API para actualizar los datos con los nuevos filtros
     this.cargarDistribucionTotalDesdeAPI();
   }
@@ -1425,7 +1428,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
           if (distribucionBeneficiario && distribucionBeneficiario.length > 0) {
             // Obtener la fuente específica para este beneficiario
             //const fuenteDelBeneficiario = this.obtenerFuenteParaBeneficiario(beneficiario);
-            const fuenteDelBeneficiario = distribucionBeneficiario[0].nombre_fuente;
+            const fuenteDelBeneficiario = distribucionBeneficiario[0].nombre_fuente ?? this.selectedFuente[0].label;
             
             // Agregar identificador del beneficiario y fuente correcta a cada registro
             const distribucionConBeneficiario = distribucionBeneficiario.map((registro: any) => ({
@@ -1822,14 +1825,15 @@ export class ReporteFuncionamientoComponent implements OnInit {
    * Limpiar filtros
    */
   clearFilters(): void {
-    
+
     // Limpiar todas las selecciones
     this.selectedVigencia = this.vigencias.length > 0 ? this.vigencias[0] : null;
     this.selectedFuente = [];
     this.selectedConcepto = [];
-    this.selectedBeneficiario = [];    
+    this.selectedBeneficiario = [];
     this.municipios = [];
     this.registroActual = null;
+    this.isEntidadCRSelected = false;
     this.hideOptionalSelect();    
     // Limpiar datos iniciales
     this.limpiarDatos();
@@ -2222,8 +2226,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
             font: { size: 11 },
             boxWidth: 8,
             boxHeight: 25,
-            padding: 4,
-            textAlign: 'left',
+            padding: 5,
+            textAlign: 'center',
             usePointStyle: false,
           }
         },
@@ -2789,5 +2793,6 @@ export class ReporteFuncionamientoComponent implements OnInit {
     this.selectedDepartamento = null;
     this.selectedMunicipio = null;
     this.selectedEntidadCR = null;
+    this.isEntidadCRSelected = false;
   }
 }

@@ -206,8 +206,8 @@
         </mat-card-content>
       </mat-card>
 
-      <!-- Tarjeta 3: Situación de Caja -->
-      <mat-card class="info-card" [class.loading]="isLoadingData">
+      <!-- Tarjeta 3: Situación de Caja *ngIf="!isEntidadCRSelected"-->
+      <mat-card class="info-card" [class.loading]="isLoadingData" >
         <mat-card-header>
           <mat-card-title class="card-title card-main">Situación de Caja</mat-card-title>
         </mat-card-header>
@@ -233,8 +233,8 @@
         </mat-card-content>
       </mat-card>
 
-      <!-- Tarjeta 4: Avance de Recaudo -->
-      <div style="display: flex;gap: 0.25rem">
+      <!-- Tarjeta 4: Avance de Recaudo *ngIf="!isEntidadCRSelected"-->
+      <div style="display: flex;gap: 0.25rem" >
         <mat-card class="info-card info-card-recaudo" [class.loading]="isLoadingData">
           <mat-card-header class="card-header-avance-recaudo">
             <mat-card-title class="card-title card-main">Avance del recaudo de ingresos corrientes</mat-card-title>
@@ -285,12 +285,12 @@
         </p-chart>
       </div>
 
-      <!-- Gráfico 3: Barra horizontal -->
-      <div class="chart-container horizontal-bar-container" [class.loading]="isLoadingData">
+      <!-- Gráfico 3: Barra horizontal *ngIf="!isEntidadCRSelected"-->
+      <div class="chart-container horizontal-bar-container" [class.loading]="isLoadingData" >
         <p-chart type="bar" [data]="hBarSituacionCajaData" [options]="hBarSituacionCajaOpts" class="chart horizontal-bar-chart"></p-chart>
       </div>
-      <!-- Gráfico 4: Barras Horizontales Avance de Recaudo -->
-      <div class="chart-container horizontal-bar-container" [class.loading]="isLoadingData">
+      <!-- Gráfico 4: Barras Horizontales Avance de Recaudo *ngIf="!isEntidadCRSelected"-->
+      <div class="chart-container horizontal-bar-container" [class.loading]="isLoadingData" >
         <p-chart type="bar" [data]="hBarAvanceRecaudoData" [options]="hBarAvanceRecaudoOptions" class="chart horizontal-bar-chart"></p-chart>
       </div> 
     </div>
@@ -334,7 +334,7 @@
           <div *ngFor="let registro of (selectedBeneficiario.length > 0 ? distribucionTotalMultiple : distribucionTotal); let i = index">
             <div class="detail-grid">
               <div class="detail-item">
-                <strong>Fuente:</strong> {{registro.fuente_principal || 'N/A'}}
+                <strong>Asignación:</strong> {{registro.fuente_principal || 'N/A'}}
               </div>
               <div class="detail-item">
                 <strong>Beneficiario:</strong> {{registro.beneficiario_seleccionado || registro.beneficiario || selectedBeneficiario[0]?.label || 'N/A'}}
