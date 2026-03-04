@@ -2139,7 +2139,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
       const pbcValor = this.avanceRecaudoData.presupuestoCorriente * this.avanceRecaudoData.avanceIacPbc;
 
       this.hBarAvanceRecaudoData = {
-        labels: [['Avance de' , 'Recaudo'], 'PBC'],
+        labels: [['Presupuesto' , 'Corriente'], 'PBC'],
         datasets: [
           {
             label: 'Recaudo Corriente',
