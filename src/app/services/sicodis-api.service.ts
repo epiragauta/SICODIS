@@ -136,6 +136,15 @@ export interface ResumenParticipaciones {
   total: number;
 }
 
+export interface ResumenParticipacionesAvance {
+  anio: number;
+  codigo_participacion: string;
+  concepto: string;  
+  presupuesto: number;
+  distribuido: number;
+  avance: number;
+}
+
 export interface ResumenParticipacionesUltimaOnce {
   IdConcepto: string;
   Concepto: string;  
@@ -901,6 +910,19 @@ getSgrDescargaResumenPbcRecaudoMensual( idvigencia: number
     const url = `${this.baseUrl}/sgp/resumen_participaciones/${anio}/${codigoDepto}/${codigoMunicipio}`;
     return this.http.get<ResumenParticipaciones>(url);
   }
+
+  /**
+   * Retorna el avance por sectors importantes basado en el presupuesto.
+   * @param anio 
+   * @param codigoDepto 
+   * @param codigoMunicipio 
+   * @returns 
+   */
+  getSgpResumenParticipacionesAvance(anio: number): Observable<ResumenParticipacionesAvance> {
+    const url = `${this.baseUrl}/sgp/resumen_participaciones_avance/${anio}`;
+    return this.http.get<ResumenParticipacionesAvance>(url);
+  }
+
 
   /**
    * Obtiene el resumen de distribuciones del SGP para un año específico

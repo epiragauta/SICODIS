@@ -17,6 +17,7 @@ import { CommonModule } from '@angular/common';
 import { Select, SelectChangeEvent } from 'primeng/select';
 import { Chart, registerables } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { TableModule } from 'primeng/table';
 import { SicodisApiService } from '../../services/sicodis-api.service';
 import { Router } from '@angular/router';
 import { Breadcrumb } from 'primeng/breadcrumb';
@@ -40,6 +41,7 @@ import { MenuItem } from 'primeng/api';
       InfoPopupComponent,
       SplitButtonModule,
       CardModule,
+      TableModule,
       Select,
       Breadcrumb],
   templateUrl: './sgp-inicio.component.html',
@@ -73,6 +75,7 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
 
   donutData: any;
   donutOptions: any;
+  sgpItems: any[] = [];
 
   // Select options and selected value
   vigencias: any[] = [
@@ -160,9 +163,26 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
     ];
 
     this.home = { icon: 'pi pi-home', routerLink: '/' };
+    this.loadSgpResumenData();
     this.loadSgpData();
 
+
   }
+
+  loadSgpResumenData(): void{
+    //const aniosString = this.selected;
+    const year = this.selectedVigencia?.value || 2026; 
+    this.sicodisApiService.getSgpResumenParticipacionesAvance( year).subscribe({        
+      next: (result: any) => {
+        console.log('Datos SGP resumen del API:', result);
+        this.sgpItems = result;
+      },
+      error: (error) => {
+        console.error('Error loading SGP data resumen from API:', error);
+      }
+    });  
+  }
+  
 
   ngAfterViewInit(): void {
     // Reinitialize donut chart after view is initialized
@@ -318,9 +338,9 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
               }).format(value);
 
             switch (value) {
-              case 29377413250777:
+              case  30972291575826 :
                 return [`${context.label}: ${formattedValue}`,
-                `Avance: 59.21%`
+                `Avance: 62.42%`
                 ];
  
               case  20622281544600:
@@ -429,6 +449,7 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
     this.selectedVigencia = event.value;
     // Reload data for the selected year
     this.loadSgpData();
+    this.loadSgpResumenData();
   }
 
   navigateToResource(link: string): void {
