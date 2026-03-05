@@ -589,9 +589,10 @@ private initializeLineCharts(): void {
   // 2. Filtro de datos según vista (todos / meses transcurridos)
   // ===============================
   const hoy = new Date();
+  const primerDiaMesActual = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
   const workingData = this.dataRecaudo.filter((d: SgrRecaudoItem) =>
     d.mes !== 'TOTAL' &&
-    (!this.showOnlyElapsedMonths || this.parseMesData(d.mes) <= hoy)
+    (!this.showOnlyElapsedMonths || this.parseMesData(d.mes) < primerDiaMesActual)
   );
   const monthLabels = workingData.map(d => d.mes);
 
@@ -971,10 +972,11 @@ formatNumber(num: number): string {
   private initializeMonthlyComparisonData(): void {
     // Filtrar según la vista activa (todos los meses / solo transcurridos)
     const hoy = new Date();
+    const primerDiaMesActual = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
     const filteredData = this.dataRecaudo.filter((d: SgrRecaudoItem) =>
       d.mes === 'TOTAL' ||
       !this.showOnlyElapsedMonths ||
-      this.parseMesData(d.mes) <= hoy
+      this.parseMesData(d.mes) < primerDiaMesActual
     );
 
     const monthLabels = filteredData.map((d: SgrRecaudoItem) => d.mes);
