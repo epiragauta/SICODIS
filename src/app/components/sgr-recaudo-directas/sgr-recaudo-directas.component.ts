@@ -59,6 +59,9 @@ export class SgrRecaudoDirectasComponent implements OnInit {
   // Valores posibles: 'mineria_pbc' | 'mineria_recaudo' | 'hidro_pbc' | 'hidro_recaudo'
   highlightedDatasetKey: string | null = null;
 
+  // Toggle para mostrar solo meses transcurridos o todos los meses del bienio
+  showOnlyElapsedMonths: boolean = false;
+
   // Opciones de filtros
   bienios: any[] = [
     { id: 1, label: '2025 - 2026' }
@@ -583,11 +586,14 @@ private initializeLineCharts(): void {
   const fechaCorte = this.parseFechaCorte(this.fechaCorteRecaudo);
 
   // ===============================
-  // 2. Labels
+  // 2. Filtro de datos según vista (todos / meses transcurridos)
   // ===============================
-  //const monthLabels = this.dataRecaudo.map((d: SgrRecaudoItem) => d.mes);
-  const monthLabels = this.dataRecaudo.filter((d: SgrRecaudoItem) => d.mes !== 'TOTAL').map(d => d.mes);
-
+  const hoy = new Date();
+  const workingData = this.dataRecaudo.filter((d: SgrRecaudoItem) =>
+    d.mes !== 'TOTAL' &&
+    (!this.showOnlyElapsedMonths || this.parseMesData(d.mes) <= hoy)
+  );
+  const monthLabels = workingData.map(d => d.mes);
 
   // ===============================
   // 3. FUNCIONES DE MAPEADO
@@ -614,22 +620,22 @@ private initializeLineCharts(): void {
   // ===============================
   // 4. Datos MINERÍA
   // ===============================
-  //const mineriaPBCData = mapPBC(this.dataRecaudo.map(d => d.mineria_pbc));
-  const mineriaPBCData = this.dataRecaudo.map((d: SgrRecaudoItem) => d.mineria_pbc);
-  const mineriaRecaudoData = mapRecaudo(this.dataRecaudo.map(d => d.mineria_recaudo));
+  const mineriaPBCChartData = workingData.map((d: SgrRecaudoItem) => d.mineria_pbc);
+  const mineriaRecaudoChartData = mapRecaudo(workingData.map(d => d.mineria_recaudo));
 
-  const mineriaPBCChartData = mineriaPBCData.filter((_, i) => this.dataRecaudo[i].mes !== 'TOTAL');
-  const mineriaRecaudoChartData = mineriaRecaudoData.filter((_, i) => this.dataRecaudo[i].mes !== 'TOTAL');
+  // Para detección de datos > 0
+  const mineriaPBCData = mineriaPBCChartData;
+  const mineriaRecaudoData = mineriaRecaudoChartData;
 
   // ===============================
   // 5. Datos HIDROCARBUROS
   // ===============================
-  //const hidrocarburosPBCData = mapPBC(this.dataRecaudo.map(d => d.hidrocarburos_pbc));
-  const hidrocarburosPBCData = this.dataRecaudo.map((d: SgrRecaudoItem) => d.hidrocarburos_pbc);
-  const hidrocarburosRecaudoData = mapRecaudo(this.dataRecaudo.map(d => d.hidrocarburos_recaudo));
+  const hidrocarburosPBCChartData = workingData.map((d: SgrRecaudoItem) => d.hidrocarburos_pbc);
+  const hidrocarburosRecaudoChartData = mapRecaudo(workingData.map(d => d.hidrocarburos_recaudo));
 
-  const hidrocarburosPBCChartData = hidrocarburosPBCData.filter((_, i) => this.dataRecaudo[i].mes !== 'TOTAL');
-  const hidrocarburosRecaudoChartData = hidrocarburosRecaudoData.filter((_, i) => this.dataRecaudo[i].mes !== 'TOTAL');
+  // Para detección de datos > 0
+  const hidrocarburosPBCData = hidrocarburosPBCChartData;
+  const hidrocarburosRecaudoData = hidrocarburosRecaudoChartData;
 
 
   // ===============================
@@ -936,6 +942,12 @@ private initializeLineCharts(): void {
 
 
 
+toggleMesesView(): void {
+  this.showOnlyElapsedMonths = !this.showOnlyElapsedMonths;
+  this.initializeLineCharts();
+  this.initializeMonthlyComparisonData();
+}
+
 onChartHover(chartType: 'mineria' | 'hidro', datasetIndex: number, mes: string): void {
   this.highlightedMes = mes;
   this.highlightedDatasetKey = chartType === 'mineria'
@@ -957,19 +969,26 @@ formatNumber(num: number): string {
    * Inicializar datos de la tabla de comparación mensual
    */
   private initializeMonthlyComparisonData(): void {
-    // Usar los mismos datos de los gráficos
-    const monthLabels = this.dataRecaudo.map((d: SgrRecaudoItem) => d.mes);
-    const mineriaPBCData20 = this.dataRecaudo.map((d: SgrRecaudoItem) => d.mineria_pbc20);
-    const mineriaPBCData5 = this.dataRecaudo.map((d: SgrRecaudoItem) => d.mineria_pbc5);
-    
-    const mineriaRecaudoDataAD20 = this.dataRecaudo.map((d: SgrRecaudoItem) => d.mineria_recaudo_ad20);
-    const mineriaRecaudoDataAD5 = this.dataRecaudo.map((d: SgrRecaudoItem) => d.mineria_recaudo_ad5);
-    
-    const hidrocarburosPBCData20 = this.dataRecaudo.map((d: SgrRecaudoItem) => d.hidrocarburos_pbc20);
-    const hidrocarburosPBCData5 = this.dataRecaudo.map((d: SgrRecaudoItem) => d.hidrocarburos_pbc5);
-    
-    const hidrocarburosRecaudoDataAD20 = this.dataRecaudo.map((d: SgrRecaudoItem) => d.hidrocarburos_recaudo_ad20);    
-    const hidrocarburosRecaudoDataAD5 = this.dataRecaudo.map((d: SgrRecaudoItem) => d.hidrocarburos_recaudo_ad5);    
+    // Filtrar según la vista activa (todos los meses / solo transcurridos)
+    const hoy = new Date();
+    const filteredData = this.dataRecaudo.filter((d: SgrRecaudoItem) =>
+      d.mes === 'TOTAL' ||
+      !this.showOnlyElapsedMonths ||
+      this.parseMesData(d.mes) <= hoy
+    );
+
+    const monthLabels = filteredData.map((d: SgrRecaudoItem) => d.mes);
+    const mineriaPBCData20 = filteredData.map((d: SgrRecaudoItem) => d.mineria_pbc20);
+    const mineriaPBCData5 = filteredData.map((d: SgrRecaudoItem) => d.mineria_pbc5);
+
+    const mineriaRecaudoDataAD20 = filteredData.map((d: SgrRecaudoItem) => d.mineria_recaudo_ad20);
+    const mineriaRecaudoDataAD5 = filteredData.map((d: SgrRecaudoItem) => d.mineria_recaudo_ad5);
+
+    const hidrocarburosPBCData20 = filteredData.map((d: SgrRecaudoItem) => d.hidrocarburos_pbc20);
+    const hidrocarburosPBCData5 = filteredData.map((d: SgrRecaudoItem) => d.hidrocarburos_pbc5);
+
+    const hidrocarburosRecaudoDataAD20 = filteredData.map((d: SgrRecaudoItem) => d.hidrocarburos_recaudo_ad20);
+    const hidrocarburosRecaudoDataAD5 = filteredData.map((d: SgrRecaudoItem) => d.hidrocarburos_recaudo_ad5);
 
 
     // Construir datos de la tabla
