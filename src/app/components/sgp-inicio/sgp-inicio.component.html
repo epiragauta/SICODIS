@@ -18,118 +18,85 @@
   <!-- Fechas de información -->
   <div class="dates-buttons-container">
     <div style="width: 83%;">
-      <p class="date-update">Fecha de actualización: febrero 27 de 2026</p>
+      <p class="date-update">Fecha de consulta: {{ fechaActual }}</p>
     </div>
   </div>
 
-  <div class="main-title">
-    <h2>
-      Resumen de la distribución del presupuesto
-    </h2>
-  </div>
+  <!-- Card principal de resumen -->
+  <div class="resumen-card">
 
-  <!-- Sección B + C: Tarjetas de cifras (izquierda) y Treemap (derecha) -->
-  <div class="main-grid">
-    
-    <!-- C: Tarjetas de presentación de cifras -->
-    <div class="metrics-column">
-      <!-- Selector de vigencia -->
-       <mat-card class="metric-item">
-        <mat-card-header>
-          <div class="vigencia-selector">
-            <p-floatlabel class="w-full md:w-56" variant="on">
-              <p-select 
-                id="vigencia" 
-                [options]="vigencias" 
-                inputId="vigenciaSelect" 
-                [(ngModel)]="selectedVigencia"
-                (onChange)="onVigenciaChange($event)"
-                optionLabel="label" 
-                placeholder="Vigencia">
-              </p-select>
-              <label for="vigenciaSelect">Vigencia</label>
-            </p-floatlabel>        
-          </div>
-        </mat-card-header>
-      </mat-card>
-      <mat-card class="metric-item">
-        <mat-card-header>
-          <mat-card-title class="card-title card-main">Presupuesto SGP</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="metric-value">{{ cifras.presupuesto | numberFormat }}</div>
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="metric-item">
-        <mat-card-header>
-          <mat-card-title class="card-title card-main">Recursos distribuidos hasta la fecha</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="metric-value">{{ cifras.distribuido | numberFormat }}</div>
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="metric-item">
-        <mat-card-header>
-          <mat-card-title class="card-title card-main">Recursos pendientes por distribuir</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="metric-value">{{ cifras.pendiente | numberFormat }}</div>
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="metric-item">
-        <mat-card-header>
-          <mat-card-title class="card-title card-main">Avance de la distribución</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="metric-value">{{ cifras.avance | percentFormat:2}}</div>
-        </mat-card-content>
-      </mat-card>
+    <!-- Encabezado: título + selector vigencia -->
+    <div class="resumen-header">
+      <h2 class="resumen-titulo">Resumen de la distribución del presupuesto &ndash; Vigencia {{ selectedVigencia.label }}</h2>
+      <div class="vigencia-selector-inline">
+        <span class="vigencia-label-text">Vigencia:</span>
+        <p-select
+          [options]="vigencias"
+          [(ngModel)]="selectedVigencia"
+          (onChange)="onVigenciaChange($event)"
+          optionLabel="label"
+          placeholder="Vigencia">
+        </p-select>
+      </div>
     </div>
 
-    <!-- B: Gráfico Donut -->
-    <div class="chart-donut">
-      <div style="height:50px;"></div>
-      <h1 class="chart-title">Avance en la distribución</h1>
-
-      <div style="height:50px;"></div>
-      <!-- <p-chart type="doughnut" [data]="donutData" [options]="donutOptions"></p-chart> -->
-            <p-table [value]="sgpItems" 
-                     [tableStyle]="{ 'min-width': '100%', 'font-size': '12px' }"
-                     styleClass="home-sgr-table">
-              <ng-template pTemplate="header">
-                <tr>
-                  <th class="table-header">Concepto</th>
-                  <th class="table-header">Presupuesto</th>
-                  <th class="table-header">Distribuido</th>
-                  <th class="table-header">Avance Distribución</th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-item>
-                <tr>
-                  <td>
-                    <span [style.font-weight]="item.codigo_participacion === '99' ? 'bold' : 'normal'">
-                      {{ item.participacion }}
-                    </span>
-                  </td>
-
-                  <td style="text-align: right;"
-                      [style.font-weight]="item.codigo_participacion === '99' ? 'bold' : 'normal'">
-                    {{ item.presupuesto | number:'1.0-0' }}
-                  </td>
-
-                  <td style="text-align: right;"
-                      [style.font-weight]="item.codigo_participacion === '99' ? 'bold' : 'normal'">
-                    {{ item.distribuido | number:'1.0-0' }}
-                  </td>                  
-
-                  <td style="text-align: right;"
-                      [style.font-weight]="item.codigo_participacion === '99' ? 'bold' : 'normal'">
-                    {{ item.avance | number:'1.2-2' }}%
-                  </td>
-                </tr>
-              </ng-template>
-            </p-table>
+    <!-- KPIs -->
+    <div class="kpi-row">
+      <div class="kpi-item">
+        <div class="kpi-label">AVANCE GENERAL</div>
+        <div class="kpi-value kpi-avance">{{ cifras.avance | percentFormat:2 }}</div>
+      </div>
+      <div class="kpi-divider"></div>
+      <div class="kpi-item">
+        <div class="kpi-label">RECURSOS PENDIENTES</div>
+        <div class="kpi-value">{{ cifras.pendiente | numberFormat }}</div>
+      </div>
+      <div class="kpi-divider"></div>
+      <div class="kpi-item">
+        <div class="kpi-label">PRESUPUESTO SGP</div>
+        <div class="kpi-value">{{ cifras.presupuesto | numberFormat }}</div>
+      </div>
     </div>
+
+    <!-- Tabla de participaciones -->
+    <table class="tabla-participaciones">
+      <thead>
+        <tr>
+          <th>Concepto</th>
+          <th class="col-number">Presupuesto ($)</th>
+          <th class="col-number">Distribuido ($)</th>
+          <th class="col-number">Pendiente ($)</th>
+          <th class="col-avance">Estado Avance (%)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of resumenParticipaciones">
+          <td class="concepto-cell">{{ p.concepto }}</td>
+          <td class="col-number">{{ p.presupuesto | numberFormat }}</td>
+          <td class="col-number">{{ p.distribuido | numberFormat }}</td>
+          <td class="col-number">{{ p.pendiente | numberFormat }}</td>
+          <td class="col-avance">
+            <span class="avance-badge" [class.badge-green]="p.avance >= 1" [class.badge-orange]="p.avance < 1">
+              {{ p.avance | percentFormat:2 }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="total-row">
+          <td><strong>Total SGP</strong></td>
+          <td class="col-number"><strong>{{ cifras.presupuesto | numberFormat }}</strong></td>
+          <td class="col-number">
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" [style.width.%]="cifras.avance * 100"></div>
+            </div>
+          </td>
+          <td class="col-number">{{ cifras.pendiente | numberFormat }}</td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+
   </div>
 
   <!-- Sección D: Notas informativas -->
@@ -139,7 +106,7 @@
       <strong>(1)</strong> Cifras en pesos corrientes.
     </p>
     <p class="final-note" *ngIf="cifras.pendiente > 0">
-      <strong>(2)</strong> Los recursos pendientes por distribuir corresponden a una parte de las doce doceavas de la participación para educación ($ 18.644 miles de millones) y las once doceavas de la asignación especial para el FONPET ($ 2.731 miles de millones)</p>
+      <strong>(2)</strong> Los recursos pendientes por distribuir corresponden a las doce doceavas de la participación para educación ($ 20.239 miles de millones) y las once doceavas de la asignación especial para el FONPET ($ 2.731 miles de millones)</p>
   </div>
 
 

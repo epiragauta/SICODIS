@@ -1,11 +1,10 @@
-import { Component, AfterViewInit, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatSelectModule } from '@angular/material/select';
 import { ButtonModule } from 'primeng/button';
-import { ChartModule } from 'primeng/chart';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { PercentFormatPipe } from '../../utils/percentFormatPipe';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,9 +14,6 @@ import { SplitButtonModule } from 'primeng/splitbutton';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
 import { Select, SelectChangeEvent } from 'primeng/select';
-import { Chart, registerables } from 'chart.js';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { TableModule } from 'primeng/table';
 import { SicodisApiService } from '../../services/sicodis-api.service';
 import { Router } from '@angular/router';
 import { Breadcrumb } from 'primeng/breadcrumb';
@@ -33,30 +29,34 @@ import { MenuItem } from 'primeng/api';
       MatGridListModule,
       MatCardModule,
       ButtonModule,
-      ChartModule,
       NumberFormatPipe,
       PercentFormatPipe,
       MatIconModule,
-      FloatLabel,      
+      FloatLabel,
       InfoPopupComponent,
       SplitButtonModule,
       CardModule,
-      TableModule,
       Select,
       Breadcrumb],
   templateUrl: './sgp-inicio.component.html',
   styleUrl: './sgp-inicio.component.scss'
 })
-export class SgpInicioComponent implements OnInit, AfterViewInit {
+export class SgpInicioComponent implements OnInit {
 
-  constructor(private sicodisApiService: SicodisApiService, private router: Router) {
-    //Chart.register(...registerables, ChartDataLabels);
-  }
+  constructor(private sicodisApiService: SicodisApiService, private router: Router) {}
 
   items: MenuItem[] | undefined;
   home: MenuItem | undefined;
 
   fechaActualizacion = '10 de julio de 2025';
+  fechaActual = (() => {
+    const fecha = new Date();
+    const meses = [
+      'enero','febrero','marzo','abril','mayo','junio',
+      'julio','agosto','septiembre','octubre','noviembre','diciembre'
+    ];
+    return `${meses[fecha.getMonth()]} ${fecha.getDate()} de ${fecha.getFullYear()}`;
+  })();
 
   cifras: any = {
     presupuesto: 0,
@@ -65,17 +65,13 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
     avance: 0
   };
 
-  resumenParticipaciones: any = [
-    { v: 0, label: 'Educación', idConcepto: '0101' },
-    { v: 0, label: 'Salud', idConcepto: '0102' },
-    { v: 0, label: 'Agua Potable', idConcepto: '0103' },
-    { v: 0, label: 'Propósito General', idConcepto: '0104' },
-    { v: 0, label: 'Asignaciones Especiales', idConcepto: '0201' }
-  ]
-
-  donutData: any;
-  donutOptions: any;
-  sgpItems: any[] = [];
+  resumenParticipaciones: any[] = [
+    { concepto: 'Educación', idConcepto: '0101', presupuesto: 0, distribuido: 0, pendiente: 0, avance: 0 },
+    { concepto: 'Salud', idConcepto: '0102', presupuesto: 0, distribuido: 0, pendiente: 0, avance: 0 },
+    { concepto: 'Agua Potable', idConcepto: '0103', presupuesto: 0, distribuido: 0, pendiente: 0, avance: 0 },
+    { concepto: 'Propósito General', idConcepto: '0104', presupuesto: 0, distribuido: 0, pendiente: 0, avance: 0 },
+    { concepto: 'Asignaciones Especiales', idConcepto: '0201', presupuesto: 0, distribuido: 0, pendiente: 0, avance: 0 }
+  ];
 
   // Select options and selected value
   vigencias: any[] = [
@@ -161,36 +157,11 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
     this.items = [
         { label: 'SGP Inicio' }        
     ];
-
+    
     this.home = { icon: 'pi pi-home', routerLink: '/' };
-    this.loadSgpResumenData();
     this.loadSgpData();
 
-
   }
-
-  loadSgpResumenData(): void{
-    //const aniosString = this.selected;
-    const year = this.selectedVigencia?.value || 2026; 
-    this.sicodisApiService.getSgpResumenParticipacionesAvance( year).subscribe({        
-      next: (result: any) => {
-        console.log('Datos SGP resumen del API:', result);
-        this.sgpItems = result;
-      },
-      error: (error) => {
-        console.error('Error loading SGP data resumen from API:', error);
-      }
-    });  
-  }
-  
-
-  ngAfterViewInit(): void {
-    // Reinitialize donut chart after view is initialized
-    setTimeout(() => {
-      this.initializeDonutData();
-    }, 100);
-  }
-
 
   formatFecha(fecha: Date): string {
     const meses = [
@@ -236,212 +207,35 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
 
   loadSgpParticipaciones(): void {
     console.log("loadSgpParticipaciones...");
-    const year = this.selectedVigencia?.value || 2025;
-    this.sicodisApiService.getSgpResumenParticipaciones(year, '0', '0').subscribe({
+    const year = this.selectedVigencia?.value || 2026;
+    this.sicodisApiService.getSgpResumenParticipacionesAvance(year).subscribe({
       next: (result: any) => {
-        //console.log('Participaciones data:', result);
-        // Actualizar resumenParticipaciones con los datos del API
         this.updateResumenParticipaciones(result);
-        this.initializeDonutData();
       },
       error: (error) => {
         console.error('Error loading SGP participaciones:', error);
-        // Usar datos por defecto en caso de error
-        this.initializeDonutData();
       }
     });
   }
 
   updateResumenParticipaciones(apiData: any): void {
     const dataArray = Array.isArray(apiData) ? apiData : [apiData];
-    
-    // Actualizar cada concepto con los datos del API
+    console.log('API resumenParticipacionesAvance raw:', dataArray);
+
     this.resumenParticipaciones.forEach((item: any) => {
-      const apiItem = dataArray.find((data: any) => data.id_concepto === item.idConcepto);
+      const apiItem = dataArray.find((data: any) =>
+        data.codigo_participacion === item.idConcepto ||
+        data.id_concepto === item.idConcepto
+      );
       if (apiItem) {
-        item.v = apiItem.total;
-        item.label = apiItem.concepto;
+        item.concepto = apiItem.concepto || apiItem.nombre || apiItem.descripcion || item.concepto;
+        item.presupuesto = apiItem.presupuesto;
+        item.distribuido = apiItem.distribuido;
+        item.pendiente = apiItem.presupuesto - apiItem.distribuido;
+        item.avance = apiItem.avance / 100;
       }
     });
-
-    // Ordenar por valor (v) de mayor a menor
-    this.resumenParticipaciones.sort((a: any, b: any) => b.v - a.v);
     console.log('Updated resumenParticipaciones:', this.resumenParticipaciones);
-  }
-
-
-  initializeDonutData(): void {
-    // Usar datos de resumenParticipaciones en lugar de datos hardcodeados
-    const rawData = this.resumenParticipaciones.filter((item: any) => item.v > 0);
-
-    const labels = rawData.map((item: any) => item.label);
-    const data = rawData.map((item: any) => item.v);
-    
-    // Colores originales especificados
-    const colors = ['#156082', '#e97132', '#0c9bd3', '#196b24', '#a02b93'];
-
-    this.donutData = {
-      labels: labels,
-      datasets: [
-        {
-          label: 'Distribución SGP',
-          data: data,
-          backgroundColor: colors,
-          borderColor: '#CCCCCC',
-          borderWidth: 2,
-          hoverBorderWidth: 4,
-          hoverOffset: 15,
-          hoverBackgroundColor: colors.map(color => {
-            // Hacer los colores más brillantes en hover
-            const hex = color.replace('#', '');
-            const r = Math.min(255, parseInt(hex.substr(0, 2), 16) + 30);
-            const g = Math.min(255, parseInt(hex.substr(2, 2), 16) + 30);
-            const b = Math.min(255, parseInt(hex.substr(4, 2), 16) + 30);
-            return `rgb(${r}, ${g}, ${b})`;
-          })
-        }
-      ]
-    };
-
-    this.donutOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      aspectRatio: 0.725,
-      cutout: '60%',
-      plugins: {
-        legend: {
-          display: true,
-          position: 'bottom',
-          labels: {
-            padding: 20,
-            usePointStyle: true,
-            font: {
-              size: 12
-            },
-            color: '#333333'
-          }
-        },
-        tooltip: {
-          backgroundColor: 'rgba(0, 0, 0, 0.9)',
-          titleColor: '#ffffff',
-          bodyColor: '#ffffff',
-          borderColor: '#156082',
-          borderWidth: 2,
-          cornerRadius: 8,
-          displayColors: true,
-          callbacks: {
-            label: (context: any) => {
-              const value = context.parsed;
-              const formattedValue = new Intl.NumberFormat('es-CO', { 
-                minimumFractionDigits: 0, 
-                maximumFractionDigits: 0 
-              }).format(value);
-
-            switch (value) {
-              case  30972291575826 :
-                return [`${context.label}: ${formattedValue}`,
-                `Avance: 62.42%`
-                ];
- 
-              case  20622281544600:
-                return [`${context.label}: ${formattedValue}`,
-                `Avance: 100%`
-                ];
-
-              case  4556339605748:
-                return [`${context.label}: ${formattedValue}`,
-                `Avance: 100%`
-                ];
-              
-              case  9787692486422:
-                return [`${context.label}: ${formattedValue}`,
-                `Avance: 100%`
-                ];
-
-              case 1039174932157:
-                return [`${context.label}: ${formattedValue}`,
-                `Avance: 27.57%`
-                ];
-              
-              default:
-                return "";                
-
-            }
-
-           
-              
-              //return `${context.label}: ${formattedValue} +`;
-            }
-          }
-        },
-        datalabels: {
-          display: true,
-          color: '#ffffff',
-          font: {
-            size: 14
-            //weight: 'bold'
-          },
-          textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)',
-          formatter: (value: any, context: any) => {
-
-          const rawValue = Number(value);
-
-          switch (rawValue) {
-            case 29377413250777:
-              //return "59.21%";
-              return "";
-
-            case 586856794933:
-              //return "2.85%";
-              return "";
-
-            case 129348028271:
-              //return "2.84%";
-              return "";
-            
-            case  9787692486422:
-              //return "100%";
-              return "";
-
-            case 1039174932157:
-              //return "27.57%";
-              return "";
-
-            default:
-              // fallback a lo que tenías antes
-              const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
-              const percentage = Math.round((value / total) * 100 * 100) / 100;
-              //return `${percentage}%`;
-              return "";
-          }
-
-
-            // const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
-            // const percentage = Math.round((value / total) * 100 * 100) / 100;
-            // return `${percentage}%`;
-          }
-        }
-      },
-      elements: {
-         arc: {
-           borderWidth: 3,
-           borderColor: '#BBBBBB',
-           hoverBorderWidth: 3,
-           hoverBorderColor: '#BBBBBB'
-         }
-       },
-      animation: {
-        animateRotate: true,
-        animateScale: true,
-        duration: 2000,
-        easing: 'easeOutQuart'
-      },
-      interaction: {
-        mode: 'nearest',
-        intersect: false,
-        axis: 'r'
-      }
-    };
   }
 
   onVigenciaChange(event: SelectChangeEvent): void {
@@ -449,7 +243,6 @@ export class SgpInicioComponent implements OnInit, AfterViewInit {
     this.selectedVigencia = event.value;
     // Reload data for the selected year
     this.loadSgpData();
-    this.loadSgpResumenData();
   }
 
   navigateToResource(link: string): void {

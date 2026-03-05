@@ -70,161 +70,195 @@
   margin-bottom: 1rem;
 }
 
-.main-title {
-  color: #0943b5;
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-  text-align: center;
-  flex-shrink: 0;
-  text-shadow: 
-    0 1px 2px rgba(0, 0, 0, 0.1),
-    0 2px 4px rgba(0, 0, 0, 0.05);
-  position: relative;
-  z-index: 2;
+// ── Card principal de resumen ──────────────────────────────────────────────
+.resumen-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  padding: 1.5rem 2rem 1rem;
+  margin-bottom: 1.5rem;
 }
 
-.main-grid {
+.resumen-header {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   flex-wrap: wrap;
-  gap: 2rem;
-  margin-bottom: 2rem;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+
+  .resumen-titulo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0;
+  }
+}
+
+.vigencia-selector-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .vigencia-label-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #374151;
+    white-space: nowrap;
+  }
+
+  ::ng-deep .p-select {
+    min-width: 7rem;
+    font-size: 0.9rem;
+  }
+}
+
+// ── KPI row ────────────────────────────────────────────────────────────────
+.kpi-row {
+  display: flex;
   align-items: stretch;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
 
-  .metrics-column {
-    flex: 1 1 calc(50% - 1rem);
-    max-width: calc(50% - 1rem);
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+.kpi-item {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  text-align: center;
 
-    .vigencia-selector{
-      margin: 0 auto;
-      padding-bottom: 12px;
-      
-      .p-floatlabel {
-        width: 100% !important;
-        max-width: 14rem !important; // Doble del ancho original (md:w-56 = 14rem, entonces 28rem)
-        
-        .p-select {
-          width: 100% !important;
-          min-width: 14rem !important;
-        }
-      }
-    }
+  .kpi-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #6b7280;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
 
-    .metric-item {
-      border-radius: 12px;
-      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      border: 1px solid #e0e0e0;
-      transition: box-shadow 0.3s ease;
+  .kpi-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #111827;
+  }
 
-      &:hover {
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-      }
+  .kpi-avance {
+    color: #0943b5;
+  }
+}
 
-      .card-title {
-        color: #000;
-        font-weight: bold;
-        font-size: 1.45rem;
-        text-align: left;
-      }
+.kpi-divider {
+  width: 1px;
+  background-color: #e5e7eb;
+  align-self: stretch;
+}
 
-      .card-main {
-        color: #28a745;
-        font-weight: bold;
-      }
+// ── Tabla de participaciones ───────────────────────────────────────────────
+.tabla-participaciones {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
 
-      .metric-value {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #0943b5;
-        text-align: center;
-        margin: 0;
-      }
+  thead tr {
+    background: #f9fafb;
+    border-bottom: 2px solid #e5e7eb;
+  }
+
+  th {
+    padding: 0.65rem 1rem;
+    text-align: left;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #374151;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.15s ease;
+
+    &:hover {
+      background: #f9fafb;
     }
   }
 
-  .chart-donut {
-    flex: 1 1 calc(50% - 1rem);
-    max-width: calc(50% - 1rem);
-    height: auto;
-    min-height: 100%;
-    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
-    padding: 1.5rem;
-    border-radius: 16px;
-    box-shadow: 
-      0 8px 32px rgba(0, 0, 0, 0.12),
-      0 4px 16px rgba(0, 0, 0, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.8);
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    
+  td {
+    padding: 0.6rem 1rem;
+    color: #374151;
+  }
+
+  .concepto-cell {
+    font-weight: 600;
+    color: #1d4ed8;
+  }
+
+  .col-number {
+    text-align: right;
+  }
+
+  .col-avance {
+    text-align: center;
+  }
+}
+
+// ── Total row ─────────────────────────────────────────────────────────────
+.total-row {
+  border-top: 2px solid #e5e7eb;
+  background: #f9fafb;
+
+  td {
+    font-weight: 600;
+    padding: 0.75rem 1rem;
+  }
+}
+
+// ── Barra de progreso (Total SGP) ─────────────────────────────────────────
+.progress-bar-container {
+  width: 100%;
+  height: 12px;
+  background: #e5e7eb;
+  border-radius: 6px;
+  overflow: hidden;
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0943b5 0%, #0c9bd3 100%);
+    border-radius: 6px;
+    transition: width 0.6s ease;
+  }
+}
+
+// ── Badges de avance ───────────────────────────────────────────────────────
+.avance-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  min-width: 64px;
+  text-align: center;
+
+  &.badge-green {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #6ee7b7;
+
     &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.8) 50%, transparent 100%);
-      z-index: 1;
+      content: '● ';
+      color: #10b981;
     }
-    
-    &::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-      pointer-events: none;
-      z-index: 1;
-    }
-    
-    &:hover {
-      transform: translateY(-4px);
-      box-shadow: 
-        0 12px 40px rgba(0, 0, 0, 0.15),
-        0 6px 20px rgba(0, 0, 0, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.9);
-    }
-    
-    .chart-title {
-      color: #0943b5;
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin-bottom: 1rem;
-      text-align: center;
-      flex-shrink: 0;
-      text-shadow: 
-        0 1px 2px rgba(0, 0, 0, 0.1),
-        0 2px 4px rgba(0, 0, 0, 0.05);
-      position: relative;
-      z-index: 2;
-    }
-    
-    p-chart {
-      display: block;
-      flex: 1;
-      width: 100%;
-      min-height: 300px;
-      position: relative;
-      z-index: 2;
-      
-      ::ng-deep canvas {
-        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
-        transition: all 0.3s ease;
-        
-        &:hover {
-          filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.15));
-        }
-      }
+  }
+
+  &.badge-orange {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+
+    &::before {
+      content: '● ';
+      color: #f59e0b;
     }
   }
 }
@@ -250,44 +284,6 @@
   }
 }
 
-.bar-charts {
-  margin-bottom: 3rem;
-  width: 100%;
-  max-width: 1320px;
-  margin-left: auto;
-  margin-right: auto;
-  
-  .chart-container {
-    margin-bottom: 2rem;
-    width: 100%;
-    
-    .p-card {
-      padding: 1rem;
-      width: 100%;
-    }
-    
-    h2 {
-      margin-bottom: 0.5rem;
-      text-align: center;
-      font-weight: bold;
-      color: #28a745;
-    }
-    
-    .chart-subtitle {
-      font-size: 0.85rem;
-      color: #6c757d;
-      margin-bottom: 1rem;
-      line-height: 1.4;
-      font-style: italic;
-    }
-    
-    p-chart {
-      display: block;
-      width: 100%;
-      height: 220px;
-    }
-  }
-}
 
 .herramientas-recursos-section {
   padding: 20px;
