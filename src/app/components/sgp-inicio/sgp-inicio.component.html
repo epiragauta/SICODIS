@@ -49,12 +49,12 @@
       <div class="kpi-divider"></div>
       <div class="kpi-item">
         <div class="kpi-label">RECURSOS PENDIENTES</div>
-        <div class="kpi-value">{{ cifras.pendiente | numberFormat }}</div>
+        <div class="kpi-value">${{ cifras.pendiente | billonesFormat }}</div>
       </div>
       <div class="kpi-divider"></div>
       <div class="kpi-item">
         <div class="kpi-label">PRESUPUESTO SGP</div>
-        <div class="kpi-value">{{ cifras.presupuesto | numberFormat }}</div>
+        <div class="kpi-value">{{ cifras.presupuesto | billonesFormat }}</div>
       </div>
     </div>
 

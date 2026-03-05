@@ -7,6 +7,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { ButtonModule } from 'primeng/button';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { PercentFormatPipe } from '../../utils/percentFormatPipe';
+import { BillonesFormatPipe } from '../../utils/billonesFormatPipe';
 import { MatIconModule } from '@angular/material/icon';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
@@ -31,6 +32,7 @@ import { MenuItem } from 'primeng/api';
       ButtonModule,
       NumberFormatPipe,
       PercentFormatPipe,
+      BillonesFormatPipe,
       MatIconModule,
       FloatLabel,
       InfoPopupComponent,
