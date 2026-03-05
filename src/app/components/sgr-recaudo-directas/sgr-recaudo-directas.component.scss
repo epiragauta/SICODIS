@@ -546,6 +546,35 @@
     .p-datatable-tbody > tr:hover {
       background-color: #f1f5f9 !important;
     }
+
+    // Resaltado sincronizado con tooltip de gráficas
+    .p-datatable-tbody > tr.highlighted-row > td {
+      background-color: rgba(121, 145, 232, 0.08) !important;
+      transition: background-color 0.15s ease;
+
+      &.mes-cell {
+        background-color: rgba(121, 145, 232, 0.15) !important;
+        color: #004583 !important;
+      }
+    }
+
+    // Celdas PBC (color naranja, coincide con línea PBC en las gráficas)
+    td.highlighted-cell-pbc {
+      background-color: rgba(243, 129, 53, 0.22) !important;
+      font-weight: 700 !important;
+      outline: 2px solid #f38135;
+      outline-offset: -2px;
+      color: #8a3800 !important;
+    }
+
+    // Celdas Recaudo (color azul/violeta, coincide con línea Recaudo en las gráficas)
+    td.highlighted-cell-recaudo {
+      background-color: rgba(121, 145, 232, 0.28) !important;
+      font-weight: 700 !important;
+      outline: 2px solid #7991e8;
+      outline-offset: -2px;
+      color: #1a3080 !important;
+    }
   }
 }
 

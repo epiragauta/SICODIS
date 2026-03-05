@@ -185,7 +185,9 @@
 <p-table
   [value]="monthlyComparisonData"
   styleClass="p-datatable-sm comparative-table"
-  [tableStyle]="{ 'table-layout': 'fixed', 'width': '100%' }">
+  [tableStyle]="{ 'table-layout': 'fixed', 'width': '100%' }"
+  [scrollable]="true"
+  scrollHeight="410px">
 
   <ng-template pTemplate="header">
     <tr>
@@ -213,16 +215,40 @@
   </ng-template>
 
   <ng-template pTemplate="body" let-rowData>
-    <tr>
+    <tr [class.highlighted-row]="rowData.mes === highlightedMes">
       <td class="mes-cell"> {{ rowData.mes }} </td>
-      <td class="number-cell"> {{ rowData.mineria_pbc20 | numberFormat }} </td>
-      <td class="number-cell"> {{ rowData.mineria_recaudo_ad20 | numberFormat }} </td>
-      <td class="number-cell"> {{ rowData.hidrocarburos_pbc20 | numberFormat }} </td>
-      <td class="number-cell"> {{ rowData.hidrocarburos_recaudo_ad20 | numberFormat }} </td>
-      <td class="number-cell"> {{ rowData.mineria_pbc5 | numberFormat }} </td>
-      <td class="number-cell"> {{ rowData.mineria_recaudo_ad5 | numberFormat }} </td>
-      <td class="number-cell"> {{ rowData.hidrocarburos_pbc5 | numberFormat }} </td>
-      <td class="number-cell"> {{ rowData.hidrocarburos_recaudo_ad5 | numberFormat }} </td>      
+      <td class="number-cell"
+          [class.highlighted-cell-pbc]="rowData.mes === highlightedMes && highlightedDatasetKey === 'mineria_pbc'">
+        {{ rowData.mineria_pbc20 | numberFormat }}
+      </td>
+      <td class="number-cell"
+          [class.highlighted-cell-recaudo]="rowData.mes === highlightedMes && highlightedDatasetKey === 'mineria_recaudo'">
+        {{ rowData.mineria_recaudo_ad20 | numberFormat }}
+      </td>
+      <td class="number-cell"
+          [class.highlighted-cell-pbc]="rowData.mes === highlightedMes && highlightedDatasetKey === 'hidro_pbc'">
+        {{ rowData.hidrocarburos_pbc20 | numberFormat }}
+      </td>
+      <td class="number-cell"
+          [class.highlighted-cell-recaudo]="rowData.mes === highlightedMes && highlightedDatasetKey === 'hidro_recaudo'">
+        {{ rowData.hidrocarburos_recaudo_ad20 | numberFormat }}
+      </td>
+      <td class="number-cell"
+          [class.highlighted-cell-pbc]="rowData.mes === highlightedMes && highlightedDatasetKey === 'mineria_pbc'">
+        {{ rowData.mineria_pbc5 | numberFormat }}
+      </td>
+      <td class="number-cell"
+          [class.highlighted-cell-recaudo]="rowData.mes === highlightedMes && highlightedDatasetKey === 'mineria_recaudo'">
+        {{ rowData.mineria_recaudo_ad5 | numberFormat }}
+      </td>
+      <td class="number-cell"
+          [class.highlighted-cell-pbc]="rowData.mes === highlightedMes && highlightedDatasetKey === 'hidro_pbc'">
+        {{ rowData.hidrocarburos_pbc5 | numberFormat }}
+      </td>
+      <td class="number-cell"
+          [class.highlighted-cell-recaudo]="rowData.mes === highlightedMes && highlightedDatasetKey === 'hidro_recaudo'">
+        {{ rowData.hidrocarburos_recaudo_ad5 | numberFormat }}
+      </td>
     </tr>
   </ng-template>
 

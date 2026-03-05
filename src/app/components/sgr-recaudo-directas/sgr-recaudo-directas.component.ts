@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -53,6 +53,11 @@ export class SgrRecaudoDirectasComponent implements OnInit {
   selectedBeneficiario: any = null;
   selectedDepartamento: any = null;
   filtersApplied: boolean = false;
+
+  // Estado de resaltado sincronizado con el tooltip de las gráficas
+  highlightedMes: string | null = null;
+  // Valores posibles: 'mineria_pbc' | 'mineria_recaudo' | 'hidro_pbc' | 'hidro_recaudo'
+  highlightedDatasetKey: string | null = null;
 
   // Opciones de filtros
   bienios: any[] = [
@@ -251,9 +256,9 @@ export class SgrRecaudoDirectasComponent implements OnInit {
 
 
 
-  constructor(private sicodisApiService: SicodisApiService) { }
+  constructor(private sicodisApiService: SicodisApiService, private ngZone: NgZone) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.items = [
         { label: 'SGR', routerLink: '/sgr-inicio' },
         { label: 'Recaudo Directas' }
@@ -271,10 +276,9 @@ export class SgrRecaudoDirectasComponent implements OnInit {
       error: (err) => console.error('Error cargando fechas', err)
     });
 
-    this.cargarVigencias();
-    this.cargarDepartamentos();
-    //this.loadSgrData();
-
+    await this.cargarVigencias();
+    await this.cargarDepartamentos();
+    
     this.home = { icon: 'pi pi-home', routerLink: '/' };
     //this.selectedBeneficiario = this.beneficiarios[0]; // aquí sí funciona
     //this.selectedDepartamento = this.beneficiarios[0];
@@ -296,7 +300,7 @@ export class SgrRecaudoDirectasComponent implements OnInit {
         // Cargar datos de diccionario y siglas
     this.cargarSiglasDiccionario();
     
-
+    await this.applyFilters(); // Cargar datos con filtros por defecto (todos) al iniciar el componente
     // Inicialización del componente
     // this.initializeLineCharts();
     // this.initializeMonthlyComparisonData();
@@ -332,8 +336,9 @@ export class SgrRecaudoDirectasComponent implements OnInit {
       if (this.vigencias.length > 0) {
         this.selectedVigencia = this.vigencias[0];
         console.log('Vigencia seleccionada por defecto:', this.selectedVigencia);
+        this.loadSgrData();
       }
-      
+
       console.log('Vigencias cargadas desde API:', this.vigencias);
     } catch (error) {
       console.warn('No se pudieron cargar las vigencias desde la API debido a restricciones CORS en desarrollo:', error);
@@ -347,6 +352,7 @@ export class SgrRecaudoDirectasComponent implements OnInit {
       ];
       this.selectedVigencia = this.vigencias[2]; // Seleccionar la más reciente por defecto
       console.log('Vigencia seleccionada por defecto (fallback):', this.selectedVigencia);
+      this.loadSgrData();
       
       console.log('Vigencias por defecto configuradas:', this.vigencias);
     }
@@ -756,7 +762,24 @@ private initializeLineCharts(): void {
   });
 
   this.mineriaChartOptions = commonOptions(hasMineriaData, hasMineriaData ? undefined as any : 1);
+  this.mineriaChartOptions.onHover = (event: any, activeElements: any[], chart: any) => {
+    if (activeElements.length > 0) {
+      const label = chart.data.labels[activeElements[0].index] as string;
+      this.ngZone.run(() => this.onChartHover('mineria', activeElements[0].datasetIndex, label));
+    } else {
+      this.ngZone.run(() => this.clearChartHighlight());
+    }
+  };
+
   this.hidrocarburosChartOptions = commonOptions(hasHidroData, hasHidroData ? undefined as any : 1);
+  this.hidrocarburosChartOptions.onHover = (event: any, activeElements: any[], chart: any) => {
+    if (activeElements.length > 0) {
+      const label = chart.data.labels[activeElements[0].index] as string;
+      this.ngZone.run(() => this.onChartHover('hidro', activeElements[0].datasetIndex, label));
+    } else {
+      this.ngZone.run(() => this.clearChartHighlight());
+    }
+  };
 }
 
 
@@ -912,6 +935,18 @@ private initializeLineCharts(): void {
 // }
 
 
+
+onChartHover(chartType: 'mineria' | 'hidro', datasetIndex: number, mes: string): void {
+  this.highlightedMes = mes;
+  this.highlightedDatasetKey = chartType === 'mineria'
+    ? (datasetIndex === 0 ? 'mineria_pbc' : 'mineria_recaudo')
+    : (datasetIndex === 0 ? 'hidro_pbc' : 'hidro_recaudo');
+}
+
+clearChartHighlight(): void {
+  this.highlightedMes = null;
+  this.highlightedDatasetKey = null;
+}
 
 formatNumber(num: number): string {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
