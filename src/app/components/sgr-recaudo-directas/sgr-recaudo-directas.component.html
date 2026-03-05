@@ -227,7 +227,8 @@
   </ng-template>
 
   <ng-template pTemplate="body" let-rowData>
-    <tr [class.highlighted-row]="rowData.mes === highlightedMes">
+    <tr [class.highlighted-row]="rowData.mes === highlightedMes"
+        [class.total-row]="rowData.mes === 'TOTAL'">
       <td class="mes-cell"> {{ rowData.mes }} </td>
       <td class="number-cell"
           [class.highlighted-cell-pbc]="rowData.mes === highlightedMes && highlightedDatasetKey === 'mineria_pbc'">
