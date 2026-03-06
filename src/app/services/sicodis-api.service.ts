@@ -689,7 +689,7 @@ export class SicodisApiService {
     return this.http.get<Vigencia[]>(url);
   }
   
-      /**
+  /**
    * Obtiene las vigencias registradas del SGR - producción
    * @returns Observable con el array de vigencias
    * @note Este endpoint puede tener restricciones CORS en desarrollo local

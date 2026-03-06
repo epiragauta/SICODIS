@@ -46,6 +46,15 @@ export class SgpComparativaComponent {
   items: MenuItem[] | undefined;
   home: MenuItem | undefined;
 
+  
+  fechaActual = (() => {
+  const fecha = new Date();
+  const meses = [
+      'enero','febrero','marzo','abril','mayo','junio',
+      'julio','agosto','septiembre','octubre','noviembre','diciembre'
+    ];
+    return `${meses[fecha.getMonth()]} ${fecha.getDate()} de ${fecha.getFullYear()}`;
+  })();
   selected: number = 0; // Changed to number for id_vigencia
   selectedYears: string[] = [];
   departmentSelected: string = '';

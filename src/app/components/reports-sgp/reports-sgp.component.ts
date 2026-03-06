@@ -53,6 +53,15 @@ export class ReportsSgpComponent implements OnInit {
   items: MenuItem[] | undefined;
   home: MenuItem | undefined;
   
+  fechaActual = (() => {
+    const fecha = new Date();
+    const meses = [
+      'enero','febrero','marzo','abril','mayo','junio',
+      'julio','agosto','septiembre','octubre','noviembre','diciembre'
+    ];
+    return `${meses[fecha.getMonth()]} ${fecha.getDate()} de ${fecha.getFullYear()}`;
+  })(); 
+
   color1 = 'lightblue';
   color2 = 'lightgreen';
   color3 = 'lightpink';

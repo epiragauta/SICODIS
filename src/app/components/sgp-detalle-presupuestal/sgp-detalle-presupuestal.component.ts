@@ -36,6 +36,15 @@ export class SgpDetallePresupuestalComponent implements OnInit {
   items: MenuItem[] | undefined;
   home: MenuItem | undefined;
 
+  fechaActual = (() => {
+  const fecha = new Date();
+  const meses = [
+     'enero','febrero','marzo','abril','mayo','junio',
+     'julio','agosto','septiembre','octubre','noviembre','diciembre'
+   ];
+  return `${meses[fecha.getMonth()]} ${fecha.getDate()} de ${fecha.getFullYear()}`;
+  })();  
+  
   // Filtros
   selectedVigencia: any = null;
   selectedDepartamento: any = null;
