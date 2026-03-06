@@ -565,7 +565,7 @@ constructor(private sicodisApiService: SicodisApiService,
           stacked: false,
           beginAtZero: true,
           title: {
-            display: true,
+            display: false,
             text: 'Cifras en miles de millones de pesos corrientes',
             font: {
               family: '"Work Sans", sans-serif',
@@ -675,7 +675,7 @@ constructor(private sicodisApiService: SicodisApiService,
           stacked: false,
           beginAtZero: true,
           title: {
-            display: true,
+            display: false,
             text: 'Cifras en miles de millones de pesos corrientes',
             font: {
               family: '"Work Sans", sans-serif',
@@ -804,7 +804,7 @@ constructor(private sicodisApiService: SicodisApiService,
           stacked: false,
           beginAtZero: true,
           title: {
-            display: true,          
+            display: false,          
             text: 'Cifras en miles de millones de pesos corrientes', 
             font: {
               family: '"Work Sans", sans-serif',
@@ -911,7 +911,7 @@ constructor(private sicodisApiService: SicodisApiService,
       scales: {
         x: {
           title: {
-            display: true,
+            display: false,
             text: 'Cifras en miles de millones de pesos corrientes',
             font: {
               family: '"Work Sans", sans-serif',

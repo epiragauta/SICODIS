@@ -85,21 +85,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
           // },
           // ,
           {
-            label: 'Recaudo directas',
-            command: () => this.redirectUrl("sgr-recaudo-directas")
-          }
-          , 
-          {
-            label: 'Recaudo mensual',
-            command: () => this.redirectUrl("sgr-recaudo-mensual")
-          }
-          ,
-          {
-            label: 'Recaudo frente a presupuesto',
-            command: () => this.redirectUrl("sgr-presupuesto-y-recaudo")
-          }
-          ,          
-          {
             label: 'Programación',
             items: [
               {
@@ -137,6 +122,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 ]
               }
             ]
+          }
+,
+          {
+            label: 'Recaudo mensual',
+            command: () => this.redirectUrl("sgr-recaudo-mensual")
+          }
+          ,
+          {
+            label: 'Recaudo directas',
+            command: () => this.redirectUrl("sgr-recaudo-directas")
+          }
+          ,
+          {
+            label: 'Recaudo frente a presupuesto',
+            command: () => this.redirectUrl("sgr-presupuesto-y-recaudo")
           }
           ,
           {

@@ -741,7 +741,7 @@ private initializeLineCharts(): void {
         }
       },
       subtitle: {
-        display: true,
+        display: false,
         text: 'Cifras en pesos corrientes',
         align: 'center',
         font: {

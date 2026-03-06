@@ -57,11 +57,6 @@
                   <p>{{descriptionSGR}}</p>
                 </div>
                 <div class="card-menu">
-                  <div class="sicodis-item" (click)="redirectTo('sgr-recaudo-directas')">
-                  <!-- <div class="sicodis-item"> -->
-                    <p>Recaudo directas</p>
-                    <span class="pi pi-angle-right"></span>
-                  </div>
                   <p-divider/>
                   <div class="sicodis-item" (click)="redirectTo('sgr-recaudo-mensual')">
                     <p>Recaudo mensual</p>
@@ -72,6 +67,12 @@
                     <p>Recaudo frente a presupuesto</p>
                     <span class="pi pi-angle-right"></span>
                   </div>
+                  <div class="sicodis-item" (click)="redirectTo('reporte-funcionamiento')">
+                  <!-- <div class="sicodis-item"> -->
+                    <p>Administración y Sistema de Seguimiento del SGR</p>
+                    <span class="pi pi-angle-right"></span>
+                  </div>
+
                 </div>
                 <ng-template pTemplate="footer">
                   <div class="card-footer">

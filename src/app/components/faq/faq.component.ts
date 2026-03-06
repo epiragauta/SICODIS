@@ -210,58 +210,59 @@ export class FaqComponent implements OnInit {
     //     }
     //   ]
     // },
-    {
-      title: 'Conceptos y Definiciones',
-      icon: 'help',
-      items: [
-        {
-          title: '¿Qué son las Instrucciones de Abono a Cuenta (IAC)?',
-          content: 'Las IAC son los documentos mediante los cuales se comunica oficialmente a las entidades territoriales el recaudo de regalías y compensaciones que les corresponde, para que puedan ser incorporadas en sus presupuestos.',
-          value: '14'
-        },
-        {
-          title: '¿Qué significa "doceava" en el contexto del SGP?',
-          content: 'Las doceavas son las doce partes iguales en que se divide el monto anual del SGP para su distribución mensual a las entidades territoriales. Para educación se distribuyen 12 doceavas, para los demás conceptos 11 doceavas más la última doceava del año anterior.',
-          value: '15'
-        },
-        {
-          title: '¿Qué es el FONPET?',
-          content: 'El Fondo Nacional de Pensiones de las Entidades Territoriales (FONPET) es un fondo destinado a atender el pasivo pensional de las entidades territoriales, financiado con recursos del SGR.',
-          value: '16'
-        },
-        {
-          title: '¿Qué son las asignaciones directas del SGR?',
-          content: 'Son recursos del SGR que se asignan directamente a las entidades territoriales productoras de recursos naturales no renovables, correspondientes al 20% del total de los ingresos del sistema.',
-          value: '17'
-        }
-      ]
-    },
-    {
-      title: 'Soporte Técnico',
-      icon: 'support',
-      items: [
-        {
-          title: '¿Cómo exportar la información consultada?',
-          content: 'La mayoría de módulos cuentan con botones de exportación que permiten descargar la información en formato Excel para su análisis posterior.',
-          value: '18'
-        },
-        {
-          title: '¿Con qué frecuencia se actualiza la información?',
-          content: 'La información del SGP se actualiza mensualmente con cada distribución. La información del SGR se actualiza de acuerdo con los reportes de recaudo y las instrucciones de abono a cuenta.',
-          value: '19'
-        },
-        {
-          title: '¿Qué hacer si encuentro inconsistencias en los datos?',
-          content: 'Si identifica posibles inconsistencias en la información, puede reportarlas a través del formulario de PQRSD disponible en el sitio web del DNP o contactar directamente al equipo técnico al correo sicodis@dnp.gov.co',
-          value: '20'
-        },
-        {
-          title: '¿Hay documentación técnica disponible?',
-          content: 'Sí, en la sección "Documentos Financiamiento Territorial" encontrará la documentación técnica, metodológica y normativa relacionada con el SGP y SGR.',
-          value: '21'
-        }
-      ]
-    }
+    // {
+    //   title: 'Conceptos y Definiciones',
+    //   icon: 'help',
+    //   items: [
+    //     {
+    //       title: '¿Qué son las Instrucciones de Abono a Cuenta (IAC)?',
+    //       content: 'Las IAC son los documentos mediante los cuales se comunica oficialmente a las entidades territoriales el recaudo de regalías y compensaciones que les corresponde, para que puedan ser incorporadas en sus presupuestos.',
+    //       value: '14'
+    //     },
+    //     {
+    //       title: '¿Qué significa "doceava" en el contexto del SGP?',
+    //       content: 'Las doceavas son las doce partes iguales en que se divide el monto anual del SGP para su distribución mensual a las entidades territoriales. Para educación se distribuyen 12 doceavas, para los demás conceptos 11 doceavas más la última doceava del año anterior.',
+    //       value: '15'
+    //     },
+    //     {
+    //       title: '¿Qué es el FONPET?',
+    //       content: 'El Fondo Nacional de Pensiones de las Entidades Territoriales (FONPET) es un fondo destinado a atender el pasivo pensional de las entidades territoriales, financiado con recursos del SGR.',
+    //       value: '16'
+    //     },
+    //     {
+    //       title: '¿Qué son las asignaciones directas del SGR?',
+    //       content: 'Son recursos del SGR que se asignan directamente a las entidades territoriales productoras de recursos naturales no renovables, correspondientes al 20% del total de los ingresos del sistema.',
+    //       value: '17'
+    //     }
+    //   ]
+    // }
+    // ,
+    // {
+    //   title: 'Soporte Técnico',
+    //   icon: 'support',
+    //   items: [
+    //     {
+    //       title: '¿Cómo exportar la información consultada?',
+    //       content: 'La mayoría de módulos cuentan con botones de exportación que permiten descargar la información en formato Excel para su análisis posterior.',
+    //       value: '18'
+    //     },
+    //     {
+    //       title: '¿Con qué frecuencia se actualiza la información?',
+    //       content: 'La información del SGP se actualiza mensualmente con cada distribución. La información del SGR se actualiza de acuerdo con los reportes de recaudo y las instrucciones de abono a cuenta.',
+    //       value: '19'
+    //     },
+    //     {
+    //       title: '¿Qué hacer si encuentro inconsistencias en los datos?',
+    //       content: 'Si identifica posibles inconsistencias en la información, puede reportarlas a través del formulario de PQRSD disponible en el sitio web del DNP o contactar directamente al equipo técnico al correo sicodis@dnp.gov.co',
+    //       value: '20'
+    //     },
+    //     {
+    //       title: '¿Hay documentación técnica disponible?',
+    //       content: 'Sí, en la sección "Documentos Financiamiento Territorial" encontrará la documentación técnica, metodológica y normativa relacionada con el SGP y SGR.',
+    //       value: '21'
+    //     }
+    //   ]
+    // }
   ];
 
   constructor(private router: Router) {}

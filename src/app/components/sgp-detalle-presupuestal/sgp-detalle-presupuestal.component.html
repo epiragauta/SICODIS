@@ -92,6 +92,7 @@
   <div class="dates-buttons-container">
     <div style="width: 84%;">
       <p class="date-update">Fecha de consulta: {{ fechaActual }}</p>
+      <p class="date-update">Cifras en pesos corrientes</p>
     </div>    
   </div>
 
@@ -176,9 +177,8 @@
              <!-- Notas -->
        <div class="table-notes">
          <h4>NOTAS</h4>
-         <p>(1) Cifras en pesos corrientes.</p>    
         <p class="final-note" *ngIf="this.selectedVigencia == 13">
-          (2) Los recursos pendientes por distribuir corresponden a las doce doceavas de la participación para educación ($ 20.239 miles de millones) y las once doceavas de la asignación especial para el FONPET ($ 2.731 miles de millones)
+          <strong>(1)</strong> Los recursos pendientes por distribuir corresponden a una parte de las doce doceavas de la participación para educación ($ 18.644 miles de millones) y las once doceavas de la asignación especial para el FONPET ($ 2.731 miles de millones)
         </p>        
 
        <!-- Botón Descargar -->

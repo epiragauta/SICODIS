@@ -640,7 +640,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
           stacked: true, // No apiladas
           beginAtZero: true,
           title: {
-            display: true,
+            display: false,
             text: 'Cifras en miles de millones de pesos corrientes',
             font: {
               family: '"Work Sans", sans-serif',
