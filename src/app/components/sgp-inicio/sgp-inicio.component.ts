@@ -71,6 +71,7 @@ export class SgpInicioComponent implements OnInit {
 
   treeTableData: TreeNode[] = [];
   historicoApiData: any[] = [];
+  totalesSgp: any = null;
 
   // Select options and selected value
   vigencias: any[] = [
@@ -227,7 +228,24 @@ export class SgpInicioComponent implements OnInit {
   buildTreeTableData(): void {
     if (!this.historicoApiData || this.historicoApiData.length === 0) {
       this.treeTableData = [];
+      this.totalesSgp = null;
       return;
+    }
+
+    // Extraer el registro de totales (codigo_participacion = '99')
+    const totalRecord = this.historicoApiData.find(
+      item => item.codigo_participacion === '99'
+    );
+
+    if (totalRecord) {
+      this.totalesSgp = {
+        presupuesto: totalRecord.presupuesto,
+        distribuido: totalRecord.distribuido,
+        pendiente: totalRecord.pendiente_por_distribuir,
+        avance: totalRecord.avance / 100
+      };
+    } else {
+      this.totalesSgp = null;
     }
 
     // Filtrar registros excluyendo codigo_participacion = '99' (Total SGP)
@@ -244,6 +262,7 @@ export class SgpInicioComponent implements OnInit {
           participacion: item.participacion,
           presupuesto: item.presupuesto,
           distribuido: item.distribuido,
+          pendiente: item.pendiente_por_distribuir, // Usar el campo específico para pendiente
           avance: item.avance
         });
       }
@@ -259,13 +278,12 @@ export class SgpInicioComponent implements OnInit {
       if (isConceptoPadre) {
         // Es un concepto padre (nivel 1)
         if (!conceptosMap.has(conceptoPadreId)) {
-          const pendiente = conceptoInfo.presupuesto - conceptoInfo.distribuido;
           const nodeData: any = {
             concepto: conceptoInfo.participacion,
             codigo_participacion: codigoParticipacion,
             presupuesto: conceptoInfo.presupuesto,
             distribuido: conceptoInfo.distribuido,
-            pendiente: pendiente,
+            pendiente: conceptoInfo.pendiente,
             avance: conceptoInfo.avance / 100
           };
 
@@ -303,13 +321,12 @@ export class SgpInicioComponent implements OnInit {
         );
 
         if (!existingChild) {
-          const pendiente = conceptoInfo.presupuesto - conceptoInfo.distribuido;
           const childData: any = {
             concepto: conceptoInfo.participacion,
             codigo_participacion: codigoParticipacion,
             presupuesto: conceptoInfo.presupuesto,
             distribuido: conceptoInfo.distribuido,
-            pendiente: pendiente,
+            pendiente: conceptoInfo.pendiente,
             avance: conceptoInfo.avance / 100
           };
 
@@ -329,6 +346,12 @@ export class SgpInicioComponent implements OnInit {
   }
 
   getTreeTableTotal(field: 'presupuesto' | 'distribuido' | 'pendiente'): number {
+    // Usar los totales del API si están disponibles
+    if (this.totalesSgp && this.totalesSgp[field] !== undefined) {
+      return this.totalesSgp[field];
+    }
+
+    // Fallback: calcular la sumatoria
     let total = 0;
     this.treeTableData.forEach((node: TreeNode) => {
       total += node.data[field] || 0;
@@ -337,6 +360,12 @@ export class SgpInicioComponent implements OnInit {
   }
 
   getTreeTableAvanceTotal(): number {
+    // Usar el avance del API si está disponible
+    if (this.totalesSgp && this.totalesSgp.avance !== undefined) {
+      return this.totalesSgp.avance;
+    }
+
+    // Fallback: calcular basado en presupuesto y distribuido
     const presupuesto = this.getTreeTableTotal('presupuesto');
     const distribuido = this.getTreeTableTotal('distribuido');
     return presupuesto > 0 ? distribuido / presupuesto : 0;
