@@ -660,7 +660,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
           beginAtZero: true,
           max: roundedMax,
           title: {
-            display: true,
+            display: false,
             text: 'Cifras en miles de millones de pesos corrientes',
             font: {
               family: '"Work Sans", sans-serif',
