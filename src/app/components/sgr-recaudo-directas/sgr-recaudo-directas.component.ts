@@ -479,28 +479,45 @@ export class SgrRecaudoDirectasComponent implements OnInit {
   }
 
 private parseMesData(mesTexto: string): Date {
-  // Ejemplos aceptados: "Ene 2025", "ene 2025", "Enero 2025", "enero 2025", "Ene. 2025"
+
   if (!mesTexto) {
     console.warn('parseMesData: mesTexto vacío');
     return new Date(0);
   }
 
   const meses: Record<string, number> = {
-    // abreviaturas
     ene: 0, feb: 1, mar: 2, abr: 3, may: 4, jun: 5,
     jul: 6, ago: 7, sep: 8, oct: 9, nov: 10, dic: 11,
-    // nombres completos
     enero: 0, febrero: 1, marzo: 2, abril: 3, mayo: 4, junio: 5,
     julio: 6, agosto: 7, septiembre: 8, octubre: 9, noviembre: 10, diciembre: 11
   };
 
-  const parts = mesTexto.trim().split(/\s+/);
+  mesTexto = mesTexto.trim().toLowerCase();
+
+  // NUEVO FORMATO: ene-25
+  if (mesTexto.includes('-')) {
+    const [mesPart, anioPart] = mesTexto.split('-');
+
+    const mesNum = meses[mesPart];
+    const anio = Number('20' + anioPart);
+
+    if (typeof mesNum === 'undefined' || isNaN(anio)) {
+      console.warn('parseMesData: no se pudo parsear:', mesTexto);
+      return new Date(0);
+    }
+
+    return new Date(anio, mesNum, 1);
+  }
+
+  // FORMATO ANTIGUO: "Enero 2025"
+  const parts = mesTexto.split(/\s+/);
+
   if (parts.length < 2) {
     console.warn('parseMesData: formato inesperado:', mesTexto);
     return new Date(0);
   }
 
-  let mesPart = parts[0].replace('.', '').toLowerCase();
+  let mesPart = parts[0].replace('.', '');
   const anioPart = parts[1];
 
   const mesNum = meses[mesPart];
@@ -711,15 +728,34 @@ private initializeLineCharts(): void {
       legend: {
         display: true,
         position: 'bottom',
+        align: 'center',
+        fullSize: false,
         labels: {
           font: {
             size: 12,
             family: 'Work Sans'
           },
-          padding: 15,
-          usePointStyle: true
+          padding: 20,
+          usePointStyle: true,
+          boxWidth: 10
         }
       },
+      subtitle: {
+        display: true,
+        text: 'Cifras en pesos corrientes',
+        align: 'center',
+        font: {
+          size: 11,
+          family: 'Work Sans'
+        },
+        color: '#374151',
+        padding: {
+          bottom: 10
+        }
+      },
+
+
+
     datalabels: {
       display: false
     },      
@@ -749,15 +785,15 @@ private initializeLineCharts(): void {
         }
       },
       x: {
-        title: {
-          display: true,
-          text: 'Cifras en pesos corrientes',
-          font: {
-            size: 11,
-            family: 'Work Sans'
-          },
-          color: '#374151'
-        },                
+        // title: {
+        //   display: true,
+        //   text: 'Cifras en pesos corrientes',
+        //   font: {
+        //     size: 11,
+        //     family: 'Work Sans'
+        //   },
+        //   color: '#374151'
+        // },                
         ticks: {
           font: { family: 'Work Sans', size: 9 },
           color: '#374151',

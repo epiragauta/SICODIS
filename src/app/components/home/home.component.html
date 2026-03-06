@@ -353,5 +353,37 @@
 
     <!-- =========================================================== -->
 
+    <!-- ================= MODAL IMAGEN BIENVENIDA ================= -->
+<p-dialog 
+  [(visible)]="showImage"
+  [modal]="true"
+  appendTo="body"
+  [closable]="true"
+  [dismissableMask]="true"
+  [showHeader]="false"
+  [style]="{width:'25vw'}"
+  [contentStyle]="{'overflow':'hidden', 'padding':'0'}"
+  [breakpoints]="{'1200px':'35vw', '960px':'55vw', '640px':'85vw'}">
 
+  <ng-template pTemplate="header">
+    <span style="width: 100%; text-align: center; font-weight: bold; font-size: 1.1rem;">
+      Importante
+    </span>
+  </ng-template>
+
+  <div style="text-align: center;">
+    <a href="https://www.dnp.gov.co/LaEntidad_/subdireccion-general-inversiones-seguimiento-evaluacion/direccion-programacion-inversiones-publicas/Paginas/sistema-general-de-regalias.aspx" target="_blank"
+       style="cursor: pointer; display: block;">
+      <img
+        src="/assets/img/alertasboletin.jpg"
+        alt="Bienvenido a SICODIS"
+        style="width: 100%; height: auto; display: block;"
+        title="Clic para descargar"
+      />
+    </a>
+  </div>
+
+</p-dialog>
+
+<!-- =========================================================== -->
 </div>

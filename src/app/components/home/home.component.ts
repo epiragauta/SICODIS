@@ -241,6 +241,8 @@ export class HomeComponent implements OnInit {
   cols2: number = 2;
   cols3: number = 3;
 
+showImage: boolean = true; // o false, según cuándo quieras mostrarla  
+
   // Add to the component class
   departments = [
     { id: 1, name: 'Antioquia' },
