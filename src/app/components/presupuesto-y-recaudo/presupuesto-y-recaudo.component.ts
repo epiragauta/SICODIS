@@ -592,7 +592,8 @@ export class PresupuestoYRecaudoComponent implements OnInit {
           ],
           backgroundColor: '#1e40af', // Azul oscuro para presupuesto
           borderColor: '#1e40af',
-          borderWidth: 1
+          borderWidth: 1,
+          order: 2
         },
         {
           label: 'Recaudo',
@@ -603,10 +604,27 @@ export class PresupuestoYRecaudoComponent implements OnInit {
           ],
           backgroundColor: '#60a5fa', // Azul claro para caja/recaudo
           borderColor: '#60a5fa',
-          borderWidth: 1
+          borderWidth: 1,
+          order: 1
         }
       ]
     };
+
+    // Calcular el valor máximo de los datos para ajustar el eje X
+    const allValues = [
+      this.financialData.presupuesto_total_vigente,
+      this.financialData.caja_total,
+      this.financialData.presupuesto_corriente,
+      this.financialData.caja_corriente_informada,
+      this.financialData.presupuesto_otros,
+      this.financialData.caja_otros
+    ];
+    const maxValue = Math.max(...allValues);
+    // Agregar un margen del 10% y redondear hacia arriba para tener un valor limpio
+    const maxWithMargin = maxValue * 1.10;
+    // Redondear hacia arriba al siguiente múltiplo apropiado
+    const orderOfMagnitude = Math.pow(10, Math.floor(Math.log10(maxWithMargin)));
+    const roundedMax = Math.ceil(maxWithMargin / orderOfMagnitude) * orderOfMagnitude;
 
     this.chartOptions = {
       indexAxis: 'y',
@@ -626,8 +644,9 @@ export class PresupuestoYRecaudoComponent implements OnInit {
         },
         datalabels: {
           display: false
-        },           
+        },
         tooltip: {
+          mode: 'index',
           callbacks: {
             label: (context: any) => {
               return `${context.dataset.label}: ${new Intl.NumberFormat('es-CO').format(context.parsed.x)}`;
@@ -637,10 +656,11 @@ export class PresupuestoYRecaudoComponent implements OnInit {
       },
       scales: {
         x: {
-          stacked: true, // No apiladas
+          stacked: false, // No apiladas
           beginAtZero: true,
+          max: roundedMax,
           title: {
-            display: false,
+            display: true,
             text: 'Cifras en miles de millones de pesos corrientes',
             font: {
               family: '"Work Sans", sans-serif',
@@ -649,13 +669,14 @@ export class PresupuestoYRecaudoComponent implements OnInit {
             }
           },
           ticks: {
+            maxTicksLimit: 4,
             font: {
               family: '"Work Sans", sans-serif',
               size: 11
             },
             callback: (value: any) => {
               return this.formatCurrency(value);
-            }             
+            }
           }
         },
         y: {
