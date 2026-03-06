@@ -187,12 +187,7 @@
   td {
     padding: 0.6rem 1rem;
     color: #374151;
-  }
-
-  .concepto-cell {
-    font-weight: 600;
-    color: #103d6e;
-  }
+  }  
 
   .col-number {
     text-align: right;
@@ -259,6 +254,67 @@
     &::before {
       content: '● ';
       color: #f59e0b;
+    }
+  }
+}
+
+// ── TreeTable jerárquica ───────────────────────────────────────────────────
+:host ::ng-deep {
+  .p-treetable {
+    font-size: 0.9rem;
+
+    .p-treetable-thead > tr > th {
+      background-color: #f8f9fa !important;
+      color: #103d6e !important;
+      font-weight: 600 !important;
+      padding: 0.75rem;
+      text-align: left;
+    }
+
+    .p-treetable-tbody > tr > td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #dee2e6;      
+      &.concepto-cell {
+        font-weight: 600 !important;
+        color: #103d6e !important;
+      }
+    }
+
+    // Estilos para nodos de primer nivel (padres)
+    .p-treetable-tbody > tr:not([aria-level="2"]):not([aria-level="3"]) > td.concepto-cell {
+      font-weight: 700 !important;
+      color: #103d6e !important;
+    }
+
+    .p-treetable-thead > tr > th.col-number {
+      text-align: right !important;
+    }
+
+    .p-treetable-tbody > tr > td.col-number {
+      text-align: right !important;
+      /*font-family: monospace;*/
+    }
+
+    .p-treetable-thead > tr > th.col-avance {
+      text-align: right !important;
+    }
+
+    .p-treetable-tbody > tr > td.col-avance {
+      text-align: right !important;
+    }
+
+    .p-treetable-tfoot > tr > td.col-number {
+      text-align: right !important;
+    }
+
+    .total-row {
+      background-color: #f8f9fa;
+      font-weight: bold;
+
+      td {
+        padding: 1rem 0.75rem;
+        border-top: 2px solid #dee2e6;
+      }
     }
   }
 }

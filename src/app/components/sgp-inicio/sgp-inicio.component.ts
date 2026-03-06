@@ -18,7 +18,8 @@ import { Select, SelectChangeEvent } from 'primeng/select';
 import { SicodisApiService } from '../../services/sicodis-api.service';
 import { Router } from '@angular/router';
 import { Breadcrumb } from 'primeng/breadcrumb';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, TreeNode } from 'primeng/api';
+import { TreeTableModule } from 'primeng/treetable';
 
 @Component({
   selector: 'app-sgp-inicio',
@@ -39,6 +40,7 @@ import { MenuItem } from 'primeng/api';
       SplitButtonModule,
       CardModule,
       Select,
+      TreeTableModule,
       Breadcrumb],
   templateUrl: './sgp-inicio.component.html',
   styleUrl: './sgp-inicio.component.scss'
@@ -67,13 +69,8 @@ export class SgpInicioComponent implements OnInit {
     avance: 0
   };
 
-  resumenParticipaciones: any[] = [
-    { concepto: 'Educación', idConcepto: '0101', presupuesto: 0, distribuido: 0, pendiente: 0, avance: 0 },
-    { concepto: 'Salud', idConcepto: '0102', presupuesto: 0, distribuido: 0, pendiente: 0, avance: 0 },
-    { concepto: 'Agua Potable', idConcepto: '0103', presupuesto: 0, distribuido: 0, pendiente: 0, avance: 0 },
-    { concepto: 'Propósito General', idConcepto: '0104', presupuesto: 0, distribuido: 0, pendiente: 0, avance: 0 },
-    { concepto: 'Asignaciones Especiales', idConcepto: '0201', presupuesto: 0, distribuido: 0, pendiente: 0, avance: 0 }
-  ];
+  treeTableData: TreeNode[] = [];
+  historicoApiData: any[] = [];
 
   // Select options and selected value
   vigencias: any[] = [
@@ -212,32 +209,137 @@ export class SgpInicioComponent implements OnInit {
     const year = this.selectedVigencia?.value || 2026;
     this.sicodisApiService.getSgpResumenParticipacionesAvance(year).subscribe({
       next: (result: any) => {
-        this.updateResumenParticipaciones(result);
+        this.historicoApiData = result;
+        if (result && result.length > 0) {
+          this.buildTreeTableData();
+        } else {
+          console.log('No hay datos del API');
+          this.treeTableData = [];
+        }
       },
       error: (error) => {
         console.error('Error loading SGP participaciones:', error);
+        this.treeTableData = [];
       }
     });
   }
 
-  updateResumenParticipaciones(apiData: any): void {
-    const dataArray = Array.isArray(apiData) ? apiData : [apiData];
-    console.log('API resumenParticipacionesAvance raw:', dataArray);
+  buildTreeTableData(): void {
+    if (!this.historicoApiData || this.historicoApiData.length === 0) {
+      this.treeTableData = [];
+      return;
+    }
 
-    this.resumenParticipaciones.forEach((item: any) => {
-      const apiItem = dataArray.find((data: any) =>
-        data.codigo_participacion === item.idConcepto ||
-        data.id_concepto === item.idConcepto
-      );
-      if (apiItem) {
-        item.concepto = apiItem.concepto || apiItem.nombre || apiItem.descripcion || item.concepto;
-        item.presupuesto = apiItem.presupuesto;
-        item.distribuido = apiItem.distribuido;
-        item.pendiente = apiItem.presupuesto - apiItem.distribuido;
-        item.avance = apiItem.avance / 100;
+    // Filtrar registros excluyendo codigo_participacion = '99' (Total SGP)
+    const filteredData = this.historicoApiData.filter(
+      item => item.codigo_participacion !== '99'
+    );
+
+    // Crear un mapa de conceptos únicos
+    const uniqueConceptos = new Map<string, any>();
+    filteredData.forEach(item => {
+      if (!uniqueConceptos.has(item.codigo_participacion)) {
+        uniqueConceptos.set(item.codigo_participacion, {
+          codigo_participacion: item.codigo_participacion,
+          participacion: item.participacion,
+          presupuesto: item.presupuesto,
+          distribuido: item.distribuido,
+          avance: item.avance
+        });
       }
     });
-    console.log('Updated resumenParticipaciones:', this.resumenParticipaciones);
+
+    // Construir estructura de árbol basada en longitud del código
+    const conceptosMap = new Map<string, TreeNode>();
+
+    uniqueConceptos.forEach((conceptoInfo, codigoParticipacion) => {
+      const conceptoPadreId = codigoParticipacion.substring(0, 4);
+      const isConceptoPadre = codigoParticipacion.length === 4;
+
+      if (isConceptoPadre) {
+        // Es un concepto padre (nivel 1)
+        if (!conceptosMap.has(conceptoPadreId)) {
+          const pendiente = conceptoInfo.presupuesto - conceptoInfo.distribuido;
+          const nodeData: any = {
+            concepto: conceptoInfo.participacion,
+            codigo_participacion: codigoParticipacion,
+            presupuesto: conceptoInfo.presupuesto,
+            distribuido: conceptoInfo.distribuido,
+            pendiente: pendiente,
+            avance: conceptoInfo.avance / 100
+          };
+
+          conceptosMap.set(conceptoPadreId, {
+            key: conceptoPadreId,
+            data: nodeData,
+            children: [],
+            expanded: false  // Colapsado por defecto
+          });
+        }
+      } else {
+        // Es un concepto hijo (nivel 2+)
+        if (!conceptosMap.has(conceptoPadreId)) {
+          // Crear concepto padre si no existe (casos edge)
+          const parentNodeData: any = {
+            concepto: `Concepto ${conceptoPadreId}`,
+            codigo_participacion: conceptoPadreId,
+            presupuesto: 0,
+            distribuido: 0,
+            pendiente: 0,
+            avance: 0
+          };
+
+          conceptosMap.set(conceptoPadreId, {
+            key: conceptoPadreId,
+            data: parentNodeData,
+            children: [],
+            expanded: false
+          });
+        }
+
+        const parentNode = conceptosMap.get(conceptoPadreId)!;
+        const existingChild = parentNode.children!.find(
+          child => child.key === codigoParticipacion
+        );
+
+        if (!existingChild) {
+          const pendiente = conceptoInfo.presupuesto - conceptoInfo.distribuido;
+          const childData: any = {
+            concepto: conceptoInfo.participacion,
+            codigo_participacion: codigoParticipacion,
+            presupuesto: conceptoInfo.presupuesto,
+            distribuido: conceptoInfo.distribuido,
+            pendiente: pendiente,
+            avance: conceptoInfo.avance / 100
+          };
+
+          const childNode: TreeNode = {
+            key: codigoParticipacion,
+            data: childData,
+            leaf: true
+          };
+
+          parentNode.children!.push(childNode);
+        }
+      }
+    });
+
+    this.treeTableData = Array.from(conceptosMap.values());
+    console.log('Tree table data construida:', this.treeTableData);
+  }
+
+  getTreeTableTotal(field: 'presupuesto' | 'distribuido' | 'pendiente'): number {
+    let total = 0;
+    this.treeTableData.forEach((node: TreeNode) => {
+      total += node.data[field] || 0;
+    });
+    return total;
+  }
+
+  getTreeTableAvanceTotal(): number {
+    const presupuesto = this.getTreeTableTotal('presupuesto');
+    const distribuido = this.getTreeTableTotal('distribuido');
+    return presupuesto > 0 ? distribuido / presupuesto : 0;
   }
 
   onVigenciaChange(event: SelectChangeEvent): void {

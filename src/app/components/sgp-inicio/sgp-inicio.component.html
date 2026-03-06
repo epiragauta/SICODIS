@@ -58,44 +58,68 @@
       </div>
     </div>
 
-    <!-- Tabla de participaciones -->
-    <table class="tabla-participaciones">
-      <thead>
-        <tr>
-          <th>Concepto</th>
-          <th class="col-number">Presupuesto ($)</th>
-          <th class="col-number">Distribuido ($)</th>
-          <th class="col-number">Pendiente ($)</th>
-          <th class="col-avance">Estado Avance (%)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let p of resumenParticipaciones">
-          <td class="concepto-cell">{{ p.concepto }}</td>
-          <td class="col-number">{{ p.presupuesto | numberFormat }}</td>
-          <td class="col-number">{{ p.distribuido | numberFormat }}</td>
-          <td class="col-number">{{ p.pendiente | numberFormat }}</td>
-          <td class="col-avance">
-            <span class="avance-badge" [class.badge-green]="p.avance >= 1" [class.badge-orange]="p.avance < 1">
-              {{ p.avance | percentFormat:2 }}
-            </span>
-          </td>
-        </tr>
-      </tbody>
-      <tfoot>
-        <tr class="total-row">
-          <td><strong>Total SGP</strong></td>
-          <td class="col-number"><strong>{{ cifras.presupuesto | numberFormat }}</strong></td>
-          <td class="col-number">
-            <div class="progress-bar-container">
-              <div class="progress-bar-fill" [style.width.%]="cifras.avance * 100"></div>
-            </div>
-          </td>
-          <td class="col-number">{{ cifras.pendiente | numberFormat }}</td>
-          <td></td>
-        </tr>
-      </tfoot>
-    </table>
+    <!-- Tabla de participaciones jerárquica -->
+    <div class="card">
+      <p-treetable [value]="treeTableData"
+                   dataKey="key"
+                   [scrollable]="true"
+                   [scrollHeight]="treeTableData && treeTableData.length > 5 ? '400px' : 'auto'"
+                   styleClass="tabla-participaciones-tree"
+                   [tableStyle]="{'min-width':'100%'}"
+                   *ngIf="treeTableData.length > 0">
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="concepto-header">Concepto</th>
+            <th class="col-number">Presupuesto ($)</th>
+            <th class="col-number">Distribuido ($)</th>
+            <th class="col-number">Pendiente ($)</th>
+            <th class="col-avance">Estado Avance (%)</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+          <tr>
+            <td class="concepto-cell" [style.color]="'#103d6e'" [style.font-weight]="rowNode.parent ? '600' : '700'">
+              <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+              {{ rowData.concepto }}
+            </td>
+            <td class="col-number">{{ rowData.presupuesto | numberFormat }}</td>
+            <td class="col-number">{{ rowData.distribuido | numberFormat }}</td>
+            <td class="col-number">{{ rowData.pendiente | numberFormat }}</td>
+            <td class="col-avance">
+              <span class="avance-badge"
+                    [class.badge-green]="rowData.avance >= 1"
+                    [class.badge-orange]="rowData.avance < 1">
+                {{ rowData.avance | percentFormat:2 }}
+              </span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <tr class="total-row">
+            <td><strong>Total SGP</strong></td>
+            <td class="col-number">
+              <strong>{{ getTreeTableTotal('presupuesto') | numberFormat }}</strong>
+            </td>
+            <td class="col-number">
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill"
+                     [style.width.%]="getTreeTableAvanceTotal() * 100"></div>
+              </div>
+            </td>
+            <td class="col-number">
+              <strong>{{ getTreeTableTotal('pendiente') | numberFormat }}</strong>
+            </td>
+            <td></td>
+          </tr>
+        </ng-template>
+      </p-treetable>
+
+      <!-- Mensaje cuando no hay datos -->
+      <div *ngIf="treeTableData.length === 0"
+           style="padding: 1rem; text-align: center; color: #666;">
+        <p>No hay datos para mostrar para la vigencia: {{ selectedVigencia.label }}</p>
+      </div>
+    </div>
 
   </div>
 
