@@ -483,7 +483,7 @@
         background-color: #004583 !important;
         color: white !important;
         font-size: 0.95rem;
-        padding: 1rem 0.5rem;
+        padding: .5rem 0.5rem;
       }
 
       // Mes header (rowspan)
@@ -501,7 +501,7 @@
         background-color: #f8fafc !important;
         color: #004583 !important;
         font-size: 0.85rem;
-        padding: 0.75rem 0.5rem;
+        padding: 0.25rem 0.5rem;
         border-bottom: 1px solid #e2e8f0;
 
         &.mineria-header {
@@ -519,7 +519,7 @@
       &.sub-header {
         font-weight: 600;
         font-size: 0.8rem;
-        padding: 0.5rem;
+        padding: 0.25rem;
         
         &.mineria-sub {
           background-color: #e8f5e8 !important;
@@ -537,7 +537,7 @@
 
     .p-datatable-tbody > tr > td {
       border: 1px solid #f1f5f9;
-      padding: 0.25rem;
+      padding: 0.125rem;
       font-family: "Work Sans", sans-serif;
 
       // Mes cells

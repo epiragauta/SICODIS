@@ -35,7 +35,8 @@
       <div class="p-field bienio-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="bienio" [options]="vigencias" inputId="bienioSelect" [(ngModel)]="selectedVigencia"
-            optionLabel="label" [showClear]="false" placeholder="Bienio"></p-select>
+            optionLabel="label" [showClear]="false" placeholder="Bienio"
+            (onChange)="onVigenciaChange($event)"></p-select>
           <label for="bienioSelect">Bienio</label>
         </p-floatlabel>
       </div>
@@ -196,6 +197,7 @@
     </div>
     
 <p-table
+  #comparativeTable
   [value]="monthlyComparisonData"
   styleClass="p-datatable-sm comparative-table"
   [tableStyle]="{ 'table-layout': 'fixed', 'width': '100%' }"
@@ -206,24 +208,24 @@
     <tr>
       <th rowspan="3" class="mes-header" style="width: 12%">Mes</th>
       <th colspan="4" class="main-header"> 20% Asignaciones Directas</th>
-      <th colspan="4" class="main-header">5% Asignaciones Directas Anticipadas</th>
+      <th *ngIf="showAnticipadas" colspan="4" class="main-header">5% Asignaciones Directas Anticipadas</th>
     </tr>
     <tr>
       
       <th colspan="2" class="group-header mineria-header" style="width: 42.5%">Minería</th>
       <th colspan="2" class="group-header hidrocarburos-header" style="width: 42.5%">Hidrocarburos</th>
-      <th colspan="2" class="group-header mineria-header" style="width: 42.5%">Minería</th>
-      <th colspan="2" class="group-header hidrocarburos-header" style="width: 42.5%">Hidrocarburos</th>      
+      <th *ngIf="showAnticipadas" colspan="2" class="group-header mineria-header" style="width: 42.5%">Minería</th>
+      <th *ngIf="showAnticipadas" colspan="2" class="group-header hidrocarburos-header" style="width: 42.5%">Hidrocarburos</th>
     </tr>
     <tr>
       <th class="sub-header mineria-sub" style="width: 21.25%">PBC</th>
       <th class="sub-header mineria-sub" style="width: 21.25%">Recaudo</th>
       <th class="sub-header hidrocarburos-sub" style="width: 21.25%">PBC</th>
       <th class="sub-header hidrocarburos-sub" style="width: 21.25%">Recaudo</th>
-      <th class="sub-header mineria-sub" style="width: 21.25%">PBC</th>
-      <th class="sub-header mineria-sub" style="width: 21.25%">Recaudo</th>
-      <th class="sub-header hidrocarburos-sub" style="width: 21.25%">PBC</th>
-      <th class="sub-header hidrocarburos-sub" style="width: 21.25%">Recaudo</th>      
+      <th *ngIf="showAnticipadas" class="sub-header mineria-sub" style="width: 21.25%">PBC</th>
+      <th *ngIf="showAnticipadas" class="sub-header mineria-sub" style="width: 21.25%">Recaudo</th>
+      <th *ngIf="showAnticipadas" class="sub-header hidrocarburos-sub" style="width: 21.25%">PBC</th>
+      <th *ngIf="showAnticipadas" class="sub-header hidrocarburos-sub" style="width: 21.25%">Recaudo</th>
     </tr>
   </ng-template>
 
@@ -247,19 +249,19 @@
           [class.highlighted-cell-recaudo]="rowData.mes === highlightedMes && highlightedDatasetKey === 'hidro_recaudo'">
         {{ rowData.hidrocarburos_recaudo_ad20 | numberFormat }}
       </td>
-      <td class="number-cell"
+      <td *ngIf="showAnticipadas" class="number-cell"
           [class.highlighted-cell-pbc]="rowData.mes === highlightedMes && highlightedDatasetKey === 'mineria_pbc'">
         {{ rowData.mineria_pbc5 | numberFormat }}
       </td>
-      <td class="number-cell"
+      <td *ngIf="showAnticipadas" class="number-cell"
           [class.highlighted-cell-recaudo]="rowData.mes === highlightedMes && highlightedDatasetKey === 'mineria_recaudo'">
         {{ rowData.mineria_recaudo_ad5 | numberFormat }}
       </td>
-      <td class="number-cell"
+      <td *ngIf="showAnticipadas" class="number-cell"
           [class.highlighted-cell-pbc]="rowData.mes === highlightedMes && highlightedDatasetKey === 'hidro_pbc'">
         {{ rowData.hidrocarburos_pbc5 | numberFormat }}
       </td>
-      <td class="number-cell"
+      <td *ngIf="showAnticipadas" class="number-cell"
           [class.highlighted-cell-recaudo]="rowData.mes === highlightedMes && highlightedDatasetKey === 'hidro_recaudo'">
         {{ rowData.hidrocarburos_recaudo_ad5 | numberFormat }}
       </td>
@@ -280,13 +282,13 @@
   </div>
 
   
-          <!-- Sección de notas -->
-          <div class="notes-section">
-            <h3 class="notes-title">NOTAS</h3>
-            <div class="notes-content">
-              <p class="note-item">(1) -	El recaudo de Asignaciones Directas por sector se visualiza hasta la apropiación presupuestal corriente total por este concepto. Existen beneficiarios de estos recursos que recaudaron la totalidad de su presupuesto más rápido que lo proyectado en el PBC. Igualmente, hay otras entidades que presentan rezago en el recaudo frente a la proyección mensual del PBC.</p>
-              <p class="note-item">Fuente: Plan Bienal de Caja (PBC) Asignaciones Directas 2025-2026, recaudo efectivo informado por las Agencias Nacional de Minería (ANM)  y Nacional de Hidrocarburos (ANH), e información remitida por el Ministerio de Minas y Energía según el numeral 2 del artículo 2.1.1.2.17. del Decreto 1821 de 2020.</p>
-            </div>
-          </div>   
+  <!-- Sección de notas -->
+  <div class="notes-section">
+    <h3 class="notes-title">NOTAS</h3>
+    <div class="notes-content">
+      <p class="note-item">(1) -	El recaudo de Asignaciones Directas por sector se visualiza hasta la apropiación presupuestal corriente total por este concepto. Existen beneficiarios de estos recursos que recaudaron la totalidad de su presupuesto más rápido que lo proyectado en el PBC. Igualmente, hay otras entidades que presentan rezago en el recaudo frente a la proyección mensual del PBC.</p>
+      <p class="note-item">Fuente: Plan Bienal de Caja (PBC) Asignaciones Directas 2025-2026, recaudo efectivo informado por las Agencias Nacional de Minería (ANM)  y Nacional de Hidrocarburos (ANH), e información remitida por el Ministerio de Minas y Energía según el numeral 2 del artículo 2.1.1.2.17. del Decreto 1821 de 2020.</p>
+    </div>
+  </div>   
 
 </div>
