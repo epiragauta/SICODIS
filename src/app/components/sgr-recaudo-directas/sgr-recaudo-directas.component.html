@@ -136,7 +136,7 @@
         <p-card class="chart-card">
           <ng-template pTemplate="header">
             <div class="chart-header-row">
-              <h3 class="chart-title">Recaudo Directas (20% y 5% anticipadas) <br>frente al PBC - Minería</h3>
+              <h3 class="chart-title">{{ chartTitle}} <br>frente al PBC - Minería</h3>
               <button pButton type="button"
                 class="p-button-sm p-button-outlined toggle-meses-btn"
                 [icon]="showOnlyElapsedMonths ? 'pi pi-calendar-plus' : 'pi pi-calendar-minus'"
@@ -162,7 +162,7 @@
         <p-card class="chart-card">
           <ng-template pTemplate="header">
             <div class="chart-header-row">
-              <h3 class="chart-title">Recaudo Directas (20% y 5% anticipadas) <br>frente al PBC - Hidrocarburos</h3>
+              <h3 class="chart-title">{{ chartTitle}} <br>frente al PBC - Hidrocarburos</h3>
               <button pButton type="button"
                 class="p-button-sm p-button-outlined toggle-meses-btn"
                 [icon]="showOnlyElapsedMonths ? 'pi pi-calendar-plus' : 'pi pi-calendar-minus'"
