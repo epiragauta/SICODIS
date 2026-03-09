@@ -107,7 +107,7 @@ export class SgrRecaudoDirectasComponent implements OnInit {
 
   lblAsignacionesDirectas: string = '25% Asignaciones Directas';
   chartTitle: string = 'Recaudo Directas (20% y 5% anticipadas)';
-  
+
   dataRecaudo: SgrRecaudoItem[] = [
     {
       mes: "Ene 2025",
@@ -407,7 +407,7 @@ export class SgrRecaudoDirectasComponent implements OnInit {
     //this.showAnticipadas = label.includes(currentYear);
     this.showAnticipadas = this.selectedVigencia.id >= 6; // Asumiendo que las vigencias tienen IDs correlativos y los más recientes son menores o iguales a 6
     this.lblAsignacionesDirectas = this.showAnticipadas ? '25% Asignaciones Directas' : 'Asignaciones Directas';
-    this.chartTitle = this.showAnticipadas ? 'Recaudo Directas (20% y 5% anticipadas)' : 'Recaudo Directas (20%)';
+    this.chartTitle = this.showAnticipadas ? 'Recaudo Directas (20% y 5% anticipadas)' : 'Recaudo Directas';
     this.applyFilters();
   }
 
