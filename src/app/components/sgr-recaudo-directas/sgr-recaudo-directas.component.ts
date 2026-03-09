@@ -400,8 +400,10 @@ export class SgrRecaudoDirectasComponent implements OnInit {
 
   private updateShowAnticipadas(): void {
     const currentYear = new Date().getFullYear().toString();
-    const label: string = this.selectedVigencia?.label || '';
-    this.showAnticipadas = label.includes(currentYear);
+    //const label: string = this.selectedVigencia?.label || '';
+    //this.showAnticipadas = label.includes(currentYear);
+    this.showAnticipadas = this.selectedVigencia.id >= 6; // Asumiendo que las vigencias tienen IDs correlativos y los más recientes son menores o iguales a 6
+    this.applyFilters();
   }
 
   /**
