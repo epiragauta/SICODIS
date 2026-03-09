@@ -1249,11 +1249,22 @@ export class ReporteFuncionamientoComponent implements OnInit {
     }
   }
 
-  onEntidadCRChange(event: MultiSelectChangeEvent): void {
+  async onEntidadCRChange(event: any): Promise<void> {
     // Actualizar la bandera que indica si hay una entidad CR seleccionada
     this.isEntidadCRSelected = this.selectedEntidadCR !== null && this.selectedEntidadCR !== undefined;
     // Llamar a la API para actualizar los datos con los nuevos filtros
-    this.cargarDistribucionTotalDesdeAPI();
+    await this.cargarDistribucionTotalDesdeAPI();
+    // Actualizar distribucionTotalMultiple con datos de la entidad CR seleccionada
+    // para que la sección "Información adicional" muestre el detalle de la entidad, no del beneficiario
+    if (this.selectedEntidadCR && this.distribucionTotal && this.distribucionTotal.length > 0) {
+      const fuentePrincipal = this.distribucionTotal[0].nombre_fuente ?? (this.selectedFuente.length > 0 ? this.selectedFuente[0].label : 'N/A');
+      this.distribucionTotalMultiple = this.distribucionTotal.map((registro: any) => ({
+        ...registro,
+        beneficiario_seleccionado: this.selectedEntidadCR.nombre_entidad,
+        fuente_principal: fuentePrincipal
+      }));
+      this.actualizarGraficoDetalle();
+    }
   }
 
   /**
