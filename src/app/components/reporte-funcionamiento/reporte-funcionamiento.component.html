@@ -187,22 +187,22 @@
               <div class="metric-value">{{formatMillions2(ejecucionData.cdp)}}</div>
               <div class="metric-label">CDP</div>
             </div>
-            <div class="metric-item">
+            <div class="metric-item" [class.highlighted-metric]="highlightedMetric === 'compromiso'">
               <div class="metric-value">{{formatMillions2(ejecucionData.compromiso)}}</div>
               <div class="metric-label">Compromiso</div>
             </div>
-            <div class="metric-item">
+            <div class="metric-item" [class.highlighted-metric]="highlightedMetric === 'pagos'">
               <div class="metric-value">{{formatMillions2(ejecucionData.pagos)}}</div>
               <div class="metric-label">Pagos</div>
             </div>
-            <div class="metric-item">
+            <div class="metric-item" [class.highlighted-metric]="highlightedMetric === 'saldo_por_comprometer'">
               <div class="metric-value">{{formatMillions2(ejecucionData.saldo_por_comprometer)}}</div>
               <div class="metric-label">Saldo por comprometer</div>
-            </div>            
-            <div class="metric-item">
+            </div>
+            <div class="metric-item" [class.highlighted-metric]="highlightedMetric === 'saldo_sin_afectacion'">
               <div class="metric-value">{{formatMillions2(ejecucionData.saldo_sin_afectacion)}}</div>
               <div class="metric-label">Saldo sin afectación</div>
-            </div>            
+            </div>
           </div>
         </mat-card-content>
       </mat-card>
@@ -222,11 +222,11 @@
               <div class="metric-value">{{formatMillions2(situacionCajaData.recaudo)}}</div>
               <div class="metric-label">Recaudo Total</div>
             </div>
-            <div class="metric-item">
+            <div class="metric-item" [class.highlighted-metric]="highlightedMetric === 'caja_total'">
               <div class="metric-value">{{formatMillions2(situacionCajaData.cajaTotal)}}</div>
               <div class="metric-label">Caja Total</div>
             </div>
-            <div class="metric-item">
+            <div class="metric-item" [class.highlighted-metric]="highlightedMetric === 'caja_disponible'">
               <div class="metric-value">{{formatMillions2(situacionCajaData.cajaDisponible)}}</div>
               <div class="metric-label">Caja Disponible</div>
             </div>
@@ -243,13 +243,13 @@
           <mat-card-content>
             <!-- <div class="recaudo-metrics"> -->
               <div class="metrics-row" style="justify-content: center">
-                <div class="metric-item">
+                <div class="metric-item" [class.highlighted-metric]="highlightedMetric === 'presupuesto_corriente'">
                   <div class="metric-value">{{formatMillions2(avanceRecaudoData.presupuestoCorriente)}}</div>
                   <div class="metric-label">Presupuesto corriente</div>
                 </div>
               </div>
               <div class="metrics-row" style="justify-content: center">
-                <div class="metric-item">
+                <div class="metric-item" [class.highlighted-metric]="highlightedMetric === 'iac_corriente'">
                   <div class="metric-value">{{formatMillions2(avanceRecaudoData.iacCorriente)}}</div>
                   <div class="metric-label">Recaudo corriente</div>
                 </div>

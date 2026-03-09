@@ -315,6 +315,18 @@
             .avance{
               font-size: 1.75rem;
             }
+
+            &.highlighted-metric {
+              background-color: #fff3e0;
+              border-radius: 6px;
+              outline: 2px solid #E07800;
+              color: #b34500;
+              transition: background-color 0.2s ease, outline 0.2s ease;
+
+              .metric-value {
+                color: #b34500;
+              }
+            }
           }
         }
       }

@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
+﻿import { Component, NgZone, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SicodisApiService } from '../../services/sicodis-api.service';
 import type { DiccionarioItem, SiglasItem, FuncionamientoSiglasDiccionario } from '../../services/sicodis-api.service';
@@ -292,8 +292,12 @@ export class ReporteFuncionamientoComponent implements OnInit {
   }
 
 
+  // Métrica resaltada por hover en las gráficas
+  highlightedMetric: string | null = null;
+
   constructor(
-    private sicodisApiService: SicodisApiService
+    private sicodisApiService: SicodisApiService,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit(): void {
@@ -1854,6 +1858,14 @@ export class ReporteFuncionamientoComponent implements OnInit {
     this.cargarDistribucionTotalDesdeAPI();
   }
 
+  onChartHover(metric: string): void {
+    this.highlightedMetric = metric;
+  }
+
+  clearChartHighlight(): void {
+    this.highlightedMetric = null;
+  }
+
   /**
    * Actualizar los datos de las tarjetas con el registro seleccionado
    */
@@ -2310,7 +2322,19 @@ export class ReporteFuncionamientoComponent implements OnInit {
         mode: 'nearest',
         intersect: false,
         axis: 'r'
-      }      
+      }
+    };
+    const afectacionMetrics = ['pagos', null, null, 'saldo_sin_afectacion'];
+    this.horizontalBarAfectacionOptions.onHover = (event: any, _activeElements: any[], chart: any) => {
+      const elements = event.native
+        ? chart.getElementsAtEventForMode(event.native, 'nearest', { intersect: true }, false)
+        : [];
+      if (elements.length > 0) {
+        const metric = afectacionMetrics[elements[0].datasetIndex] ?? null;
+        this.ngZone.run(() => metric ? this.onChartHover(metric) : this.clearChartHighlight());
+      } else {
+        this.ngZone.run(() => this.clearChartHighlight());
+      }
     };
 
     this.hBarSituacionCajaOpts = {
@@ -2400,7 +2424,19 @@ export class ReporteFuncionamientoComponent implements OnInit {
         mode: 'nearest',
         intersect: false,
         axis: 'r'
-      }      
+      }
+    };
+    const cajaMetrics = ['pagos', 'caja_disponible'];
+    this.hBarSituacionCajaOpts.onHover = (event: any, _activeElements: any[], chart: any) => {
+      const elements = event.native
+        ? chart.getElementsAtEventForMode(event.native, 'nearest', { intersect: true }, false)
+        : [];
+      if (elements.length > 0) {
+        const metric = cajaMetrics[elements[0].datasetIndex] ?? null;
+        this.ngZone.run(() => metric ? this.onChartHover(metric) : this.clearChartHighlight());
+      } else {
+        this.ngZone.run(() => this.clearChartHighlight());
+      }
     };
 
     // Opciones para gráficos de dona
@@ -2469,6 +2505,15 @@ export class ReporteFuncionamientoComponent implements OnInit {
         mode: 'nearest',
         intersect: false,
         axis: 'r'
+      }
+    };
+    const donutMetrics = ['compromiso', 'saldo_por_comprometer'];
+    this.donutAvanceEjecucionOptions.onHover = (event: any, activeElements: any[]) => {
+      if (activeElements.length > 0) {
+        const metric = donutMetrics[activeElements[0].index] ?? null;
+        this.ngZone.run(() => this.onChartHover(metric));
+      } else {
+        this.ngZone.run(() => this.clearChartHighlight());
       }
     };
 
@@ -2586,6 +2631,18 @@ export class ReporteFuncionamientoComponent implements OnInit {
       animation: {
         duration: 2000,
         easing: 'easeOutQuart'
+      }
+    };
+    const recaudoMetrics = ['iac_corriente', null];
+    this.hBarAvanceRecaudoOptions.onHover = (event: any, _activeElements: any[], chart: any) => {
+      const elements = event.native
+        ? chart.getElementsAtEventForMode(event.native, 'nearest', { intersect: true }, false)
+        : [];
+      if (elements.length > 0) {
+        const metric = recaudoMetrics[elements[0].datasetIndex] ?? null;
+        this.ngZone.run(() => metric ? this.onChartHover(metric) : this.clearChartHighlight());
+      } else {
+        this.ngZone.run(() => this.clearChartHighlight());
       }
     };
 
