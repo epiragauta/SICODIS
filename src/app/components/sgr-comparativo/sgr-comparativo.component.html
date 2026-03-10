@@ -37,11 +37,11 @@
               label="Presupuesto y Recaudo" 
               (click)="showPresupuestoRecaudo()">
       </button>
-      <button pButton type="button" 
+      <!--button pButton type="button" 
               [class]="showPlanBienalView ? 'p-button-primary' : 'p-button-secondary'" 
               label="Plan Bienal de Caja y Recaudo" 
               (click)="showPlanBienal()">
-      </button>
+      </button -->
     </div>
   </div>
 
@@ -160,25 +160,25 @@
           <div class="donut-charts-container">
             <!-- First donut chart -->
             <div class="donut-chart-item">
-              <h4 class="donut-chart-title">Presupuesto y recaudo corrientes Asignaciones Directas (25%)</h4>
+              <h4 class="donut-chart-title">Presupuesto y recaudo corrientes 20% Asignaciones Directas</h4>
               <div class="donut-chart-wrapper">
-                <p-chart 
-                  type="doughnut" 
-                  [data]="planBienalMunicipio1DirectasDonutData" 
+                <p-chart
+                  type="doughnut"
+                  [data]="planBienalMunicipio1DirectasDonutData"
                   [options]="donutChartOptions"
                   width="265px"
                   height="150px">
                 </p-chart>
               </div>
             </div>
-            
+
             <!-- Second donut chart -->
             <div class="donut-chart-item">
-              <h4 class="donut-chart-title">Presupuesto y recaudo corrientes Asignación para la Inversión Local</h4>
+              <h4 class="donut-chart-title">Presupuesto y recaudo corrientes Asignaciones Directas</h4>
               <div class="donut-chart-wrapper">
-                <p-chart 
-                  type="doughnut" 
-                  [data]="planBienalMunicipio1LocalDonutData" 
+                <p-chart
+                  type="doughnut"
+                  [data]="planBienalMunicipio1LocalDonutData"
                   [options]="donutChartOptions"
                   width="265px"
                   height="150px">
@@ -215,25 +215,25 @@
           <div class="donut-charts-container">
             <!-- First donut chart -->
             <div class="donut-chart-item">
-              <h4 class="donut-chart-title">Presupuesto y recaudo corrientes Asignaciones Directas (25%)</h4>
+              <h4 class="donut-chart-title">Presupuesto y recaudo corrientes 20% Asignaciones Directas</h4>
               <div class="donut-chart-wrapper">
-                <p-chart 
-                  type="doughnut" 
-                  [data]="planBienalMunicipio2DirectasDonutData" 
+                <p-chart
+                  type="doughnut"
+                  [data]="planBienalMunicipio2DirectasDonutData"
                   [options]="donutChartOptions"
                   width="265px"
                   height="150px">
                 </p-chart>
               </div>
             </div>
-            
+
             <!-- Second donut chart -->
             <div class="donut-chart-item">
-              <h4 class="donut-chart-title">Presupuesto y recaudo corrientes Asignación para la Inversión Local</h4>
+              <h4 class="donut-chart-title">Presupuesto y recaudo corrientes Asignaciones Directas</h4>
               <div class="donut-chart-wrapper">
-                <p-chart 
-                  type="doughnut" 
-                  [data]="planBienalMunicipio2LocalDonutData" 
+                <p-chart
+                  type="doughnut"
+                  [data]="planBienalMunicipio2LocalDonutData"
                   [options]="donutChartOptions"
                   width="265px"
                   height="150px">
@@ -256,36 +256,66 @@
           <div class="table-header">
             <h3 class="municipality-table-title">{{ getSelectedMunicipalityName(1) }}</h3>
           </div>
-          
+
           <div style="overflow-x: auto;">
-            <p-table [value]="municipality1TableData" 
-                     styleClass="p-datatable-sm municipality-table">
-            <ng-template pTemplate="header">
-              <tr>
-                <th class="asignacion-header">Asignación</th>
-                <th class="presupuesto-header">Presupuesto Total</th>
-                <th class="corriente-header">Presupuesto Corriente</th>
-                <th class="otros-header">Presupuesto Otros</th>
-                <th class="recaudo-corriente-header">Recaudo Corriente</th>
-                <th class="recaudo-otros-header">Recaudo Otros</th>
-                <th class="recaudo-total-header">Recaudo Total</th>
-                <th class="avance-iac-header">Avance IAC frente a presupuesto</th>
-              </tr>
-            </ng-template>
-            
-            <ng-template pTemplate="body" let-rowData>
-              <tr>
-                <td class="asignacion-cell">{{rowData.asignacion}}</td>
-                <td class="number-cell">{{rowData.presupuesto_total | numberFormat}}</td>
-                <td class="number-cell">{{rowData.presupuesto_corriente | numberFormat}}</td>
-                <td class="number-cell">{{rowData.presupuesto_otros | numberFormat}}</td>
-                <td class="number-cell">{{rowData.recaudo_corriente | numberFormat}}</td>
-                <td class="number-cell">{{rowData.recaudo_otros | numberFormat}}</td>
-                <td class="number-cell">{{rowData.recaudo_total | numberFormat}}</td>
-                <td class="number-cell">{{rowData.avance_iac | numberFormat}}</td>
-              </tr>
-            </ng-template>
-            </p-table>
+            <p-treetable [value]="municipality1TableData"
+                         [columns]="tableCols"
+                         showGridlines
+                         [scrollable]="true"
+                         scrollHeight="400px"
+                         styleClass="p-treetable-sm municipality-table"
+                         [resizableColumns]="true"
+                         columnResizeMode="expand">
+
+              <ng-template pTemplate="colgroup" let-columns>
+                <colgroup>
+                  <col *ngFor="let col of columns" [style.width]="col.width">
+                </colgroup>
+              </ng-template>
+
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th *ngFor="let col of columns"
+                      [ngStyle]="{'width': col.width, 'backgroundColor': col.color}"
+                      [ngClass]="col.class ? col.class : ''"
+                      [pTooltip]="col.tooltip"
+                      tooltipPosition="top">
+                    <span [innerHTML]="col.header"></span>
+                  </th>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+                <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode">
+                  <td *ngFor="let col of tableCols">
+                    <p-treeTableToggler [rowNode]="rowNode" *ngIf="col.field === 'concepto'"></p-treeTableToggler>
+                    <ng-container [ngSwitch]="col.field">
+                      <ng-container *ngSwitchCase="'concepto'">
+                        <span [ngClass]="{'font-bold': rowNode.level <= 1}">
+                          {{rowData.concepto}}
+                        </span>
+                      </ng-container>
+
+                      <ng-container *ngSwitchCase="'avance_iac_presupuesto'">
+                        <div [ngClass]="{'font-bold': rowNode.level <= 1}" class="text-right">
+                          {{(rowData[col.field] * 100) | numberFormat}}%
+                        </div>
+                      </ng-container>
+
+                      <ng-container *ngSwitchDefault>
+                        <div [ngClass]="{'font-bold': rowNode.level <= 1}" class="text-right"
+                             *ngIf="rowData[col.field] !== null && rowData[col.field] !== undefined">
+                          {{rowData[col.field] | numberFormat}}
+                        </div>
+                        <div class="text-right no-data" *ngIf="rowData[col.field] === null || rowData[col.field] === undefined">
+                          -
+                        </div>
+                      </ng-container>
+                    </ng-container>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-treetable>
           </div>
         </div>
 
@@ -294,36 +324,66 @@
           <div class="table-header">
             <h3 class="municipality-table-title">{{ getSelectedMunicipalityName(2) }}</h3>
           </div>
-          
+
           <div style="overflow-x: auto;">
-            <p-table [value]="municipality2TableData" 
-                     styleClass="p-datatable-sm municipality-table">
-            <ng-template pTemplate="header">
-              <tr>
-                <th class="asignacion-header">Asignación</th>
-                <th class="presupuesto-header">Presupuesto Total</th>
-                <th class="corriente-header">Presupuesto Corriente</th>
-                <th class="otros-header">Presupuesto Otros</th>
-                <th class="recaudo-corriente-header">Recaudo Corriente</th>
-                <th class="recaudo-otros-header">Recaudo Otros</th>
-                <th class="recaudo-total-header">Recaudo Total</th>
-                <th class="avance-iac-header">Avance IAC frente a presupuesto</th>
-              </tr>
-            </ng-template>
-            
-            <ng-template pTemplate="body" let-rowData>
-              <tr>
-                <td class="asignacion-cell">{{rowData.asignacion}}</td>
-                <td class="number-cell">{{rowData.presupuesto_total | numberFormat}}</td>
-                <td class="number-cell">{{rowData.presupuesto_corriente | numberFormat}}</td>
-                <td class="number-cell">{{rowData.presupuesto_otros | numberFormat}}</td>
-                <td class="number-cell">{{rowData.recaudo_corriente | numberFormat}}</td>
-                <td class="number-cell">{{rowData.recaudo_otros | numberFormat}}</td>
-                <td class="number-cell">{{rowData.recaudo_total | numberFormat}}</td>
-                <td class="number-cell">{{rowData.avance_iac | numberFormat}}</td>
-              </tr>
-            </ng-template>
-            </p-table>
+            <p-treetable [value]="municipality2TableData"
+                         [columns]="tableCols"
+                         showGridlines
+                         [scrollable]="true"
+                         scrollHeight="400px"
+                         styleClass="p-treetable-sm municipality-table"
+                         [resizableColumns]="true"
+                         columnResizeMode="expand">
+
+              <ng-template pTemplate="colgroup" let-columns>
+                <colgroup>
+                  <col *ngFor="let col of columns" [style.width]="col.width">
+                </colgroup>
+              </ng-template>
+
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th *ngFor="let col of columns"
+                      [ngStyle]="{'width': col.width, 'backgroundColor': col.color}"
+                      [ngClass]="col.class ? col.class : ''"
+                      [pTooltip]="col.tooltip"
+                      tooltipPosition="top">
+                    <span [innerHTML]="col.header"></span>
+                  </th>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+                <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode">
+                  <td *ngFor="let col of tableCols">
+                    <p-treeTableToggler [rowNode]="rowNode" *ngIf="col.field === 'concepto'"></p-treeTableToggler>
+                    <ng-container [ngSwitch]="col.field">
+                      <ng-container *ngSwitchCase="'concepto'">
+                        <span [ngClass]="{'font-bold': rowNode.level <= 1}">
+                          {{rowData.concepto}}
+                        </span>
+                      </ng-container>
+
+                      <ng-container *ngSwitchCase="'avance_iac_presupuesto'">
+                        <div [ngClass]="{'font-bold': rowNode.level <= 1}" class="text-right">
+                          {{(rowData[col.field] * 100) | numberFormat}}%
+                        </div>
+                      </ng-container>
+
+                      <ng-container *ngSwitchDefault>
+                        <div [ngClass]="{'font-bold': rowNode.level <= 1}" class="text-right"
+                             *ngIf="rowData[col.field] !== null && rowData[col.field] !== undefined">
+                          {{rowData[col.field] | numberFormat}}
+                        </div>
+                        <div class="text-right no-data" *ngIf="rowData[col.field] === null || rowData[col.field] === undefined">
+                          -
+                        </div>
+                      </ng-container>
+                    </ng-container>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-treetable>
           </div>
         </div>
       </div>

@@ -409,6 +409,10 @@ export interface SgrPtoRecaudoItem {
   avance_iac_presupuesto: number;
 }
 
+export interface SgrResumenPtoRecaudoComparador {
+  entidad1: SgrPtoRecaudoItem[];
+  entidad2: SgrPtoRecaudoItem[];
+}
 
 export interface SgrRecaudoMensualSectorResumen {
   concepto: string;
@@ -833,12 +837,30 @@ export class SicodisApiService {
                                    , municipio: string
                                    , fecha_actualizacion: string
                                    , fecha_corte : string
-                                                ): Observable<Blob> {  
+                                                ): Observable<Blob> {
     const url = `${this.baseUrl}/sgr/descarga_resumen_pto_recaudo/${idvigencia}/${tipoConsulta}/${CodigoEntidad}/${vigencia}/${depto}/${municipio}/${fecha_actualizacion}/${fecha_corte}`;
     return this.http.get(url, { responseType: 'blob' });  // responseType 'blob' indica que será un archivo binario
   }
 
-
+  /**
+   * Obtiene el resumen de presupuesto y recaudo comparador entre dos entidades
+   * @param idVigencia - ID de la vigencia
+   * @param tipoConsulta1 - Tipo de consulta para entidad 1 (por ahora 7)
+   * @param codigoEntidad1 - Código del municipio o departamento 1
+   * @param tipoConsulta2 - Tipo de consulta para entidad 2 (por ahora 7)
+   * @param codigoEntidad2 - Código del municipio o departamento 2
+   * @returns Observable con el comparativo de las dos entidades
+   */
+  getSgrResumenPtoRecaudoComparador(
+    idVigencia: number,
+    tipoConsulta1: number,
+    codigoEntidad1: string,
+    tipoConsulta2: number,
+    codigoEntidad2: string
+  ): Observable<SgrResumenPtoRecaudoComparador> {
+    const url = `${this.baseUrl}/sgr/resumen_pto_recaudo_comparador/${idVigencia}/${tipoConsulta1}/${codigoEntidad1}/${tipoConsulta2}/${codigoEntidad2}`;
+    return this.http.get<SgrResumenPtoRecaudoComparador>(url);
+  }
 
 /**
  * Consulta la información del recaudo mensual por id de vigencia
