@@ -59,7 +59,7 @@
       <div class="p-field departamento-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="departamento" [options]="departamentos" inputId="departamentoSelect" [(ngModel)]="selectedDepartamento"
-            (onChange)="onDepartmentChange($event)" optionLabel="nombre" [showClear]="false" placeholder="Departamento"></p-select>
+            (onChange)="onDepartmentChange($event)" optionLabel="nombre" [showClear]="false"></p-select>
           <label for="departamentoSelect">Departamento</label>
         </p-floatlabel>
       </div>
@@ -67,7 +67,7 @@
       <div class="p-field municipio-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="municipio" [options]="municipios" inputId="municipioSelect" [(ngModel)]="selectedMunicipio"
-            (onChange)="onMunicipioChange($event)" optionLabel="nombre_municipio" [showClear]="false" placeholder="Municipio" [disabled]="!selectedDepartamento"></p-select>
+            (onChange)="onMunicipioChange($event)" optionLabel="nombre_municipio" [showClear]="false" [disabled]="!selectedDepartamento"></p-select>
           <label for="municipioSelect">Municipio</label>
         </p-floatlabel>
       </div>
@@ -75,7 +75,7 @@
       <div class="p-field departamento2-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="departamento2" [options]="departamentos" inputId="departamento2Select" [(ngModel)]="selectedDepartamento2"
-            (onChange)="onDepartment2Change($event)" optionLabel="nombre" [showClear]="false" placeholder="Departamento 2"></p-select>
+            (onChange)="onDepartment2Change($event)" optionLabel="nombre" [showClear]="false"></p-select>
           <label for="departamento2Select">Departamento 2</label>
         </p-floatlabel>
       </div>
@@ -83,7 +83,7 @@
       <div class="p-field municipio2-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="municipio2" [options]="municipios2" inputId="municipio2Select" [(ngModel)]="selectedMunicipio2"
-            (onChange)="onMunicipio2Change($event)" optionLabel="nombre_municipio" [showClear]="false" placeholder="Municipio 2" [disabled]="!selectedDepartamento2"></p-select>
+            (onChange)="onMunicipio2Change($event)" optionLabel="nombre_municipio" [showClear]="false" [disabled]="!selectedDepartamento2"></p-select>
           <label for="municipio2Select">Municipio 2</label>
         </p-floatlabel>
       </div>

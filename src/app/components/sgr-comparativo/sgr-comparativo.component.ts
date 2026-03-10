@@ -54,7 +54,7 @@ export class SgrComparativoComponent implements OnInit {
   showPlanBienalView: boolean = false;
 
   // Filtros
-  selectedBienio: any = { id: 1, label: '2025 - 2026' };
+  selectedBienio: any = { id: 8, label: '2025 - 2026' };
   selectedDepartamento: any = null;
   selectedMunicipio: any = null;
   selectedDepartamento2: any = null;
@@ -122,37 +122,12 @@ export class SgrComparativoComponent implements OnInit {
 
     // Inicialización del componente
     this.initializeCharts();
-    this.initializePlanBienalCharts();
-    this.initializeDonutCharts();
-    this.initializeTableData();
-    this.initializeMunicipalityTables();
   }
 
   /**
    * Inicializar datos y opciones de gráficos
    */
   private initializeCharts(): void {
-    // Datos unificados para ambos municipios (incluye Asignación Local y Directas 25%)
-    const chartData = {
-      labels: ['Asignación Local', 'Directas (25%)'],
-      datasets: [
-        {
-          label: 'Plan Bienal de Caja',
-          data: [125000000000, 87500000000], // Valores simulados en pesos
-          backgroundColor: ['#f38135ff', '#f33aafff'], // Verde oscuro y azul oscuro para mejor contraste
-          borderColor: ['#be480eff', '#b11049ff'], // Bordes más oscuros
-          borderWidth: 1
-        },
-        {
-          label: 'Recaudo',
-          data: [98750000000, 72100000000], // Valores simulados en pesos
-          backgroundColor: ['#edb87cff', '#7991e8ff'], // Naranja oscuro y azul medio
-          borderColor: ['#8c5516', '#3d4d7a'], // Bordes complementarios
-          borderWidth: 1
-        }
-      ]
-    };
-
     const chartOptions = {
       responsive: true,
       maintainAspectRatio: false,
@@ -184,238 +159,10 @@ export class SgrComparativoComponent implements OnInit {
       }
     };
 
-    // Duplicar los mismos datos para ambos municipios
-    this.municipio1ChartData = { ...chartData };
     this.municipio1ChartOptions = { ...chartOptions };
-    
-    this.municipio2ChartData = { ...chartData };
     this.municipio2ChartOptions = { ...chartOptions };
   }
-
-  /**
-   * Inicializar datos y opciones de gráficos para Plan Bienal view
-   */
-  private initializePlanBienalCharts(): void {
-    // Datos unificados para ambos municipios con labels modificados
-    const planBienalChartData = {
-      labels: ['Asignación Local', 'Directas (25%)'],
-      datasets: [
-        {
-          label: 'Presupuesto Total',
-          data: [125000000000, 87500000000], // Valores simulados en pesos
-          backgroundColor: ['#f38135ff', '#f33aafff'], 
-          borderColor: ['#be480eff', '#b11049ff'], 
-          borderWidth: 1
-        },
-        {
-          label: 'Recaudo Total',
-          data: [98750000000, 72100000000], // Valores simulados en pesos
-          backgroundColor: ['#edb87cff', '#7991e8ff'], 
-          borderColor: ['#8c5516', '#3d4d7a'], 
-          borderWidth: 1
-        }
-      ]
-    };
-
-    const planBienalChartOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      indexAxis: 'y',
-      plugins: {
-        legend: {
-          display: true,
-          position: 'bottom'
-        },
-        title: {
-          display: false
-        }
-      },
-      scales: {
-        x: {
-          beginAtZero: true,
-          ticks: {
-            maxTicksLimit: 4,
-            callback: (value: any) => {
-              return new Intl.NumberFormat('es-CO', {
-                style: 'currency',
-                currency: 'COP',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0
-              }).format(value).replace('$', ''); // Formato en miles de millones sin decimales
-            }
-          }
-        }
-      }
-    };
-
-    // Duplicar los mismos datos para ambos municipios
-    this.planBienalMunicipio1ChartData = { ...planBienalChartData };
-    this.planBienalMunicipio1ChartOptions = { ...planBienalChartOptions };
-    
-    this.planBienalMunicipio2ChartData = { ...planBienalChartData };
-    this.planBienalMunicipio2ChartOptions = { ...planBienalChartOptions };
-  }
-
-  /**
-   * Inicializar datos y opciones de gráficos donut
-   */
-  private initializeDonutCharts(): void {
-    // Datos para gráficos donut de Asignaciones Directas (25%)
-    const directasDonutData = {
-      labels: ['Presupuesto', 'Recaudo'],
-      datasets: [{
-        data: [87500000000, 72100000000], // Valores simulados
-        backgroundColor: ['#f33aafff', '#7991e8ff'],
-        borderColor: ['#b11049ff', '#3d4d7a'],
-        borderWidth: 1
-      }]
-    };
-
-    // Datos para gráficos donut de Asignación para la Inversión Local
-    const localDonutData = {
-      labels: ['Presupuesto', 'Recaudo'],
-      datasets: [{
-        data: [125000000000, 98750000000], // Valores simulados
-        backgroundColor: ['#f38135ff', '#edb87cff'],
-        borderColor: ['#be480eff', '#8c5516'],
-        borderWidth: 1
-      }]
-    };
-
-    // Opciones para gráficos donut horizontales
-    this.donutChartOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: true,
-          position: 'right',
-          labels: {
-            usePointStyle: true,
-            padding: 20,
-            font: {
-              size: 12
-            }
-          }
-        },
-        datalabels: {
-          display: false
-        },
-        tooltip: {
-          callbacks: {
-            label: (context: any) => {
-              const label = context.label || '';
-              const value = context.parsed;
-              const formatted = new Intl.NumberFormat('es-CO', {
-                style: 'currency',
-                currency: 'COP',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0
-              }).format(value);
-              return `${label}: ${formatted}`;
-            }
-          }
-        }
-      }
-    };
-
-    // Asignar los mismos datos a todos los municipios
-    this.planBienalMunicipio1DirectasDonutData = { ...directasDonutData };
-    this.planBienalMunicipio1LocalDonutData = { ...localDonutData };
-    this.planBienalMunicipio2DirectasDonutData = { ...directasDonutData };
-    this.planBienalMunicipio2LocalDonutData = { ...localDonutData };
-  }
-
-  /**
-   * Inicializar datos de la tabla comparativa
-   */
-  private initializeTableData(): void {
-    this.comparativeTableData = [
-      {
-        entidad: 'Medellín',
-        directas_pbc: 45000000000,
-        directas_recaudo: 38500000000,
-        local_pbc: 125000000000,
-        local_recaudo: 98750000000
-      },
-      {
-        entidad: 'Cali',
-        directas_pbc: 32000000000,
-        directas_recaudo: 28900000000,
-        local_pbc: 87500000000,
-        local_recaudo: 72100000000
-      }
-    ];
-  }
-
-  /**
-   * Inicializar datos de las tablas de municipios
-   */
-  private initializeMunicipalityTables(): void {
-    // Datos de ejemplo con estructura compatible con la API
-    const sampleData: SgrPtoRecaudoItem[] = [
-      {
-        categoria: '-2',
-        concepto: 'TOTAL SGR (incluye aforado y no aforado)',
-        presupuesto_total_vigente: 22106623922,
-        presupuesto_corriente: 21287850929,
-        presupuesto_otros: 818772993,
-        caja_corriente_informada: 9885709704,
-        caja_otros: 818772993,
-        caja_total: 10704482696.71,
-        avance_iac_presupuesto: 0.4643
-      },
-      {
-        categoria: '1',
-        concepto: 'INVERSIÓN',
-        presupuesto_total_vigente: 1020469421,
-        presupuesto_corriente: 202691261,
-        presupuesto_otros: 817778160,
-        caja_corriente_informada: 34785630,
-        caja_otros: 817778160,
-        caja_total: 852563790.27,
-        avance_iac_presupuesto: 0.1716
-      },
-      {
-        categoria: '1.1',
-        concepto: 'Asignaciones Directas',
-        presupuesto_total_vigente: 1020469421,
-        presupuesto_corriente: 202691261,
-        presupuesto_otros: 817778160,
-        caja_corriente_informada: 34785630,
-        caja_otros: 817778160,
-        caja_total: 852563790.27,
-        avance_iac_presupuesto: 0.1716
-      },
-      {
-        categoria: '1.1.1',
-        concepto: '20% Asignaciones Directas',
-        presupuesto_total_vigente: 892593557,
-        presupuesto_corriente: 161955630,
-        presupuesto_otros: 730637927,
-        caja_corriente_informada: 27812984,
-        caja_otros: 730637927,
-        caja_total: 758450910.5,
-        avance_iac_presupuesto: 0.1717
-      },
-      {
-        categoria: '2',
-        concepto: 'AHORRO',
-        presupuesto_total_vigente: 21086154501,
-        presupuesto_corriente: 21085159668,
-        presupuesto_otros: 994833,
-        caja_corriente_informada: 9850924073,
-        caja_otros: 994833,
-        caja_total: 9851918906.44,
-        avance_iac_presupuesto: 0.4671
-      }
-    ];
-
-    // Convertir a TreeNode usando organizeCategoryData
-    this.municipality1TableData = organizeCategoryData(sampleData);
-    this.municipality2TableData = organizeCategoryData(sampleData);
-  }
-
+  
   /**
    * Obtener nombre del municipio seleccionado
    */
@@ -552,9 +299,6 @@ export class SgrComparativoComponent implements OnInit {
       error: (error) => {
         console.error('Error cargando datos comparativos:', error);
         this.initializeCharts();
-        this.initializePlanBienalCharts();
-        this.initializeDonutCharts();
-        this.initializeMunicipalityTables();
       }
     });
   }
@@ -677,7 +421,10 @@ export class SgrComparativoComponent implements OnInit {
           data: [directas20.presupuesto_corriente, directas20.caja_corriente_informada],
           backgroundColor: ['#f33aafff', '#7991e8ff'],
           borderColor: ['#b11049ff', '#3d4d7a'],
-          borderWidth: 1
+          borderWidth: 1,
+          datalabels: {
+            display: false
+          }
         }]
       };
 
@@ -687,7 +434,10 @@ export class SgrComparativoComponent implements OnInit {
           data: [asignacionesDirectas.presupuesto_corriente, asignacionesDirectas.caja_corriente_informada],
           backgroundColor: ['#f38135ff', '#edb87cff'],
           borderColor: ['#be480eff', '#8c5516'],
-          borderWidth: 1
+          borderWidth: 1,
+          datalabels: {
+            display: false
+          }
         }]
       };
 
@@ -702,7 +452,10 @@ export class SgrComparativoComponent implements OnInit {
           data: [directas20.presupuesto_corriente, directas20.caja_corriente_informada],
           backgroundColor: ['#f33aafff', '#7991e8ff'],
           borderColor: ['#b11049ff', '#3d4d7a'],
-          borderWidth: 1
+          borderWidth: 1,
+          datalabels: {
+            display: false
+          }
         }]
       };
 
@@ -712,7 +465,10 @@ export class SgrComparativoComponent implements OnInit {
           data: [asignacionesDirectas.presupuesto_corriente, asignacionesDirectas.caja_corriente_informada],
           backgroundColor: ['#f38135ff', '#edb87cff'],
           borderColor: ['#be480eff', '#8c5516'],
-          borderWidth: 1
+          borderWidth: 1,
+          datalabels: {
+            display: false
+          }
         }]
       };
 
