@@ -54,7 +54,7 @@ export class HomeComponent implements OnInit {
 
   cards: MyCard[] = [
     {
-      imageUrl: '/assets/img/target2.svg',
+      imageUrl: '/assets/img/target2.png',
       date: 'Junio 3 de 2024',
       description: '',
       title: 'Informes y documentos del Sistema General de Regalías',
