@@ -1,14 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { FloatLabel } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
 import { ChartModule } from 'primeng/chart';
 import { TableModule } from 'primeng/table';
+import { TreeTableModule } from 'primeng/treetable';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { SicodisApiService, FuncionamientoSiglasDiccionario, DiccionarioItem, SiglasItem } from '../../services/sicodis-api.service';
 import { Select } from 'primeng/select';
+import { Breadcrumb } from 'primeng/breadcrumb';
+import { MenuItem, TreeNode } from 'primeng/api';
+import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
 
 import { resumenPlanRecursos } from '../../data/resumen-plan-recursos';
 import { departamentos } from '../../data/departamentos';
@@ -23,14 +27,35 @@ import { departamentos } from '../../data/departamentos';
     FormsModule,
     ChartModule,
     TableModule,
+    TreeTableModule,
     InfoPopupComponent,
     NumberFormatPipe,
-    Select
+    Select,
+    Breadcrumb
   ],
   templateUrl: './sgr-plan-bienal-recursos.component.html',
   styleUrl: './sgr-plan-bienal-recursos.component.scss'
 })
 export class SgrPlanBienalRecursosComponent implements OnInit {
+
+  @ViewChild('planRecursosTable') planRecursosTable: any;
+
+  items: MenuItem[] | undefined;
+  home: MenuItem | undefined;
+
+  // Estado de resaltado sincronizado con el hover del gráfico
+  highlightedYear: string | null = null;
+  highlightedCategoria: string | null = null;
+
+  // Mapeo de labels del gráfico a categorías (sin tildes para coincidir con los labels del gráfico)
+  private categoryMap: { [key: string]: string } = {
+    'Asignacion para la Paz': '1.1',
+    'Asignaciones Directas': '1.2',
+    'Asignacion para la Inversion Local': '1.4',
+    'Asignacion para Ciencia, Tecnologia e Innovacion': '1.15',
+    'Asignacion Ambiental': '1.16',
+    'Municipios Rio Magdalena y Canal Dique': '1.17'
+  };
 
   // Popups Diccionario y Siglas
   showDiccionarioPopup = false;
@@ -69,13 +94,31 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
   barChartOptions: any;
 
   // Tabla
-  tableData: any[] = [];
+  tableData: TreeNode[] = [];
+  tableCols: any[] = [];
 
-  constructor(private sicodisApiService: SicodisApiService) {}
+  constructor(
+    private sicodisApiService: SicodisApiService,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit(): void {
+    this.items = [
+        { label: 'SGR', routerLink: '/sgr-inicio' },
+        { label: 'Programación Plan de Recursos' }
+    ];
+
+    this.home = { icon: 'pi pi-home', routerLink: '/' };
+
     this.selectedPlan = this.planes[1];
     this.selectedVigencia = this.vigencias[0];
+
+    // Inicializar columnas de la tabla
+    this.tableCols = [
+      { field: 'concepto', header: 'Concepto', width: '25%' },
+      ...this.years.map(year => ({ field: year, header: year, width: `${75 / this.years.length}%` }))
+    ];
+
     this.initializeChart();
     this.initializeTable();
     this.cargarSiglasDiccionario();
@@ -166,36 +209,27 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
             }
           }
         }
+      },
+      onHover: (event: any, activeElements: any[], chart: any) => {
+        if (activeElements.length > 0) {
+          const datasetIndex = activeElements[0].datasetIndex;
+          const yearIndex = activeElements[0].index;
+          const year = chart.data.labels[yearIndex];
+          const categoryLabel = chart.data.datasets[datasetIndex].label;
+          this.ngZone.run(() => this.onChartHover(categoryLabel, year));
+        } else {
+          this.ngZone.run(() => this.clearChartHighlight());
+        }
       }
     };
   }
 
   /**
-   * Inicializar datos de la tabla
+   * Inicializar datos de la tabla usando estructura jerárquica
    */
   private initializeTable(): void {
-    const getRow = (cat: string) => {
-      const item = resumenPlanRecursos.find((r: any) => r.categoria === cat);
-      return item ? { ...item } : null;
-    };
-
-    this.tableData = [
-      { ...getRow('1'), isHeader: true, section: 'inversion' },
-      { ...getRow('1.1'), isHeader: false },
-      { ...getRow('1.2'), isHeader: false },
-      { ...getRow('1.3'), isHeader: false },
-      { ...getRow('1.4'), isHeader: false },
-      { ...getRow('1.15'), isHeader: false },
-      { ...getRow('1.16'), isHeader: false },
-      { ...getRow('1.17'), isHeader: false },
-      { ...getRow('2'), isHeader: true, section: 'ahorro' },
-      { ...getRow('2.1'), isHeader: false },
-      { ...getRow('2.2'), isHeader: false },
-      { ...getRow('3'), isHeader: true, section: 'otros' },
-      { ...getRow('3.1'), isHeader: false },
-      { ...getRow('3.2'), isHeader: false },
-      { ...getRow('total'), isHeader: true, section: 'total' }
-    ].filter(r => r !== null);
+    // Usar organizeCategoryData para convertir los datos planos en TreeNodes
+    this.tableData = organizeCategoryData(resumenPlanRecursos);
   }
 
   /**
@@ -318,5 +352,108 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
 
     contenido += '</tbody></table></div>';
     return contenido;
+  }
+
+  /**
+   * Manejar hover sobre el gráfico
+   */
+  onChartHover(categoryLabel: string, year: string): void {
+    const categoria = this.categoryMap[categoryLabel];
+    if (!categoria) {
+      console.warn('Categoría no encontrada en el mapa:', categoryLabel);
+      return;
+    }
+
+    this.highlightedYear = year;
+    this.highlightedCategoria = categoria;
+
+    // Expandir el nodo si está colapsado
+    this.expandNodeByCategoria(categoria);
+
+    // Hacer scroll a la celda resaltada
+    setTimeout(() => this.scrollToHighlightedCell(), 100);
+  }
+
+  /**
+   * Limpiar el resaltado
+   */
+  clearChartHighlight(): void {
+    this.highlightedYear = null;
+    this.highlightedCategoria = null;
+  }
+
+  /**
+   * Expandir el nodo y sus padres si están colapsados
+   */
+  private expandNodeByCategoria(categoria: string): void {
+    // Expandir todos los nodos padres necesarios
+    const parts = categoria.split('.');
+    for (let i = 1; i <= parts.length; i++) {
+      const parentCategory = parts.slice(0, i).join('.');
+      this.expandNodeRecursive(this.tableData, parentCategory);
+    }
+  }
+
+  /**
+   * Expandir nodo recursivamente
+   */
+  private expandNodeRecursive(nodes: TreeNode[], targetCategory: string): boolean {
+    for (const node of nodes) {
+      if (node.data.categoria === targetCategory) {
+        node.expanded = true;
+        return true;
+      }
+      if (node.children && node.children.length > 0) {
+        if (this.expandNodeRecursive(node.children, targetCategory)) {
+          node.expanded = true;
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Hacer scroll a la celda resaltada
+   */
+  private scrollToHighlightedCell(): void {
+    if (!this.highlightedCategoria || !this.highlightedYear || !this.planRecursosTable) return;
+
+    const tableNative: HTMLElement = this.planRecursosTable.el.nativeElement;
+    const scrollWrapper = (
+      tableNative.querySelector('.p-treetable-scrollable-body') ||
+      tableNative.querySelector('.p-treetable-wrapper') ||
+      tableNative.querySelector('[data-pc-section="wrapper"]')
+    ) as HTMLElement;
+
+    const highlightedCell = tableNative.querySelector('td.highlighted-cell') as HTMLElement;
+
+    if (!scrollWrapper || !highlightedCell) return;
+
+    // Calcular posición de la celda relativa al scroll container
+    let offsetTop = 0;
+    let el: HTMLElement | null = highlightedCell;
+    while (el && el !== scrollWrapper && el.offsetParent) {
+      offsetTop += el.offsetTop;
+      el = el.offsetParent as HTMLElement;
+    }
+
+    const cellHeight = highlightedCell.offsetHeight;
+    const containerScrollTop = scrollWrapper.scrollTop;
+    const containerHeight = scrollWrapper.clientHeight;
+
+    if (offsetTop < containerScrollTop || offsetTop + cellHeight > containerScrollTop + containerHeight) {
+      scrollWrapper.scrollTo({
+        top: offsetTop - containerHeight / 2 + cellHeight / 2,
+        behavior: 'smooth'
+      });
+    }
+  }
+
+  /**
+   * Verificar si una celda debe estar resaltada
+   */
+  isCellHighlighted(rowData: any, year: string): boolean {
+    return rowData.categoria === this.highlightedCategoria && year === this.highlightedYear;
   }
 }
