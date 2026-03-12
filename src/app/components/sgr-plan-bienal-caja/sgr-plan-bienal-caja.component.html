@@ -60,8 +60,7 @@
                     [options]="beneficiarios"
                     inputId="beneficiarioSelect"
                     [(ngModel)]="selectedBeneficiario"
-                    optionLabel="label"
-                    placeholder="Beneficiarios">
+                    optionLabel="label">
           </p-select>
           <label for="beneficiarioSelect">Beneficiarios</label>
         </p-floatlabel>
@@ -73,8 +72,7 @@
                     [options]="departamentosList"
                     inputId="departamentoSelect"
                     [(ngModel)]="selectedDepartamento"
-                    optionLabel="nombre"
-                    placeholder="Seleccionar departamento">
+                    optionLabel="nombre">
           </p-select>
           <label for="departamentoSelect">Departamentos</label>
         </p-floatlabel>
@@ -144,7 +142,8 @@
       <p class="table-subtitle">Ley 2041 de 2024</p>
     </div>
 
-    <p-table [value]="tableData"
+    <p-table #planBienalCajaTable
+             [value]="tableData"
              [scrollable]="true"
              scrollDirection="horizontal"
              styleClass="p-datatable-sm plan-bienal-caja-table">
@@ -152,7 +151,10 @@
       <ng-template pTemplate="header">
         <tr>
           <th class="concept-header">Concepto</th>
-          <th class="period-header" *ngFor="let period of periods">{{period}}</th>
+          <th class="period-header" *ngFor="let period of periods"
+              [ngClass]="{'highlighted-column-header': isColumnHighlighted(period)}">
+            {{period}}
+          </th>
         </tr>
       </ng-template>
 
@@ -167,7 +169,10 @@
             {{rowData.concepto}}
           </td>
           <td class="number-cell" *ngFor="let period of periods"
-              [ngClass]="{'font-bold': rowData.section === 'total'}">
+              [ngClass]="{
+                'font-bold': rowData.section === 'total',
+                'highlighted-column': isColumnHighlighted(period)
+              }">
             {{rowData[period] | numberFormat}}
           </td>
         </tr>

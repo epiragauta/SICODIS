@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { SplitButtonModule } from 'primeng/splitbutton';
@@ -35,6 +35,11 @@ import { departamentos } from '../../data/departamentos';
   styleUrl: './sgr-plan-bienal-caja.component.scss',
 })
 export class SgrPlanBienalCajaComponent implements OnInit {
+
+  @ViewChild('planBienalCajaTable') planBienalCajaTable: any;
+
+  // Estado de resaltado sincronizado con el hover del gráfico
+  highlightedPeriod: string | null = null;
 
   // Popups Diccionario y Siglas
   showDiccionarioPopup = false;
@@ -79,7 +84,10 @@ export class SgrPlanBienalCajaComponent implements OnInit {
   // Menu del split button "Informes de recaudo"
   menuItems: MenuItem[] = [];
 
-  constructor(private sicodisApiService: SicodisApiService) {}
+  constructor(
+    private sicodisApiService: SicodisApiService,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit(): void {
     this.selectedPlan = this.planes[0];
@@ -182,6 +190,18 @@ export class SgrPlanBienalCajaComponent implements OnInit {
           },
         },
       },
+      onHover: (event: any, activeElements: any[], chart: any) => {
+        if (activeElements.length > 0) {
+          const datasetIndex = activeElements[0].datasetIndex;
+          const monthIndex = activeElements[0].index;
+          const year = datasetIndex === 0 ? '2025' : '2026';
+          const month = String((monthIndex % 12) + 1).padStart(2, '0');
+          const period = `${year}-${month}`;
+          this.ngZone.run(() => this.onChartHover(period));
+        } else {
+          this.ngZone.run(() => this.clearChartHighlight());
+        }
+      }
     };
   }
 
@@ -284,5 +304,60 @@ export class SgrPlanBienalCajaComponent implements OnInit {
     });
     html += '</tbody></table></div>';
     return html;
+  }
+
+  /**
+   * Manejar hover sobre el gráfico
+   */
+  onChartHover(period: string): void {
+    this.highlightedPeriod = period;
+    setTimeout(() => this.scrollToHighlightedColumn(), 100);
+  }
+
+  /**
+   * Limpiar el resaltado
+   */
+  clearChartHighlight(): void {
+    this.highlightedPeriod = null;
+  }
+
+  /**
+   * Hacer scroll a la columna resaltada
+   */
+  private scrollToHighlightedColumn(): void {
+    if (!this.highlightedPeriod || !this.planBienalCajaTable) return;
+
+    const tableNative: HTMLElement = this.planBienalCajaTable.el.nativeElement;
+    const scrollWrapper = (
+      tableNative.querySelector('.p-datatable-wrapper') ||
+      tableNative.querySelector('[data-pc-section="wrapper"]')
+    ) as HTMLElement;
+
+    const highlightedCell = tableNative.querySelector('td.highlighted-column') as HTMLElement;
+
+    if (!scrollWrapper || !highlightedCell) return;
+
+    // Calcular posición de la celda relativa al scroll container
+    const cellRect = highlightedCell.getBoundingClientRect();
+    const containerRect = scrollWrapper.getBoundingClientRect();
+
+    const cellLeft = highlightedCell.offsetLeft;
+    const containerScrollLeft = scrollWrapper.scrollLeft;
+    const containerWidth = scrollWrapper.clientWidth;
+    const cellWidth = highlightedCell.offsetWidth;
+
+    if (cellLeft < containerScrollLeft || cellLeft + cellWidth > containerScrollLeft + containerWidth) {
+      scrollWrapper.scrollTo({
+        left: cellLeft - containerWidth / 2 + cellWidth / 2,
+        behavior: 'smooth'
+      });
+    }
+  }
+
+  /**
+   * Verificar si una columna debe estar resaltada
+   */
+  isColumnHighlighted(period: string): boolean {
+    return period === this.highlightedPeriod;
   }
 }
