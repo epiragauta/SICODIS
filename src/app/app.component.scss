@@ -1,0 +1,21 @@
+// Skip link — visible solo al enfocar con teclado (CC10 / WCAG 2.4.1)
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  background: #0943b5;
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  z-index: 9999;
+  text-decoration: none;
+  border-radius: 0 0 4px 0;
+  transition: top 0.1s ease;
+
+  &:focus {
+    top: 0;
+    outline: 3px solid #ffffff;
+    outline-offset: 2px;
+  }
+}

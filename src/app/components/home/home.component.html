@@ -1,17 +1,16 @@
 <div class="container">
+    <section aria-labelledby="titulo-bienvenida">
     <div class="gradient-banner">
       <div class="gradient-overlay"></div>
-      <!-- Contenido opcional sobre el banner -->
       <div class="banner-content">
-        <h1>Bienvenido a SICODIS</h1>
-        <p>El Sistema de información y consulta de distribuciones de recursos "SICODIS", presenta información agregada y detallada, 
+        <h1 id="titulo-bienvenida">Bienvenido a SICODIS</h1>
+        <p>El Sistema de información y consulta de distribuciones de recursos "SICODIS", presenta información agregada y detallada,
           correspondiente a las distribuciones de los recursos del Sistema General de Regalías (SGR), Sistema General de Participaciones (SGP) y la Regionalización del Presupuesto General de la Nación realizadas por el DNP.
- 	 	 	 	</p>        
+        </p>
       </div>
     </div>
-    <!-- <div class="banner">
-        <img src="/assets/img/banner_welcome.svg" alt="banner-welcome">
-    </div> -->
+    </section>
+    <section aria-label="Sistemas de información disponibles">
     <div class="reports">
         <div class="grid-container">
           <mat-grid-list [cols]="cols2" rowHeight="500" gutterSize="16">
@@ -25,20 +24,20 @@
                   <p>{{descriptionSGP}}</p>
                 </div>
                 <div class="card-menu">
-                  <div class="sicodis-item" (click)="redirectTo('sgp-documentos-anexos')">
-                    <p>Distribución presupuestal, documentos y anexos</p>
-                    <span class="pi pi-angle-right"></span>
-                  </div>
+                  <button type="button" class="sicodis-item" (click)="redirectTo('sgp-documentos-anexos')">
+                    <span>Distribución presupuestal, documentos y anexos</span>
+                    <span class="pi pi-angle-right" aria-hidden="true"></span>
+                  </button>
                   <p-divider/>
-                  <div class="sicodis-item" (click)="redirectTo('sgp-comparativa')">
-                    <p>Ficha comparativa de distribución</p>
-                    <span class="pi pi-angle-right"></span>
-                  </div>
+                  <button type="button" class="sicodis-item" (click)="redirectTo('sgp-comparativa')">
+                    <span>Ficha comparativa de distribución</span>
+                    <span class="pi pi-angle-right" aria-hidden="true"></span>
+                  </button>
                   <p-divider />
-                  <div class="sicodis-item" (click)="redirectTo('sgp-detalle-presupuestal')">
-                    <p>Ficha SGP - Presupuestal</p>
-                    <span class="pi pi-angle-right"></span>
-                  </div>
+                  <button type="button" class="sicodis-item" (click)="redirectTo('sgp-detalle-presupuestal')">
+                    <span>Ficha SGP - Presupuestal</span>
+                    <span class="pi pi-angle-right" aria-hidden="true"></span>
+                  </button>
                 </div>
                 <ng-template pTemplate="footer">
                   <div class="card-footer">
@@ -58,21 +57,19 @@
                 </div>
                 <div class="card-menu">
                   <p-divider/>
-                  <div class="sicodis-item" (click)="redirectTo('sgr-recaudo-mensual')">
-                    <p>Recaudo mensual</p>
-                    <span class="pi pi-angle-right"></span>
-                  </div>
+                  <button type="button" class="sicodis-item" (click)="redirectTo('sgr-recaudo-mensual')">
+                    <span>Recaudo mensual</span>
+                    <span class="pi pi-angle-right" aria-hidden="true"></span>
+                  </button>
                   <p-divider />
-                  <div class="sicodis-item" (click)="redirectTo('sgr-presupuesto-y-recaudo')">
-                    <p>Recaudo frente a presupuesto</p>
-                    <span class="pi pi-angle-right"></span>
-                  </div>
-                  <div class="sicodis-item" (click)="redirectTo('reporte-funcionamiento')">
-                  <!-- <div class="sicodis-item"> -->
-                    <p>Administración y Sistema de Seguimiento del SGR</p>
-                    <span class="pi pi-angle-right"></span>
-                  </div>
-
+                  <button type="button" class="sicodis-item" (click)="redirectTo('sgr-presupuesto-y-recaudo')">
+                    <span>Recaudo frente a presupuesto</span>
+                    <span class="pi pi-angle-right" aria-hidden="true"></span>
+                  </button>
+                  <button type="button" class="sicodis-item" (click)="redirectTo('reporte-funcionamiento')">
+                    <span>Administración y Sistema de Seguimiento del SGR</span>
+                    <span class="pi pi-angle-right" aria-hidden="true"></span>
+                  </button>
                 </div>
                 <ng-template pTemplate="footer">
                   <div class="card-footer">
@@ -101,14 +98,19 @@
               </p-card>          
         </div>
 
-    <h2 class="sicodis sicodis-subtitle">Consulte a continuación la información vigente de los dos sistemas</h2>
+    </div> <!-- /reports -->
+    </section> <!-- /sistemas de información -->
+
+    <section aria-labelledby="titulo-cifras">
+    <div class="reports">
+    <h2 id="titulo-cifras" class="sicodis sicodis-subtitle">Consulte a continuación la información vigente de los dos sistemas</h2>
     <p class="sicodis-p">Cifras en pesos corrientes</p>
-    
+
     <div class="assignment-cards">
       <mat-grid-list [cols]="2" rowHeight="870px" gutterSize="8">
         <mat-grid-tile style="align-items: flex-start;">
           <mat-card class="card-container" style="height: 80%; display: flex; flex-direction: column;">
-            <h2 class="sicodis-subtitle">SGP</h2>
+            <h3 class="sicodis-subtitle">SGP</h3>
             <!-- <p-table [value]="sgpItems" 
                      [tableStyle]="{ 'min-width': '100%' }"
                      styleClass="home-sgp-table">
@@ -181,7 +183,7 @@
         </mat-grid-tile>
         <mat-grid-tile style="align-items: flex-start;">
           <mat-card class="card-container" style="height: 80%; display: flex; flex-direction: column;">
-            <h2 class="sicodis-subtitle">SGR</h2>
+            <h3 class="sicodis-subtitle">SGR</h3>
             <p-table [value]="sgrItems" 
                      [tableStyle]="{ 'min-width': '100%' }"
                      styleClass="home-sgr-table">
@@ -272,7 +274,12 @@
       </p-card>
     </div> -->
 
-    <h2 class="reports-title">Información de Interés</h2>
+    </div> <!-- /reports cifras -->
+    </section> <!-- /cifras -->
+
+    <section aria-labelledby="titulo-interes">
+    <div class="reports">
+    <h2 id="titulo-interes" class="reports-title">Información de Interés</h2>
 
     <div class="grid-container" style="margin-bottom: 2.5rem;">
       <mat-grid-list [cols]="cols" rowHeight="300px" gutterSize="16">
@@ -293,6 +300,9 @@
 
 
     
+    </div> <!-- /reports interes -->
+    </section> <!-- /interes -->
+
     <div class="sicodis-questions" style="display:none;">
       <img class="overlay-questions" src="/assets/img/overlay-questions.svg" alt="Imagen decorativa de preguntas frecuentes">
       <div>
@@ -377,9 +387,9 @@
        style="cursor: pointer; display: block;">
       <img
         src="/assets/img/alertasboletin.jpg"
-        alt="Bienvenido a SICODIS"
+        alt="Boletín informativo del Sistema General de Regalías — haga clic para ver el documento completo en el sitio del DNP"
         style="width: 100%; height: auto; display: block;"
-        title="Clic para descargar"
+        title="Clic para ver el boletín en el sitio del DNP"
       />
     </a>
   </div>

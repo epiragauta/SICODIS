@@ -1,7 +1,4 @@
 <div class="reporte-funcionamiento-container">
-  <div class="card flex justify-center">
-    <p-breadcrumb [model]="items" [home]="home" />
-  </div>
   
   <!-- <app-info-popup [infoText]="infoPopupContent" contentTitle="Información Detallada del Reporte"></app-info-popup> -->
   
@@ -80,7 +77,7 @@
           <p-select id="departamento" [options]="departamentos" inputId="departamentoSelect"
             [(ngModel)]="selectedDepartamento" optionLabel="label" (onChange)="onDepartamentoChange($event)" 
             placeholder="Departamento" ></p-select>
-          <label for="departamentoSelect"></label>
+          <label for="departamentoSelect">Departamento</label>
         </p-floatlabel>
       </div>
 
@@ -89,7 +86,7 @@
           <p-select id="entidad-cr" [options]="funcionamientoDataEntitiesCR" inputId="entidadCrSelect"
             [(ngModel)]="selectedEntidadCR" optionLabel="nombre_entidad" (onChange)="onEntidadCRChange($event)" 
             placeholder="Entidad" ></p-select>
-          <label for="entidadCrSelect"></label>
+          <label for="entidadCrSelect">Entidad</label>
         </p-floatlabel>
       </div>
 
@@ -98,7 +95,7 @@
           <p-select id="municipio" [options]="municipios" inputId="municipioSelect"
             [(ngModel)]="selectedMunicipio" optionLabel="label" (onChange)="onMunicipioChange($event)" 
             placeholder="Municipio" ></p-select>
-          <label for="municipioSelect"></label>
+          <label for="municipioSelect">Municipio</label>
         </p-floatlabel>
       </div>
 
@@ -241,28 +238,22 @@
             <mat-card-title class="card-title card-main">Avance del recaudo de ingresos corrientes</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <!-- <div class="recaudo-metrics"> -->
-              <div class="metrics-row" style="justify-content: center">
-                <div class="metric-item" [class.highlighted-metric]="highlightedMetric === 'presupuesto_corriente'">
-                  <div class="metric-value">{{formatMillions2(avanceRecaudoData.presupuestoCorriente)}}</div>
-                  <div class="metric-label">Presupuesto corriente</div>
-                </div>
+            <div class="metrics-row metrics-row-recaudo">
+              <div class="metric-item" [class.highlighted-metric]="highlightedMetric === 'presupuesto_corriente'">
+                <div class="metric-value">{{formatMillions2(avanceRecaudoData.presupuestoCorriente)}}</div>
+                <div class="metric-label">Presupuesto corriente</div>
               </div>
-              <div class="metrics-row" style="justify-content: center">
-                <div class="metric-item" [class.highlighted-metric]="highlightedMetric === 'iac_corriente'">
-                  <div class="metric-value">{{formatMillions2(avanceRecaudoData.iacCorriente)}}</div>
-                  <div class="metric-label">Recaudo corriente</div>
-                </div>
+              <div class="metric-item" [class.highlighted-metric]="highlightedMetric === 'iac_corriente'">
+                <div class="metric-value">{{formatMillions2(avanceRecaudoData.iacCorriente)}}</div>
+                <div class="metric-label">Recaudo corriente</div>
               </div>
-              <div class="metrics-row" style="justify-content: center">
-                <div class="metric-item">
-                  <div class="metric-value avance">
-                    {{avanceRecaudoData.avance | percentFormat:2}}
-                  </div>
-                  <div class="metric-label">Avance</div>
+              <div class="metric-item">
+                <div class="metric-value avance">
+                  {{avanceRecaudoData.avance | percentFormat:2}}
                 </div>
+                <div class="metric-label">Avance</div>
               </div>
-            <!-- </div> -->
+            </div>
           </mat-card-content>
         </mat-card>        
       </div>

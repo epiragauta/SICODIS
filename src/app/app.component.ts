@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
+import { Router, RouterOutlet, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { HomeComponent } from './components/home/home.component';
+import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { PrimeNG } from 'primeng/config';
+import { Toast } from 'primeng/toast';
 import { filter } from 'rxjs/operators';
 
 declare let gtag: Function;
@@ -17,7 +20,9 @@ declare let gtag: Function;
     HeaderComponent,
     FooterComponent,
     HomeComponent,
-    MatSlideToggleModule
+    BreadcrumbComponent,
+    MatSlideToggleModule,
+    Toast
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -28,7 +33,9 @@ export class AppComponent implements OnInit {
 
   constructor(
     private primeng: PrimeNG,
-    private router: Router
+    private router: Router,
+    private titleService: Title,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit() {
@@ -56,6 +63,12 @@ export class AppComponent implements OnInit {
         gtag('config', 'G-WMEFPZBK1Y', {
           page_path: pagePath
         });
+
+        // CC23 — Título dinámico por página
+        let route = this.activatedRoute.root;
+        while (route.firstChild) route = route.firstChild;
+        const breadcrumb = route.snapshot.data?.['breadcrumb'];
+        this.titleService.setTitle(breadcrumb ? `${breadcrumb} | SICODIS` : 'SICODIS');
 
       });
 

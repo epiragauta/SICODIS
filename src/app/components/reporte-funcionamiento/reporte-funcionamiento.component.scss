@@ -292,6 +292,18 @@
           flex-wrap: wrap;
           width: 100%;
 
+          &.metrics-row-recaudo {
+            flex-direction: column;
+            justify-content: center;
+            gap: 0.5rem;
+
+            .metric-item {
+              min-width: unset;
+              max-width: unset;
+              width: 100%;
+            }
+          }
+
           .metric-item {
             flex: 1;
             text-align: center;

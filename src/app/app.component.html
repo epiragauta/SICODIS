@@ -1,5 +1,14 @@
+<!-- Saltar al contenido principal (CC10 / WCAG 2.4.1) — primer elemento enfocable con Tab -->
+<a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
 <app-header></app-header>
-<!-- <app-home> -->
+<app-breadcrumb></app-breadcrumb>
+
+<main id="main-content">
   <router-outlet />
-<!-- </app-home> -->
+</main>
+
 <app-footer></app-footer>
+
+<!-- CC28 — Notificaciones globales de error (manejadas en auth.interceptor) -->
+<p-toast position="bottom-right" [life]="6000" />
