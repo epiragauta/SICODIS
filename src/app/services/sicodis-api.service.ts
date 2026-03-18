@@ -103,6 +103,55 @@ export interface MunicipioSgr {
   nombre: string;
 }
 
+// ========== SGR Plan Bienal Interfaces ==========
+export interface VigenciaPlanBienal {
+  id_vigencia: number;
+  vigencia: string;
+}
+
+export interface DepartamentoPlanBienal {
+  codigo: string;
+  nombre: string;
+  orden: number;
+}
+
+export interface MunicipioPlanBienal {
+  codigo: string;
+  nombre: string;
+  orden: number;
+}
+
+export interface DetallePlanBienal {
+  Orden: number;
+  IdConcepto: string;
+  Concepto: string;
+  '2025-01'?: number;
+  '2025-02'?: number;
+  '2025-03'?: number;
+  '2025-04'?: number;
+  '2025-05'?: number;
+  '2025-06'?: number;
+  '2025-07'?: number;
+  '2025-08'?: number;
+  '2025-09'?: number;
+  '2025-10'?: number;
+  '2025-11'?: number;
+  '2025-12'?: number;
+  '2026-01'?: number;
+  '2026-02'?: number;
+  '2026-03'?: number;
+  '2026-04'?: number;
+  '2026-05'?: number;
+  '2026-06'?: number;
+  '2026-07'?: number;
+  '2026-08'?: number;
+  '2026-09'?: number;
+  '2026-10'?: number;
+  '2026-11'?: number;
+  '2026-12'?: number;
+  [key: string]: any; // Para soportar períodos dinámicos
+}
+
 // ========== SGP Interfaces ==========
 export interface VigenciaSgp {
   anio: number;
@@ -885,10 +934,53 @@ getSgrDescargaResumenPbcRecaudoMensual( idvigencia: number
                                         , vigencia: string
                                         , fecha_actualizacion: string
                                         , fecha_corte : string
-                                        ): Observable<Blob> {  
+                                        ): Observable<Blob> {
     const url = `${this.baseUrl}/sgr/descarga_resumen_pbc_recaudo_mensual/${idvigencia}/${vigencia}/${fecha_actualizacion}/${fecha_corte}`;
     return this.http.get(url, { responseType: 'blob' });  // responseType 'blob' indica que será un archivo binario
   }
+
+  // ========== SGR Plan Bienal Methods ==========
+
+  /**
+   * Obtiene las vigencias registradas del Plan Bienal de Caja
+   * @returns Observable con el array de vigencias
+   */
+  getSgrPlanBienalVigencias(): Observable<VigenciaPlanBienal[]> {
+    const url = `${this.baseUrl}/sgrplanbienal/vigencias`;
+    return this.http.get<VigenciaPlanBienal[]>(url);
+  }
+
+  /**
+   * Obtiene los departamentos para Plan Bienal de Caja
+   * @returns Observable con el array de departamentos
+   */
+  getSgrPlanBienalDepartamentos(): Observable<DepartamentoPlanBienal[]> {
+    const url = `${this.baseUrl}/sgrplanbienal/departamentos`;
+    return this.http.get<DepartamentoPlanBienal[]>(url);
+  }
+
+  /**
+   * Obtiene los municipios por código de departamento para Plan Bienal
+   * @param codigoDepto - Código del departamento
+   * @returns Observable con el array de municipios
+   */
+  getSgrPlanBienalMunicipiosDepartamento(codigoDepto: string): Observable<MunicipioPlanBienal[]> {
+    const url = `${this.baseUrl}/sgrplanbienal/municipios_departamentos/${codigoDepto}`;
+    return this.http.get<MunicipioPlanBienal[]>(url);
+  }
+
+  /**
+   * Obtiene el detalle del Plan Bienal de Caja
+   * @param idVigencia - ID de la vigencia
+   * @param codigoEntidad - Código de la entidad (departamento)
+   * @param codigoMunicipio - Código del municipio
+   * @returns Observable con el array de detalles del plan bienal
+   */
+  getSgrPlanBienalDetalle(idVigencia: number, codigoEntidad: string, codigoMunicipio: string): Observable<DetallePlanBienal[]> {
+    const url = `${this.baseUrl}/sgrplanbienal/detalle_planbienal/${idVigencia}/${codigoEntidad}/${codigoMunicipio}`;
+    return this.http.get<DetallePlanBienal[]>(url);
+  }
+
   // ========== SGP Methods ==========
 
 

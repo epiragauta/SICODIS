@@ -28,26 +28,13 @@
   <div class="filters-panel">
     <div class="filters-row">
 
-      <div class="p-field plan-select">
-        <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-select id="plan"
-                    [options]="planes"
-                    inputId="planSelect"
-                    [(ngModel)]="selectedPlan"
-                    optionLabel="label"
-                    placeholder="Plan">
-          </p-select>
-          <label for="planSelect">Plan</label>
-        </p-floatlabel>
-      </div>
-
       <div class="p-field vigencia-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="vigencia"
                     [options]="vigencias"
                     inputId="vigenciaSelect"
                     [(ngModel)]="selectedVigencia"
-                    optionLabel="label"
+                    optionLabel="vigencia"
                     placeholder="Vigencia">
           </p-select>
           <label for="vigenciaSelect">Vigencia</label>
@@ -72,9 +59,23 @@
                     [options]="departamentosList"
                     inputId="departamentoSelect"
                     [(ngModel)]="selectedDepartamento"
-                    optionLabel="nombre">
+                    optionLabel="nombre"
+                    (onChange)="onDepartamentoChange()">
           </p-select>
           <label for="departamentoSelect">Departamentos</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field municipio-select" *ngIf="selectedDepartamento && selectedDepartamento.codigo !== '0'">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="municipio"
+                    [options]="municipiosList"
+                    inputId="municipioSelect"
+                    [(ngModel)]="selectedMunicipio"
+                    optionLabel="nombre"
+                    [loading]="isLoadingMunicipios">
+          </p-select>
+          <label for="municipioSelect">Municipios</label>
         </p-floatlabel>
       </div>
 
@@ -83,6 +84,8 @@
             icon="pi pi-check"
             label="Aplicar filtros"
             class="p-button-primary"
+            [loading]="isLoading"
+            [disabled]="!selectedVigencia || !selectedDepartamento"
             (click)="applyFilters()">
         </button>
       </div>
@@ -142,50 +145,89 @@
       <p class="table-subtitle">Ley 2041 de 2024</p>
     </div>
 
-    <p-table #planBienalCajaTable
-             [value]="tableData"
-             [scrollable]="true"
-             scrollDirection="horizontal"
-             styleClass="p-datatable-sm plan-bienal-caja-table">
+    <div style="overflow-x: auto;">
+      <p-treetable #planBienalCajaTable
+                   [value]="tableData"
+                   [columns]="tableCols"
+                   [scrollable]="true"
+                   scrollHeight="600px"
+                   [loading]="isLoading"
+                   [resizableColumns]="true"
+                   columnResizeMode="expand"
+                   styleClass="p-treetable-sm plan-bienal-caja-table">
 
-      <ng-template pTemplate="header">
-        <tr>
-          <th class="concept-header">Concepto</th>
-          <th class="period-header" *ngFor="let period of periods"
-              [ngClass]="{'highlighted-column-header': isColumnHighlighted(period)}">
-            {{period}}
-          </th>
-        </tr>
-      </ng-template>
+        <ng-template pTemplate="colgroup" let-columns>
+          <colgroup>
+            <col *ngFor="let col of columns" [style.width]="col.width">
+          </colgroup>
+        </ng-template>
 
-      <ng-template pTemplate="body" let-rowData>
-        <tr [ngClass]="{
-          'total-row':         rowData.section === 'total',
-          'section-inversion': rowData.section === 'inversion',
-          'section-ahorro':    rowData.section === 'ahorro',
-          'section-admin':     rowData.section === 'administracion'
-        }">
-          <td class="concept-cell" [ngClass]="{'font-bold': rowData.section === 'total'}">
-            {{rowData.concepto}}
-          </td>
-          <td class="number-cell" *ngFor="let period of periods"
+        <!-- Encabezados -->
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <th *ngFor="let col of columns; let first = first"
+                [ngStyle]="{'width': col.width}"
+                [ngClass]="{
+                  'concept-header': first,
+                  'period-header': !first,
+                  'highlighted-column-header': !first && isColumnHighlighted(col.field)
+                }">
+              {{col.header}}
+            </th>
+          </tr>
+        </ng-template>
+
+        <!-- Filas de datos -->
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+          <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode"
               [ngClass]="{
-                'font-bold': rowData.section === 'total',
-                'highlighted-column': isColumnHighlighted(period)
+                'total-row':         rowData.section === 'total',
+                'section-inversion': rowData.section === 'inversion',
+                'section-ahorro':    rowData.section === 'ahorro',
+                'section-otros':     rowData.section === 'otros'
               }">
-            {{rowData[period] | numberFormat}}
-          </td>
-        </tr>
-      </ng-template>
+            <td *ngFor="let col of tableCols; let first = first"
+                [ngClass]="{
+                  'concept-cell': first,
+                  'number-cell': !first,
+                  'font-bold': rowNode.level === 0 || rowData.section === 'total',
+                  'highlighted-column': !first && isColumnHighlighted(col.field)
+                }">
+              <p-treeTableToggler [rowNode]="rowNode" *ngIf="first"></p-treeTableToggler>
+              <ng-container [ngSwitch]="col.field">
+                <ng-container *ngSwitchCase="'concepto'">
+                  <span [ngClass]="{
+                    'font-bold': rowNode.level === 0 || rowData.section === 'total'
+                  }">
+                    {{rowData.concepto}}
+                  </span>
+                </ng-container>
 
-      <ng-template pTemplate="emptymessage">
-        <tr>
-          <td [attr.colspan]="periods.length + 1" class="empty-message">
-            No se encontraron registros.
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
+                <ng-container *ngSwitchDefault>
+                  <div class="text-right"
+                       *ngIf="rowData[col.field] !== null && rowData[col.field] !== undefined && rowData[col.field] !== 0">
+                    {{rowData[col.field] | numberFormat}}
+                  </div>
+                  <div class="text-right no-data"
+                       *ngIf="rowData[col.field] === null || rowData[col.field] === undefined || rowData[col.field] === 0">
+                    -
+                  </div>
+                </ng-container>
+              </ng-container>
+            </td>
+          </tr>
+        </ng-template>
+
+        <!-- Template cuando no hay datos -->
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td [attr.colspan]="tableCols.length" class="empty-message">
+              No se encontraron registros.
+            </td>
+          </tr>
+        </ng-template>
+      </p-treetable>
+    </div>
 
     <!-- Botones de accion -->
     <div class="action-buttons">
