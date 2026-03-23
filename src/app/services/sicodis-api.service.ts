@@ -3,8 +3,126 @@ import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable, forkJoin } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 import { HttpResponse } from '@angular/common/http';
+import { EficienciasMockService } from './eficiencias-mock.service';
 
+// ========== EFICIENCIAS FISCALES Y ADMINISTRATIVAS Interfaces ==========
 
+export interface MunicipioEficiencia {
+  codigo_dane: string;
+  departamento: string;
+  municipio: string;
+}
+
+export interface IngresoTributario {
+  id: number;
+  codigo_dane: string;
+  anio: number;
+  valor: number;
+  observacion: string;
+}
+
+export interface PoblacionMunicipio {
+  id: number;
+  codigo_dane: string;
+  anio: number;
+  poblacion: number;
+  fuente_censo: string;
+}
+
+export interface RecursoPropositoGeneral {
+  id: number;
+  codigo_dane: string;
+  anio: number;
+  poblacion_m: number;
+  pobreza_m: number;
+  poblacion: number;
+  pobreza: number;
+  eficiencia_fiscal: number;
+  eficiencia_administrativa: number;
+  sisben: number;
+}
+
+export interface Ley617ICLD {
+  id: number;
+  codigo_dane: string;
+  anio: number;
+  valor: number;
+}
+
+export interface Ley617GastosFuncionamiento {
+  id: number;
+  codigo_dane: string;
+  anio: number;
+  valor: number;
+}
+
+export interface Ley617Razon {
+  id: number;
+  codigo_dane: string;
+  anio: number;
+  valor: number;
+}
+
+export interface Ley617Holgura {
+  id: number;
+  codigo_dane: string;
+  anio: number;
+  valor: number;
+}
+
+export interface Ley617LimiteGasto {
+  codigo_dane: string;
+  limite_gasto: number;
+}
+
+export interface Ley617Vigencia2026 {
+  codigo_dane: string;
+  icld: number;
+  gf: number;
+  lg: number;
+  razon: number;
+  holgura: number;
+}
+
+export interface IndicadorEficienciaFiscal {
+  id: number;
+  codigo_dane: string;
+  anio: number;
+  valor: number | null;
+}
+
+export interface IndicadorEficienciaAdministrativa {
+  id: number;
+  codigo_dane: string;
+  anio: number;
+  valor: number | null;
+}
+
+export interface ResumenMunicipioEficiencia {
+  municipio: MunicipioEficiencia;
+  ingresos_tributarios: IngresoTributario[];
+  poblacion: PoblacionMunicipio[];
+  recursos_proposito_general: RecursoPropositoGeneral[];
+  eficiencia_fiscal: IndicadorEficienciaFiscal[];
+  eficiencia_administrativa: IndicadorEficienciaAdministrativa[];
+  vigencia_2026: Ley617Vigencia2026 | null;
+}
+
+export interface ComparacionMunicipios {
+  municipios: MunicipioEficiencia[];
+  anio: number;
+  ingresos_tributarios: IngresoTributario[];
+  poblacion: PoblacionMunicipio[];
+  eficiencia_fiscal: IndicadorEficienciaFiscal[];
+}
+
+export interface RankingEficienciaItem {
+  codigo_dane: string;
+  departamento: string;
+  municipio: string;
+  anio: number;
+  valor: number;
+}
 
 // ========== SGR Funcionamiento Interfaces ==========
 export interface DiccionarioItem {
@@ -1500,7 +1618,207 @@ getSgrDescargaResumenPbcRecaudoMensual( idvigencia: number
 
 
 
-    login(usuario: string, password: string): Observable<string> {
+  // ============================================================================
+  // EFICIENCIAS FISCALES Y ADMINISTRATIVAS - API Methods
+  // ============================================================================
+
+  /**
+   * Obtiene todos los municipios del catálogo de eficiencias
+   * @returns Observable con array de municipios
+   */
+  getEficienciasMunicipios(): Observable<MunicipioEficiencia[]> {
+    const url = '/api/eficiencias/municipios';
+    return this.http.get<MunicipioEficiencia[]>(url);
+  }
+
+  /**
+   * Obtiene un municipio específico por código DANE
+   * @param codigoDane - Código DANE del municipio
+   * @returns Observable con datos del municipio
+   */
+  getEficienciasMunicipioByCodigo(codigoDane: string): Observable<MunicipioEficiencia> {
+    const url = `/api/eficiencias/municipios/${codigoDane}`;
+    return this.http.get<MunicipioEficiencia>(url);
+  }
+
+  /**
+   * Obtiene ingresos tributarios de un municipio
+   * @param codigoDane - Código DANE del municipio
+   * @param anio - Año específico (opcional)
+   * @returns Observable con array de ingresos tributarios
+   */
+  getEficienciasIngresosTributarios(codigoDane: string, anio?: number): Observable<IngresoTributario[]> {
+    const url = anio
+      ? `/api/eficiencias/ingresos-tributarios/${codigoDane}/${anio}`
+      : `/api/eficiencias/ingresos-tributarios/${codigoDane}`;
+    return this.http.get<IngresoTributario[]>(url);
+  }
+
+  /**
+   * Obtiene datos de población de un municipio
+   * @param codigoDane - Código DANE del municipio
+   * @param anio - Año específico (opcional)
+   * @returns Observable con array de población
+   */
+  getEficienciasPoblacion(codigoDane: string, anio?: number): Observable<PoblacionMunicipio[]> {
+    const url = anio
+      ? `/api/eficiencias/poblacion/${codigoDane}/${anio}`
+      : `/api/eficiencias/poblacion/${codigoDane}`;
+    return this.http.get<PoblacionMunicipio[]>(url);
+  }
+
+  /**
+   * Obtiene recursos de propósito general de un municipio
+   * @param codigoDane - Código DANE del municipio
+   * @param anio - Año específico (opcional)
+   * @returns Observable con array de recursos
+   */
+  getEficienciasRecursosPropositoGeneral(codigoDane: string, anio?: number): Observable<RecursoPropositoGeneral[]> {
+    const url = anio
+      ? `/api/eficiencias/recursos-proposito-general/${codigoDane}/${anio}`
+      : `/api/eficiencias/recursos-proposito-general/${codigoDane}`;
+    return this.http.get<RecursoPropositoGeneral[]>(url);
+  }
+
+  /**
+   * Obtiene datos de ICLD (Ley 617) de un municipio
+   * @param codigoDane - Código DANE del municipio
+   * @param anio - Año específico (opcional)
+   * @returns Observable con array de ICLD
+   */
+  getEficienciasLey617ICLD(codigoDane: string, anio?: number): Observable<Ley617ICLD[]> {
+    const url = anio
+      ? `/api/eficiencias/ley-617/icld/${codigoDane}/${anio}`
+      : `/api/eficiencias/ley-617/icld/${codigoDane}`;
+    return this.http.get<Ley617ICLD[]>(url);
+  }
+
+  /**
+   * Obtiene gastos de funcionamiento (Ley 617) de un municipio
+   * @param codigoDane - Código DANE del municipio
+   * @param anio - Año específico (opcional)
+   * @returns Observable con array de gastos de funcionamiento
+   */
+  getEficienciasLey617GastosFuncionamiento(codigoDane: string, anio?: number): Observable<Ley617GastosFuncionamiento[]> {
+    const url = anio
+      ? `/api/eficiencias/ley-617/gastos-funcionamiento/${codigoDane}/${anio}`
+      : `/api/eficiencias/ley-617/gastos-funcionamiento/${codigoDane}`;
+    return this.http.get<Ley617GastosFuncionamiento[]>(url);
+  }
+
+  /**
+   * Obtiene razón (Ley 617) de un municipio
+   * @param codigoDane - Código DANE del municipio
+   * @param anio - Año específico (opcional)
+   * @returns Observable con array de razón
+   */
+  getEficienciasLey617Razon(codigoDane: string, anio?: number): Observable<Ley617Razon[]> {
+    const url = anio
+      ? `/api/eficiencias/ley-617/razon/${codigoDane}/${anio}`
+      : `/api/eficiencias/ley-617/razon/${codigoDane}`;
+    return this.http.get<Ley617Razon[]>(url);
+  }
+
+  /**
+   * Obtiene holgura (Ley 617) de un municipio
+   * @param codigoDane - Código DANE del municipio
+   * @param anio - Año específico (opcional)
+   * @returns Observable con array de holgura
+   */
+  getEficienciasLey617Holgura(codigoDane: string, anio?: number): Observable<Ley617Holgura[]> {
+    const url = anio
+      ? `/api/eficiencias/ley-617/holgura/${codigoDane}/${anio}`
+      : `/api/eficiencias/ley-617/holgura/${codigoDane}`;
+    return this.http.get<Ley617Holgura[]>(url);
+  }
+
+  /**
+   * Obtiene límite de gasto (Ley 617 - Vigencia 2025) de un municipio
+   * @param codigoDane - Código DANE del municipio
+   * @returns Observable con límite de gasto
+   */
+  getEficienciasLey617LimiteGasto(codigoDane: string): Observable<Ley617LimiteGasto> {
+    const url = `/api/eficiencias/ley-617/limite-gasto/${codigoDane}`;
+    return this.http.get<Ley617LimiteGasto>(url);
+  }
+
+  /**
+   * Obtiene datos de vigencia 2026 (Ley 617) de un municipio
+   * @param codigoDane - Código DANE del municipio
+   * @returns Observable con datos de vigencia 2026
+   */
+  getEficienciasLey617Vigencia2026(codigoDane: string): Observable<Ley617Vigencia2026> {
+    const url = `/api/eficiencias/ley-617/vigencia-2026/${codigoDane}`;
+    return this.http.get<Ley617Vigencia2026>(url);
+  }
+
+  /**
+   * Obtiene indicadores de eficiencia fiscal de un municipio
+   * @param codigoDane - Código DANE del municipio
+   * @param anio - Año específico (opcional)
+   * @returns Observable con array de indicadores de eficiencia fiscal
+   */
+  getEficienciasIndicadoresEficienciaFiscal(codigoDane: string, anio?: number): Observable<IndicadorEficienciaFiscal[]> {
+    const url = anio
+      ? `/api/eficiencias/indicadores/eficiencia-fiscal/${codigoDane}/${anio}`
+      : `/api/eficiencias/indicadores/eficiencia-fiscal/${codigoDane}`;
+    return this.http.get<IndicadorEficienciaFiscal[]>(url);
+  }
+
+  /**
+   * Obtiene indicadores de eficiencia administrativa de un municipio
+   * @param codigoDane - Código DANE del municipio
+   * @param anio - Año específico (opcional)
+   * @returns Observable con array de indicadores de eficiencia administrativa
+   */
+  getEficienciasIndicadoresEficienciaAdministrativa(codigoDane: string, anio?: number): Observable<IndicadorEficienciaAdministrativa[]> {
+    const url = anio
+      ? `/api/eficiencias/indicadores/eficiencia-administrativa/${codigoDane}/${anio}`
+      : `/api/eficiencias/indicadores/eficiencia-administrativa/${codigoDane}`;
+    return this.http.get<IndicadorEficienciaAdministrativa[]>(url);
+  }
+
+  /**
+   * Obtiene resumen completo de un municipio con todos sus datos
+   * @param codigoDane - Código DANE del municipio
+   * @returns Observable con resumen completo del municipio
+   */
+  getEficienciasResumenMunicipio(codigoDane: string): Observable<ResumenMunicipioEficiencia> {
+    const url = `/api/eficiencias/resumen/${codigoDane}`;
+    return this.http.get<ResumenMunicipioEficiencia>(url);
+  }
+
+  /**
+   * Compara múltiples municipios en un año específico
+   * @param codigos - Array de códigos DANE de municipios a comparar
+   * @param anio - Año de comparación
+   * @returns Observable con comparación de municipios
+   */
+  getEficienciasComparar(codigos: string[], anio: number): Observable<ComparacionMunicipios> {
+    const params = new HttpParams()
+      .set('codigos', codigos.join(','))
+      .set('anio', anio.toString());
+    const url = '/api/eficiencias/comparar';
+    return this.http.get<ComparacionMunicipios>(url, { params });
+  }
+
+  /**
+   * Obtiene ranking de municipios por eficiencia fiscal en un año
+   * @param anio - Año para el ranking
+   * @param limit - Número de municipios a retornar (default: 50)
+   * @returns Observable con array de municipios ordenados por eficiencia
+   */
+  getEficienciasRankingEficienciaFiscal(anio: number, limit: number = 50): Observable<RankingEficienciaItem[]> {
+    const url = `/api/eficiencias/ranking/eficiencia-fiscal/${anio}`;
+    const params = new HttpParams().set('limit', limit.toString());
+    return this.http.get<RankingEficienciaItem[]>(url, { params });
+  }
+
+  // ============================================================================
+  // END EFICIENCIAS FISCALES Y ADMINISTRATIVAS
+  // ============================================================================
+
+  login(usuario: string, password: string): Observable<string> {
       return this.http.post<{ token: string }>('https://sicodis.dnp.gov.co/apiws/auth/login', { usuario, password })
         .pipe(
           tap((resp: { token: string }) => {
@@ -1509,6 +1827,85 @@ getSgrDescargaResumenPbcRecaudoMensual( idvigencia: number
           map(resp => resp.token) // opcional: si quieres devolver solo el token
         );
     }
+}
 
+// ============================================================================
+// CONFIGURACIÓN: MOCK vs API REAL PARA EFICIENCIAS
+// ============================================================================
 
+/**
+ * Flag para determinar si usar datos mock o API real para eficiencias
+ *
+ * - true: Usa datos estáticos desde /assets/data/eficiencias/
+ * - false: Usa API real (backend Node.js o .NET)
+ *
+ * IMPORTANTE: Cambiar a false cuando el API .NET esté disponible en producción
+ */
+export const USE_MOCK_EFICIENCIAS = true;
+
+/**
+ * Servicio unificado de eficiencias que usa mock o API según configuración
+ *
+ * Este servicio actúa como fachada (facade pattern) que decide automáticamente
+ * si usar datos mock o llamadas al API real basándose en la constante USE_MOCK_EFICIENCIAS.
+ *
+ * Ventajas:
+ * - Fácil migración: solo cambiar un flag
+ * - Mismo código en componentes
+ * - Testing simplificado
+ *
+ * Uso en componentes:
+ * ```typescript
+ * constructor(private eficienciasService: EficienciasService) {}
+ *
+ * this.eficienciasService.getMunicipios().subscribe(...)
+ * this.eficienciasService.getResumenMunicipio('05001').subscribe(...)
+ * ```
+ */
+@Injectable({
+  providedIn: 'root'
+})
+export class EficienciasService {
+  constructor(
+    private apiService: SicodisApiService,
+    private mockService: EficienciasMockService
+  ) {
+    const modo = USE_MOCK_EFICIENCIAS ? 'MOCK (datos estáticos)' : 'API REAL';
+    console.log(`🔧 EficienciasService inicializado en modo: ${modo}`);
+  }
+
+  /**
+   * Obtener todos los municipios disponibles
+   * @returns Observable con lista de municipios
+   */
+  getMunicipios(): Observable<MunicipioEficiencia[]> {
+    if (USE_MOCK_EFICIENCIAS) {
+      return this.mockService.getMunicipios();
+    }
+    return this.apiService.getEficienciasMunicipios();
+  }
+
+  /**
+   * Obtener municipio específico por código DANE
+   * @param codigoDane Código DANE del municipio
+   * @returns Observable con datos del municipio
+   */
+  getMunicipioByCodigo(codigoDane: string): Observable<MunicipioEficiencia> {
+    if (USE_MOCK_EFICIENCIAS) {
+      return this.mockService.getMunicipioByCodigo(codigoDane);
+    }
+    return this.apiService.getEficienciasMunicipioByCodigo(codigoDane);
+  }
+
+  /**
+   * Obtener resumen completo de un municipio
+   * @param codigoDane Código DANE del municipio (ej: '05001' para Medellín)
+   * @returns Observable con resumen completo del municipio
+   */
+  getResumenMunicipio(codigoDane: string): Observable<ResumenMunicipioEficiencia> {
+    if (USE_MOCK_EFICIENCIAS) {
+      return this.mockService.getResumenMunicipio(codigoDane);
+    }
+    return this.apiService.getEficienciasResumenMunicipio(codigoDane);
+  }
 }

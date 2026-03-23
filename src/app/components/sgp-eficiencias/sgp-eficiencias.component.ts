@@ -14,6 +14,7 @@ import { TableModule } from 'primeng/table';
 import { departamentos } from '../../data/departamentos';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { MenuItem } from 'primeng/api';
+import { EficienciasService, ResumenMunicipioEficiencia } from '../../services/sicodis-api.service';
 
 @Component({
   selector: 'app-sgp-eficiencias',
@@ -81,7 +82,11 @@ export class SgpEficienciasComponent implements OnInit {
   // Last updated date
   lastUpdated = '31 de agosto de 2024';
 
-  constructor() {}
+  // API data
+  resumenMunicipio: ResumenMunicipioEficiencia | null = null;
+  errorMessage: string | null = null;
+
+  constructor(private eficienciasService: EficienciasService) {}
 
   ngOnInit(): void {
     this.items = [
@@ -96,9 +101,9 @@ export class SgpEficienciasComponent implements OnInit {
   }
 
   private initializeFilters(): void {
-    // Initialize years from 2024 to 2002
+    // Initialize years from 2025 to 2020
     this.vigencias = [];
-    for (let year = 2024; year >= 2002; year--) {
+    for (let year = 2025; year >= 2020; year--) {
       this.vigencias.push({
         label: year.toString(),
         value: year.toString()
@@ -266,40 +271,56 @@ export class SgpEficienciasComponent implements OnInit {
   }
 
   onVigenciaChange(event: SelectChangeEvent): void {
-    console.log('Vigencia seleccionada:', event.value);
-    this.selectedVigencia = event.value;
+    console.log('Vigencia seleccionada:', this.selectedVigencia);
+    // El valor ya está en this.selectedVigencia gracias a [(ngModel)] y optionValue
   }
 
   onDepartamentoChange(event: SelectChangeEvent): void {
-    console.log('Departamento seleccionado:', event.value);
-    this.selectedDepartamento = event.value;
-    
+    console.log('Departamento seleccionado:', this.selectedDepartamento);
+
     // Update municipalities based on selected department
     if (this.selectedDepartamento) {
       this.updateMunicipios(this.selectedDepartamento);
     } else {
       this.municipios = [];
     }
-    
+
+    // Clear municipio when department changes
     this.selectedMunicipio = null;
   }
 
   onMunicipioChange(event: SelectChangeEvent): void {
-    console.log('Municipio seleccionado:', event.value);
-    this.selectedMunicipio = event.value;
+    console.log('Municipio seleccionado:', this.selectedMunicipio);
+    // El valor ya está en this.selectedMunicipio gracias a [(ngModel)] y optionValue
   }
 
   private updateMunicipios(departamentoCode: string): void {
-    // Mock municipalities data based on department
-    const mockMunicipios = [
-      { label: 'Municipio 1', value: '001' },
-      { label: 'Municipio 2', value: '002' },
-      { label: 'Municipio 3', value: '003' },
-      { label: 'Municipio 4', value: '004' },
-      { label: 'Municipio 5', value: '005' }
-    ];
+    console.log('Cargando municipios para departamento:', departamentoCode);
 
-    this.municipios = mockMunicipios;
+    // Cargar todos los municipios y filtrar por departamento
+    this.eficienciasService.getMunicipios().subscribe({
+      next: (municipios) => {
+        // Filtrar municipios por departamento (los primeros 2 dígitos del código DANE)
+        this.municipios = municipios
+          .filter(m => m.codigo_dane.startsWith(departamentoCode))
+          .map(m => ({
+            label: m.municipio,
+            value: m.codigo_dane.substring(2) // Usar solo los últimos 3 dígitos
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label));
+
+        console.log('Municipios cargados:', this.municipios.length);
+      },
+      error: (err) => {
+        console.error('Error cargando municipios:', err);
+        // Usar datos mock si falla
+        this.municipios = [
+          { label: 'Municipio 1', value: '001' },
+          { label: 'Municipio 2', value: '002' },
+          { label: 'Municipio 3', value: '003' }
+        ];
+      }
+    });
   }
 
   onAplicar(): void {
@@ -308,13 +329,326 @@ export class SgpEficienciasComponent implements OnInit {
     console.log('Departamento:', this.selectedDepartamento);
     console.log('Municipio:', this.selectedMunicipio);
 
-    this.isLoading = true;
+    if (!this.selectedMunicipio || !this.selectedVigencia) {
+      console.warn('Seleccione municipio y vigencia');
+      return;
+    }
 
-    // Simulate API call
-    setTimeout(() => {
-      this.isLoading = false;
-      console.log('Filtros aplicados');
-    }, 2000);
+    const codigoDane = this.selectedDepartamento + this.selectedMunicipio;
+    this.loadDatosReales(codigoDane, parseInt(this.selectedVigencia));
+  }
+
+  /**
+   * Cargar datos reales desde la API de eficiencias
+   */
+  loadDatosReales(codigoDane: string, vigencia: number): void {
+    this.isLoading = true;
+    this.errorMessage = null;
+
+    console.log('Cargando datos para código DANE:', codigoDane, 'vigencia:', vigencia);
+
+    this.eficienciasService.getResumenMunicipio(codigoDane).subscribe({
+      next: (data) => {
+        this.resumenMunicipio = data;
+        this.procesarDatosAPI(data, vigencia);
+        this.isLoading = false;
+        console.log('Datos cargados exitosamente:', data);
+      },
+      error: (err) => {
+        console.error('Error cargando datos de eficiencias:', err);
+        this.errorMessage = 'Error al cargar los datos: ' + err.message;
+        this.isLoading = false;
+        // Mantener datos mock si falla la API
+        console.log('Usando datos de ejemplo debido al error');
+      }
+    });
+  }
+
+  /**
+   * Procesar datos de la API y actualizar las tablas
+   * @param data Datos del resumen del municipio
+   * @param vigencia Año de vigencia SGP seleccionado
+   */
+  private procesarDatosAPI(data: ResumenMunicipioEficiencia, vigencia: number): void {
+    console.log('Procesando datos para vigencia:', vigencia);
+
+    // ============================================================================
+    // EFICIENCIA FISCAL - Tabla 1 (Vigencia Anterior)
+    // ============================================================================
+    this.eficienciaFiscalTable1 = [];
+    const vigenciaAnterior = vigencia - 1;
+
+    // Generar 4 filas para vigencia anterior (vigencia-3 a vigencia)
+    const perCapitasTable1: number[] = [];
+    for (let v = vigenciaAnterior - 3; v <= vigenciaAnterior; v++) {
+      const anoRefrendado = v - 2;
+      const ingreso = data.ingresos_tributarios.find(i => i.anio === anoRefrendado);
+      const pob = data.poblacion.find(p => p.anio === anoRefrendado);
+
+      const ingresoValor = ingreso?.valor ?? 0;
+      const poblacionValor = pob?.poblacion ?? 0;
+      const perCapita = poblacionValor > 0 ? ingresoValor / poblacionValor : 0;
+
+      perCapitasTable1.push(perCapita);
+
+      this.eficienciaFiscalTable1.push({
+        vigencia: v.toString(),
+        anoRefrendado: anoRefrendado,
+        ingresosTributarios: ingresoValor,
+        poblacion: poblacionValor,
+        perCapita: Math.round(perCapita),
+        crecimientoPerCapita: 0, // Se calcula después
+        promedioCrecimiento: 0
+      });
+    }
+
+    // Calcular crecimiento per cápita para tabla 1
+    for (let i = 1; i < this.eficienciaFiscalTable1.length; i++) {
+      const perCapitaActual = perCapitasTable1[i];
+      const perCapitaAnterior = perCapitasTable1[i - 1];
+
+      if (perCapitaAnterior > 0) {
+        const crecimiento = ((perCapitaActual - perCapitaAnterior) / perCapitaAnterior) * 100;
+        this.eficienciaFiscalTable1[i].crecimientoPerCapita = crecimiento;
+      }
+    }
+
+    // Calcular promedio de crecimiento para tabla 1
+    const crecimientosTable1 = this.eficienciaFiscalTable1
+      .slice(1)
+      .map(r => r.crecimientoPerCapita)
+      .filter(c => c !== 0);
+
+    const promedioTable1 = crecimientosTable1.length > 0
+      ? crecimientosTable1.reduce((a, b) => a + b, 0) / crecimientosTable1.length
+      : 0;
+
+    this.eficienciaFiscalTable1.forEach(row => row.promedioCrecimiento = promedioTable1);
+
+    // ============================================================================
+    // EFICIENCIA FISCAL - Tabla 2 (Vigencia Seleccionada)
+    // ============================================================================
+    this.eficienciaFiscalTable2 = [];
+
+    // Generar 4 filas para vigencia seleccionada (vigencia-2 a vigencia+1)
+    const perCapitasTable2: number[] = [];
+    for (let v = vigencia - 2; v <= vigencia + 1; v++) {
+      const anoRefrendado = v - 2;
+      const ingreso = data.ingresos_tributarios.find(i => i.anio === anoRefrendado);
+      const pob = data.poblacion.find(p => p.anio === anoRefrendado);
+
+      const ingresoValor = ingreso?.valor ?? 0;
+      const poblacionValor = pob?.poblacion ?? 0;
+      const perCapita = poblacionValor > 0 ? ingresoValor / poblacionValor : 0;
+
+      perCapitasTable2.push(perCapita);
+
+      this.eficienciaFiscalTable2.push({
+        vigencia: v.toString(),
+        anoRefrendado: anoRefrendado,
+        ingresosTributarios: ingresoValor,
+        poblacion: poblacionValor,
+        perCapita: Math.round(perCapita),
+        crecimientoPerCapita: 0, // Se calcula después
+        promedioCrecimiento: 0
+      });
+    }
+
+    // Calcular crecimiento per cápita para tabla 2
+    for (let i = 1; i < this.eficienciaFiscalTable2.length; i++) {
+      const perCapitaActual = perCapitasTable2[i];
+      const perCapitaAnterior = perCapitasTable2[i - 1];
+
+      if (perCapitaAnterior > 0) {
+        const crecimiento = ((perCapitaActual - perCapitaAnterior) / perCapitaAnterior) * 100;
+        this.eficienciaFiscalTable2[i].crecimientoPerCapita = crecimiento;
+      }
+    }
+
+    // Calcular promedio de crecimiento para tabla 2
+    const crecimientosTable2 = this.eficienciaFiscalTable2
+      .slice(1)
+      .map(r => r.crecimientoPerCapita)
+      .filter(c => c !== 0);
+
+    const promedioTable2 = crecimientosTable2.length > 0
+      ? crecimientosTable2.reduce((a, b) => a + b, 0) / crecimientosTable2.length
+      : 0;
+
+    this.eficienciaFiscalTable2.forEach(row => row.promedioCrecimiento = promedioTable2);
+
+    // ============================================================================
+    // EFICIENCIA ADMINISTRATIVA
+    // ============================================================================
+    this.eficienciaAdministrativaTable1 = [];
+    this.eficienciaAdministrativaTable2 = [];
+
+    // Función auxiliar para validar valores centinela en vigencia_2026
+    const esValorValido = (v: number | null | undefined): boolean => {
+      return v !== null && v !== undefined && v <= 1;
+    };
+
+    // Tabla 1: Vigencia Anterior, Año Certificado = (vigencia - 1) - 2
+    const anoCertificadoTable1 = vigenciaAnterior - 2;
+    const indEATable1 = data.eficiencia_administrativa.find(e => e.anio === anoCertificadoTable1);
+
+    // Usar vigencia_2026 solo si el año certificado corresponde a 2024 (vigencia 2026)
+    if (anoCertificadoTable1 === 2024 && data.vigencia_2026 && esValorValido(data.vigencia_2026.razon)) {
+      this.eficienciaAdministrativaTable1 = [{
+        anoCertificado: anoCertificadoTable1,
+        icld: esValorValido(data.vigencia_2026.icld) ? data.vigencia_2026.icld : null,
+        gf: esValorValido(data.vigencia_2026.gf) ? data.vigencia_2026.gf : null,
+        lg: esValorValido(data.vigencia_2026.lg) ? data.vigencia_2026.lg : null,
+        razon: esValorValido(data.vigencia_2026.razon) ? data.vigencia_2026.razon : null,
+        holgura: esValorValido(data.vigencia_2026.holgura) ? data.vigencia_2026.holgura : null
+      }];
+    } else {
+      // Para años históricos, solo mostrar el indicador EA como razon
+      this.eficienciaAdministrativaTable1 = [{
+        anoCertificado: anoCertificadoTable1,
+        icld: null,
+        gf: null,
+        lg: null,
+        razon: indEATable1?.valor ?? null,
+        holgura: null
+      }];
+    }
+
+    // Tabla 2: Vigencia Seleccionada, Año Certificado = vigencia - 2
+    const anoCertificadoTable2 = vigencia - 2;
+    const indEATable2 = data.eficiencia_administrativa.find(e => e.anio === anoCertificadoTable2);
+
+    // Usar vigencia_2026 solo si el año certificado corresponde a 2024 (vigencia 2026)
+    if (anoCertificadoTable2 === 2024 && data.vigencia_2026 && esValorValido(data.vigencia_2026.razon)) {
+      this.eficienciaAdministrativaTable2 = [{
+        anoCertificado: anoCertificadoTable2,
+        icld: esValorValido(data.vigencia_2026.icld) ? data.vigencia_2026.icld : null,
+        gf: esValorValido(data.vigencia_2026.gf) ? data.vigencia_2026.gf : null,
+        lg: esValorValido(data.vigencia_2026.lg) ? data.vigencia_2026.lg : null,
+        razon: esValorValido(data.vigencia_2026.razon) ? data.vigencia_2026.razon : null,
+        holgura: esValorValido(data.vigencia_2026.holgura) ? data.vigencia_2026.holgura : null
+      }];
+    } else {
+      // Para años históricos, solo mostrar el indicador EA como razon
+      this.eficienciaAdministrativaTable2 = [{
+        anoCertificado: anoCertificadoTable2,
+        icld: null,
+        gf: null,
+        lg: null,
+        razon: indEATable2?.valor ?? null,
+        holgura: null
+      }];
+    }
+
+    // ============================================================================
+    // ONCE DOCEAVAS
+    // ============================================================================
+    // Tabla 1: Vigencia Anterior (vigencia - 1)
+    const recursosTable1 = data.recursos_proposito_general.find(r => r.anio === vigenciaAnterior);
+
+    if (recursosTable1) {
+      const totalTable1 =
+        (recursosTable1.poblacion || 0) +
+        (recursosTable1.pobreza || 0) +
+        (recursosTable1.eficiencia_fiscal || 0) +
+        (recursosTable1.eficiencia_administrativa || 0) +
+        (recursosTable1.sisben || 0);
+
+      this.onceDoceavasTable1 = [
+        { variable: 'Población', valor: this.formatNumber(recursosTable1.poblacion), isTotal: false },
+        { variable: 'Pobreza', valor: this.formatNumber(recursosTable1.pobreza), isTotal: false },
+        { variable: 'Eficiencia Fiscal', valor: this.formatNumber(recursosTable1.eficiencia_fiscal), isTotal: false },
+        { variable: 'Eficiencia Administrativa', valor: this.formatNumber(recursosTable1.eficiencia_administrativa), isTotal: false },
+        { variable: 'Sisben', valor: this.formatNumber(recursosTable1.sisben), isTotal: false },
+        { variable: 'TOTAL', valor: this.formatCurrencyWithSymbol(totalTable1), isTotal: true }
+      ];
+    }
+
+    // Tabla 2: Vigencia Seleccionada (vigencia)
+    const recursosTable2 = data.recursos_proposito_general.find(r => r.anio === vigencia);
+
+    if (recursosTable2) {
+      const totalTable2 =
+        (recursosTable2.poblacion || 0) +
+        (recursosTable2.pobreza || 0) +
+        (recursosTable2.eficiencia_fiscal || 0) +
+        (recursosTable2.eficiencia_administrativa || 0) +
+        (recursosTable2.sisben || 0);
+
+      this.onceDoceavasTable2 = [
+        { variable: 'Población', valor: this.formatNumber(recursosTable2.poblacion), isTotal: false },
+        { variable: 'Pobreza', valor: this.formatNumber(recursosTable2.pobreza), isTotal: false },
+        { variable: 'Eficiencia Fiscal', valor: this.formatNumber(recursosTable2.eficiencia_fiscal), isTotal: false },
+        { variable: 'Eficiencia Administrativa', valor: this.formatNumber(recursosTable2.eficiencia_administrativa), isTotal: false },
+        { variable: 'Sisben', valor: this.formatNumber(recursosTable2.sisben), isTotal: false },
+        { variable: 'TOTAL', valor: this.formatCurrencyWithSymbol(totalTable2), isTotal: true }
+      ];
+    }
+
+    // ============================================================================
+    // RESTRICCIÓN 50%
+    // ============================================================================
+    if (recursosTable1) {
+      const sumaPobPobreza1 = (recursosTable1.poblacion || 0) + (recursosTable1.pobreza || 0);
+      const restriccion1 = sumaPobPobreza1 / 2;
+
+      this.restriccion50Table1 = [
+        { variable: 'Población + Pobreza', valor: this.formatCurrencyWithSymbol(sumaPobPobreza1) },
+        { variable: 'Restricción del 50%', valor: this.formatCurrencyWithSymbol(restriccion1) }
+      ];
+    }
+
+    if (recursosTable2) {
+      const sumaPobPobreza2 = (recursosTable2.poblacion || 0) + (recursosTable2.pobreza || 0);
+      const restriccion2 = sumaPobPobreza2 / 2;
+
+      this.restriccion50Table2 = [
+        { variable: 'Población + Pobreza', valor: this.formatCurrencyWithSymbol(sumaPobPobreza2) },
+        { variable: 'Restricción del 50%', valor: this.formatCurrencyWithSymbol(restriccion2) }
+      ];
+    }
+
+    // ============================================================================
+    // VARIABLES CENSALES
+    // ============================================================================
+    const pobCensal1 = data.poblacion.find(p => p.anio === vigenciaAnterior);
+    if (pobCensal1) {
+      this.variablesCensalesTable1 = [
+        { variable: 'Población', valor: this.formatNumber(pobCensal1.poblacion) },
+        { variable: 'Pobreza - NBI (%)', valor: 'No disponible' } // No está en la BD
+      ];
+    }
+
+    const pobCensal2 = data.poblacion.find(p => p.anio === vigencia);
+    if (pobCensal2) {
+      this.variablesCensalesTable2 = [
+        { variable: 'Población', valor: this.formatNumber(pobCensal2.poblacion) },
+        { variable: 'Pobreza - NBI (%)', valor: 'No disponible' } // No está en la BD
+      ];
+    }
+
+    console.log('Datos procesados y tablas actualizadas para vigencia:', vigencia);
+  }
+
+  /**
+   * Formatear número con separadores de miles
+   */
+  private formatNumber(value: number | null): string {
+    if (value === null || value === undefined) return 'N/A';
+    return new Intl.NumberFormat('es-CO').format(value);
+  }
+
+  /**
+   * Formatear valor monetario con símbolo
+   */
+  private formatCurrencyWithSymbol(value: number | null): string {
+    if (value === null || value === undefined) return 'N/A';
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(value);
   }
 
   clearFilters(): void {
@@ -325,18 +659,21 @@ export class SgpEficienciasComponent implements OnInit {
     console.log('Filtros limpiados');
   }
 
-  formatCurrency(value: number): string {
+  formatCurrency(value: number | null): string {
+    if (value === null || value === undefined) return 'N/A';
     return new Intl.NumberFormat('es-CO', {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }).format(value);
   }
 
-  formatPercentage(value: number): string {
+  formatPercentage(value: number | null): string {
+    if (value === null || value === undefined) return 'N/A';
     return `${value.toFixed(1)}%`;
   }
 
-  formatDecimal(value: number): string {
+  formatDecimal(value: number | null): string {
+    if (value === null || value === undefined) return 'N/A';
     return value.toFixed(3);
   }
 
