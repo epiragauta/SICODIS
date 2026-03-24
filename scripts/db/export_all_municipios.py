@@ -45,13 +45,13 @@ def get_municipio_resumen(conn, codigo_dane):
         'municipio': municipio[2]
     }
 
-    # Ingresos tributarios (últimos 5 años)
+    # Ingresos tributarios (últimos 10 años para cubrir todas las vigencias)
     cur.execute('''
         SELECT id, codigo_dane, anio, valor, observacion
         FROM ingresos_tributarios
         WHERE codigo_dane = ?
         ORDER BY anio DESC
-        LIMIT 5
+        LIMIT 10
     ''', (codigo_dane,))
 
     ingresos = []
@@ -64,13 +64,13 @@ def get_municipio_resumen(conn, codigo_dane):
             'observacion': row[4]
         })
 
-    # Población (últimos 5 años)
+    # Población (últimos 10 años para cubrir todas las vigencias)
     cur.execute('''
         SELECT id, codigo_dane, anio, poblacion, fuente_censo
         FROM poblacion
         WHERE codigo_dane = ?
         ORDER BY anio DESC
-        LIMIT 5
+        LIMIT 10
     ''', (codigo_dane,))
 
     poblacion = []
@@ -83,14 +83,14 @@ def get_municipio_resumen(conn, codigo_dane):
             'fuente_censo': row[4]
         })
 
-    # Recursos propósito general (últimos 5 años)
+    # Recursos propósito general (últimos 10 años para cubrir todas las vigencias)
     cur.execute('''
         SELECT id, codigo_dane, anio, poblacion_m, pobreza_m, poblacion,
                pobreza, eficiencia_fiscal, eficiencia_administrativa, sisben
         FROM recursos_proposito_general
         WHERE codigo_dane = ?
         ORDER BY anio DESC
-        LIMIT 5
+        LIMIT 10
     ''', (codigo_dane,))
 
     recursos = []

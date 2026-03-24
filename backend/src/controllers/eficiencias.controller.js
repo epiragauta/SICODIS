@@ -382,19 +382,19 @@ exports.getResumenMunicipio = (req, res) => {
       return res.status(404).json({ error: 'Municipio no encontrado' });
     }
 
-    // Obtener datos más recientes de cada categoría
+    // Obtener datos históricos (últimos 10 años para cubrir todas las vigencias)
     const ingresos = db.all(
-      'SELECT * FROM ingresos_tributarios WHERE codigo_dane = ? ORDER BY anio DESC LIMIT 5',
+      'SELECT * FROM ingresos_tributarios WHERE codigo_dane = ? ORDER BY anio DESC LIMIT 10',
       [codigo_dane]
     );
 
     const poblacion = db.all(
-      'SELECT * FROM poblacion WHERE codigo_dane = ? ORDER BY anio DESC LIMIT 5',
+      'SELECT * FROM poblacion WHERE codigo_dane = ? ORDER BY anio DESC LIMIT 10',
       [codigo_dane]
     );
 
     const recursos = db.all(
-      'SELECT * FROM recursos_proposito_general WHERE codigo_dane = ? ORDER BY anio DESC LIMIT 5',
+      'SELECT * FROM recursos_proposito_general WHERE codigo_dane = ? ORDER BY anio DESC LIMIT 10',
       [codigo_dane]
     );
 

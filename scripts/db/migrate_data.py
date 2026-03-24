@@ -300,16 +300,19 @@ class DataMigrator:
         headers = rows[0]
 
         # Identificar posiciones de bloques buscando "CÓDIGO DANE" en headers
-        # Estructura esperada (ejemplo):
-        # [CÓDIGO DANE, DEPARTAMENTO, MUNICIPIO, 2016, 2017, ..., 2023, CÓDIGO DANE, 2016, 2017, ..., 2023, ...]
-
-        # Para simplificar, usaremos posiciones fijas según el plan:
-        # Bloque 1 (ICLD): posiciones 3-10 (años 2016-2023)
-        # Bloque 2 (GF): posiciones 11-18
-        # Bloque 3 (Razón): posiciones 19-26
-        # Bloque 4 (Holgura): posiciones 27-34
-        # Bloque 5 (Límite de Gasto): posición 35
-        # Bloque 6 (Vigencia 2026): posiciones 36-40 (ICLD, GF, LG, Razón, Holgura)
+        # Estructura real del archivo:
+        # [CÓDIGO DANE, DEPARTAMENTO, MUNICIPIO, 2016-2023, CÓDIGO DANE (sep), 2016-2023, ...]
+        # Posiciones 0-2: CÓDIGO DANE, DEPARTAMENTO, MUNICIPIO
+        # Posiciones 3-10: 2016-2023 (ICLD)
+        # Posición 11: CÓDIGO DANE (separador - IGNORAR)
+        # Posiciones 12-19: 2016-2023 (Gastos Funcionamiento)
+        # Posición 20: CÓDIGO DANE (separador - IGNORAR)
+        # Posiciones 21-28: 2016-2023 (Razón)
+        # Posición 29: CÓDIGO DANE (separador - IGNORAR)
+        # Posiciones 30-37: 2016-2023 (Holgura)
+        # Posición 38: Límite de Gasto
+        # Posición 39: CÓDIGO DANE (separador - IGNORAR)
+        # Posiciones 40-44: ICLD, GF, LG, Razón, Holgura (Vigencia 2026)
 
         years_617 = list(range(2016, 2024))  # 2016-2023
         count_icld = 0
@@ -337,49 +340,53 @@ class DataMigrator:
                     )
                     count_icld += 1
 
-                # Bloque 2: Gastos de Funcionamiento (posiciones 11-18)
+                # Bloque 2: Gastos de Funcionamiento (posiciones 12-19)
+                # Posición 11 es separador "CÓDIGO DANE" - se ignora
                 for i, year in enumerate(years_617):
-                    valor = self.validate_value('ley_617_gastos_funcionamiento', 'valor', row[11 + i])
+                    valor = self.validate_value('ley_617_gastos_funcionamiento', 'valor', row[12 + i])
                     self.conn.execute(
                         "INSERT INTO ley_617_gastos_funcionamiento (codigo_dane, anio, valor) VALUES (?, ?, ?)",
                         (codigo_dane, year, valor)
                     )
                     count_gf += 1
 
-                # Bloque 3: Razón (posiciones 19-26)
+                # Bloque 3: Razón (posiciones 21-28)
+                # Posición 20 es separador "CÓDIGO DANE" - se ignora
                 for i, year in enumerate(years_617):
-                    valor = self.validate_value('ley_617_razon', 'valor', row[19 + i])
+                    valor = self.validate_value('ley_617_razon', 'valor', row[21 + i])
                     self.conn.execute(
                         "INSERT INTO ley_617_razon (codigo_dane, anio, valor) VALUES (?, ?, ?)",
                         (codigo_dane, year, valor)
                     )
                     count_razon += 1
 
-                # Bloque 4: Holgura (posiciones 27-34)
+                # Bloque 4: Holgura (posiciones 30-37)
+                # Posición 29 es separador "CÓDIGO DANE" - se ignora
                 for i, year in enumerate(years_617):
-                    valor = self.validate_value('ley_617_holgura', 'valor', row[27 + i])
+                    valor = self.validate_value('ley_617_holgura', 'valor', row[30 + i])
                     self.conn.execute(
                         "INSERT INTO ley_617_holgura (codigo_dane, anio, valor) VALUES (?, ?, ?)",
                         (codigo_dane, year, valor)
                     )
                     count_holgura += 1
 
-                # Bloque 5: Límite de Gasto (posición 35)
-                if len(row) > 35:
-                    limite_gasto = self.validate_value('ley_617_limite_gasto', 'limite_gasto', row[35])
+                # Bloque 5: Límite de Gasto (posición 38)
+                if len(row) > 38:
+                    limite_gasto = self.validate_value('ley_617_limite_gasto', 'limite_gasto', row[38])
                     self.conn.execute(
                         "INSERT INTO ley_617_limite_gasto (codigo_dane, limite_gasto) VALUES (?, ?)",
                         (codigo_dane, limite_gasto)
                     )
                     count_limite += 1
 
-                # Bloque 6: Vigencia 2026 (posiciones 36-40)
-                if len(row) > 40:
-                    icld_2026 = self.validate_value('ley_617_vigencia_2026', 'icld', row[36])
-                    gf_2026 = self.validate_value('ley_617_vigencia_2026', 'gf', row[37])
-                    lg_2026 = self.validate_value('ley_617_vigencia_2026', 'lg', row[38])
-                    razon_2026 = self.validate_value('ley_617_vigencia_2026', 'razon', row[39])
-                    holgura_2026 = self.validate_value('ley_617_vigencia_2026', 'holgura', row[40])
+                # Bloque 6: Vigencia 2026 (posiciones 40-44)
+                # Posición 39 es separador "CÓDIGO DANE" - se ignora
+                if len(row) > 44:
+                    icld_2026 = self.validate_value('ley_617_vigencia_2026', 'icld', row[40])
+                    gf_2026 = self.validate_value('ley_617_vigencia_2026', 'gf', row[41])
+                    lg_2026 = self.validate_value('ley_617_vigencia_2026', 'lg', row[42])
+                    razon_2026 = self.validate_value('ley_617_vigencia_2026', 'razon', row[43])
+                    holgura_2026 = self.validate_value('ley_617_vigencia_2026', 'holgura', row[44])
 
                     self.conn.execute(
                         """INSERT INTO ley_617_vigencia_2026

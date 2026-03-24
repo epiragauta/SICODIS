@@ -405,11 +405,29 @@ export class SgpEficienciasComponent implements OnInit {
     // Calcular crecimiento per cápita para tabla 1
     for (let i = 1; i < this.eficienciaFiscalTable1.length; i++) {
       const perCapitaActual = perCapitasTable1[i];
-      const perCapitaAnterior = perCapitasTable1[i - 1];
 
-      if (perCapitaAnterior > 0) {
-        const crecimiento = ((perCapitaActual - perCapitaAnterior) / perCapitaAnterior) * 100;
+      // Si el año actual no tiene per cápita, el crecimiento es 0
+      if (perCapitaActual === 0) {
+        this.eficienciaFiscalTable1[i].crecimientoPerCapita = 0;
+        continue;
+      }
+
+      // Buscar hacia atrás el último año con per cápita > 0
+      let perCapitaBase = 0;
+      for (let j = i - 1; j >= 0; j--) {
+        if (perCapitasTable1[j] > 0) {
+          perCapitaBase = perCapitasTable1[j];
+          break;
+        }
+      }
+
+      // Si encontramos un año base, calcular crecimiento
+      if (perCapitaBase > 0) {
+        const crecimiento = ((perCapitaActual - perCapitaBase) / perCapitaBase) * 100;
         this.eficienciaFiscalTable1[i].crecimientoPerCapita = crecimiento;
+      } else {
+        // Si no hay ningún año anterior con per cápita > 0, el crecimiento es 0
+        this.eficienciaFiscalTable1[i].crecimientoPerCapita = 0;
       }
     }
 
@@ -430,9 +448,9 @@ export class SgpEficienciasComponent implements OnInit {
     // ============================================================================
     this.eficienciaFiscalTable2 = [];
 
-    // Generar 4 filas para vigencia seleccionada (vigencia-2 a vigencia+1)
+    // Generar 4 filas para vigencia seleccionada (vigencia-3 a vigencia)
     const perCapitasTable2: number[] = [];
-    for (let v = vigencia - 2; v <= vigencia + 1; v++) {
+    for (let v = vigencia - 3; v <= vigencia; v++) {
       const anoRefrendado = v - 2;
       const ingreso = data.ingresos_tributarios.find(i => i.anio === anoRefrendado);
       const pob = data.poblacion.find(p => p.anio === anoRefrendado);
@@ -457,11 +475,29 @@ export class SgpEficienciasComponent implements OnInit {
     // Calcular crecimiento per cápita para tabla 2
     for (let i = 1; i < this.eficienciaFiscalTable2.length; i++) {
       const perCapitaActual = perCapitasTable2[i];
-      const perCapitaAnterior = perCapitasTable2[i - 1];
 
-      if (perCapitaAnterior > 0) {
-        const crecimiento = ((perCapitaActual - perCapitaAnterior) / perCapitaAnterior) * 100;
+      // Si el año actual no tiene per cápita, el crecimiento es 0
+      if (perCapitaActual === 0) {
+        this.eficienciaFiscalTable2[i].crecimientoPerCapita = 0;
+        continue;
+      }
+
+      // Buscar hacia atrás el último año con per cápita > 0
+      let perCapitaBase = 0;
+      for (let j = i - 1; j >= 0; j--) {
+        if (perCapitasTable2[j] > 0) {
+          perCapitaBase = perCapitasTable2[j];
+          break;
+        }
+      }
+
+      // Si encontramos un año base, calcular crecimiento
+      if (perCapitaBase > 0) {
+        const crecimiento = ((perCapitaActual - perCapitaBase) / perCapitaBase) * 100;
         this.eficienciaFiscalTable2[i].crecimientoPerCapita = crecimiento;
+      } else {
+        // Si no hay ningún año anterior con per cápita > 0, el crecimiento es 0
+        this.eficienciaFiscalTable2[i].crecimientoPerCapita = 0;
       }
     }
 
