@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell -Command:*)",
+      "Bash(grep:*)",
+      "Bash(npm run build:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "WebFetch(domain:sicodis.dnp.gov.co)",
+      "Bash(python migrate_data.py:*)",
+      "Bash(python verify_data.py:*)",
+      "Bash(npm install)",
+      "Bash(node --version:*)",
+      "Bash(where:*)",
+      "Bash(\"C:\\\\software\\\\node-v22.16.0-win-x64\\\\npm.cmd\" install)",
+      "Bash(\"C:\\\\software\\\\node-v22.16.0-win-x64\\\\npm.cmd\" start)",
+      "Bash(curl:*)",
+      "Bash(npm start)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)",
+      "Bash(python -m json.tool:*)",
+      "Bash(sqlite3:*)",
+      "Bash(python:*)",
+      "Bash(ls:*)",
+      "Bash(git push:*)",
+      "Bash(cmd //c \"taskkill /PID 35524 /F\")",
+      "Bash(cmd //c \"handle C:\\\\ws\\\\dnp\\\\ws\\\\SICODIS_WebII\\\\src\\\\assets\\\\db\\\\eficiencias.db\")",
+      "Bash(tasklist:*)",
+      "Bash(cmd //c \"taskkill /PID 30260 /F\")",
+      "Bash(cmd //c \"taskkill /PID 62440 /F\")"
+    ]
+  }
+}

@@ -413,6 +413,27 @@ exports.getResumenMunicipio = (req, res) => {
       [codigo_dane]
     );
 
+    // Obtener datos históricos de Ley 617 (últimos 10 años)
+    const ley617Icld = db.all(
+      'SELECT * FROM ley_617_icld WHERE codigo_dane = ? ORDER BY anio DESC LIMIT 10',
+      [codigo_dane]
+    );
+
+    const ley617GastosFuncionamiento = db.all(
+      'SELECT * FROM ley_617_gastos_funcionamiento WHERE codigo_dane = ? ORDER BY anio DESC LIMIT 10',
+      [codigo_dane]
+    );
+
+    const ley617Razon = db.all(
+      'SELECT * FROM ley_617_razon WHERE codigo_dane = ? ORDER BY anio DESC LIMIT 10',
+      [codigo_dane]
+    );
+
+    const ley617Holgura = db.all(
+      'SELECT * FROM ley_617_holgura WHERE codigo_dane = ? ORDER BY anio DESC LIMIT 10',
+      [codigo_dane]
+    );
+
     res.json({
       municipio,
       ingresos_tributarios: ingresos,
@@ -420,7 +441,11 @@ exports.getResumenMunicipio = (req, res) => {
       recursos_proposito_general: recursos,
       eficiencia_fiscal: eficienciaFiscal,
       eficiencia_administrativa: eficienciaAdmin,
-      vigencia_2026: vigencia2026
+      vigencia_2026: vigencia2026,
+      ley_617_icld: ley617Icld,
+      ley_617_gastos_funcionamiento: ley617GastosFuncionamiento,
+      ley_617_razon: ley617Razon,
+      ley_617_holgura: ley617Holgura
     });
   } catch (error) {
     console.error('Error en getResumenMunicipio:', error);

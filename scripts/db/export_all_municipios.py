@@ -162,6 +162,78 @@ def get_municipio_resumen(conn, codigo_dane):
             'holgura': vigencia_2026_row[5]
         }
 
+    # Ley 617 - ICLD (últimos 10 años)
+    cur.execute('''
+        SELECT id, codigo_dane, anio, valor
+        FROM ley_617_icld
+        WHERE codigo_dane = ?
+        ORDER BY anio DESC
+        LIMIT 10
+    ''', (codigo_dane,))
+
+    ley_617_icld = []
+    for row in cur.fetchall():
+        ley_617_icld.append({
+            'id': row[0],
+            'codigo_dane': row[1],
+            'anio': row[2],
+            'valor': row[3]
+        })
+
+    # Ley 617 - Gastos de Funcionamiento (últimos 10 años)
+    cur.execute('''
+        SELECT id, codigo_dane, anio, valor
+        FROM ley_617_gastos_funcionamiento
+        WHERE codigo_dane = ?
+        ORDER BY anio DESC
+        LIMIT 10
+    ''', (codigo_dane,))
+
+    ley_617_gastos_funcionamiento = []
+    for row in cur.fetchall():
+        ley_617_gastos_funcionamiento.append({
+            'id': row[0],
+            'codigo_dane': row[1],
+            'anio': row[2],
+            'valor': row[3]
+        })
+
+    # Ley 617 - Razón (últimos 10 años)
+    cur.execute('''
+        SELECT id, codigo_dane, anio, valor
+        FROM ley_617_razon
+        WHERE codigo_dane = ?
+        ORDER BY anio DESC
+        LIMIT 10
+    ''', (codigo_dane,))
+
+    ley_617_razon = []
+    for row in cur.fetchall():
+        ley_617_razon.append({
+            'id': row[0],
+            'codigo_dane': row[1],
+            'anio': row[2],
+            'valor': row[3]
+        })
+
+    # Ley 617 - Holgura (últimos 10 años)
+    cur.execute('''
+        SELECT id, codigo_dane, anio, valor
+        FROM ley_617_holgura
+        WHERE codigo_dane = ?
+        ORDER BY anio DESC
+        LIMIT 10
+    ''', (codigo_dane,))
+
+    ley_617_holgura = []
+    for row in cur.fetchall():
+        ley_617_holgura.append({
+            'id': row[0],
+            'codigo_dane': row[1],
+            'anio': row[2],
+            'valor': row[3]
+        })
+
     return {
         'municipio': municipio_dict,
         'ingresos_tributarios': ingresos,
@@ -169,7 +241,11 @@ def get_municipio_resumen(conn, codigo_dane):
         'recursos_proposito_general': recursos,
         'eficiencia_fiscal': eficiencia_fiscal,
         'eficiencia_administrativa': eficiencia_administrativa,
-        'vigencia_2026': vigencia_2026
+        'vigencia_2026': vigencia_2026,
+        'ley_617_icld': ley_617_icld,
+        'ley_617_gastos_funcionamiento': ley_617_gastos_funcionamiento,
+        'ley_617_razon': ley_617_razon,
+        'ley_617_holgura': ley_617_holgura
     }
 
 def export_all_municipios():

@@ -1,0 +1,230 @@
+{
+  "sheet": "SGP Vigencias 2020 a 2023",
+  "rows": [
+    [
+      null,
+      null,
+      "PRESUPUESTO SISTEMA GENERAL DE PARTICIPACIONES\n(ÚLTIMA DOCEAVA VIGENCIA ANTERIOR + ONCE DOCEAVAS VIGENCIA)",
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      "DEPARTAMENTO",
+      "ATLANTICO",
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      "MUNICIPIO",
+      "BARRANQUILLA",
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      "DANE",
+      "08001",
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      "Concepto",
+      "Vigenca 2020",
+      "Vigenca 2021",
+      "Vigenca 2022",
+      "Vigenca 2023",
+      null,
+      null
+    ],
+    [
+      "Educación",
+      595137919763,
+      606888570915,
+      652526652480,
+      501907701332,
+      null,
+      null
+    ],
+    [
+      "Prestación Servicios",
+      568585664721,
+      581430288875,
+      627335304838,
+      491194388641,
+      null,
+      null
+    ],
+    [
+      "Calidad Gratuidad Educativa",
+      17905395090,
+      14067071544,
+      13726220987,
+      10713312691,
+      null,
+      null
+    ],
+    [
+      "Calidad Matrícula Oficial",
+      8646859952,
+      11391210496,
+      11465126655,
+      0,
+      null,
+      null
+    ],
+    [
+      "Salud",
+      260690428386,
+      282950492657,
+      296852765322,
+      335891154137,
+      null,
+      null
+    ],
+    [
+      "Régimen Subsidiado",
+      247254750011,
+      273526440381,
+      285563061234,
+      324288884633,
+      null,
+      null
+    ],
+    [
+      "Salud Pública",
+      11618466416,
+      9424052276,
+      11289704088,
+      11602269504,
+      null,
+      null
+    ],
+    [
+      "Subsidio a la Oferta",
+      1817211959,
+      0,
+      0,
+      0,
+      null,
+      null
+    ],
+    [
+      "Agua Potable",
+      30136957080,
+      27377656620,
+      27369726645,
+      29625777169,
+      null,
+      null
+    ],
+    [
+      "Propósito General",
+      40831366467,
+      45479525549,
+      47720583104,
+      53718741139,
+      null,
+      null
+    ],
+    [
+      "Libre Destinación",
+      0,
+      0,
+      0,
+      0,
+      null,
+      null
+    ],
+    [
+      "Deporte",
+      3266509317,
+      3638362044,
+      3817646648,
+      4297499291,
+      null,
+      null
+    ],
+    [
+      "Cultura",
+      2449881988,
+      2728771533,
+      2863234986,
+      3223124468,
+      null,
+      null
+    ],
+    [
+      "Libre Inversión",
+      31031838516,
+      34564439417,
+      36267643159,
+      40826243266,
+      null,
+      null
+    ],
+    [
+      "Fonpet",
+      4083136646,
+      4547952555,
+      4772058311,
+      5371874114,
+      null,
+      null
+    ],
+    [
+      "Alimentación Escolar",
+      3235131093,
+      3072442440,
+      3818417687,
+      3887061824,
+      null,
+      null
+    ],
+    [
+      "Ribereños",
+      172524248,
+      187652515,
+      195241841,
+      216049817,
+      null,
+      null
+    ],
+    [
+      "Resguardos Indígenas",
+      0,
+      0,
+      0,
+      0,
+      null,
+      null
+    ],
+    [
+      "Fonpet 2,9%",
+      3636441694,
+      16942225194,
+      17107498224,
+      1666996014,
+      null,
+      null
+    ],
+    [
+      "Total SGP",
+      933840768731,
+      982898565890,
+      1045590885303,
+      926913481432,
+      null,
+      null
+    ]
+  ]
+}

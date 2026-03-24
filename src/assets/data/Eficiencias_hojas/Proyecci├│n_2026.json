@@ -1,0 +1,248 @@
+{
+  "sheet": "Proyección_2026",
+  "rows": [
+    [
+      null,
+      "Sistema General de Participaciones\nParticipación para Propósito General - Criterio de Eficiencia Fiscal\nVigencia 2026",
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      "Departamento",
+      "NARIÑO",
+      null,
+      "Municipio Refrendado",
+      null,
+      "Si",
+      null
+    ],
+    [
+      "Municipio",
+      "FUNES",
+      null,
+      "Observación CGN",
+      null,
+      "Refrendado",
+      null
+    ],
+    [
+      "DANE",
+      "52287",
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      "Indicador Criterio de Eficiencia Fiscal",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      "Vigencia",
+      "Año Refrendado1",
+      "Ingresos Tributarios2",
+      "Población3",
+      "Per Cápita",
+      "Crecimiento per cápita",
+      null
+    ],
+    [
+      2023,
+      2021,
+      0,
+      7133,
+      0,
+      "-",
+      null
+    ],
+    [
+      2024,
+      2022,
+      1411028.895,
+      7141,
+      197.5954201092284,
+      0,
+      null
+    ],
+    [
+      2025,
+      2023,
+      1517543.156,
+      7150,
+      212.24379804195803,
+      0.07413318549909802,
+      null
+    ],
+    [
+      2026,
+      2024,
+      1287288.64825,
+      7535,
+      170.84122737226278,
+      -0.19507081503276935,
+      null
+    ],
+    [
+      "Crecimiento Per Cápita",
+      null,
+      null,
+      null,
+      "BAAA",
+      -0.040312543177890424,
+      null
+    ],
+    [
+      "1/ La información para el cálculo de los recursos, tienen un rezago de dos años, dada la fuente de información (FUT y CUIPO)",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      "2/ Información refrendada por la Contaduría General de la Nación (CGN) - Cifras en miles de pesos corrientes",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      "3/ La población corresponde a la certificada por el DANE para el año refrendado.",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      null,
+      null,
+      null,
+      "Este municipio NO será beneficiario de los recursos de eficiencia fiscal en 2026",
+      null,
+      null,
+      null
+    ],
+    [
+      "Condiciones para ser beneficiario de los recursos del criterio de eficiencia fiscal",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      "Las entidades territoriales son beneficiarias de estos recursos, si cumplen dos condiciones: i) ser refrendadas por la Contaduría General de la Nación para el año 2024 y ii) cuenten con un crecimiento positivo de sus ingresos tributarios per cápita en las últimas tres vigencias fiscales reportadas (2021 a 2024).\n\nNota: Las ET que cuenten con concepto favorable del Ministerio de Hacienda y Crédito Público sobre el cumplimiento del respectivo Acuerdo de Reestructuración de Pasivos y/o Programa de Saneamiento Fiscal y Financiero, tendran como indicador de eficiencia el promedio nacional del respectivo indicador.",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      "Indicador Criterio de Eficiencia Administarativa",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      "Año Certificado1",
+      "ICLD2",
+      " GF2",
+      "LG",
+      "Razón = GF / ICLD",
+      "Holgura = LG – Razón3",
+      null
+    ],
+    [
+      2024,
+      3170248,
+      1708808,
+      0.8,
+      0.539,
+      0.261,
+      null
+    ],
+    [
+      "1/ La información tiene un rezago de dos años dada la fuente de información (FUT o CUIPO)",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      "2/ Cifras en miles de pesos corrientes",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      "3/ Si el valor es igual a \"N/C\" significa que no fue certificado por la Contraloría General de la Républica",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      "ICLD - Ingresos Corrientes de Libre Destinación",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      "GF - Gastos de Funcionamiento",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      "LG - Límite de Gasto de la Ley 617 de 2000",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      null,
+      null,
+      null,
+      "Este municipio será beneficiario de los recursos de eficiencia administrativa en 2026",
+      null,
+      null,
+      null
+    ]
+  ]
+}

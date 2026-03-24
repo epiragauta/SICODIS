@@ -106,6 +106,10 @@ export interface ResumenMunicipioEficiencia {
   eficiencia_fiscal: IndicadorEficienciaFiscal[];
   eficiencia_administrativa: IndicadorEficienciaAdministrativa[];
   vigencia_2026: Ley617Vigencia2026 | null;
+  ley_617_icld: Ley617ICLD[];
+  ley_617_gastos_funcionamiento: Ley617GastosFuncionamiento[];
+  ley_617_razon: Ley617Razon[];
+  ley_617_holgura: Ley617Holgura[];
 }
 
 export interface ComparacionMunicipios {

@@ -121,153 +121,17 @@ export class SgpEficienciasComponent implements OnInit {
   }
 
   private initializeData(): void {
-    // Eficiencia Fiscal Table 1 data
-    this.eficienciaFiscalTable1 = [
-      {
-        vigencia: '2023',
-        anoRefrendado: 2023,
-        ingresosTributarios: 125000000,
-        poblacion: 48258494,
-        perCapita: 2591,
-        crecimientoPerCapita: 5.2,
-        promedioCrecimiento: 4.8
-      },
-      {
-        vigencia: '2022',
-        anoRefrendado: 2022,
-        ingresosTributarios: 118500000,
-        poblacion: 47610000,
-        perCapita: 2489,
-        crecimientoPerCapita: 4.1,
-        promedioCrecimiento: 4.8
-      },
-      {
-        vigencia: '2021',
-        anoRefrendado: 2021,
-        ingresosTributarios: 112800000,
-        poblacion: 46951000,
-        perCapita: 2403,
-        crecimientoPerCapita: 3.9,
-        promedioCrecimiento: 4.8
-      },
-      {
-        vigencia: '2020',
-        anoRefrendado: 2020,
-        ingresosTributarios: 107200000,
-        poblacion: 46295000,
-        perCapita: 2316,
-        crecimientoPerCapita: 6.1,
-        promedioCrecimiento: 4.8
-      }
-    ];
-
-    // Eficiencia Fiscal Table 2 data
-    this.eficienciaFiscalTable2 = [
-      {
-        vigencia: '2019',
-        anoRefrendado: 2019,
-        ingresosTributarios: 101500000,
-        poblacion: 45642000,
-        perCapita: 2224,
-        crecimientoPerCapita: 4.5,
-        promedioCrecimiento: 4.8
-      },
-      {
-        vigencia: '2018',
-        anoRefrendado: 2018,
-        ingresosTributarios: 97100000,
-        poblacion: 44996000,
-        perCapita: 2158,
-        crecimientoPerCapita: 3.8,
-        promedioCrecimiento: 4.8
-      },
-      {
-        vigencia: '2017',
-        anoRefrendado: 2017,
-        ingresosTributarios: 93600000,
-        poblacion: 44362000,
-        perCapita: 2110,
-        crecimientoPerCapita: 5.7,
-        promedioCrecimiento: 4.8
-      },
-      {
-        vigencia: '2016',
-        anoRefrendado: 2016,
-        ingresosTributarios: 89200000,
-        poblacion: 43739000,
-        perCapita: 2040,
-        crecimientoPerCapita: 4.2,
-        promedioCrecimiento: 4.8
-      }
-    ];
-
-    // Eficiencia Administrativa Table 1 data
-    this.eficienciaAdministrativaTable1 = [
-      {
-        anoCertificado: 2023,
-        icld: 78.5,
-        gf: 65.2,
-        lg: 85.6,
-        razon: 0.831,
-        holgura: 20.4
-      }
-    ];
-
-    // Eficiencia Administrativa Table 2 data
-    this.eficienciaAdministrativaTable2 = [
-      {
-        anoCertificado: 2022,
-        icld: 76.8,
-        gf: 63.1,
-        lg: 82.3,
-        razon: 0.822,
-        holgura: 19.2
-      }
-    ];
-
-    // Once Doceavas Table 1 data
-    this.onceDoceavasTable1 = [
-      { variable: 'Población', valor: '48,258,494', isTotal: false },
-      { variable: 'Pobreza', valor: '15.1%', isTotal: false },
-      { variable: 'Eficiencia Fiscal', valor: '68.5%', isTotal: false },
-      { variable: 'Eficiencia Administrativa', valor: '72.3%', isTotal: false },
-      { variable: 'Sisben', valor: '14,577,348', isTotal: false },
-      { variable: 'TOTAL', valor: '$2,847,562,150,000', isTotal: true }
-    ];
-
-    // Once Doceavas Table 2 data
-    this.onceDoceavasTable2 = [
-      { variable: 'Población', valor: '47,610,368', isTotal: false },
-      { variable: 'Pobreza', valor: '16.8%', isTotal: false },
-      { variable: 'Eficiencia Fiscal', valor: '65.2%', isTotal: false },
-      { variable: 'Eficiencia Administrativa', valor: '70.1%', isTotal: false },
-      { variable: 'Sisben', valor: '14,283,110', isTotal: false },
-      { variable: 'TOTAL', valor: '$2,698,455,320,000', isTotal: true }
-    ];
-
-    // Restricción 50% Table 1 data
-    this.restriccion50Table1 = [
-      { variable: 'Población + Pobreza', valor: '$1,423,781,075,000' },
-      { variable: 'Restricción del 50%', valor: '$711,890,537,500' }
-    ];
-
-    // Restricción 50% Table 2 data
-    this.restriccion50Table2 = [
-      { variable: 'Población + Pobreza', valor: '$1,498,334,295,000' },
-      { variable: 'Restricción del 50%', valor: '$749,167,147,500' }
-    ];
-
-    // Variables Censales Table 1 data
-    this.variablesCensalesTable1 = [
-      { variable: 'Población', valor: '47,610,368' },
-      { variable: 'Pobreza - NBI (%)', valor: '16.8%' }
-    ];
-
-    // Variables Censales Table 2 data
-    this.variablesCensalesTable2 = [
-      { variable: 'Población', valor: '48,258,494' },
-      { variable: 'Pobreza - NBI (%)', valor: '15.1%' }
-    ];
+    // Inicializar todas las tablas vacías
+    this.eficienciaFiscalTable1 = [];
+    this.eficienciaFiscalTable2 = [];
+    this.eficienciaAdministrativaTable1 = [];
+    this.eficienciaAdministrativaTable2 = [];
+    this.onceDoceavasTable1 = [];
+    this.onceDoceavasTable2 = [];
+    this.restriccion50Table1 = [];
+    this.restriccion50Table2 = [];
+    this.variablesCensalesTable1 = [];
+    this.variablesCensalesTable2 = [];
   }
 
   onVigenciaChange(event: SelectChangeEvent): void {
@@ -526,55 +390,49 @@ export class SgpEficienciasComponent implements OnInit {
 
     // Tabla 1: Vigencia Anterior, Año Certificado = (vigencia - 1) - 2
     const anoCertificadoTable1 = vigenciaAnterior - 2;
-    const indEATable1 = data.eficiencia_administrativa.find(e => e.anio === anoCertificadoTable1);
 
-    // Usar vigencia_2026 solo si el año certificado corresponde a 2024 (vigencia 2026)
-    if (anoCertificadoTable1 === 2024 && data.vigencia_2026 && esValorValido(data.vigencia_2026.razon)) {
-      this.eficienciaAdministrativaTable1 = [{
-        anoCertificado: anoCertificadoTable1,
-        icld: esValorValido(data.vigencia_2026.icld) ? data.vigencia_2026.icld : null,
-        gf: esValorValido(data.vigencia_2026.gf) ? data.vigencia_2026.gf : null,
-        lg: esValorValido(data.vigencia_2026.lg) ? data.vigencia_2026.lg : null,
-        razon: esValorValido(data.vigencia_2026.razon) ? data.vigencia_2026.razon : null,
-        holgura: esValorValido(data.vigencia_2026.holgura) ? data.vigencia_2026.holgura : null
-      }];
-    } else {
-      // Para años históricos, solo mostrar el indicador EA como razon
-      this.eficienciaAdministrativaTable1 = [{
-        anoCertificado: anoCertificadoTable1,
-        icld: null,
-        gf: null,
-        lg: null,
-        razon: indEATable1?.valor ?? null,
-        holgura: null
-      }];
-    }
+    // Buscar datos de Ley 617 para el año certificado
+    const icldTable1 = data.ley_617_icld?.find(i => i.anio === anoCertificadoTable1);
+    const gfTable1 = data.ley_617_gastos_funcionamiento?.find(g => g.anio === anoCertificadoTable1);
+    const razonTable1 = data.ley_617_razon?.find(r => r.anio === anoCertificadoTable1);
+    const holguraTable1 = data.ley_617_holgura?.find(h => h.anio === anoCertificadoTable1);
+
+    // Calcular LG = razón + holgura
+    const razonVal1 = razonTable1?.valor ?? null;
+    const holguraVal1 = holguraTable1?.valor ?? null;
+    const lgTable1 = (razonVal1 !== null && holguraVal1 !== null) ? razonVal1 + holguraVal1 : null;
+
+    this.eficienciaAdministrativaTable1 = [{
+      anoCertificado: anoCertificadoTable1,
+      icld: icldTable1?.valor ?? null,
+      gf: gfTable1?.valor ?? null,
+      lg: lgTable1,
+      razon: razonVal1,
+      holgura: holguraVal1
+    }];
 
     // Tabla 2: Vigencia Seleccionada, Año Certificado = vigencia - 2
     const anoCertificadoTable2 = vigencia - 2;
-    const indEATable2 = data.eficiencia_administrativa.find(e => e.anio === anoCertificadoTable2);
 
-    // Usar vigencia_2026 solo si el año certificado corresponde a 2024 (vigencia 2026)
-    if (anoCertificadoTable2 === 2024 && data.vigencia_2026 && esValorValido(data.vigencia_2026.razon)) {
-      this.eficienciaAdministrativaTable2 = [{
-        anoCertificado: anoCertificadoTable2,
-        icld: esValorValido(data.vigencia_2026.icld) ? data.vigencia_2026.icld : null,
-        gf: esValorValido(data.vigencia_2026.gf) ? data.vigencia_2026.gf : null,
-        lg: esValorValido(data.vigencia_2026.lg) ? data.vigencia_2026.lg : null,
-        razon: esValorValido(data.vigencia_2026.razon) ? data.vigencia_2026.razon : null,
-        holgura: esValorValido(data.vigencia_2026.holgura) ? data.vigencia_2026.holgura : null
-      }];
-    } else {
-      // Para años históricos, solo mostrar el indicador EA como razon
-      this.eficienciaAdministrativaTable2 = [{
-        anoCertificado: anoCertificadoTable2,
-        icld: null,
-        gf: null,
-        lg: null,
-        razon: indEATable2?.valor ?? null,
-        holgura: null
-      }];
-    }
+    // Buscar datos de Ley 617 para el año certificado
+    const icldTable2 = data.ley_617_icld?.find(i => i.anio === anoCertificadoTable2);
+    const gfTable2 = data.ley_617_gastos_funcionamiento?.find(g => g.anio === anoCertificadoTable2);
+    const razonTable2 = data.ley_617_razon?.find(r => r.anio === anoCertificadoTable2);
+    const holguraTable2 = data.ley_617_holgura?.find(h => h.anio === anoCertificadoTable2);
+
+    // Calcular LG = razón + holgura
+    const razonVal2 = razonTable2?.valor ?? null;
+    const holguraVal2 = holguraTable2?.valor ?? null;
+    const lgTable2 = (razonVal2 !== null && holguraVal2 !== null) ? razonVal2 + holguraVal2 : null;
+
+    this.eficienciaAdministrativaTable2 = [{
+      anoCertificado: anoCertificadoTable2,
+      icld: icldTable2?.valor ?? null,
+      gf: gfTable2?.valor ?? null,
+      lg: lgTable2,
+      razon: razonVal2,
+      holgura: holguraVal2
+    }];
 
     // ============================================================================
     // ONCE DOCEAVAS
@@ -705,7 +563,7 @@ export class SgpEficienciasComponent implements OnInit {
 
   formatPercentage(value: number | null): string {
     if (value === null || value === undefined) return 'N/A';
-    return `${value.toFixed(1)}%`;
+    return `${(value * 100).toFixed(1)}%`;
   }
 
   formatDecimal(value: number | null): string {
