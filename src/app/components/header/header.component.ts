@@ -73,6 +73,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
           {
             label: 'Histórico',
             command: () => this.redirectUrl("sgp-historico")
+          },
+          {
+            label: 'Eficiencias',
+            command: () => this.redirectUrl("sgp-eficiencias")
           }
         ]
       },
