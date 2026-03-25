@@ -257,7 +257,7 @@
   }
 
   .p-select {
-    width: 150px;
+    width: 200px;
 
     .p-select-label {
       font-size: 0.875rem;
@@ -275,11 +275,18 @@
 // Estilos para la tabla
 :host ::ng-deep {
   .plan-bienal-caja-table {
-    .p-datatable-wrapper {
+    .p-treetable-wrapper,
+    .p-treetable-scrollable-body {
       overflow-x: auto;
     }
 
-    .p-datatable-thead > tr > th {
+    // Estilos del toggler
+    .p-treetable-toggler {
+      margin-right: 0.5rem;
+      vertical-align: middle;
+    }
+
+    .p-treetable-thead > tr > th {
       background-color: #f8fafc;
       color: #374151;
       font-weight: 600;
@@ -295,10 +302,15 @@
         color: var(--p-text-color);
         font-weight: 700;
         text-align: left;
-        min-width: 160px;
+        width: 350px;
+        min-width: 350px;
+        max-width: 350px;
         position: sticky;
         left: 0;
         z-index: 1;
+        white-space: normal;
+        word-wrap: break-word;
+        border-right: 2px solid #cbd5e1;
       }
 
       &.period-header {
@@ -307,28 +319,79 @@
         font-weight: 700;
         min-width: 170px;
       }
+
+      &.highlighted-column-header {
+        background-color: #fef3c7 !important;
+        box-shadow: inset 0 0 0 2px #f59e0b !important;
+        position: relative;
+        z-index: 2;
+      }
     }
 
-    .p-datatable-tbody > tr {
+    .p-treetable-tbody > tr {
+      td.concept-cell {
+        background-color: #ffffff;
+      }
+
       &:hover {
         background-color: #f1f5f9;
+
+        td.concept-cell {
+          background-color: #f1f5f9;
+        }
       }
 
       &.total-row {
         background-color: #dce6f0;
         font-weight: 700;
+
+        td.concept-cell {
+          background-color: #dce6f0;
+        }
+
+        td.highlighted-column {
+          background-color: #fef3c7 !important;
+          box-shadow: inset 0 0 0 2px #f59e0b !important;
+        }
       }
 
       &.section-inversion {
-        background-color: #e8f4fd;
+        background-color: #f5fbff;
+
+        td.concept-cell {
+          background-color: #f5fbff;
+        }
+
+        td.highlighted-column {
+          background-color: #fef3c7 !important;
+          box-shadow: inset 0 0 0 2px #f59e0b !important;
+        }
       }
 
       &.section-ahorro {
-        background-color: #e8fdf4;
+        background-color: #f5fdf9;
+
+        td.concept-cell {
+          background-color: #f5fdf9;
+        }
+
+        td.highlighted-column {
+          background-color: #fef3c7 !important;
+          box-shadow: inset 0 0 0 2px #f59e0b !important;
+        }
       }
 
-      &.section-admin {
-        background-color: #fdf8e8;
+      &.section-otros {
+        background-color: #fdfcf6;
+
+        td.concept-cell {
+          background-color: #fdfcf6;
+        }
+
+        td.highlighted-column {
+          background-color: #fef3c7 !important;
+          box-shadow: inset 0 0 0 2px #f59e0b !important;
+        }
       }
 
       td {
@@ -341,15 +404,28 @@
         &.concept-cell {
           text-align: left;
           color: #374151;
-          min-width: 160px;
+          width: 350px;
+          min-width: 350px;
+          max-width: 350px;
           position: sticky;
           left: 0;
           background-color: inherit;
           z-index: 1;
+          white-space: normal;
+          word-wrap: break-word;
+          line-height: 1.4;
+          border-right: 2px solid #cbd5e1;
         }
 
         &.number-cell {
           text-align: right;
+        }
+
+        &.highlighted-column {
+          background-color: #fef3c7 !important;
+          box-shadow: inset 0 0 0 2px #f59e0b !important;
+          position: relative;
+          z-index: 2;
         }
 
         &.empty-message {
@@ -366,6 +442,44 @@
 // Negrita
 .font-bold {
   font-weight: 600 !important;
+}
+
+// Alineación de texto
+.text-right {
+  text-align: right;
+}
+
+// Datos vacíos
+.no-data {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+// Estilo para columna resaltada al hacer hover en el gráfico
+.highlighted-column {
+  background-color: #fef3c7 !important;
+  box-shadow: inset 0 0 0 2px #f59e0b !important;
+  transition: all 0.2s ease;
+  animation: pulse-highlight 0.5s ease-in-out;
+}
+
+.highlighted-column-header {
+  background-color: #fef3c7 !important;
+  box-shadow: inset 0 0 0 2px #f59e0b !important;
+  transition: all 0.2s ease;
+  animation: pulse-highlight 0.5s ease-in-out;
+}
+
+@keyframes pulse-highlight {
+  0% {
+    background-color: #fef3c7;
+  }
+  50% {
+    background-color: #fde68a;
+  }
+  100% {
+    background-color: #fef3c7;
+  }
 }
 
 // Responsive

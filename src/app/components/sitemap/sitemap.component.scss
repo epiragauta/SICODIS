@@ -1,0 +1,79 @@
+.sitemap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+
+  h1 {
+    font-size: 2rem;
+    color: #0943b5;
+    margin-bottom: 0.5rem;
+  }
+
+  .sitemap-intro {
+    color: #444;
+    margin-bottom: 2.5rem;
+    font-size: 1rem;
+  }
+}
+
+.sitemap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+}
+
+.sitemap-section {
+  h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0943b5;
+    border-bottom: 2px solid #0943b5;
+    padding-bottom: 0.4rem;
+    margin-bottom: 0.75rem;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    padding: 0.3rem 0;
+    border-bottom: 1px solid #eee;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  a {
+    color: #1a1a1a;
+    text-decoration: none;
+    font-size: 0.925rem;
+    display: block;
+    padding: 0.15rem 0;
+    transition: color 0.15s ease, padding-left 0.15s ease;
+
+    &:hover {
+      color: #0943b5;
+      padding-left: 0.4rem;
+    }
+
+    &:focus-visible {
+      outline: 3px solid #0943b5;
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .sitemap-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sitemap h1 {
+    font-size: 1.5rem;
+  }
+}

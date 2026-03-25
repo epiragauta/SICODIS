@@ -1,9 +1,5 @@
 <div class="sicodis-container">
 
-  <!-- Breadcrumb -->
-  <div class="card flex justify-center">
-    <p-breadcrumb [model]="items" [home]="home" />
-  </div>
 
   <!-- Popups para Diccionario y Siglas -->
   <app-info-popup 
@@ -42,11 +38,6 @@
       </div>
 
       <div class="p-field beneficiarios-select">
-        <!-- <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-select id="beneficiarios" [options]="departments" inputId="beneficiariosSelect" [(ngModel)]="departmentSelected"
-            optionLabel="label" [showClear]="false" placeholder="Beneficiarios"></p-select>
-          <label for="beneficiariosSelect">Beneficiarios</label>
-        </p-floatlabel> -->
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select 
             id="departamento" 
@@ -141,7 +132,7 @@
         <p-card class="chart-card">
           <ng-template pTemplate="header">
             <div class="chart-header-row">
-              <h3 class="chart-title">Recaudo Directas (20% y 5% anticipadas) <br>frente al PBC - Minería</h3>
+              <h3 class="chart-title">{{ chartTitle}} <br>frente al PBC - Minería</h3>
               <button pButton type="button"
                 class="p-button-sm p-button-outlined toggle-meses-btn"
                 [icon]="showOnlyElapsedMonths ? 'pi pi-calendar-plus' : 'pi pi-calendar-minus'"
@@ -167,7 +158,7 @@
         <p-card class="chart-card">
           <ng-template pTemplate="header">
             <div class="chart-header-row">
-              <h3 class="chart-title">Recaudo Directas (20% y 5% anticipadas) <br>frente al PBC - Hidrocarburos</h3>
+              <h3 class="chart-title">{{ chartTitle}} <br>frente al PBC - Hidrocarburos</h3>
               <button pButton type="button"
                 class="p-button-sm p-button-outlined toggle-meses-btn"
                 [icon]="showOnlyElapsedMonths ? 'pi pi-calendar-plus' : 'pi pi-calendar-minus'"
@@ -207,7 +198,7 @@
   <ng-template pTemplate="header">
     <tr>
       <th rowspan="3" class="mes-header" style="width: 12%">Mes</th>
-      <th colspan="4" class="main-header"> 20% Asignaciones Directas</th>
+      <th colspan="4" class="main-header"> {{ lblAsignacionesDirectas }}</th>
       <th *ngIf="showAnticipadas" colspan="4" class="main-header">5% Asignaciones Directas Anticipadas</th>
     </tr>
     <tr>

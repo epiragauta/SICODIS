@@ -1,9 +1,5 @@
 <div class="sicodis-container">
 
-  <!-- Breadcrumb -->
-  <div class="card flex justify-center">
-    <p-breadcrumb [model]="items" [home]="home" />
-  </div>
 
   <!-- Popups para Diccionario y Siglas -->
   <app-info-popup 
@@ -67,11 +63,12 @@
 
       <div class="p-field periodo-desde-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
-        <p-datepicker 
+        <p-datepicker
+          inputId="periodoDesdeSelect"
           [(ngModel)]="selectedPeriodoDesde"
-          view="month" 
-          dateFormat="mm/yy" 
-          [showIcon]="true" 
+          view="month"
+          dateFormat="mm/yy"
+          [showIcon]="true"
           [minDate]="minDate"
           [maxDate]="maxDate"
           (onYearChange)="onYearChange($event, 'desde')"
@@ -87,11 +84,12 @@
 
       <div class="p-field periodo-hasta-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
-        <p-datepicker 
+        <p-datepicker
+          inputId="periodoHastaSelect"
           [(ngModel)]="selectedPeriodoHasta"
-          view="month" 
-          dateFormat="mm/yy" 
-          [showIcon]="true" 
+          view="month"
+          dateFormat="mm/yy"
+          [showIcon]="true"
           [minDate]="minDate"
           [maxDate]="maxDate"
           (onYearChange)="onYearChange($event, 'hasta')"

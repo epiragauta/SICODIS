@@ -55,7 +55,7 @@
         }
       }
     }
-  }
+  }  
 }
 .sicodis-container {
   padding: 1rem;
@@ -238,7 +238,11 @@
     }
   }
 
-  // Estilos espec�ficos para PrimeNG Cards
+  .p-treetable table {
+    width: 900px !important;
+  }
+
+  // Estilos específicos para PrimeNG Cards
   .p-card {
     width: 100% !important;
     height: 100%;

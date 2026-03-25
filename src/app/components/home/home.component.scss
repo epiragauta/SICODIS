@@ -422,14 +422,22 @@
   background-color: #44464a;
 }
 
-.sicodis-item{
+// Reset de <button> para .sicodis-item (CC32 — operabilidad por teclado)
+.sicodis-item {
+  appearance: none;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
   cursor: pointer;
   padding: 8px;
 }
-.sicodis-item:hover{
+.sicodis-item:hover {
   background-color: #2797ce;
   color: #fff;
-  cursor: pointer;
   border-radius: 18px;
   padding: 8px;
 }
@@ -613,15 +621,24 @@
   flex-grow: 1;
   
   .sicodis-item {
+    // Reset <button> styles
+    appearance: none;
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    // Layout
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
+    text-align: left;
     padding: 12px 8px;
     cursor: pointer;
     border-radius: 8px;
     transition: all 0.2s ease;
-    
-    p {
+
+    span:first-child {
       margin: 0;
       font-size: 14px;
       color: #333;
@@ -637,8 +654,8 @@
     &:hover {
       background-color: #2797ce;
       color: #fff;
-      
-      p {
+
+      span:first-child {
         color: #fff;
       }
       

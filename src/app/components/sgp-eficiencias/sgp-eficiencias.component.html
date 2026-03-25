@@ -1,7 +1,4 @@
 <div class="sgp-eficiencias-container">
-  <div class="card flex justify-center">
-    <p-breadcrumb [model]="items" [home]="home" />
-  </div>
   
   <!-- Banner -->
   <div class="gradient-banner">    
@@ -22,13 +19,14 @@
       <!-- Vigencia Filter -->
       <div class="p-field vigencia-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-select 
-            id="vigencia" 
-            [options]="vigencias" 
+          <p-select
+            id="vigencia"
+            [options]="vigencias"
             inputId="vigenciaSelect"
-            [(ngModel)]="selectedVigencia" 
+            [(ngModel)]="selectedVigencia"
             (onChange)="onVigenciaChange($event)"
-            optionLabel="label" 
+            optionLabel="label"
+            optionValue="value"
             placeholder="Vigencia"
             [showClear]="true">
           </p-select>
@@ -39,13 +37,14 @@
       <!-- Departamento Filter -->
       <div class="p-field departamento-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-select 
-            id="departamento" 
-            [options]="departamentos" 
+          <p-select
+            id="departamento"
+            [options]="departamentos"
             inputId="departamentoSelect"
-            [(ngModel)]="selectedDepartamento" 
+            [(ngModel)]="selectedDepartamento"
             (onChange)="onDepartamentoChange($event)"
-            optionLabel="label" 
+            optionLabel="label"
+            optionValue="value"
             placeholder="Departamento"
             [showClear]="true">
           </p-select>
@@ -56,13 +55,14 @@
       <!-- Municipio Filter -->
       <div class="p-field municipio-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-select 
-            id="municipio" 
-            [options]="municipios" 
+          <p-select
+            id="municipio"
+            [options]="municipios"
             inputId="municipioSelect"
-            [(ngModel)]="selectedMunicipio" 
+            [(ngModel)]="selectedMunicipio"
             (onChange)="onMunicipioChange($event)"
-            optionLabel="label" 
+            optionLabel="label"
+            optionValue="value"
             placeholder="Municipio"
             [showClear]="true"
             [disabled]="!selectedDepartamento">
@@ -198,10 +198,10 @@
                 <ng-template pTemplate="body" let-row>
                   <tr>
                     <td>{{row.anoCertificado}}</td>
-                    <td class="text-right">{{formatPercentage(row.icld)}}</td>
-                    <td class="text-right">{{formatPercentage(row.gf)}}</td>
+                    <td class="text-right">{{formatCurrency(row.icld)}}</td>
+                    <td class="text-right">{{formatCurrency(row.gf)}}</td>
                     <td class="text-right">{{formatPercentage(row.lg)}}</td>
-                    <td class="text-right">{{formatDecimal(row.razon)}}</td>
+                    <td class="text-right">{{formatPercentage(row.razon)}}</td>
                     <td class="text-right">{{formatPercentage(row.holgura)}}</td>
                   </tr>
                 </ng-template>
@@ -224,10 +224,10 @@
                 <ng-template pTemplate="body" let-row>
                   <tr>
                     <td>{{row.anoCertificado}}</td>
-                    <td class="text-right">{{formatPercentage(row.icld)}}</td>
-                    <td class="text-right">{{formatPercentage(row.gf)}}</td>
+                    <td class="text-right">{{formatCurrency(row.icld)}}</td>
+                    <td class="text-right">{{formatCurrency(row.gf)}}</td>
                     <td class="text-right">{{formatPercentage(row.lg)}}</td>
-                    <td class="text-right">{{formatDecimal(row.razon)}}</td>
+                    <td class="text-right">{{formatPercentage(row.razon)}}</td>
                     <td class="text-right">{{formatPercentage(row.holgura)}}</td>
                   </tr>
                 </ng-template>

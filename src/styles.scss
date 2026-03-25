@@ -283,6 +283,83 @@ html, body {
   backface-visibility: hidden;
 }
 
+// ============================================================
+// ACCESIBILIDAD — Indicador de foco visible (WCAG 2.4.7 / CC17)
+// ============================================================
+
+// Eliminar outline solo cuando el foco proviene del mouse/touch
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+// Foco visible al navegar con teclado — aplica a toda la app
+*:focus-visible {
+  outline: 3px solid #0943b5;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+// Refuerzo sobre PrimeNG (puede resetear el outline en sus componentes)
+.p-button:focus-visible,
+.p-menuitem-link:focus-visible,
+.p-select:focus-visible,
+.p-multiselect:focus-visible,
+.p-inputtext:focus-visible,
+.p-checkbox:focus-visible,
+.p-radiobutton:focus-visible {
+  outline: 3px solid #0943b5 !important;
+  outline-offset: 2px;
+}
+
+// ============================================================
+// IMPRESIÓN — Hoja de estilos para @media print (2.16)
+// ============================================================
+@media print {
+  app-header,
+  app-footer,
+  .p-menubar,
+  .barra-superior-govco,
+  .logos-section-container,
+  p-dialog,
+  .p-dialog-mask,
+  [class*="filter-"],
+  .p-button {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 12pt;
+  }
+
+  main,
+  .main-content,
+  router-outlet + * {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  // Mostrar URL de los enlaces al imprimir
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.75em;
+    word-break: break-all;
+  }
+
+  // Evitar cortes de página dentro de tablas y tarjetas
+  table,
+  .p-card,
+  mat-card {
+    page-break-inside: avoid;
+  }
+
+  h1, h2, h3 {
+    page-break-after: avoid;
+  }
+}
+
 // Opcional: Efecto de blur en el fondo cuando hay scroll (para navegadores modernos)
 @supports (backdrop-filter: blur(10px)) {
   .container.scrolled {

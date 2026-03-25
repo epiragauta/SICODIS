@@ -1,0 +1,13 @@
+.breadcrumb-wrapper {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0.25rem 0.5rem;
+
+  // Alinear visualmente con el contenido de la app
+  :host ::ng-deep .p-breadcrumb {
+    background: transparent;
+    border: none;
+    padding: 0.5rem 0;
+    font-size: 0.85rem;
+  }
+}

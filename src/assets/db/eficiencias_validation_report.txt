@@ -1,0 +1,24 @@
+================================================================================
+REPORTE DE VALIDACIÓN DE DATOS MIGRADOS
+================================================================================
+
+Base de datos: C:\ws\dnp\ws\SICODIS_WebII\src\assets\db\eficiencias.db
+
+METADATOS:
+  version: 1.0
+  origen: Eficiencias_hojas/*.json
+  descripcion: Datos fiscales y administrativos de municipios colombianos
+  fecha_migracion: 2026-03-22T20:50:40.287598
+  total_municipios: 1104
+
+ERRORES: Ninguno ✓
+
+ADVERTENCIAS: Ninguna ✓
+
+RESUMEN:
+  Total municipios: 1104
+  Total registros de datos: 89,376
+
+================================================================================
+VALIDACIÓN COMPLETADA EXITOSAMENTE ✓
+================================================================================

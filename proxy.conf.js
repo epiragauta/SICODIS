@@ -3,6 +3,35 @@
 // ============================================
 
 const PROXY_CONFIG = {
+  // Backend local de eficiencias (debe ir ANTES de /api/* para tener prioridad)
+  "/api/eficiencias": {
+    "target": "http://localhost:3000",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "onProxyReq": function(proxyReq, req, res) {
+      console.log('🔷 EFICIENCIAS PROXY REQUEST:', {
+        originalUrl: req.url,
+        targetUrl: proxyReq.path,
+        method: req.method
+      });
+    },
+    "onProxyRes": function(proxyRes, req, res) {
+      console.log('🔷 EFICIENCIAS PROXY RESPONSE:', {
+        statusCode: proxyRes.statusCode,
+        url: req.url
+      });
+    },
+    "onError": function(err, req, res) {
+      console.error('❌ EFICIENCIAS PROXY ERROR:', {
+        error: err.message,
+        url: req.url,
+        code: err.code
+      });
+    }
+  },
+
+  // Resto de APIs (SICODIS producción)
   "/api/*": {
     "target": "https://sicodis.dnp.gov.co",
     "secure": true,

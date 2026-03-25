@@ -649,7 +649,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
           mode: 'index',
           callbacks: {
             label: (context: any) => {
-              return `${context.dataset.label}: ${new Intl.NumberFormat('es-CO').format(context.parsed.x)}`;
+              return `${context.dataset.label}: ${new Intl.NumberFormat('es-CO', { maximumFractionDigits: 0 }).format(context.parsed.x)}`;
             }
           }
         }
