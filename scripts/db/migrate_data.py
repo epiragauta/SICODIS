@@ -463,6 +463,49 @@ class DataMigrator:
         logger.info(f"Insertados {count_fiscal} registros en indicadores_eficiencia_fiscal")
         logger.info(f"Insertados {count_admin} registros en indicadores_eficiencia_administrativa")
 
+    def migrate_nbi(self):
+        """Migrar datos de NBI (Necesidades Básicas Insatisfechas)"""
+        logger.info("Migrando datos de NBI...")
+
+        data = self.parse_json_file(config.JSON_FILES['nbi'])
+        rows = data.get('rows', [])
+
+        if not rows:
+            logger.warning("No se encontraron filas en NBI")
+            return
+
+        headers = rows[0]
+        # Headers: ['CÓDIGO DANE', 'DEPARTAMENTO', 'MUNICIPIO', 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
+        # Años están en posiciones 3-10 (2018-2025)
+
+        years_nbi = list(range(2018, 2026))  # 2018-2025
+        count = 0
+
+        for row in rows[1:]:
+            try:
+                codigo_dane = str(row[0]).strip()
+                departamento = str(row[1]).strip()
+                municipio = str(row[2]).strip()
+
+                # Insertar municipio
+                self.insert_municipio(codigo_dane, departamento, municipio)
+
+                # Insertar valores de NBI por año (posiciones 3-10)
+                for i, year in enumerate(years_nbi):
+                    if len(row) > 3 + i:
+                        valor = self.validate_value('nbi', 'valor', row[3 + i])
+                        self.conn.execute(
+                            "INSERT INTO nbi (codigo_dane, anio, valor) VALUES (?, ?, ?)",
+                            (codigo_dane, year, valor)
+                        )
+                        count += 1
+
+            except Exception as e:
+                logger.error(f"Error en NBI para municipio {codigo_dane}: {e}")
+
+        self.conn.commit()
+        logger.info(f"Insertados {count} registros en nbi")
+
     def update_metadata(self):
         """Actualizar tabla de metadatos con información de migración"""
         logger.info("Actualizando metadatos...")
@@ -506,6 +549,7 @@ class DataMigrator:
             self.migrate_recursos()
             self.migrate_ef_admin()
             self.migrate_indicadores_ley_550()
+            self.migrate_nbi()
 
             # Actualizar metadatos
             self.update_metadata()

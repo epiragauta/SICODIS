@@ -28,7 +28,8 @@
       "Bash(cmd //c \"handle C:\\\\ws\\\\dnp\\\\ws\\\\SICODIS_WebII\\\\src\\\\assets\\\\db\\\\eficiencias.db\")",
       "Bash(tasklist:*)",
       "Bash(cmd //c \"taskkill /PID 30260 /F\")",
-      "Bash(cmd //c \"taskkill /PID 62440 /F\")"
+      "Bash(cmd //c \"taskkill /PID 62440 /F\")",
+      "Bash(cmd //c \"npm start\")"
     ]
   }
 }

@@ -98,6 +98,13 @@ export interface IndicadorEficienciaAdministrativa {
   valor: number | null;
 }
 
+export interface NBI {
+  id: number;
+  codigo_dane: string;
+  anio: number;
+  valor: number | null;
+}
+
 export interface ResumenMunicipioEficiencia {
   municipio: MunicipioEficiencia;
   ingresos_tributarios: IngresoTributario[];
@@ -110,6 +117,7 @@ export interface ResumenMunicipioEficiencia {
   ley_617_gastos_funcionamiento: Ley617GastosFuncionamiento[];
   ley_617_razon: Ley617Razon[];
   ley_617_holgura: Ley617Holgura[];
+  nbi: NBI[];
 }
 
 export interface ComparacionMunicipios {

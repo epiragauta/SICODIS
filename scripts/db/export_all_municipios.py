@@ -234,6 +234,24 @@ def get_municipio_resumen(conn, codigo_dane):
             'valor': row[3]
         })
 
+    # NBI - Necesidades Básicas Insatisfechas (últimos 10 años)
+    cur.execute('''
+        SELECT id, codigo_dane, anio, valor
+        FROM nbi
+        WHERE codigo_dane = ?
+        ORDER BY anio DESC
+        LIMIT 10
+    ''', (codigo_dane,))
+
+    nbi = []
+    for row in cur.fetchall():
+        nbi.append({
+            'id': row[0],
+            'codigo_dane': row[1],
+            'anio': row[2],
+            'valor': row[3]
+        })
+
     return {
         'municipio': municipio_dict,
         'ingresos_tributarios': ingresos,
@@ -245,7 +263,8 @@ def get_municipio_resumen(conn, codigo_dane):
         'ley_617_icld': ley_617_icld,
         'ley_617_gastos_funcionamiento': ley_617_gastos_funcionamiento,
         'ley_617_razon': ley_617_razon,
-        'ley_617_holgura': ley_617_holgura
+        'ley_617_holgura': ley_617_holgura,
+        'nbi': nbi
     }
 
 def export_all_municipios():

@@ -434,6 +434,12 @@ exports.getResumenMunicipio = (req, res) => {
       [codigo_dane]
     );
 
+    // Obtener datos de NBI (últimos 10 años)
+    const nbi = db.all(
+      'SELECT * FROM nbi WHERE codigo_dane = ? ORDER BY anio DESC LIMIT 10',
+      [codigo_dane]
+    );
+
     res.json({
       municipio,
       ingresos_tributarios: ingresos,
@@ -445,7 +451,8 @@ exports.getResumenMunicipio = (req, res) => {
       ley_617_icld: ley617Icld,
       ley_617_gastos_funcionamiento: ley617GastosFuncionamiento,
       ley_617_razon: ley617Razon,
-      ley_617_holgura: ley617Holgura
+      ley_617_holgura: ley617Holgura,
+      nbi: nbi
     });
   } catch (error) {
     console.error('Error en getResumenMunicipio:', error);

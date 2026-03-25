@@ -142,6 +142,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
           {
             label: 'Administración y Sistema de Seguimiento (SSEC)',
              command: () => this.redirectUrl("reporte-funcionamiento")
+          },
+          {
+            label: 'Plan de Recursos',
+            command: () => this.redirectUrl("sgr-plan-recursos")
+          },
+          {
+            label: 'Plan Bienal de Caja',
+            command: () => this.redirectUrl("sgr-plan-bienal-caja")
           }
 
 

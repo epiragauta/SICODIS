@@ -16,7 +16,8 @@ JSON_FILES = {
     'poblacion': os.path.join(JSON_DIR, 'Datos_Poblacion.json'),
     'recursos': os.path.join(JSON_DIR, 'Recursos.json'),
     'ef_admin': os.path.join(JSON_DIR, 'Ef_Admin.json'),
-    'indicadores_ley_550': os.path.join(JSON_DIR, 'Indicadores_Ley_550.json')
+    'indicadores_ley_550': os.path.join(JSON_DIR, 'Indicadores_Ley_550.json'),
+    'nbi': os.path.join(JSON_DIR, 'NBI.json')
 }
 
 # Ruta a la base de datos SQLite

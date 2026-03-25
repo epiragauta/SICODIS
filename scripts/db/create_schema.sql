@@ -141,6 +141,19 @@ CREATE TABLE IF NOT EXISTS indicadores_eficiencia_administrativa (
 );
 
 -- ==============================================================================
+-- NBI (NECESIDADES BÁSICAS INSATISFECHAS): Índice de Pobreza Multidimensional
+-- ==============================================================================
+
+CREATE TABLE IF NOT EXISTS nbi (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  codigo_dane TEXT NOT NULL,
+  anio INTEGER NOT NULL,
+  valor REAL,
+  FOREIGN KEY (codigo_dane) REFERENCES municipios(codigo_dane),
+  UNIQUE(codigo_dane, anio)
+);
+
+-- ==============================================================================
 -- ÍNDICES PARA OPTIMIZACIÓN DE CONSULTAS
 -- ==============================================================================
 
@@ -154,6 +167,7 @@ CREATE INDEX IF NOT EXISTS idx_ley617_razon_anio ON ley_617_razon(anio);
 CREATE INDEX IF NOT EXISTS idx_ley617_holgura_anio ON ley_617_holgura(anio);
 CREATE INDEX IF NOT EXISTS idx_eficiencia_fiscal_anio ON indicadores_eficiencia_fiscal(anio);
 CREATE INDEX IF NOT EXISTS idx_eficiencia_admin_anio ON indicadores_eficiencia_administrativa(anio);
+CREATE INDEX IF NOT EXISTS idx_nbi_anio ON nbi(anio);
 
 -- Índices compuestos (para consultas por municipio y año)
 CREATE INDEX IF NOT EXISTS idx_ingresos_dane_anio ON ingresos_tributarios(codigo_dane, anio);
