@@ -506,18 +506,20 @@ export class SgpEficienciasComponent implements OnInit {
     // VARIABLES CENSALES
     // ============================================================================
     const pobCensal1 = data.poblacion.find(p => p.anio === vigenciaAnterior);
+    const nbiCensal1 = data.nbi?.find(n => n.anio === vigenciaAnterior);
     if (pobCensal1) {
       this.variablesCensalesTable1 = [
         { variable: 'Población', valor: this.formatNumber(pobCensal1.poblacion) },
-        { variable: 'Pobreza - NBI (%)', valor: 'No disponible' } // No está en la BD
+        { variable: 'Pobreza - NBI (%)', valor: nbiCensal1 ? `${nbiCensal1.valor?.toFixed(2)}%` : 'No disponible' }
       ];
     }
 
     const pobCensal2 = data.poblacion.find(p => p.anio === vigencia);
+    const nbiCensal2 = data.nbi?.find(n => n.anio === vigencia);
     if (pobCensal2) {
       this.variablesCensalesTable2 = [
         { variable: 'Población', valor: this.formatNumber(pobCensal2.poblacion) },
-        { variable: 'Pobreza - NBI (%)', valor: 'No disponible' } // No está en la BD
+        { variable: 'Pobreza - NBI (%)', valor: nbiCensal2 ? `${nbiCensal2.valor?.toFixed(2)}%` : 'No disponible' }
       ];
     }
 
