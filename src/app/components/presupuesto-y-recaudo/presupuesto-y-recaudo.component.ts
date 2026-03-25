@@ -346,7 +346,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
    */
   async cargarVigencias(): Promise<void> {
     try {
-      const vigencias = await this.sicodisApiService.getSgrVigencias().toPromise();
+      const vigencias = await this.sicodisApiService.getSgrVigenciasQa().toPromise();
       this.vigencias = vigencias?.map((vigencia: any) => ({
         id: vigencia.id_vigencia,
         label: vigencia.vigencia
@@ -515,7 +515,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
     console.log('Loading base data...');
 
     this.sicodisApiService
-      .getSgrResumenPtoRecaudo(
+      .getSgrResumenPtoRecaudoQA(
         idVigencia,
         tipoConsulta,
         codigoEntidad
@@ -1137,7 +1137,7 @@ private formatCurrency(value: number): string {
         const descripcionMunicipio = municipio?.label ?? '';
 
 
-      const archivo: Blob | undefined = await this.sicodisApiService.getSgrDescargaResumenPtoRecaudo( idVigencia
+      const archivo: Blob | undefined = await this.sicodisApiService.getSgrDescargaResumenPtoRecaudoQA( idVigencia
                                                                                                       , tipoConsulta
                                                                                                       , codigoEntidad
                                                                                                       , this.selectedVigencia.label
