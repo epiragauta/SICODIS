@@ -46,7 +46,9 @@
             optionLabel="label"
             optionValue="value"
             placeholder="Departamento"
-            [showClear]="true">
+            [showClear]="true"
+            [filter]="true"
+            filterPlaceholder="Buscar departamento...">
           </p-select>
           <label for="departamentoSelect">Departamento</label>
         </p-floatlabel>
@@ -65,7 +67,9 @@
             optionValue="value"
             placeholder="Municipio"
             [showClear]="true"
-            [disabled]="!selectedDepartamento">
+            [disabled]="!selectedDepartamento"
+            [filter]="true"
+            filterPlaceholder="Buscar municipio...">
           </p-select>
           <label for="municipioSelect">Municipio</label>
         </p-floatlabel>
