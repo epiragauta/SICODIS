@@ -58,7 +58,7 @@ export const routes: Routes = [
     { path: 'sgp-documentos-anexos',          component: ReportsSgpComponent,                              data: { breadcrumb: 'SGP — Documentos y Anexos' } },
     { path: 'sgp-detalle-presupuestal',       component: SgpDetallePresupuestalComponent,                  data: { breadcrumb: 'SGP — Detalle Presupuestal' } },
     { path: 'sgp-comparativa',                component: SgpComparativaComponent,                          data: { breadcrumb: 'SGP — Comparativa' } },
-    { path: 'sgp-eficiencia',                 component: SgpEficienciasComponent,                          data: { breadcrumb: 'SGP — Eficiencias' } },
+    { path: 'sgp-eficiencias',                 component: SgpEficienciasComponent,                          data: { breadcrumb: 'SGP — Eficiencias' } },
     { path: 'reports-sgp-dist',               component: ReportsSgpDistComponent,                          data: { breadcrumb: 'SGP — Distribución' } },
     { path: 'reports-sgp-budget',             component: ReportsSgpBudgetComponent,                        data: { breadcrumb: 'SGP — Presupuesto' } },
     { path: 'graphics-sgp',                   component: GraphicsSgpComponent,                             data: { breadcrumb: 'SGP — Gráficas' } },

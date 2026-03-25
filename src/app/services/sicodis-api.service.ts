@@ -867,6 +867,17 @@ export class SicodisApiService {
    * @returns Observable con el array de vigencias
    * @note Este endpoint puede tener restricciones CORS en desarrollo local
    */
+  getSgrVigenciasQa(): Observable<Vigencia[]> {
+    const url = `${this.baseUrl}/sgr/vigenciasqa`;
+    return this.http.get<Vigencia[]>(url);
+  }
+
+
+    /**
+   * Obtiene las vigencias registradas del SGR
+   * @returns Observable con el array de vigencias
+   * @note Este endpoint puede tener restricciones CORS en desarrollo local
+   */
   getVigenciasSgrPbc(): Observable<Vigencia[]> {
     const url = `${this.baseUrl}/sgr/vigenciaspbc`;
     return this.http.get<Vigencia[]>(url);
@@ -997,6 +1008,26 @@ export class SicodisApiService {
   }
 
 
+  /**
+   * Obtiene el resumen de Presupuesto vs Recaudo
+   * @param idvigencia - vigencia de consulta
+   * @param codigoDepto - Código del departamento
+   * @param codigoMunicipio - Código del municipio
+   * @returns Observable con el resumen de participaciones
+   */
+  getSgrResumenPtoRecaudoQA(idvigencia : number, tipoConsulta: string, CodigoEntidad: string): Observable<SgrPtoRecaudoItem[]> {
+    const url = `${this.baseUrl}/sgr/resumen_pto_recaudoqa/${idvigencia }/${tipoConsulta}/${CodigoEntidad}`;
+    //return this.http.get<SgrPtoRecaudoItem[]>(url);
+    const response$ = this.http.get<SgrPtoRecaudoItem[]>(url);
+
+    response$.subscribe(data => {
+      console.log('🟢 Lo que trajo el servicio:', data);
+    });
+
+    return response$;    
+  }
+
+
 
     /**
    * Obtiene el archivo de resumen de PBC vs Recaudo
@@ -1040,6 +1071,31 @@ export class SicodisApiService {
     const url = `${this.baseUrl}/sgr/resumen_pto_recaudo_comparador/${idVigencia}/${tipoConsulta1}/${codigoEntidad1}/${tipoConsulta2}/${codigoEntidad2}`;
     return this.http.get<SgrResumenPtoRecaudoComparador>(url);
   }
+
+    /**
+   * Obtiene el archivo de resumen de PBC vs Recaudo
+   * @param idvigencia - vigencia de consulta
+   * @param codigoDepto - Código del departamento
+   * @param codigoMunicipio - Código del municipio
+   * @param vigencia - vigencia de consulta string
+   * @param departamento - Nombre del departamento
+   * @param municipio - Nombre del municipio
+   * @returns Observable con el resumen de participaciones
+   */
+  getSgrDescargaResumenPtoRecaudoQA( idvigencia: number
+                                   , tipoConsulta: string
+                                   , CodigoEntidad: string
+                                   , vigencia: string
+                                   , depto: string
+                                   , municipio: string
+                                   , fecha_actualizacion: string
+                                   , fecha_corte : string
+                                                ): Observable<Blob> {  
+    const url = `${this.baseUrl}/sgr/descarga_resumen_pto_recaudoqa/${idvigencia}/${tipoConsulta}/${CodigoEntidad}/${vigencia}/${depto}/${municipio}/${fecha_actualizacion}/${fecha_corte}`;
+    return this.http.get(url, { responseType: 'blob' });  // responseType 'blob' indica que será un archivo binario
+  }
+
+
 
 /**
  * Consulta la información del recaudo mensual por id de vigencia

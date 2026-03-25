@@ -116,12 +116,22 @@
 
     .p-field {
       flex: 0 0 auto;
-      min-width: 180px;
+      min-width: 220px;
 
       &.vigencia-select,
       &.departamento-select,
       &.municipio-select {
-        width: 210px;
+        width: 280px;
+      }
+
+      ::ng-deep {
+        .p-floatlabel {
+          width: 100%;
+
+          .p-select {
+            width: 100% !important;
+          }
+        }
       }
     }
 
