@@ -26,8 +26,7 @@
               [(ngModel)]="selectedVigencia"
               (onChange)="onVigenciaChange($event)"
               optionValue="id"
-              optionLabel="label" 
-              placeholder="Vigencia">
+              optionLabel="label">
             </p-select>
             <label for="vigenciaSelect">Vigencia</label>
           </p-floatlabel>
@@ -43,8 +42,7 @@
               [(ngModel)]="selectedDepartamento"
               (onChange)="onDepartamentoChange($event)"
               optionValue="id"
-              optionLabel="label" 
-              placeholder="Departamento">
+              optionLabel="label">
             </p-select>
             <label for="departamentoSelect">Departamento</label>
           </p-floatlabel>
@@ -62,8 +60,7 @@
               [disabled]="isLoadingMunicipios || !selectedDepartamento"
               [loading]="isLoadingMunicipios"
               optionValue="id"
-              optionLabel="label" 
-              placeholder="Municipios">
+              optionLabel="label">
             </p-select>
             <label for="municipioSelect">Municipio</label>
           </p-floatlabel>

@@ -153,7 +153,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
           },
           {
             label: 'Plan Bienal de Caja',
-            command: () => this.redirectUrl("sgr-plan-bienal-caja")
+            command: () => this.redirectUrl("sgr-plan-bienal-de-caja")
           }
 
 
