@@ -35,6 +35,7 @@ import { PgnRegionalizacionPresupuestoSeguimientoComponent } from './components/
 import { SgrPlanBienalCajaComponent } from './components/sgr-plan-bienal-caja/sgr-plan-bienal-caja.component';
 import { SgrPlanBienalRecursosComponent } from './components/sgr-plan-bienal-recursos/sgr-plan-bienal-recursos.component';
 import { SitemapComponent } from './components/sitemap/sitemap.component';
+import { MapaRecursosComponent } from './components/mapa-recursos/mapa-recursos.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -76,6 +77,7 @@ export const routes: Routes = [
     { path: 'dashboard',                      component: DashboardComponent,                                data: { breadcrumb: 'Dashboard' } },
     { path: 'dashboard2',                     component: HighchartsDashboardComponent,                      data: { breadcrumb: 'Dashboard Highcharts' } },
     { path: 'reports-map',                    component: ReportsMapComponent,                               data: { breadcrumb: 'Mapa de Reportes' } },
+    { path: 'mapa-recursos',                  component: MapaRecursosComponent,                             data: { breadcrumb: 'Mapa de Recursos' } },
     // 404
     { path: '**', component: NotFoundComponent, data: { breadcrumb: 'Página no encontrada' } },
 ];
