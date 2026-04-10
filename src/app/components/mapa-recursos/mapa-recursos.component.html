@@ -1,0 +1,197 @@
+<div class="mapa-recursos-container">
+  <!-- Panel lateral izquierdo -->
+  <div class="panel-lateral">
+    <!-- Consulta de recursos -->
+    <div class="seccion-panel">
+      <h3 class="titulo-seccion">Consulta de recursos</h3>
+
+      <div class="consulta-options">
+        <div class="field-checkbox">
+          <p-checkbox
+            [(ngModel)]="consultaRecursos.inversion"
+            [binary]="true"
+            inputId="inversion"
+          />
+          <label for="inversion">Inversión</label>
+        </div>
+
+        <div class="field-checkbox sistema-checkbox">
+          <p-checkbox
+            [(ngModel)]="consultaRecursos.sgr"
+            [binary]="true"
+            inputId="sgr"
+          />
+          <i class="pi pi-file sistema-icono"></i>
+          <label for="sgr">SGR</label>
+        </div>
+
+        <div class="field-checkbox sistema-checkbox">
+          <p-checkbox
+            [(ngModel)]="consultaRecursos.sgp"
+            [binary]="true"
+            inputId="sgp"
+          />
+          <i class="pi pi-file sistema-icono"></i>
+          <label for="sgp">SGP</label>
+        </div>
+
+        <div class="field-checkbox sistema-checkbox">
+          <p-checkbox
+            [(ngModel)]="consultaRecursos.pgn"
+            [binary]="true"
+            inputId="pgn"
+          />
+          <i class="pi pi-file sistema-icono"></i>
+          <label for="pgn">PGN</label>
+        </div>
+      </div>
+
+      <!-- Vigencia -->
+      <div class="vigencia-selector">
+        <label for="vigencia" class="vigencia-label">Vigencia</label>
+        <p-dropdown
+          [(ngModel)]="vigenciaSeleccionada"
+          [options]="vigencias"
+          inputId="vigencia"
+          [style]="{'width': '100%'}"
+        />
+      </div>
+    </div>
+
+    <!-- Visualización -->
+    <div class="seccion-panel">
+      <h3 class="titulo-seccion">Visualización</h3>
+
+      <div class="visualizacion-toggle">
+        <p-inputSwitch [(ngModel)]="visualizacionActiva" />
+      </div>
+
+      <div class="tipo-inversion-selector">
+        <p-dropdown
+          [(ngModel)]="tipoInversionSeleccionado"
+          [options]="tiposInversion"
+          optionLabel="label"
+          optionValue="value"
+          [style]="{'width': '100%'}"
+        />
+      </div>
+
+      <!-- Capas -->
+      <div class="capas-lista">
+        <div *ngFor="let capa of capas" class="capa-item">
+          <div class="capa-header">
+            <p-checkbox
+              [(ngModel)]="capa.visible"
+              [binary]="true"
+              (onChange)="onCapaVisibleChange(capa)"
+            />
+            <i class="pi pi-circle-fill capa-color-indicador" [style.color]="capa.color"></i>
+            <span class="capa-nombre">{{ capa.sistema }}</span>
+          </div>
+          <div class="capa-slider">
+            <p-slider
+              [(ngModel)]="capa.opacidad"
+              [style]="{'width': '100%'}"
+              (onChange)="onCapaOpacidadChange(capa)"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="botones-filtro">
+        <p-button
+          label="Aplicar filtros"
+          icon="pi pi-filter"
+          (onClick)="aplicarFiltros()"
+          styleClass="p-button-sm"
+          [style]="{'width': '48%'}"
+        />
+        <p-button
+          label="Limpiar filtros"
+          icon="pi pi-times"
+          (onClick)="limpiarFiltros()"
+          styleClass="p-button-sm p-button-outlined"
+          [style]="{'width': '48%'}"
+        />
+      </div>
+    </div>
+
+    <!-- Consulta Especial -->
+    <div class="seccion-panel">
+      <h3 class="titulo-seccion">Consulta Especial</h3>
+
+      <div class="consulta-especial-item" (click)="navegarResguardos()">
+        <i class="pi pi-users icono-especial"></i>
+        <span class="nombre-especial">Resguardos Indígenas</span>
+        <i class="pi pi-arrow-right flecha-especial"></i>
+      </div>
+    </div>
+
+    <!-- Notas -->
+    <div class="seccion-panel notas-seccion">
+      <h4 class="notas-titulo">NOTAS</h4>
+      <p class="notas-texto">Cifras en pesos corrientes</p>
+    </div>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="contenido-principal">
+    <!-- Tarjetas de resumen superior -->
+    <div class="tarjetas-resumen">
+      <div
+        *ngFor="let recurso of recursos"
+        class="tarjeta-recurso"
+        [style.background-color]="recurso.color"
+      >
+        <div class="tarjeta-header">
+          <div class="tarjeta-icono-container">
+            <i [class]="recurso.icono + ' tarjeta-icono'"></i>
+          </div>
+          <div class="tarjeta-info">
+            <h4 class="tarjeta-sigla">{{ recurso.sigla }}</h4>
+            <h2 class="tarjeta-total">${{ recurso.total | numberFormat }}</h2>
+          </div>
+        </div>
+
+        <div class="tarjeta-progreso">
+          <div class="progreso-item">
+            <span class="progreso-label">Presupuesto</span>
+            <p-progressBar
+              [value]="calcularPorcentaje(recurso.presupuesto, recurso.total)"
+              [showValue]="false"
+              [style]="{'height': '8px'}"
+            />
+          </div>
+          <div class="progreso-item">
+            <span class="progreso-label">Recaudo</span>
+            <p-progressBar
+              [value]="calcularPorcentaje(recurso.recaudo, recurso.total)"
+              [showValue]="false"
+              [style]="{'height': '8px'}"
+            />
+          </div>
+        </div>
+
+        <div class="tarjeta-cobertura">
+          <p>{{ recurso.cobertura }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mapa -->
+    <div class="mapa-container">
+      <div id="mapaRecursos" class="mapa"></div>
+
+      <!-- Controles adicionales del mapa -->
+      <div class="mapa-controles">
+        <button class="control-btn" (click)="centrarMapa()" title="Inicio">
+          <i class="pi pi-home"></i>
+        </button>
+        <button class="control-btn" (click)="miUbicacion()" title="Mi ubicación">
+          <i class="pi pi-compass"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
