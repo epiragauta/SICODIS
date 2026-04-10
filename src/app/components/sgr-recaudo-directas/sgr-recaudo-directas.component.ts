@@ -280,14 +280,6 @@ export class SgrRecaudoDirectasComponent implements OnInit {
       },
       error: (err) => console.error('Error cargando fechas', err)
     });
-
-    await this.cargarVigencias();
-    await this.cargarDepartamentos();
-
-    this.home = { icon: 'pi pi-home', routerLink: '/' };
-    //this.selectedBeneficiario = this.beneficiarios[0]; // aquí sí funciona
-    //this.selectedDepartamento = this.beneficiarios[0];
-
     this.departmentSelected = '0';
 
 
@@ -303,6 +295,14 @@ export class SgrRecaudoDirectasComponent implements OnInit {
 
     this.townSelected = '0';
     // Cargar datos de diccionario y siglas
+    await this.cargarVigencias();
+    await this.cargarDepartamentos();
+
+    this.home = { icon: 'pi pi-home', routerLink: '/' };
+    //this.selectedBeneficiario = this.beneficiarios[0]; // aquí sí funciona
+    //this.selectedDepartamento = this.beneficiarios[0];
+
+
     this.cargarSiglasDiccionario();
 
     await this.applyFilters(); // Cargar datos con filtros por defecto (todos) al iniciar el componente
