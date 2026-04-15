@@ -83,11 +83,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
       {
         label: 'SGR',
         items: [
-          // {
-          //   label: 'Comparativo Avance vs Presupuesto',
-          //   command: () => this.redirectUrl("sgr-comparativo")
-          // },
-          // ,
+          {
+            label: 'Resumen',
+            command: () => this.redirectUrl("sgr-inicio")
+          },
           {
             label: 'Programación',
             items: [

@@ -1,0 +1,113 @@
+<div class="sgr-inicio-container">
+
+  <div class="gradient-banner">
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h1>Sistema General de Regalías (SGR)</h1>
+      <p>Consulte el resumen de los recursos distribuidos del SGR en la vigencia seleccionada.</p>
+    </div>
+  </div>
+
+  <!-- Panel de selección de vigencia -->
+  <div class="filters-panel">
+    <div class="filters-row">
+      <div class="p-field vigencia-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select
+            id="vigencia"
+            [options]="vigencias"
+            inputId="vigenciaSelect"
+            [(ngModel)]="selectedVigencia"
+            (onChange)="onVigenciaChange($event)"
+            optionLabel="label"
+            placeholder="Vigencia">
+          </p-select>
+          <label for="vigenciaSelect">Vigencia</label>
+        </p-floatlabel>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel principal con dos columnas -->
+  <div class="main-panel">
+    <!-- Columna izquierda (50%) - Tarjetas -->
+    <div class="left-column">
+
+      <!-- Tarjeta 1: Presupuesto Total -->
+      <mat-card class="info-card">
+        <mat-card-header>
+          <mat-card-title class="card-title">Presupuesto Total</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="card-value">{{ presupuestoTotal | numberFormat }}</div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Tarjeta 2: Recaudo Total -->
+      <mat-card class="info-card">
+        <mat-card-header>
+          <mat-card-title class="card-title">Recaudo Total</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="card-value">{{ recaudoTotal | numberFormat }}</div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Tarjeta 3: Avance Total -->
+      <mat-card class="info-card">
+        <mat-card-header>
+          <mat-card-title class="card-title">Avance Total</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="card-value card-value-percentage">{{ avanceTotal | percentFormat:2 }}</div>
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+
+    <!-- Columna derecha (50%) - Gráfico de dona -->
+    <div class="right-column">
+      <div class="chart-container">
+        <p-chart type="doughnut" [data]="donutDistribucionData" [options]="donutDistribucionOptions" class="chart"></p-chart>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notas finales como tarjeta -->
+  <div class="notes-section">
+    <mat-card class="info-card notes-card">
+      <mat-card-header>
+        <mat-card-title class="card-title">NOTAS</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p class="final-note">
+          (1) Cifras en pesos corrientes.
+        </p>
+        <p class="final-note">
+          (2) Ley 2441 de 2024 - Decretos 379 y 380 del 2025
+        </p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Sección de Herramientas y Recursos -->
+  <div class="herramientas-recursos-section">
+    <h2>Herramientas y Recursos</h2>
+    <div class="herramientas-cards-container">
+      <div class="herramienta-card"
+           *ngFor="let recurso of recursos"
+           (click)="onResourceClick(recurso)"
+           style="cursor: pointer;">
+        <div class="card-icon-placeholder">
+          <img [src]="recurso.icon" alt="{{ recurso.titulo }}" class="sgr-icon">
+        </div>
+        <div class="card-content">
+          <h3>{{ recurso.titulo }}</h3>
+          <p>{{ recurso.descripcion }}</p>
+        </div>
+        <mat-icon style="font-size: 32px; color: #403a3a;">chevron_right</mat-icon>
+      </div>
+    </div>
+  </div>
+
+</div>

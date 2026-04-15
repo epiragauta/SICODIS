@@ -1,0 +1,528 @@
+.sgr-inicio-container {
+  padding: 1rem;
+  max-width: 1380px;
+  margin: 0 auto;
+  font-family: 'Work Sans', sans-serif;
+
+  .gradient-banner {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    background-image: url('/assets/img/sgr/sgr-inicio.png');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    display: flex;
+    margin-bottom: .5rem;
+    border-radius: 8px;
+
+    .gradient-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 95%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        #f9fbfccc 0%,
+        rgb(53 95 147 / 31%) 100%
+      );
+      z-index: 1;
+    }
+
+    .banner-content {
+      position: relative;
+      margin-top: 1rem;
+      z-index: 2;
+      padding: 1rem;
+      max-width: 70%;
+      width: 1210px;
+
+      h1 {
+        font-size: 2rem;
+        margin-top: 2.25rem;
+        margin-bottom: 2.5rem;
+        color: #103d6e;
+        font-weight: bold;
+        text-shadow: 1px 1px 3px rgba(245, 245, 247, 0.92);
+      }
+
+      p {
+        font-size: 1.35rem;
+        margin-bottom: 2rem;
+        color: #103d6e;
+        width: 80%;
+        font-weight: 500;
+        text-shadow: 1px 1px 3px rgba(245, 245, 247, 0.92);
+      }
+    }
+  }
+
+  // Panel de filtros
+  .filters-panel {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #dee2e6;
+    width: 100%;
+
+    .filters-row {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      font-size: 12px;
+
+      .vigencia-select {
+        flex: 0 0 auto;
+        width: 210px;
+      }
+    }
+  }
+
+  // Panel principal
+  .main-panel {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    max-width: 1320px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+
+    @media (max-width: 1024px) {
+      flex-direction: column;
+    }
+
+    // Columna izquierda (50%)
+    .left-column {
+      flex: 0 0 50%;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+      position: relative;
+
+      @media (max-width: 1024px) {
+        flex: 1;
+      }
+
+      .info-card {
+        border-radius: 12px;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e0e0e0;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        height: 140px; // Altura fija para cada tarjeta
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-title {
+          color: #000;
+          font-weight: bold;
+          font-size: 1.1rem;
+          margin: 0;
+          text-align: left;
+        }
+
+        .card-value {
+          font-size: 1.8rem;
+          font-weight: bold;
+          color: #0943b5;
+          text-align: center;
+          padding: 1rem 0;
+        }
+
+        .card-value-percentage {
+          font-size: 2.5rem;
+        }
+      }
+    }
+
+    // Columna derecha (50%)
+    .right-column {
+      flex: 0 0 50%;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: relative;
+
+      @media (max-width: 1024px) {
+        flex: 1;
+      }
+
+      .chart-container {
+        background: #fff;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e0e0e0;
+        height: calc((140px * 3) + (0.75rem * 2)); // Altura de 3 tarjetas + 2 gaps
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: translateZ(0);
+        will-change: transform;
+
+        &:hover {
+          transform: translateY(-4px) translateZ(0);
+          box-shadow:
+            0 12px 40px rgba(0, 0, 0, 0.15),
+            0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+
+  // Sección de notas como tarjeta
+  .notes-section {
+    max-width: 1320px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    margin-top: 1rem;
+
+    .notes-card {
+      border-radius: 12px;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e0e0e0;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      }
+
+      .card-title {
+        color: #000;
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin: 0;
+        text-align: left;
+      }
+
+      .final-note {
+        font-size: 0.75rem;
+        color: #0943b5;
+        text-align: left;
+        margin-bottom: 0.5rem;
+        line-height: 1.4;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+  // Sección de Herramientas y Recursos
+  .herramientas-recursos-section {
+    padding: 20px;
+    margin-top: 20px;
+    max-width: 1320px;
+    margin-left: auto;
+    margin-right: auto;
+
+    h2 {
+      font-size: 1.8em;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: bold;
+      color: #6B4226;
+    }
+  }
+}
+
+.herramientas-cards-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  align-items: stretch;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.herramienta-card {
+  background: linear-gradient(135deg, #0943b5 0%, #156082 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 19px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+  height: 100%;
+  min-height: 120px;
+  text-align: left;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(7, 67, 181, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+
+  // Centrar la última tarjeta (Geovisor)
+  &:last-child {
+    grid-column: 1 / -1;
+    max-width: calc(50% - 10px);
+    margin: 0 auto;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    color: #0943b5;
+    transform: translateY(-4px) scale(1.02);
+    box-shadow:
+      0 8px 25px rgba(7, 67, 181, 0.25),
+      0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  .card-icon-placeholder {
+    font-size: 2em;
+    flex-shrink: 0;
+
+    .sgr-icon {
+      width: 58px;
+      height: 58px;
+      object-fit: contain;
+    }
+  }
+
+  .card-content {
+    flex-grow: 1;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    h3 {
+      margin-top: 0;
+      margin-bottom: 5px;
+      font-size: 1.15em;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.95em;
+      opacity: 0.9;
+      line-height: 1.4;
+      transition: all 0.3s ease;
+    }
+  }
+
+  &:hover .card-content {
+    h3 {
+      color: #0943b5;
+      font-weight: 700;
+    }
+
+    p {
+      color: #1a365d;
+      opacity: 1;
+    }
+  }
+
+  mat-icon {
+    color: #ffffff;
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    margin-left: auto;
+    transition: all 0.3s ease;
+  }
+
+  &:hover mat-icon {
+    color: #0943b5;
+    transform: translateX(4px);
+  }
+}
+
+// Sobrescribir estilos de Angular Material
+:host ::ng-deep {
+  .mat-mdc-card {
+    --mdc-elevated-card-container-elevation: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .left-column .mat-mdc-card {
+    height: 140px;
+  }
+
+  .mat-mdc-card-header {
+    padding-bottom: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .mat-mdc-card-content {
+    padding-top: 0.5rem;
+    padding: 0 16px;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .notes-card .mat-mdc-card-content {
+    display: block;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  .mat-mdc-card-header-text {
+    width: 100% !important;
+  }
+}
+
+// Sobrescribir estilos de PrimeNG
+:host ::ng-deep {
+  .p-select-label {
+    padding: .425rem !important;
+  }
+
+  .p-chart {
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    transform: translateZ(0) !important;
+    -webkit-font-smoothing: antialiased !important;
+
+    canvas {
+      max-width: 100% !important;
+      width: auto !important;
+      height: auto !important;
+      image-rendering: auto !important;
+      transform: translateZ(0) !important;
+      backface-visibility: hidden !important;
+      -webkit-font-smoothing: antialiased !important;
+      -moz-osx-font-smoothing: grayscale !important;
+      font-smooth: always !important;
+    }
+  }
+
+  .chart-container .p-chart {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+
+    canvas {
+      object-fit: contain !important;
+      image-rendering: auto !important;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 1024px) {
+  .sgr-inicio-container {
+    .main-panel {
+      .right-column .chart-container {
+        height: auto;
+        min-height: 400px;
+      }
+    }
+  }
+
+  .herramienta-card {
+    .card-content {
+      h3 {
+        font-size: 1.1em;
+      }
+
+      p {
+        font-size: 0.9em;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .sgr-inicio-container {
+    padding: 0.5rem;
+
+    .filters-panel .filters-row {
+      flex-direction: column;
+
+      .vigencia-select {
+        width: 100%;
+      }
+    }
+
+    .main-panel {
+      .left-column .info-card {
+        .card-value {
+          font-size: 1.4rem;
+        }
+
+        .card-value-percentage {
+          font-size: 2rem;
+        }
+      }
+    }
+  }
+
+  .herramientas-cards-container {
+    grid-template-columns: 1fr;
+  }
+
+  .herramienta-card {
+    &:last-child {
+      grid-column: auto;
+      max-width: 100%;
+      margin: 0;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .sgr-inicio-container {
+    .main-panel .left-column .info-card {
+      .card-value {
+        font-size: 1.2rem;
+      }
+
+      .card-value-percentage {
+        font-size: 1.8rem;
+      }
+    }
+  }
+
+  .herramienta-card {
+    .card-content {
+      h3 {
+        font-size: 1em;
+      }
+
+      p {
+        font-size: 0.85em;
+      }
+    }
+  }
+}
