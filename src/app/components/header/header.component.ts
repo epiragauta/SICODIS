@@ -275,10 +275,6 @@ downloadFile(path: string) {
     this.route.navigate(['/']);
   }
 
-  redirectSGR() {
-    this.route.navigate(['/reports-sgr']);
-  }
-
   redirectUrl(path: string) {
     this.route.navigate([path]);
   }
@@ -289,10 +285,6 @@ downloadFile(path: string) {
 
   redirectFAQ() {
     this.route.navigate(['/faq']);
-  }
-
-  redirectTools() {
-    this.route.navigate(['/tools']);
   }
 
   redirectDocs(item: string) {

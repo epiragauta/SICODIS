@@ -1,20 +1,10 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
-import { ReportsSgrComponent } from './components/reports-sgr/reports-sgr.component';
 import { ReportsSgpComponent } from './components/reports-sgp/reports-sgp.component';
-import { ReportsMapComponent } from './components/reports-map/reports-map.component';
-import { ReportsSgpDistComponent } from './components/reports-sgp-dist/reports-sgp-dist.component';
-import { ReportsSgpBudgetComponent } from './components/reports-sgp-budget/reports-sgp-budget.component';
-import { ReportsSgrComparativeComponent } from './components/reports-sgr-comparative/reports-sgr-comparative.component';
-import { IacComparativeVsBudgetComponent} from './components/iac-comparative-vs-budget/iac-comparative-vs-budget.component';
 import { FaqComponent } from './components/faq/faq.component';
 import { ToolsComponent } from './components/tools/tools.component';
-import { ComparativoIacVsPresupuestoComponent } from './components/comparativo-iac-vs-presupuesto/comparativo-iac-vs-presupuesto.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { PropuestaResumenSgrComponent } from './components/propuesta-resumen-sgr/propuesta-resumen-sgr.component';
 import { PresupuestoYRecaudoComponent } from './components/presupuesto-y-recaudo/presupuesto-y-recaudo.component';
-import { GraphicsSgpComponent } from './components/graphics-sgp/graphics-sgp.component';
 import { ReporteFuncionamientoComponent } from './components/reporte-funcionamiento/reporte-funcionamiento.component';
 import { ReportsSgpResguardosComponent } from './components/reports-sgp-resguardos/reports-sgp-resguardos.component';
 import { HistoricoSgpComponent } from './components/historico-sgp/historico-sgp.component';
@@ -40,8 +30,6 @@ import { SgrInicioComponent } from './components/sgr-inicio/sgr-inicio.component
 export const routes: Routes = [
     { path: '', component: HomeComponent },
     // SGR
-    { path: 'reports-sgr',                    component: ReportsSgrComponent,                              data: { breadcrumb: 'SGR — Reportes' } },
-    { path: 'reports-sgr-comparative',        component: ReportsSgrComparativeComponent,                   data: { breadcrumb: 'SGR — Comparativo' } },
     { path: 'sgr-presupuesto-y-recaudo',      component: PresupuestoYRecaudoComponent,                     data: { breadcrumb: 'SGR — Presupuesto y Recaudo' } },
     { path: 'sgr-recaudo-mensual',            component: SgrRecaudoMensualComponent,                       data: { breadcrumb: 'SGR — Recaudo Mensual' } },
     { path: 'sgr-comparativo',                component: SgrComparativoComponent,                          data: { breadcrumb: 'SGR — Comparativo' } },
@@ -51,7 +39,6 @@ export const routes: Routes = [
     { path: 'sgr-plan-recursos',              component: SgrPlanBienalRecursosComponent,                   data: { breadcrumb: 'SGR — Plan Bienal de Recursos' } },
     { path: 'sgr-plan-bienal-de-caja',        component: SgrPlanBienalCajaComponent,                       data: { breadcrumb: 'SGR — Plan Bienal de Caja' } },
     { path: 'reporte-funcionamiento',         component: ReporteFuncionamientoComponent,                   data: { breadcrumb: 'SGR — Reporte de Funcionamiento' } },
-    { path: 'propuesta-resumen-sgr',          component: PropuestaResumenSgrComponent,                     data: { breadcrumb: 'SGR — Propuesta Resumen' } },
     { path: 'sgr-inicio',                     component: SgrInicioComponent,                               data: { breadcrumb: 'SGR' } },
     // SGP
     { path: 'sgp-inicio',                     component: SgpInicioComponent,                               data: { breadcrumb: 'SGP' } },
@@ -61,22 +48,15 @@ export const routes: Routes = [
     { path: 'sgp-detalle-presupuestal',       component: SgpDetallePresupuestalComponent,                  data: { breadcrumb: 'SGP — Detalle Presupuestal' } },
     { path: 'sgp-comparativa',                component: SgpComparativaComponent,                          data: { breadcrumb: 'SGP — Comparativa' } },
     { path: 'sgp-eficiencias',                 component: SgpEficienciasComponent,                          data: { breadcrumb: 'SGP — Eficiencias' } },
-    { path: 'reports-sgp-dist',               component: ReportsSgpDistComponent,                          data: { breadcrumb: 'SGP — Distribución' } },
-    { path: 'reports-sgp-budget',             component: ReportsSgpBudgetComponent,                        data: { breadcrumb: 'SGP — Presupuesto' } },
-    { path: 'graphics-sgp',                   component: GraphicsSgpComponent,                             data: { breadcrumb: 'SGP — Gráficas' } },
     // PGN
     { path: 'pgn-inversion-por-sector',       component: PgnInversionPorSectorComponent,                   data: { breadcrumb: 'PGN — Inversión por Sector' } },
     { path: 'pgn-regionalizacion',            component: PgnRegionalizacionPresupuestoProgramacionComponent, data: { breadcrumb: 'PGN — Regionalización' } },
     { path: 'pgn-seguimiento',                component: PgnRegionalizacionPresupuestoSeguimientoComponent, data: { breadcrumb: 'PGN — Seguimiento' } },
     { path: 'pgn-comparativa-regionalizacion', component: PgnComparativaRegionalizacionComponent,          data: { breadcrumb: 'PGN — Comparativa Regionalización' } },
     // Otros
-    { path: 'iac-comparative-vs-budget',      component: IacComparativeVsBudgetComponent,                  data: { breadcrumb: 'IAC vs Presupuesto' } },
-    { path: 'comparativo-iac-presupuesto',    component: ComparativoIacVsPresupuestoComponent,              data: { breadcrumb: 'Comparativo IAC vs Presupuesto' } },
     { path: 'faq',                            component: FaqComponent,                                      data: { breadcrumb: 'Preguntas Frecuentes' } },
     { path: 'tools',                          component: ToolsComponent,                                    data: { breadcrumb: 'Herramientas' } },
     { path: 'mapa-del-sitio',                 component: SitemapComponent,                                  data: { breadcrumb: 'Mapa del sitio' } },
-    { path: 'dashboard',                      component: DashboardComponent,                                data: { breadcrumb: 'Dashboard' } },    
-    { path: 'reports-map',                    component: ReportsMapComponent,                               data: { breadcrumb: 'Mapa de Reportes' } },
     { path: 'mapa-recursos',                  component: MapaRecursosComponent,                             data: { breadcrumb: 'Mapa de Recursos' } },
     // 404
     { path: '**', component: NotFoundComponent, data: { breadcrumb: 'Página no encontrada' } },
