@@ -1,0 +1,6437 @@
+[
+  {
+      "codPadre": 2,
+      "codigo": 2,
+      "entidad": "Asignaciones Directas por Distribuir Ajustes Agencias"
+  },
+  {
+      "codPadre": 4,
+      "codigo": 4,
+      "entidad": "Por Distribuir Ajustes No Aforados Decreto 549 de 2024 - AD"
+  },
+  {
+      "codPadre": 1000,
+      "codigo": 1000,
+      "entidad": "Asignaciones para la PAZ 7% -  Bolsa Concursable"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5000,
+      "entidad": "Antioquia"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5001,
+      "entidad": "Medellín"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5002,
+      "entidad": "Abejorral"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5004,
+      "entidad": "Abriaquí"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5021,
+      "entidad": "Alejandría"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5030,
+      "entidad": "Amagá"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5031,
+      "entidad": "Amalfi"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5034,
+      "entidad": "Andes"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5036,
+      "entidad": "Angelópolis"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5038,
+      "entidad": "Angostura"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5040,
+      "entidad": "Anorí"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5042,
+      "entidad": "Santafé de Antioquia"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5044,
+      "entidad": "Anza"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5045,
+      "entidad": "Apartadó"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5051,
+      "entidad": "Arboletes"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5055,
+      "entidad": "Argelia"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5059,
+      "entidad": "Armenia"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5079,
+      "entidad": "Barbosa"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5086,
+      "entidad": "Belmira"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5088,
+      "entidad": "Bello"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5091,
+      "entidad": "Betania"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5093,
+      "entidad": "Betulia"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5101,
+      "entidad": "Ciudad Bolívar"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5107,
+      "entidad": "Briceño"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5113,
+      "entidad": "Buriticá"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5120,
+      "entidad": "Cáceres"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5125,
+      "entidad": "Caicedo"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5129,
+      "entidad": "Caldas"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5134,
+      "entidad": "Campamento"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5138,
+      "entidad": "Cañasgordas"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5142,
+      "entidad": "Caracolí"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5145,
+      "entidad": "Caramanta"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5147,
+      "entidad": "Carepa"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5148,
+      "entidad": "El Carmen de Viboral"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5150,
+      "entidad": "Carolina"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5154,
+      "entidad": "Caucasia"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5172,
+      "entidad": "Chigorodó"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5190,
+      "entidad": "Cisneros"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5197,
+      "entidad": "Cocorná"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5206,
+      "entidad": "Concepción"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5209,
+      "entidad": "Concordia"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5212,
+      "entidad": "Copacabana"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5234,
+      "entidad": "Dabeiba"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5237,
+      "entidad": "Don Matías"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5240,
+      "entidad": "Ebéjico"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5250,
+      "entidad": "El Bagre"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5264,
+      "entidad": "Entrerrios"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5266,
+      "entidad": "Envigado"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5282,
+      "entidad": "Fredonia"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5284,
+      "entidad": "Frontino"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5306,
+      "entidad": "Giraldo"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5308,
+      "entidad": "Girardota"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5310,
+      "entidad": "Gómez Plata"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5313,
+      "entidad": "Granada"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5315,
+      "entidad": "Guadalupe"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5318,
+      "entidad": "Guarne"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5321,
+      "entidad": "Guatapé"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5347,
+      "entidad": "Heliconia"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5353,
+      "entidad": "Hispania"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5360,
+      "entidad": "Itagui"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5361,
+      "entidad": "Ituango"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5364,
+      "entidad": "Jardín"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5368,
+      "entidad": "Jericó"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5376,
+      "entidad": "La Ceja"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5380,
+      "entidad": "La Estrella"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5390,
+      "entidad": "La Pintada"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5400,
+      "entidad": "La Unión"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5411,
+      "entidad": "Liborina"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5425,
+      "entidad": "Maceo"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5440,
+      "entidad": "Marinilla"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5467,
+      "entidad": "Montebello"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5475,
+      "entidad": "Murindó"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5480,
+      "entidad": "Mutatá"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5483,
+      "entidad": "Nariño"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5490,
+      "entidad": "Necoclí"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5495,
+      "entidad": "Nechí"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5501,
+      "entidad": "Olaya"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5541,
+      "entidad": "Peñol"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5543,
+      "entidad": "Peque"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5576,
+      "entidad": "Pueblorrico"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5579,
+      "entidad": "Puerto Berrío"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5585,
+      "entidad": "Puerto Nare"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5591,
+      "entidad": "Puerto Triunfo"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5604,
+      "entidad": "Remedios"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5607,
+      "entidad": "Retiro"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5615,
+      "entidad": "Rionegro"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5628,
+      "entidad": "Sabanalarga"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5631,
+      "entidad": "Sabaneta"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5642,
+      "entidad": "Salgar"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5647,
+      "entidad": "San Andrés de Cuerquía"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5649,
+      "entidad": "San Carlos"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5652,
+      "entidad": "San Francisco"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5656,
+      "entidad": "San Jerónimo"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5658,
+      "entidad": "San José de La Montaña"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5659,
+      "entidad": "San Juan de Urabá"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5660,
+      "entidad": "San Luis"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5664,
+      "entidad": "San Pedro"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5665,
+      "entidad": "San Pedro de Uraba"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5667,
+      "entidad": "San Rafael"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5670,
+      "entidad": "San Roque"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5674,
+      "entidad": "San Vicente"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5679,
+      "entidad": "Santa Bárbara"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5686,
+      "entidad": "Santa Rosa de Osos"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5690,
+      "entidad": "Santo Domingo"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5697,
+      "entidad": "El Santuario"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5736,
+      "entidad": "Segovia"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5756,
+      "entidad": "Sonson"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5761,
+      "entidad": "Sopetrán"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5789,
+      "entidad": "Támesis"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5790,
+      "entidad": "Tarazá"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5792,
+      "entidad": "Tarso"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5809,
+      "entidad": "Titiribí"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5819,
+      "entidad": "Toledo"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5837,
+      "entidad": "Turbo"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5842,
+      "entidad": "Uramita"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5847,
+      "entidad": "Urrao"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5854,
+      "entidad": "Valdivia"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5856,
+      "entidad": "Valparaíso"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5858,
+      "entidad": "Vegachí"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5861,
+      "entidad": "Venecia"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5873,
+      "entidad": "Vigía del Fuerte"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5885,
+      "entidad": "Yalí"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5887,
+      "entidad": "Yarumal"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5890,
+      "entidad": "Yolombó"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5893,
+      "entidad": "Yondó"
+  },
+  {
+      "codPadre": 5000,
+      "codigo": 5895,
+      "entidad": "Zaragoza"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8000,
+      "entidad": "Atlántico"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8001,
+      "entidad": "Barranquilla"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8078,
+      "entidad": "Baranoa"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8137,
+      "entidad": "Campo de La Cruz"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8141,
+      "entidad": "Candelaria"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8296,
+      "entidad": "Galapa"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8372,
+      "entidad": "Juan de Acosta"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8421,
+      "entidad": "Luruaco"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8433,
+      "entidad": "Malambo"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8436,
+      "entidad": "Manatí"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8520,
+      "entidad": "Palmar de Varela"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8549,
+      "entidad": "Piojó"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8558,
+      "entidad": "Polonuevo"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8560,
+      "entidad": "Ponedera"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8573,
+      "entidad": "Puerto Colombia"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8606,
+      "entidad": "Repelón"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8634,
+      "entidad": "Sabanagrande"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8638,
+      "entidad": "Sabanalarga"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8675,
+      "entidad": "Santa Lucía"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8685,
+      "entidad": "Santo Tomás"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8758,
+      "entidad": "Soledad"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8770,
+      "entidad": "Suan"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8832,
+      "entidad": "Tubará"
+  },
+  {
+      "codPadre": 8000,
+      "codigo": 8849,
+      "entidad": "Usiacurí"
+  },
+  {
+      "codPadre": 9000,
+      "codigo": 9000,
+      "entidad": "Emprendimiento y Generación de Empleo"
+  },
+  {
+      "codPadre": 11001,
+      "codigo": 11001,
+      "entidad": "BOGOTÁ D.C."
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13000,
+      "entidad": "Bolívar"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13001,
+      "entidad": "Cartagena"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13006,
+      "entidad": "Achí"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13030,
+      "entidad": "Altos del Rosario"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13042,
+      "entidad": "Arenal"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13052,
+      "entidad": "Arjona"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13062,
+      "entidad": "Arroyohondo"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13074,
+      "entidad": "Barranco de Loba"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13140,
+      "entidad": "Calamar"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13160,
+      "entidad": "Cantagallo"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13188,
+      "entidad": "Cicuco"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13212,
+      "entidad": "Córdoba"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13222,
+      "entidad": "Clemencia"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13244,
+      "entidad": "El Carmen de Bolívar"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13248,
+      "entidad": "El Guamo"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13268,
+      "entidad": "El Peñón"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13300,
+      "entidad": "Hatillo de Loba"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13430,
+      "entidad": "Magangué"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13433,
+      "entidad": "Mahates"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13440,
+      "entidad": "Margarita"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13442,
+      "entidad": "María La Baja"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13458,
+      "entidad": "Montecristo"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13468,
+      "entidad": "Mompós"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13473,
+      "entidad": "Morales"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13490,
+      "entidad": "Norosí"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13549,
+      "entidad": "Pinillos"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13580,
+      "entidad": "Regidor"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13600,
+      "entidad": "Río Viejo"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13620,
+      "entidad": "San Cristóbal"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13647,
+      "entidad": "San Estanislao"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13650,
+      "entidad": "San Fernando"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13654,
+      "entidad": "San Jacinto"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13655,
+      "entidad": "San Jacinto del Cauca"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13657,
+      "entidad": "San Juan Nepomuceno"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13667,
+      "entidad": "San Martín de Loba"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13670,
+      "entidad": "San Pablo"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13673,
+      "entidad": "Santa Catalina"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13683,
+      "entidad": "Santa Rosa"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13688,
+      "entidad": "Santa Rosa del Sur"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13744,
+      "entidad": "Simití"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13760,
+      "entidad": "Soplaviento"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13780,
+      "entidad": "Talaigua Nuevo"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13810,
+      "entidad": "Tiquisio"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13836,
+      "entidad": "Turbaco"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13838,
+      "entidad": "Turbaná"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13873,
+      "entidad": "Villanueva"
+  },
+  {
+      "codPadre": 13000,
+      "codigo": 13894,
+      "entidad": "Zambrano"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15000,
+      "entidad": "Boyacá"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15001,
+      "entidad": "Tunja"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15022,
+      "entidad": "Almeida"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15047,
+      "entidad": "Aquitania"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15051,
+      "entidad": "Arcabuco"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15087,
+      "entidad": "Belén"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15090,
+      "entidad": "Berbeo"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15092,
+      "entidad": "Betéitiva"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15097,
+      "entidad": "Boavita"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15104,
+      "entidad": "Boyacá"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15106,
+      "entidad": "Briceño"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15109,
+      "entidad": "Buenavista"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15114,
+      "entidad": "Busbanzá"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15131,
+      "entidad": "Caldas"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15135,
+      "entidad": "Campohermoso"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15162,
+      "entidad": "Cerinza"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15172,
+      "entidad": "Chinavita"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15176,
+      "entidad": "Chiquinquirá"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15180,
+      "entidad": "Chiscas"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15183,
+      "entidad": "Chita"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15185,
+      "entidad": "Chitaraque"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15187,
+      "entidad": "Chivatá"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15189,
+      "entidad": "Ciénega"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15204,
+      "entidad": "Cómbita"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15212,
+      "entidad": "Coper"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15215,
+      "entidad": "Corrales"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15218,
+      "entidad": "Covarachía"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15223,
+      "entidad": "Cubará"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15224,
+      "entidad": "Cucaita"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15226,
+      "entidad": "Cuítiva"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15232,
+      "entidad": "Chíquiza"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15236,
+      "entidad": "Chivor"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15238,
+      "entidad": "Duitama"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15244,
+      "entidad": "El Cocuy"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15248,
+      "entidad": "El Espino"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15272,
+      "entidad": "Firavitoba"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15276,
+      "entidad": "Floresta"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15293,
+      "entidad": "Gachantivá"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15296,
+      "entidad": "Gameza"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15299,
+      "entidad": "Garagoa"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15317,
+      "entidad": "Guacamayas"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15322,
+      "entidad": "Guateque"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15325,
+      "entidad": "Guayatá"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15332,
+      "entidad": "Güicán"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15362,
+      "entidad": "Iza"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15367,
+      "entidad": "Jenesano"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15368,
+      "entidad": "Jericó"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15377,
+      "entidad": "Labranzagrande"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15380,
+      "entidad": "La Capilla"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15401,
+      "entidad": "La Victoria"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15403,
+      "entidad": "La Uvita"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15407,
+      "entidad": "Villa de Leyva"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15425,
+      "entidad": "Macanal"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15442,
+      "entidad": "Maripí"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15455,
+      "entidad": "Miraflores"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15464,
+      "entidad": "Mongua"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15466,
+      "entidad": "Monguí"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15469,
+      "entidad": "Moniquirá"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15476,
+      "entidad": "Motavita"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15480,
+      "entidad": "Muzo"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15491,
+      "entidad": "Nobsa"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15494,
+      "entidad": "Nuevo Colón"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15500,
+      "entidad": "Oicatá"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15507,
+      "entidad": "Otanche"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15511,
+      "entidad": "Pachavita"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15514,
+      "entidad": "Páez"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15516,
+      "entidad": "Paipa"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15518,
+      "entidad": "Pajarito"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15522,
+      "entidad": "Panqueba"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15531,
+      "entidad": "Pauna"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15533,
+      "entidad": "Paya"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15537,
+      "entidad": "Paz de Río"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15542,
+      "entidad": "Pesca"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15550,
+      "entidad": "Pisba"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15572,
+      "entidad": "Puerto Boyacá"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15580,
+      "entidad": "Quípama"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15599,
+      "entidad": "Ramiriquí"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15600,
+      "entidad": "Ráquira"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15621,
+      "entidad": "Rondón"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15632,
+      "entidad": "Saboyá"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15638,
+      "entidad": "Sáchica"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15646,
+      "entidad": "Samacá"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15660,
+      "entidad": "San Eduardo"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15664,
+      "entidad": "San José de Pare"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15667,
+      "entidad": "San Luis de Gaceno"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15673,
+      "entidad": "San Mateo"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15676,
+      "entidad": "San Miguel de Sema"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15681,
+      "entidad": "San Pablo de Borbur"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15686,
+      "entidad": "Santana"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15690,
+      "entidad": "Santa María"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15693,
+      "entidad": "Santa Rosa de Viterbo"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15696,
+      "entidad": "Santa Sofía"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15720,
+      "entidad": "Sativanorte"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15723,
+      "entidad": "Sativasur"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15740,
+      "entidad": "Siachoque"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15753,
+      "entidad": "Soatá"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15755,
+      "entidad": "Socotá"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15757,
+      "entidad": "Socha"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15759,
+      "entidad": "Sogamoso"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15761,
+      "entidad": "Somondoco"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15762,
+      "entidad": "Sora"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15763,
+      "entidad": "Sotaquirá"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15764,
+      "entidad": "Soracá"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15774,
+      "entidad": "Susacón"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15776,
+      "entidad": "Sutamarchán"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15778,
+      "entidad": "Sutatenza"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15790,
+      "entidad": "Tasco"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15798,
+      "entidad": "Tenza"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15804,
+      "entidad": "Tibaná"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15806,
+      "entidad": "Tibasosa"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15808,
+      "entidad": "Tinjacá"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15810,
+      "entidad": "Tipacoque"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15814,
+      "entidad": "Toca"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15816,
+      "entidad": "Togüí"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15820,
+      "entidad": "Tópaga"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15822,
+      "entidad": "Tota"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15832,
+      "entidad": "Tununguá"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15835,
+      "entidad": "Turmequé"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15837,
+      "entidad": "Tuta"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15839,
+      "entidad": "Tutazá"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15842,
+      "entidad": "Umbita"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15861,
+      "entidad": "Ventaquemada"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15879,
+      "entidad": "Viracachá"
+  },
+  {
+      "codPadre": 15000,
+      "codigo": 15897,
+      "entidad": "Zetaquira"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17000,
+      "entidad": "Caldas"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17001,
+      "entidad": "Manizales"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17013,
+      "entidad": "Aguadas"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17042,
+      "entidad": "Anserma"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17050,
+      "entidad": "Aranzazu"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17088,
+      "entidad": "Belalcázar"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17174,
+      "entidad": "Chinchiná"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17272,
+      "entidad": "Filadelfia"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17380,
+      "entidad": "La Dorada"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17388,
+      "entidad": "La Merced"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17433,
+      "entidad": "Manzanares"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17442,
+      "entidad": "Marmato"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17444,
+      "entidad": "Marquetalia"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17446,
+      "entidad": "Marulanda"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17486,
+      "entidad": "Neira"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17495,
+      "entidad": "Norcasia"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17513,
+      "entidad": "Pácora"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17524,
+      "entidad": "Palestina"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17541,
+      "entidad": "Pensilvania"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17614,
+      "entidad": "Riosucio"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17616,
+      "entidad": "Risaralda"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17653,
+      "entidad": "Salamina"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17662,
+      "entidad": "Samaná"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17665,
+      "entidad": "San José"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17777,
+      "entidad": "Supía"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17867,
+      "entidad": "Victoria"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17873,
+      "entidad": "Villamaría"
+  },
+  {
+      "codPadre": 17000,
+      "codigo": 17877,
+      "entidad": "Viterbo"
+  },
+  {
+      "codPadre": 18000,
+      "codigo": 18000,
+      "entidad": "Caquetá"
+  },
+  {
+      "codPadre": 18000,
+      "codigo": 18001,
+      "entidad": "Florencia"
+  },
+  {
+      "codPadre": 18000,
+      "codigo": 18029,
+      "entidad": "Albania"
+  },
+  {
+      "codPadre": 18000,
+      "codigo": 18094,
+      "entidad": "Belén de Los Andaquies"
+  },
+  {
+      "codPadre": 18000,
+      "codigo": 18150,
+      "entidad": "Cartagena del Chairá"
+  },
+  {
+      "codPadre": 18000,
+      "codigo": 18205,
+      "entidad": "Curillo"
+  },
+  {
+      "codPadre": 18000,
+      "codigo": 18247,
+      "entidad": "El Doncello"
+  },
+  {
+      "codPadre": 18000,
+      "codigo": 18256,
+      "entidad": "El Paujil"
+  },
+  {
+      "codPadre": 18000,
+      "codigo": 18410,
+      "entidad": "La Montañita"
+  },
+  {
+      "codPadre": 18000,
+      "codigo": 18460,
+      "entidad": "Milán"
+  },
+  {
+      "codPadre": 18000,
+      "codigo": 18479,
+      "entidad": "Morelia"
+  },
+  {
+      "codPadre": 18000,
+      "codigo": 18592,
+      "entidad": "Puerto Rico"
+  },
+  {
+      "codPadre": 18000,
+      "codigo": 18610,
+      "entidad": "San José del Fragua"
+  },
+  {
+      "codPadre": 18000,
+      "codigo": 18753,
+      "entidad": "San Vicente del Caguán"
+  },
+  {
+      "codPadre": 18000,
+      "codigo": 18756,
+      "entidad": "Solano"
+  },
+  {
+      "codPadre": 18000,
+      "codigo": 18785,
+      "entidad": "Solita"
+  },
+  {
+      "codPadre": 18000,
+      "codigo": 18860,
+      "entidad": "Valparaíso"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19000,
+      "entidad": "Cauca"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19001,
+      "entidad": "Popayán"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19022,
+      "entidad": "Almaguer"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19050,
+      "entidad": "Argelia"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19075,
+      "entidad": "Balboa"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19100,
+      "entidad": "Bolívar"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19110,
+      "entidad": "Buenos Aires"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19130,
+      "entidad": "Cajibío"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19137,
+      "entidad": "Caldono"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19142,
+      "entidad": "Caloto"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19212,
+      "entidad": "Corinto"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19256,
+      "entidad": "El Tambo"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19290,
+      "entidad": "Florencia"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19300,
+      "entidad": "Guachené"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19318,
+      "entidad": "Guapi"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19355,
+      "entidad": "Inzá"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19364,
+      "entidad": "Jambaló"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19392,
+      "entidad": "La Sierra"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19397,
+      "entidad": "La Vega"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19418,
+      "entidad": "López"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19450,
+      "entidad": "Mercaderes"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19455,
+      "entidad": "Miranda"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19473,
+      "entidad": "Morales"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19513,
+      "entidad": "Padilla"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19517,
+      "entidad": "Paez"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19532,
+      "entidad": "Patía"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19533,
+      "entidad": "Piamonte"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19548,
+      "entidad": "Piendamó"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19573,
+      "entidad": "Puerto Tejada"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19585,
+      "entidad": "Puracé"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19622,
+      "entidad": "Rosas"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19693,
+      "entidad": "San Sebastián"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19698,
+      "entidad": "Santander de Quilichao"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19701,
+      "entidad": "Santa Rosa"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19743,
+      "entidad": "Silvia"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19760,
+      "entidad": "Sotara"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19780,
+      "entidad": "Suárez"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19785,
+      "entidad": "Sucre"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19807,
+      "entidad": "Timbío"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19809,
+      "entidad": "Timbiquí"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19821,
+      "entidad": "Toribio"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19824,
+      "entidad": "Totoró"
+  },
+  {
+      "codPadre": 19000,
+      "codigo": 19845,
+      "entidad": "Villa Rica"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20000,
+      "entidad": "Cesar"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20001,
+      "entidad": "Valledupar"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20011,
+      "entidad": "Aguachica"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20013,
+      "entidad": "Agustín Codazzi"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20032,
+      "entidad": "Astrea"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20045,
+      "entidad": "Becerril"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20060,
+      "entidad": "Bosconia"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20175,
+      "entidad": "Chimichagua"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20178,
+      "entidad": "Chiriguaná"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20228,
+      "entidad": "Curumaní"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20238,
+      "entidad": "El Copey"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20250,
+      "entidad": "El Paso"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20295,
+      "entidad": "Gamarra"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20310,
+      "entidad": "González"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20383,
+      "entidad": "La Gloria"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20400,
+      "entidad": "La Jagua de Ibirico"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20443,
+      "entidad": "Manaure"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20517,
+      "entidad": "Pailitas"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20550,
+      "entidad": "Pelaya"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20570,
+      "entidad": "Pueblo Bello"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20614,
+      "entidad": "Río de Oro"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20621,
+      "entidad": "La Paz"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20710,
+      "entidad": "San Alberto"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20750,
+      "entidad": "San Diego"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20770,
+      "entidad": "San Martín"
+  },
+  {
+      "codPadre": 20000,
+      "codigo": 20787,
+      "entidad": "Tamalameque"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23000,
+      "entidad": "Córdoba"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23001,
+      "entidad": "Montería"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23068,
+      "entidad": "Ayapel"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23079,
+      "entidad": "Buenavista"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23090,
+      "entidad": "Canalete"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23162,
+      "entidad": "Cereté"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23168,
+      "entidad": "Chimá"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23182,
+      "entidad": "Chinú"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23189,
+      "entidad": "Ciénaga de Oro"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23300,
+      "entidad": "Cotorra"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23350,
+      "entidad": "La Apartada"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23417,
+      "entidad": "Lorica"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23419,
+      "entidad": "Los Córdobas"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23464,
+      "entidad": "Momil"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23466,
+      "entidad": "Montelíbano"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23500,
+      "entidad": "Moñitos"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23555,
+      "entidad": "Planeta Rica"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23570,
+      "entidad": "Pueblo Nuevo"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23574,
+      "entidad": "Puerto Escondido"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23580,
+      "entidad": "Puerto Libertador"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23586,
+      "entidad": "Purísima"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23660,
+      "entidad": "Sahagún"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23670,
+      "entidad": "San Andrés Sotavento"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23672,
+      "entidad": "San Antero"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23675,
+      "entidad": "San Bernardo del Viento"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23678,
+      "entidad": "San Carlos"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23682,
+      "entidad": "San José de Uré"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23686,
+      "entidad": "San Pelayo"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23807,
+      "entidad": "Tierralta"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23815,
+      "entidad": "Tuchín"
+  },
+  {
+      "codPadre": 23000,
+      "codigo": 23855,
+      "entidad": "Valencia"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25000,
+      "entidad": "Cundinamarca"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25001,
+      "entidad": "Agua de Dios"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25019,
+      "entidad": "Albán"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25035,
+      "entidad": "Anapoima"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25040,
+      "entidad": "Anolaima"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25053,
+      "entidad": "Arbeláez"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25086,
+      "entidad": "Beltrán"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25095,
+      "entidad": "Bituima"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25099,
+      "entidad": "Bojacá"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25120,
+      "entidad": "Cabrera"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25123,
+      "entidad": "Cachipay"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25126,
+      "entidad": "Cajicá"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25148,
+      "entidad": "Caparrapí"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25151,
+      "entidad": "Caqueza"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25154,
+      "entidad": "Carmen de Carupa"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25168,
+      "entidad": "Chaguaní"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25175,
+      "entidad": "Chía"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25178,
+      "entidad": "Chipaque"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25181,
+      "entidad": "Choachí"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25183,
+      "entidad": "Chocontá"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25200,
+      "entidad": "Cogua"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25214,
+      "entidad": "Cota"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25224,
+      "entidad": "Cucunubá"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25245,
+      "entidad": "El Colegio"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25258,
+      "entidad": "El Peñón"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25260,
+      "entidad": "El Rosal"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25269,
+      "entidad": "Facatativá"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25279,
+      "entidad": "Fomeque"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25281,
+      "entidad": "Fosca"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25286,
+      "entidad": "Funza"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25288,
+      "entidad": "Fúquene"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25290,
+      "entidad": "Fusagasugá"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25293,
+      "entidad": "Gachala"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25295,
+      "entidad": "Gachancipá"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25297,
+      "entidad": "Gachetá"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25299,
+      "entidad": "Gama"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25307,
+      "entidad": "Girardot"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25312,
+      "entidad": "Granada"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25317,
+      "entidad": "Guachetá"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25320,
+      "entidad": "Guaduas"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25322,
+      "entidad": "Guasca"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25324,
+      "entidad": "Guataquí"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25326,
+      "entidad": "Guatavita"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25328,
+      "entidad": "Guayabal de Siquima"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25335,
+      "entidad": "Guayabetal"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25339,
+      "entidad": "Gutiérrez"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25368,
+      "entidad": "Jerusalén"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25372,
+      "entidad": "Junín"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25377,
+      "entidad": "La Calera"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25386,
+      "entidad": "La Mesa"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25394,
+      "entidad": "La Palma"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25398,
+      "entidad": "La Peña"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25402,
+      "entidad": "La Vega"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25407,
+      "entidad": "Lenguazaque"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25426,
+      "entidad": "Macheta"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25430,
+      "entidad": "Madrid"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25436,
+      "entidad": "Manta"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25438,
+      "entidad": "Medina"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25473,
+      "entidad": "Mosquera"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25483,
+      "entidad": "Nariño"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25486,
+      "entidad": "Nemocón"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25488,
+      "entidad": "Nilo"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25489,
+      "entidad": "Nimaima"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25491,
+      "entidad": "Nocaima"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25506,
+      "entidad": "Venecia"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25513,
+      "entidad": "Pacho"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25518,
+      "entidad": "Paime"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25524,
+      "entidad": "Pandi"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25530,
+      "entidad": "Paratebueno"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25535,
+      "entidad": "Pasca"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25572,
+      "entidad": "Puerto Salgar"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25580,
+      "entidad": "Pulí"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25592,
+      "entidad": "Quebradanegra"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25594,
+      "entidad": "Quetame"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25596,
+      "entidad": "Quipile"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25599,
+      "entidad": "Apulo"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25612,
+      "entidad": "Ricaurte"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25645,
+      "entidad": "San Antonio del Tequendama"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25649,
+      "entidad": "San Bernardo"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25653,
+      "entidad": "San Cayetano"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25658,
+      "entidad": "San Francisco"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25662,
+      "entidad": "San Juan de Río Seco"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25718,
+      "entidad": "Sasaima"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25736,
+      "entidad": "Sesquilé"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25740,
+      "entidad": "Sibaté"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25743,
+      "entidad": "Silvania"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25745,
+      "entidad": "Simijaca"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25754,
+      "entidad": "Soacha"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25758,
+      "entidad": "Sopó"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25769,
+      "entidad": "Subachoque"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25772,
+      "entidad": "Suesca"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25777,
+      "entidad": "Supatá"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25779,
+      "entidad": "Susa"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25781,
+      "entidad": "Sutatausa"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25785,
+      "entidad": "Tabio"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25793,
+      "entidad": "Tausa"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25797,
+      "entidad": "Tena"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25799,
+      "entidad": "Tenjo"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25805,
+      "entidad": "Tibacuy"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25807,
+      "entidad": "Tibirita"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25815,
+      "entidad": "Tocaima"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25817,
+      "entidad": "Tocancipá"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25823,
+      "entidad": "Topaipí"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25839,
+      "entidad": "Ubalá"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25841,
+      "entidad": "Ubaque"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25843,
+      "entidad": "Villa de San Diego de Ubate"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25845,
+      "entidad": "Une"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25851,
+      "entidad": "Útica"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25862,
+      "entidad": "Vergara"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25867,
+      "entidad": "Vianí"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25871,
+      "entidad": "Villagómez"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25873,
+      "entidad": "Villapinzón"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25875,
+      "entidad": "Villeta"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25878,
+      "entidad": "Viotá"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25885,
+      "entidad": "Yacopí"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25898,
+      "entidad": "Zipacón"
+  },
+  {
+      "codPadre": 25000,
+      "codigo": 25899,
+      "entidad": "Zipaquirá"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27000,
+      "entidad": "Chocó"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27001,
+      "entidad": "Quibdó"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27006,
+      "entidad": "Acandí"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27025,
+      "entidad": "Alto Baudo"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27050,
+      "entidad": "Atrato"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27073,
+      "entidad": "Bagadó"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27075,
+      "entidad": "Bahía Solano"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27077,
+      "entidad": "Bajo Baudó"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27099,
+      "entidad": "Bojaya"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27135,
+      "entidad": "El Cantón del San Pablo"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27150,
+      "entidad": "Carmen del Darien"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27160,
+      "entidad": "Cértegui"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27205,
+      "entidad": "Condoto"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27245,
+      "entidad": "El Carmen de Atrato"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27250,
+      "entidad": "El Litoral del San Juan"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27361,
+      "entidad": "Istmina"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27372,
+      "entidad": "Juradó"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27413,
+      "entidad": "Lloró"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27425,
+      "entidad": "Medio Atrato"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27430,
+      "entidad": "Medio Baudó"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27450,
+      "entidad": "Medio San Juan"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27491,
+      "entidad": "Nóvita"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27493,
+      "entidad": "Nuevo Belén de Bajirá"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27495,
+      "entidad": "Nuquí"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27580,
+      "entidad": "Río Iro"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27600,
+      "entidad": "Río Quito"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27615,
+      "entidad": "Riosucio"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27660,
+      "entidad": "San José del Palmar"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27745,
+      "entidad": "Sipí"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27787,
+      "entidad": "Tadó"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27800,
+      "entidad": "Unguía"
+  },
+  {
+      "codPadre": 27000,
+      "codigo": 27810,
+      "entidad": "Unión Panamericana"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41000,
+      "entidad": "Huila"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41001,
+      "entidad": "Neiva"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41006,
+      "entidad": "Acevedo"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41013,
+      "entidad": "Agrado"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41016,
+      "entidad": "Aipe"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41020,
+      "entidad": "Algeciras"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41026,
+      "entidad": "Altamira"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41078,
+      "entidad": "Baraya"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41132,
+      "entidad": "Campoalegre"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41206,
+      "entidad": "Colombia"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41244,
+      "entidad": "Elías"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41298,
+      "entidad": "Garzón"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41306,
+      "entidad": "Gigante"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41319,
+      "entidad": "Guadalupe"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41349,
+      "entidad": "Hobo"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41357,
+      "entidad": "Iquira"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41359,
+      "entidad": "Isnos"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41378,
+      "entidad": "La Argentina"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41396,
+      "entidad": "La Plata"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41483,
+      "entidad": "Nátaga"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41503,
+      "entidad": "Oporapa"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41518,
+      "entidad": "Paicol"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41524,
+      "entidad": "Palermo"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41530,
+      "entidad": "Palestina"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41548,
+      "entidad": "Pital"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41551,
+      "entidad": "Pitalito"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41615,
+      "entidad": "Rivera"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41660,
+      "entidad": "Saladoblanco"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41668,
+      "entidad": "San Agustín"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41676,
+      "entidad": "Santa María"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41770,
+      "entidad": "Suaza"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41791,
+      "entidad": "Tarqui"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41797,
+      "entidad": "Tesalia"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41799,
+      "entidad": "Tello"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41801,
+      "entidad": "Teruel"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41807,
+      "entidad": "Timaná"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41872,
+      "entidad": "Villavieja"
+  },
+  {
+      "codPadre": 41000,
+      "codigo": 41885,
+      "entidad": "Yaguará"
+  },
+  {
+      "codPadre": 44000,
+      "codigo": 44000,
+      "entidad": "La Guajira"
+  },
+  {
+      "codPadre": 44000,
+      "codigo": 44001,
+      "entidad": "Riohacha"
+  },
+  {
+      "codPadre": 44000,
+      "codigo": 44035,
+      "entidad": "Albania"
+  },
+  {
+      "codPadre": 44000,
+      "codigo": 44078,
+      "entidad": "Barrancas"
+  },
+  {
+      "codPadre": 44000,
+      "codigo": 44090,
+      "entidad": "Dibulla"
+  },
+  {
+      "codPadre": 44000,
+      "codigo": 44098,
+      "entidad": "Distracción"
+  },
+  {
+      "codPadre": 44000,
+      "codigo": 44110,
+      "entidad": "El Molino"
+  },
+  {
+      "codPadre": 44000,
+      "codigo": 44279,
+      "entidad": "Fonseca"
+  },
+  {
+      "codPadre": 44000,
+      "codigo": 44378,
+      "entidad": "Hatonuevo"
+  },
+  {
+      "codPadre": 44000,
+      "codigo": 44420,
+      "entidad": "La Jagua del Pilar"
+  },
+  {
+      "codPadre": 44000,
+      "codigo": 44430,
+      "entidad": "Maicao"
+  },
+  {
+      "codPadre": 44000,
+      "codigo": 44560,
+      "entidad": "Manaure"
+  },
+  {
+      "codPadre": 44000,
+      "codigo": 44650,
+      "entidad": "San Juan del Cesar"
+  },
+  {
+      "codPadre": 44000,
+      "codigo": 44847,
+      "entidad": "Uribia"
+  },
+  {
+      "codPadre": 44000,
+      "codigo": 44855,
+      "entidad": "Urumita"
+  },
+  {
+      "codPadre": 44000,
+      "codigo": 44874,
+      "entidad": "Villanueva"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47000,
+      "entidad": "Magdalena"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47001,
+      "entidad": "Santa Marta"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47030,
+      "entidad": "Algarrobo"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47053,
+      "entidad": "Aracataca"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47058,
+      "entidad": "Ariguaní"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47161,
+      "entidad": "Cerro San Antonio"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47170,
+      "entidad": "Chivolo"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47189,
+      "entidad": "Ciénaga"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47205,
+      "entidad": "Concordia"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47245,
+      "entidad": "El Banco"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47258,
+      "entidad": "El Piñon"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47268,
+      "entidad": "El Retén"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47288,
+      "entidad": "Fundación"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47318,
+      "entidad": "Guamal"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47460,
+      "entidad": "Nueva Granada"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47541,
+      "entidad": "Pedraza"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47545,
+      "entidad": "Pijiño del Carmen"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47551,
+      "entidad": "Pivijay"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47555,
+      "entidad": "Plato"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47570,
+      "entidad": "Puebloviejo"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47605,
+      "entidad": "Remolino"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47660,
+      "entidad": "Sabanas de San Angel"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47675,
+      "entidad": "Salamina"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47692,
+      "entidad": "San Sebastián de Buenavista"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47703,
+      "entidad": "San Zenón"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47707,
+      "entidad": "Santa Ana"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47720,
+      "entidad": "Santa Bárbara de Pinto"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47745,
+      "entidad": "Sitionuevo"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47798,
+      "entidad": "Tenerife"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47960,
+      "entidad": "Zapayán"
+  },
+  {
+      "codPadre": 47000,
+      "codigo": 47980,
+      "entidad": "Zona Bananera"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50000,
+      "entidad": "Meta"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50001,
+      "entidad": "Villavicencio"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50006,
+      "entidad": "Acacías"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50110,
+      "entidad": "Barranca de Upía"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50124,
+      "entidad": "Cabuyaro"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50150,
+      "entidad": "Castilla la Nueva"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50223,
+      "entidad": "Cubarral"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50226,
+      "entidad": "Cumaral"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50245,
+      "entidad": "El Calvario"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50251,
+      "entidad": "El Castillo"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50270,
+      "entidad": "El Dorado"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50287,
+      "entidad": "Fuente de Oro"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50313,
+      "entidad": "Granada"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50318,
+      "entidad": "Guamal"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50325,
+      "entidad": "Mapiripán"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50330,
+      "entidad": "Mesetas"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50350,
+      "entidad": "La Macarena"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50370,
+      "entidad": "Uribe"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50400,
+      "entidad": "Lejanías"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50450,
+      "entidad": "Puerto Concordia"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50568,
+      "entidad": "Puerto Gaitán"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50573,
+      "entidad": "Puerto López"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50577,
+      "entidad": "Puerto Lleras"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50590,
+      "entidad": "Puerto Rico"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50606,
+      "entidad": "Restrepo"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50680,
+      "entidad": "San Carlos de Guaroa"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50683,
+      "entidad": "San Juan de Arama"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50686,
+      "entidad": "San Juanito"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50689,
+      "entidad": "San Martín"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50711,
+      "entidad": "Vistahermosa"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50900,
+      "entidad": "Pendiente Certificar IGAC Atarraya Oeste  - Meta"
+  },
+  {
+      "codPadre": 50000,
+      "codigo": 50999,
+      "entidad": "Municipio sin Determinar (Meta)"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52000,
+      "entidad": "Nariño"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52001,
+      "entidad": "Pasto"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52019,
+      "entidad": "Albán"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52022,
+      "entidad": "Aldana"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52036,
+      "entidad": "Ancuyá"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52051,
+      "entidad": "Arboleda"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52079,
+      "entidad": "Barbacoas"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52083,
+      "entidad": "Belén"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52110,
+      "entidad": "Buesaco"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52203,
+      "entidad": "Colón"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52207,
+      "entidad": "Consaca"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52210,
+      "entidad": "Contadero"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52215,
+      "entidad": "Córdoba"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52224,
+      "entidad": "Cuaspud"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52227,
+      "entidad": "Cumbal"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52233,
+      "entidad": "Cumbitara"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52240,
+      "entidad": "Chachagüí"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52250,
+      "entidad": "El Charco"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52254,
+      "entidad": "El Peñol"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52256,
+      "entidad": "El Rosario"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52258,
+      "entidad": "El Tablón de Gómez"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52260,
+      "entidad": "El Tambo"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52287,
+      "entidad": "Funes"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52317,
+      "entidad": "Guachucal"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52320,
+      "entidad": "Guaitarilla"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52323,
+      "entidad": "Gualmatán"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52352,
+      "entidad": "Iles"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52354,
+      "entidad": "Imués"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52356,
+      "entidad": "Ipiales"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52378,
+      "entidad": "La Cruz"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52381,
+      "entidad": "La Florida"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52385,
+      "entidad": "La Llanada"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52390,
+      "entidad": "La Tola"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52399,
+      "entidad": "La Unión"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52405,
+      "entidad": "Leiva"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52411,
+      "entidad": "Linares"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52418,
+      "entidad": "Los Andes"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52427,
+      "entidad": "Magüi"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52435,
+      "entidad": "Mallama"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52473,
+      "entidad": "Mosquera"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52480,
+      "entidad": "Nariño"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52490,
+      "entidad": "Olaya Herrera"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52506,
+      "entidad": "Ospina"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52520,
+      "entidad": "Francisco Pizarro"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52540,
+      "entidad": "Policarpa"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52560,
+      "entidad": "Potosí"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52565,
+      "entidad": "Providencia"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52573,
+      "entidad": "Puerres"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52585,
+      "entidad": "Pupiales"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52612,
+      "entidad": "Ricaurte"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52621,
+      "entidad": "Roberto Payán"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52678,
+      "entidad": "Samaniego"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52683,
+      "entidad": "Sandoná"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52685,
+      "entidad": "San Bernardo"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52687,
+      "entidad": "San Lorenzo"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52693,
+      "entidad": "San Pablo"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52694,
+      "entidad": "San Pedro de Cartago"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52696,
+      "entidad": "Santa Bárbara"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52699,
+      "entidad": "Santacruz"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52720,
+      "entidad": "Sapuyes"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52786,
+      "entidad": "Taminango"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52788,
+      "entidad": "Tangua"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52835,
+      "entidad": "San Andres de Tumaco"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52838,
+      "entidad": "Túquerres"
+  },
+  {
+      "codPadre": 52000,
+      "codigo": 52885,
+      "entidad": "Yacuanquer"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54000,
+      "entidad": "Norte De Santander"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54001,
+      "entidad": "Cúcuta"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54003,
+      "entidad": "Abrego"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54051,
+      "entidad": "Arboledas"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54099,
+      "entidad": "Bochalema"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54109,
+      "entidad": "Bucarasica"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54125,
+      "entidad": "Cácota"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54128,
+      "entidad": "Cachirá"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54172,
+      "entidad": "Chinácota"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54174,
+      "entidad": "Chitagá"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54206,
+      "entidad": "Convención"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54223,
+      "entidad": "Cucutilla"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54239,
+      "entidad": "Durania"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54245,
+      "entidad": "El Carmen"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54250,
+      "entidad": "El Tarra"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54261,
+      "entidad": "El Zulia"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54313,
+      "entidad": "Gramalote"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54344,
+      "entidad": "Hacarí"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54347,
+      "entidad": "Herrán"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54377,
+      "entidad": "Labateca"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54385,
+      "entidad": "La Esperanza"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54398,
+      "entidad": "La Playa"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54405,
+      "entidad": "Los Patios"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54418,
+      "entidad": "Lourdes"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54480,
+      "entidad": "Mutiscua"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54498,
+      "entidad": "Ocaña"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54518,
+      "entidad": "Pamplona"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54520,
+      "entidad": "Pamplonita"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54553,
+      "entidad": "Puerto Santander"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54599,
+      "entidad": "Ragonvalia"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54660,
+      "entidad": "Salazar"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54670,
+      "entidad": "San Calixto"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54673,
+      "entidad": "San Cayetano"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54680,
+      "entidad": "Santiago"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54720,
+      "entidad": "Sardinata"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54743,
+      "entidad": "Silos"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54800,
+      "entidad": "Teorama"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54810,
+      "entidad": "Tibú"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54820,
+      "entidad": "Toledo"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54871,
+      "entidad": "Villa Caro"
+  },
+  {
+      "codPadre": 54000,
+      "codigo": 54874,
+      "entidad": "Villa del Rosario"
+  },
+  {
+      "codPadre": 63000,
+      "codigo": 63000,
+      "entidad": "Quindío"
+  },
+  {
+      "codPadre": 63000,
+      "codigo": 63001,
+      "entidad": "Armenia"
+  },
+  {
+      "codPadre": 63000,
+      "codigo": 63111,
+      "entidad": "Buenavista"
+  },
+  {
+      "codPadre": 63000,
+      "codigo": 63130,
+      "entidad": "Calarca"
+  },
+  {
+      "codPadre": 63000,
+      "codigo": 63190,
+      "entidad": "Circasia"
+  },
+  {
+      "codPadre": 63000,
+      "codigo": 63212,
+      "entidad": "Córdoba"
+  },
+  {
+      "codPadre": 63000,
+      "codigo": 63272,
+      "entidad": "Filandia"
+  },
+  {
+      "codPadre": 63000,
+      "codigo": 63302,
+      "entidad": "Génova"
+  },
+  {
+      "codPadre": 63000,
+      "codigo": 63401,
+      "entidad": "La Tebaida"
+  },
+  {
+      "codPadre": 63000,
+      "codigo": 63470,
+      "entidad": "Montenegro"
+  },
+  {
+      "codPadre": 63000,
+      "codigo": 63548,
+      "entidad": "Pijao"
+  },
+  {
+      "codPadre": 63000,
+      "codigo": 63594,
+      "entidad": "Quimbaya"
+  },
+  {
+      "codPadre": 63000,
+      "codigo": 63690,
+      "entidad": "Salento"
+  },
+  {
+      "codPadre": 66000,
+      "codigo": 66000,
+      "entidad": "Risaralda"
+  },
+  {
+      "codPadre": 66000,
+      "codigo": 66001,
+      "entidad": "Pereira"
+  },
+  {
+      "codPadre": 66000,
+      "codigo": 66045,
+      "entidad": "Apía"
+  },
+  {
+      "codPadre": 66000,
+      "codigo": 66075,
+      "entidad": "Balboa"
+  },
+  {
+      "codPadre": 66000,
+      "codigo": 66088,
+      "entidad": "Belén de Umbría"
+  },
+  {
+      "codPadre": 66000,
+      "codigo": 66170,
+      "entidad": "Dosquebradas"
+  },
+  {
+      "codPadre": 66000,
+      "codigo": 66318,
+      "entidad": "Guática"
+  },
+  {
+      "codPadre": 66000,
+      "codigo": 66383,
+      "entidad": "La Celia"
+  },
+  {
+      "codPadre": 66000,
+      "codigo": 66400,
+      "entidad": "La Virginia"
+  },
+  {
+      "codPadre": 66000,
+      "codigo": 66440,
+      "entidad": "Marsella"
+  },
+  {
+      "codPadre": 66000,
+      "codigo": 66456,
+      "entidad": "Mistrató"
+  },
+  {
+      "codPadre": 66000,
+      "codigo": 66572,
+      "entidad": "Pueblo Rico"
+  },
+  {
+      "codPadre": 66000,
+      "codigo": 66594,
+      "entidad": "Quinchía"
+  },
+  {
+      "codPadre": 66000,
+      "codigo": 66682,
+      "entidad": "Santa Rosa de Cabal"
+  },
+  {
+      "codPadre": 66000,
+      "codigo": 66687,
+      "entidad": "Santuario"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68000,
+      "entidad": "Santander"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68001,
+      "entidad": "Bucaramanga"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68013,
+      "entidad": "Aguada"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68020,
+      "entidad": "Albania"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68038,
+      "entidad": "Municipio NN Santander Toca"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68051,
+      "entidad": "Aratoca"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68077,
+      "entidad": "Barbosa"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68079,
+      "entidad": "Barichara"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68081,
+      "entidad": "Barrancabermeja"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68092,
+      "entidad": "Betulia"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68101,
+      "entidad": "Bolívar"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68121,
+      "entidad": "Cabrera"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68132,
+      "entidad": "California"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68147,
+      "entidad": "Capitanejo"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68152,
+      "entidad": "Carcasí"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68160,
+      "entidad": "Cepitá"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68162,
+      "entidad": "Cerrito"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68167,
+      "entidad": "Charalá"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68169,
+      "entidad": "Charta"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68176,
+      "entidad": "Chima"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68179,
+      "entidad": "Chipatá"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68190,
+      "entidad": "Cimitarra"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68207,
+      "entidad": "Concepción"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68209,
+      "entidad": "Confines"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68211,
+      "entidad": "Contratación"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68217,
+      "entidad": "Coromoro"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68229,
+      "entidad": "Curití"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68235,
+      "entidad": "El Carmen de Chucurí"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68245,
+      "entidad": "El Guacamayo"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68250,
+      "entidad": "El Peñón"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68255,
+      "entidad": "El Playón"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68264,
+      "entidad": "Encino"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68266,
+      "entidad": "Enciso"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68271,
+      "entidad": "Florián"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68276,
+      "entidad": "Floridablanca"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68296,
+      "entidad": "Galán"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68298,
+      "entidad": "Gambita"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68307,
+      "entidad": "Girón"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68318,
+      "entidad": "Guaca"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68320,
+      "entidad": "Guadalupe"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68322,
+      "entidad": "Guapotá"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68324,
+      "entidad": "Guavatá"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68327,
+      "entidad": "Güepsa"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68344,
+      "entidad": "Hato"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68368,
+      "entidad": "Jesús María"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68370,
+      "entidad": "Jordán"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68377,
+      "entidad": "La Belleza"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68385,
+      "entidad": "Landázuri"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68397,
+      "entidad": "La Paz"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68406,
+      "entidad": "Lebríja"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68418,
+      "entidad": "Los Santos"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68425,
+      "entidad": "Macaravita"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68432,
+      "entidad": "Málaga"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68444,
+      "entidad": "Matanza"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68464,
+      "entidad": "Mogotes"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68468,
+      "entidad": "Molagavita"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68498,
+      "entidad": "Ocamonte"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68500,
+      "entidad": "Oiba"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68502,
+      "entidad": "Onzaga"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68522,
+      "entidad": "Palmar"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68524,
+      "entidad": "Palmas del Socorro"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68533,
+      "entidad": "Páramo"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68547,
+      "entidad": "Piedecuesta"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68549,
+      "entidad": "Pinchote"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68572,
+      "entidad": "Puente Nacional"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68573,
+      "entidad": "Puerto Parra"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68575,
+      "entidad": "Puerto Wilches"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68615,
+      "entidad": "Rionegro"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68655,
+      "entidad": "Sabana de Torres"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68669,
+      "entidad": "San Andrés"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68673,
+      "entidad": "San Benito"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68679,
+      "entidad": "San Gil"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68682,
+      "entidad": "San Joaquín"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68684,
+      "entidad": "San José de Miranda"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68686,
+      "entidad": "San Miguel"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68689,
+      "entidad": "San Vicente de Chucurí"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68705,
+      "entidad": "Santa Bárbara"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68720,
+      "entidad": "Santa Helena del Opón"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68745,
+      "entidad": "Simacota"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68755,
+      "entidad": "Socorro"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68770,
+      "entidad": "Suaita"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68773,
+      "entidad": "Sucre"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68780,
+      "entidad": "Suratá"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68820,
+      "entidad": "Tona"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68855,
+      "entidad": "Valle de San José"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68861,
+      "entidad": "Vélez"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68867,
+      "entidad": "Vetas"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68872,
+      "entidad": "Villanueva"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68895,
+      "entidad": "Zapatoca"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68900,
+      "entidad": "Municipio Pendiente Certificado IGAC - Santander"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68978,
+      "entidad": "Pendiente Certificado IGAC Lisama Norte"
+  },
+  {
+      "codPadre": 68000,
+      "codigo": 68999,
+      "entidad": "Municipio Indeterminado Santander"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70000,
+      "entidad": "Sucre"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70001,
+      "entidad": "Sincelejo"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70110,
+      "entidad": "Buenavista"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70124,
+      "entidad": "Caimito"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70204,
+      "entidad": "Coloso"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70215,
+      "entidad": "Corozal"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70221,
+      "entidad": "Coveñas"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70230,
+      "entidad": "Chalán"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70233,
+      "entidad": "El Roble"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70235,
+      "entidad": "Galeras"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70265,
+      "entidad": "Guaranda"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70400,
+      "entidad": "La Unión"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70418,
+      "entidad": "Los Palmitos"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70429,
+      "entidad": "Majagual"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70473,
+      "entidad": "Morroa"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70508,
+      "entidad": "Ovejas"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70523,
+      "entidad": "Palmito"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70670,
+      "entidad": "Sampués"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70678,
+      "entidad": "San Benito Abad"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70702,
+      "entidad": "San Juan de Betulia"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70708,
+      "entidad": "San Marcos"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70713,
+      "entidad": "San Onofre"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70717,
+      "entidad": "San Pedro"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70742,
+      "entidad": "San Luis de Sincé"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70771,
+      "entidad": "Sucre"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70820,
+      "entidad": "Santiago de Tolú"
+  },
+  {
+      "codPadre": 70000,
+      "codigo": 70823,
+      "entidad": "Tolú Viejo"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73000,
+      "entidad": "Tolima"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73001,
+      "entidad": "Ibagué"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73024,
+      "entidad": "Alpujarra"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73026,
+      "entidad": "Alvarado"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73030,
+      "entidad": "Ambalema"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73043,
+      "entidad": "Anzoátegui"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73055,
+      "entidad": "Armero Guayabal"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73067,
+      "entidad": "Ataco"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73124,
+      "entidad": "Cajamarca"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73148,
+      "entidad": "Carmen de Apicalá"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73152,
+      "entidad": "Casabianca"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73168,
+      "entidad": "Chaparral"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73200,
+      "entidad": "Coello"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73217,
+      "entidad": "Coyaima"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73226,
+      "entidad": "Cunday"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73236,
+      "entidad": "Dolores"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73268,
+      "entidad": "Espinal"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73270,
+      "entidad": "Falan"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73275,
+      "entidad": "Flandes"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73283,
+      "entidad": "Fresno"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73319,
+      "entidad": "Guamo"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73347,
+      "entidad": "Herveo"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73349,
+      "entidad": "Honda"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73352,
+      "entidad": "Icononzo"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73408,
+      "entidad": "Lérida"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73411,
+      "entidad": "Líbano"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73443,
+      "entidad": "Mariquita"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73449,
+      "entidad": "Melgar"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73461,
+      "entidad": "Murillo"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73483,
+      "entidad": "Natagaima"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73504,
+      "entidad": "Ortega"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73520,
+      "entidad": "Palocabildo"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73547,
+      "entidad": "Piedras"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73555,
+      "entidad": "Planadas"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73563,
+      "entidad": "Prado"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73585,
+      "entidad": "Purificación"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73616,
+      "entidad": "Rioblanco"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73622,
+      "entidad": "Roncesvalles"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73624,
+      "entidad": "Rovira"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73671,
+      "entidad": "Saldaña"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73675,
+      "entidad": "San Antonio"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73678,
+      "entidad": "San Luis"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73686,
+      "entidad": "Santa Isabel"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73770,
+      "entidad": "Suárez"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73854,
+      "entidad": "Valle de San Juan"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73861,
+      "entidad": "Venadillo"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73870,
+      "entidad": "Villahermosa"
+  },
+  {
+      "codPadre": 73000,
+      "codigo": 73873,
+      "entidad": "Villarrica"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76000,
+      "entidad": "Valle Del Cauca"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76001,
+      "entidad": "Cali"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76020,
+      "entidad": "Alcalá"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76036,
+      "entidad": "Andalucía"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76041,
+      "entidad": "Ansermanuevo"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76054,
+      "entidad": "Argelia"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76100,
+      "entidad": "Bolívar"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76109,
+      "entidad": "Buenaventura"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76111,
+      "entidad": "Guadalajara de Buga"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76113,
+      "entidad": "Bugalagrande"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76122,
+      "entidad": "Caicedonia"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76126,
+      "entidad": "Calima"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76130,
+      "entidad": "Candelaria"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76147,
+      "entidad": "Cartago"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76233,
+      "entidad": "Dagua"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76243,
+      "entidad": "El Águila"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76246,
+      "entidad": "El Cairo"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76248,
+      "entidad": "El Cerrito"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76250,
+      "entidad": "El Dovio"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76275,
+      "entidad": "Florida"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76306,
+      "entidad": "Ginebra"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76318,
+      "entidad": "Guacarí"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76364,
+      "entidad": "Jamundí"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76377,
+      "entidad": "La Cumbre"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76400,
+      "entidad": "La Unión"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76403,
+      "entidad": "La Victoria"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76497,
+      "entidad": "Obando"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76520,
+      "entidad": "Palmira"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76563,
+      "entidad": "Pradera"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76606,
+      "entidad": "Restrepo"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76616,
+      "entidad": "Riofrío"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76622,
+      "entidad": "Roldanillo"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76670,
+      "entidad": "San Pedro"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76736,
+      "entidad": "Sevilla"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76823,
+      "entidad": "Toro"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76828,
+      "entidad": "Trujillo"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76834,
+      "entidad": "Tuluá"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76845,
+      "entidad": "Ulloa"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76863,
+      "entidad": "Versalles"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76869,
+      "entidad": "Vijes"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76890,
+      "entidad": "Yotoco"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76892,
+      "entidad": "Yumbo"
+  },
+  {
+      "codPadre": 76000,
+      "codigo": 76895,
+      "entidad": "Zarzal"
+  },
+  {
+      "codPadre": 81000,
+      "codigo": 81000,
+      "entidad": "Arauca"
+  },
+  {
+      "codPadre": 81000,
+      "codigo": 81001,
+      "entidad": "Arauca"
+  },
+  {
+      "codPadre": 81000,
+      "codigo": 81065,
+      "entidad": "Arauquita"
+  },
+  {
+      "codPadre": 81000,
+      "codigo": 81220,
+      "entidad": "Cravo Norte"
+  },
+  {
+      "codPadre": 81000,
+      "codigo": 81300,
+      "entidad": "Fortul"
+  },
+  {
+      "codPadre": 81000,
+      "codigo": 81591,
+      "entidad": "Puerto Rondón"
+  },
+  {
+      "codPadre": 81000,
+      "codigo": 81736,
+      "entidad": "Saravena"
+  },
+  {
+      "codPadre": 81000,
+      "codigo": 81794,
+      "entidad": "Tame"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85000,
+      "entidad": "Casanare"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85001,
+      "entidad": "Yopal"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85010,
+      "entidad": "Aguazul"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85015,
+      "entidad": "Chameza"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85068,
+      "entidad": "Municipio NN Casanare Huron"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85072,
+      "entidad": "Municipio NN Casanare Tigana"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85073,
+      "entidad": "Municipio NN Casanare Dorotea E"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85125,
+      "entidad": "Hato Corozal"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85136,
+      "entidad": "La Salina"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85139,
+      "entidad": "Maní"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85162,
+      "entidad": "Monterrey"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85225,
+      "entidad": "Nunchía"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85230,
+      "entidad": "Orocué"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85250,
+      "entidad": "Paz de Ariporo"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85263,
+      "entidad": "Pore"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85279,
+      "entidad": "Recetor"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85300,
+      "entidad": "Sabanalarga"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85315,
+      "entidad": "Sácama"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85325,
+      "entidad": "San Luis de Palenque"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85400,
+      "entidad": "Támara"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85410,
+      "entidad": "Tauramena"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85430,
+      "entidad": "Trinidad"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85440,
+      "entidad": "Villanueva"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85900,
+      "entidad": "Municipio Pendiente Certificado IGAC - Casanare"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85943,
+      "entidad": "Pendiente Certificado IGAC Pauto Sur Recetor"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85978,
+      "entidad": "Pendiente Certificado IGAC Jacana"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85979,
+      "entidad": "Pendiente Certificado IGAC Chacalaca"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85987,
+      "entidad": "Pendiente Certificado IGAC Chicicoca"
+  },
+  {
+      "codPadre": 85000,
+      "codigo": 85999,
+      "entidad": "Municipio Indeterminado Casanare"
+  },
+  {
+      "codPadre": 86000,
+      "codigo": 86000,
+      "entidad": "Putumayo"
+  },
+  {
+      "codPadre": 86000,
+      "codigo": 86001,
+      "entidad": "Mocoa"
+  },
+  {
+      "codPadre": 86000,
+      "codigo": 86219,
+      "entidad": "Colón"
+  },
+  {
+      "codPadre": 86000,
+      "codigo": 86320,
+      "entidad": "Orito"
+  },
+  {
+      "codPadre": 86000,
+      "codigo": 86568,
+      "entidad": "Puerto Asís"
+  },
+  {
+      "codPadre": 86000,
+      "codigo": 86569,
+      "entidad": "Puerto Caicedo"
+  },
+  {
+      "codPadre": 86000,
+      "codigo": 86571,
+      "entidad": "Puerto Guzmán"
+  },
+  {
+      "codPadre": 86000,
+      "codigo": 86573,
+      "entidad": "Leguízamo"
+  },
+  {
+      "codPadre": 86000,
+      "codigo": 86749,
+      "entidad": "Sibundoy"
+  },
+  {
+      "codPadre": 86000,
+      "codigo": 86755,
+      "entidad": "San Francisco"
+  },
+  {
+      "codPadre": 86000,
+      "codigo": 86757,
+      "entidad": "San Miguel"
+  },
+  {
+      "codPadre": 86000,
+      "codigo": 86760,
+      "entidad": "Santiago"
+  },
+  {
+      "codPadre": 86000,
+      "codigo": 86865,
+      "entidad": "Valle del Guamuez"
+  },
+  {
+      "codPadre": 86000,
+      "codigo": 86885,
+      "entidad": "Villagarzón"
+  },
+  {
+      "codPadre": 86000,
+      "codigo": 86987,
+      "entidad": "Pendiente Certificado IGAC Confianza"
+  },
+  {
+      "codPadre": 86000,
+      "codigo": 86999,
+      "entidad": "Municipio Sin Determinar"
+  },
+  {
+      "codPadre": 88000,
+      "codigo": 88000,
+      "entidad": "Archipiélago de San Andrés"
+  },
+  {
+      "codPadre": 88000,
+      "codigo": 88001,
+      "entidad": "San Andrés"
+  },
+  {
+      "codPadre": 88000,
+      "codigo": 88564,
+      "entidad": "Providencia"
+  },
+  {
+      "codPadre": 90000,
+      "codigo": 90000,
+      "entidad": "Gobernacion Indeterminada"
+  },
+  {
+      "codPadre": 90001,
+      "codigo": 90001,
+      "entidad": "Gobernación Indeterminada - Gibraltar"
+  },
+  {
+      "codPadre": 90002,
+      "codigo": 90002,
+      "entidad": "Gobernación Indeterminada - Capella"
+  },
+  {
+      "codPadre": 90000,
+      "codigo": 90005,
+      "entidad": "Otros por distribuir - Parágrafo del Articulo 11 de la Ley 2279 de 2022"
+  },
+  {
+      "codPadre": 90000,
+      "codigo": 90996,
+      "entidad": "Municipio Indeterminado Chipo"
+  },
+  {
+      "codPadre": 90001,
+      "codigo": 90997,
+      "entidad": "Municipio Indeterminado Gibraltar"
+  },
+  {
+      "codPadre": 90002,
+      "codigo": 90998,
+      "entidad": "Municipio Indeterminado Capella"
+  },
+  {
+      "codPadre": 90000,
+      "codigo": 90999,
+      "entidad": "Municipio Indeterminado"
+  },
+  {
+      "codPadre": 91000,
+      "codigo": 91000,
+      "entidad": "Amazonas"
+  },
+  {
+      "codPadre": 91000,
+      "codigo": 91001,
+      "entidad": "Leticia"
+  },
+  {
+      "codPadre": 91000,
+      "codigo": 91263,
+      "entidad": "El Encanto"
+  },
+  {
+      "codPadre": 91000,
+      "codigo": 91405,
+      "entidad": "La Chorrera"
+  },
+  {
+      "codPadre": 91000,
+      "codigo": 91407,
+      "entidad": "La Pedrera"
+  },
+  {
+      "codPadre": 91000,
+      "codigo": 91430,
+      "entidad": "La Victoria"
+  },
+  {
+      "codPadre": 91000,
+      "codigo": 91460,
+      "entidad": "Miriti - Paraná"
+  },
+  {
+      "codPadre": 91000,
+      "codigo": 91530,
+      "entidad": "Puerto Alegría"
+  },
+  {
+      "codPadre": 91000,
+      "codigo": 91536,
+      "entidad": "Puerto Arica"
+  },
+  {
+      "codPadre": 91000,
+      "codigo": 91540,
+      "entidad": "Puerto Nariño"
+  },
+  {
+      "codPadre": 91000,
+      "codigo": 91669,
+      "entidad": "Puerto Santander"
+  },
+  {
+      "codPadre": 91000,
+      "codigo": 91798,
+      "entidad": "Tarapacá"
+  },
+  {
+      "codPadre": 94000,
+      "codigo": 94000,
+      "entidad": "Guainía"
+  },
+  {
+      "codPadre": 94000,
+      "codigo": 94001,
+      "entidad": "Inírida"
+  },
+  {
+      "codPadre": 94000,
+      "codigo": 94343,
+      "entidad": "Barranco Minas"
+  },
+  {
+      "codPadre": 94000,
+      "codigo": 94663,
+      "entidad": "Mapiripana"
+  },
+  {
+      "codPadre": 94000,
+      "codigo": 94883,
+      "entidad": "San Felipe"
+  },
+  {
+      "codPadre": 94000,
+      "codigo": 94884,
+      "entidad": "Puerto Colombia"
+  },
+  {
+      "codPadre": 94000,
+      "codigo": 94885,
+      "entidad": "La Guadalupe"
+  },
+  {
+      "codPadre": 94000,
+      "codigo": 94886,
+      "entidad": "Cacahual"
+  },
+  {
+      "codPadre": 94000,
+      "codigo": 94887,
+      "entidad": "Pana Pana"
+  },
+  {
+      "codPadre": 94000,
+      "codigo": 94888,
+      "entidad": "Morichal"
+  },
+  {
+      "codPadre": 95000,
+      "codigo": 95000,
+      "entidad": "Guaviare"
+  },
+  {
+      "codPadre": 95000,
+      "codigo": 95001,
+      "entidad": "San José del Guaviare"
+  },
+  {
+      "codPadre": 95000,
+      "codigo": 95015,
+      "entidad": "Calamar"
+  },
+  {
+      "codPadre": 95000,
+      "codigo": 95025,
+      "entidad": "El Retorno"
+  },
+  {
+      "codPadre": 95000,
+      "codigo": 95200,
+      "entidad": "Miraflores"
+  },
+  {
+      "codPadre": 97000,
+      "codigo": 97000,
+      "entidad": "Vaupés"
+  },
+  {
+      "codPadre": 97000,
+      "codigo": 97001,
+      "entidad": "Mitú"
+  },
+  {
+      "codPadre": 97000,
+      "codigo": 97161,
+      "entidad": "Caruru"
+  },
+  {
+      "codPadre": 97000,
+      "codigo": 97511,
+      "entidad": "Pacoa"
+  },
+  {
+      "codPadre": 97000,
+      "codigo": 97666,
+      "entidad": "Taraira"
+  },
+  {
+      "codPadre": 97000,
+      "codigo": 97777,
+      "entidad": "Papunaua"
+  },
+  {
+      "codPadre": 97000,
+      "codigo": 97889,
+      "entidad": "Yavaraté"
+  },
+  {
+      "codPadre": 99000,
+      "codigo": 99000,
+      "entidad": "Vichada"
+  },
+  {
+      "codPadre": 99000,
+      "codigo": 99001,
+      "entidad": "Puerto Carreño"
+  },
+  {
+      "codPadre": 99000,
+      "codigo": 99524,
+      "entidad": "La Primavera"
+  },
+  {
+      "codPadre": 99000,
+      "codigo": 99624,
+      "entidad": "Santa Rosalía"
+  },
+  {
+      "codPadre": 99000,
+      "codigo": 99773,
+      "entidad": "Cumaribo"
+  },
+  {
+      "codPadre": "BO000",
+      "codigo": "BO000",
+      "entidad": "Otros"
+  },
+  {
+      "codPadre": "BO000",
+      "codigo": "BO002",
+      "entidad": "Municipios Rio Magdalena y Canal del Dique"
+  },
+  {
+      "codPadre": "C0000",
+      "codigo": "C0000",
+      "entidad": "Corporaciones Autónomas"
+  },
+  {
+      "codPadre": "C0000",
+      "codigo": "C0001",
+      "entidad": "Corporación CVS"
+  },
+  {
+      "codPadre": "C0000",
+      "codigo": "C0002",
+      "entidad": "Corponariño"
+  },
+  {
+      "codPadre": "C0000",
+      "codigo": "C0003",
+      "entidad": "Corponor"
+  },
+  {
+      "codPadre": "C0000",
+      "codigo": "C0004",
+      "entidad": "Corpoamazonía"
+  },
+  {
+      "codPadre": "C0000",
+      "codigo": "C0005",
+      "entidad": "Corpoboyacá"
+  },
+  {
+      "codPadre": "C0000",
+      "codigo": "C0006",
+      "entidad": "Corpocesar"
+  },
+  {
+      "codPadre": "C0000",
+      "codigo": "C0007",
+      "entidad": "Corpoguajira"
+  },
+  {
+      "codPadre": "C0000",
+      "codigo": "C0008",
+      "entidad": "Corporacion Autonoma Santander"
+  },
+  {
+      "codPadre": "C0000",
+      "codigo": "C0009",
+      "entidad": "Corporación Autónoma Regional del Valle del Cauca"
+  },
+  {
+      "codPadre": "CA000",
+      "codigo": "CA999",
+      "entidad": "Conservación de las Áreas Ambientales Estratégicas y la Lucha Nacional contra la Deforestación"
+  },
+  {
+      "codPadre": "CI000",
+      "codigo": "CI001",
+      "entidad": "Comunidades Indígenas"
+  },
+  {
+      "codPadre": "CI000",
+      "codigo": "CI002",
+      "entidad": "Comunidades NARP"
+  },
+  {
+      "codPadre": "CI000",
+      "codigo": "CI003",
+      "entidad": "Comunidades Rrom"
+  },
+  {
+      "codPadre": "F0000",
+      "codigo": "F0000",
+      "entidad": "Otros por Distribuir"
+  },
+  {
+      "codPadre": "F0000",
+      "codigo": "F0001",
+      "entidad": "Otros por Distribuir"
+  },
+  {
+      "codPadre": "F0000",
+      "codigo": "F0002",
+      "entidad": "Otros No distribuidos entre ET"
+  },
+  {
+      "codPadre": "F0000",
+      "codigo": "F0003",
+      "entidad": "Otros por Distribuir - Asig. Para la PAZ"
+  },
+  {
+      "codPadre": "F0000",
+      "codigo": "F0004",
+      "entidad": "Otros por Distribuir - Rendimientos Financieros 30% IP"
+  },
+  {
+      "codPadre": "F0000",
+      "codigo": "F0005",
+      "entidad": "Otros por Distribuir - Rendimientos Financieros 70% A.Paz"
+  },
+  {
+      "codPadre": "F0000",
+      "codigo": "F0006",
+      "entidad": "Otros por Distribuir - Rendimientos Financieros antes del 04-2017"
+  },
+  {
+      "codPadre": "F0000",
+      "codigo": "F0007",
+      "entidad": "Otros por Distribuir - Oro Chatarra"
+  },
+  {
+      "codPadre": "F0000",
+      "codigo": "F0008",
+      "entidad": "Otros por Distribuir - Adelanto Paz"
+  },
+  {
+      "codPadre": "F0000",
+      "codigo": "F0009",
+      "entidad": "Otros por Distribuir - Incentivo a la Producción, Exploración y Formalización"
+  },
+  {
+      "codPadre": "F0000",
+      "codigo": "F0010",
+      "entidad": "Otros por Distribuir - ANH recaudo marzo 2021 ADIR"
+  },
+  {
+      "codPadre": "F0000",
+      "codigo": "F0011",
+      "entidad": "Otros por Distribuir - ANH recaudo marzo 2021 ADAN 5"
+  },
+  {
+      "codPadre": "FI000",
+      "codigo": "FI000",
+      "entidad": "Fiscalizacion, Yacimientos y Cartografía"
+  },
+  {
+      "codPadre": "FI000",
+      "codigo": "FI001",
+      "entidad": "Fiscalizacion por Distribuir"
+  },
+  {
+      "codPadre": "FI000",
+      "codigo": "FI002",
+      "entidad": "Fiscalización - Servicio Geológico Colombiano"
+  },
+  {
+      "codPadre": "FI000",
+      "codigo": "FI003",
+      "entidad": "Fiscalización - Agencia Nacional de Minería"
+  },
+  {
+      "codPadre": "FI000",
+      "codigo": "FI004",
+      "entidad": "Fiscalización - Agencia Nacional de Hidrocarburos"
+  },
+  {
+      "codPadre": "FI000",
+      "codigo": "FI005",
+      "entidad": "Fiscalización - Ministerio de Minas y Energía"
+  },
+  {
+      "codPadre": "FI000",
+      "codigo": "FI006",
+      "entidad": "Fiscalización - Departamento de Antioquia"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU000",
+      "entidad": "Funcionamiento SGR"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU001",
+      "entidad": "Funcionamiento SGR   - Por Distribuir"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU002",
+      "entidad": "Funcionamiento - DNP (Sistemas de Información y Estrategias de capacitación)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU003",
+      "entidad": "Funcionamiento - DNP (Órgano SGR)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU004",
+      "entidad": "Funcionamiento - DNP (Programa de Estructuradores)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU005",
+      "entidad": "Funcionamiento - DNP (Comisión Rectora)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU006",
+      "entidad": "Funcionamiento - DNP (Fortalecimiento ST de planeación Municipales)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU007",
+      "entidad": "Funcionamiento - DNP (Fortalecimiento ST OCAD FC&T)   - Colciencias"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU008",
+      "entidad": "Funcionamiento - DNP (Fortalecimiento ST OCAD Regional)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU009",
+      "entidad": "Funcionamiento - DNP (Fortalecimiento ST OCAD Departamentales)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU010",
+      "entidad": "Funcionamiento - DNP (Fortalecimiento ST OCAD  CAR)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU011",
+      "entidad": "Funcionamiento - MHCP (Órgano SGR)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU012",
+      "entidad": "Funcionamiento - MinMinas (Órgano SGR)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU013",
+      "entidad": "Funcionamiento - Min. Agricultura"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU014",
+      "entidad": "Funcionamiento - Min. Salud"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU015",
+      "entidad": "Funcionamiento - Min. Educación"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU016",
+      "entidad": "Funcionamiento - Min. Transporte"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU017",
+      "entidad": "Funcionamiento - Min. Vivienda"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU018",
+      "entidad": "Funcionamiento - Min. Cultura"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU019",
+      "entidad": "Funcionamiento - Ministerio del Deporte"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU020",
+      "entidad": "Funcionamiento - Min. Ambiente"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU021",
+      "entidad": "Funcionamiento - Min. Industria y Comercio"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU022",
+      "entidad": "Funcionamiento - Colciencias (Organo SGR)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU023",
+      "entidad": "Funcionamiento - Otros por distribuir"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU024",
+      "entidad": "Funcionamiento - DNP (Fortalecimiento ST de Planeación Municipales) - Por Distribuir"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU025",
+      "entidad": "Funcionamiento - DNP (Fortalecimiento ST-OCAD Departamentales) Otros por Distribuir"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU026",
+      "entidad": "Funcionamiento - DNP (Fortalecimiento ST-OCAD CAR) Otros por Distribuir"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU027",
+      "entidad": "Funcionamiento - DNP (Fortalecimiento ST-OCAD PAZ)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU028",
+      "entidad": "Funcionamiento - Procuraduría General de La Nación (PGN)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU029",
+      "entidad": "Funcionamiento - Autoridad Nacional de Licencias Ambientales (ANLA)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU030",
+      "entidad": "Funcionamiento - Empresa Nacional Promotora del Desarrollo Territorial (ENTerritorio)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU031",
+      "entidad": "Funcionamiento - Unidad Nacional para la Gestión del Riesgo de Desastres (UNGRD)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU033",
+      "entidad": "Funcionamiento - Min. Ambiente (Licenciamiento Ambiental)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU034",
+      "entidad": "Funcionamiento - Otros por distribuir Incentivo a la Producción IP 2019-2020"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU041",
+      "entidad": "Funcionamiento - Min. Interior"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU043",
+      "entidad": "Funcionamiento del SGR"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU044",
+      "entidad": "Fiscalización"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU045",
+      "entidad": "Funcionamiento - Contraloría General de la Republica (CGR)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU046",
+      "entidad": "Funcionamiento - DNP Regional (ST OCAD Regional)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU047",
+      "entidad": "Funcionamiento - DNP (Estructuración de Proyectos)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU048",
+      "entidad": "Reintegros (Fortalecimiento ST OCAD Departamentales)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU049",
+      "entidad": "Reintegros (Saldos en cuentas maestras - fortalecimiento)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU050",
+      "entidad": "Reintegros (Fun, operatividad y administración - DNP órgano)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU051",
+      "entidad": "Reintegros (Fun, operatividad y administración - Ministerio de Hacienda y Crédito Publico)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU053",
+      "entidad": "Reintegros (Saldos en cuentas maestras - Sistema de Monitoreo)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU054",
+      "entidad": "Funcionamiento - Min. Interior - Comunidades ROM"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU055",
+      "entidad": "Funcionamiento - Confederación Indígena Tayrona - Comunidades Indígenas"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU056",
+      "entidad": "Funcionamiento - Min. Ambiente    (Órgano SGR)"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU057",
+      "entidad": "Funcionamiento - Min. Justicia y del Derecho"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU058",
+      "entidad": "Funcionamiento - Min. Interior"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU059",
+      "entidad": "Funcionamiento - Min. Tecnologías de la información y las comunicaciones"
+  },
+  {
+      "codPadre": "FU000",
+      "codigo": "FU060",
+      "entidad": "Juventud del Pacifico FUNDECOA"
+  },
+  {
+      "codPadre": "F0000",
+      "codigo": "M9999",
+      "entidad": "Recaudo no aforado otras asignaciones"
+  },
+  {
+      "codPadre": "MO000",
+      "codigo": "MO000",
+      "entidad": "Sistema de Seguimiento, Evaluación y Control (SSEC)"
+  },
+  {
+      "codPadre": "MO000",
+      "codigo": "MO001",
+      "entidad": "Sistema de Seguimiento, Evaluación y Control (SSEC)"
+  },
+  {
+      "codPadre": "MO000",
+      "codigo": "MO002",
+      "entidad": "Sistema de Seguimiento, Evaluación y Control (SSEC)  - Contraloría"
+  },
+  {
+      "codPadre": "MO000",
+      "codigo": "MO003",
+      "entidad": "Sistema de Seguimiento, Evaluación y Control (SSEC) - Procuraduría General de la Nación"
+  },
+  {
+      "codPadre": "RE000",
+      "codigo": "RE001",
+      "entidad": "Región Caribe"
+  },
+  {
+      "codPadre": "RE000",
+      "codigo": "RE002",
+      "entidad": "Región Centro - Oriente"
+  },
+  {
+      "codPadre": "RE000",
+      "codigo": "RE003",
+      "entidad": "Región Eje - Cafetero"
+  },
+  {
+      "codPadre": "RE000",
+      "codigo": "RE004",
+      "entidad": "Región Pacífico"
+  },
+  {
+      "codPadre": "RE000",
+      "codigo": "RE005",
+      "entidad": "Región Centro - Sur - Amazonía"
+  },
+  {
+      "codPadre": "RE000",
+      "codigo": "RE006",
+      "entidad": "Región del Llano"
+  },
+  {
+      "codPadre": "SE000",
+      "codigo": "SE001",
+      "entidad": "Asignación Ambiental"
+  },
+  {
+      "codPadre": "SE000",
+      "codigo": "SE002",
+      "entidad": "Asignación para Ciencia, Tecnología e Innovación"
+  },
+  {
+      "codPadre": "SE000",
+      "codigo": "SE003",
+      "entidad": "Asignación para Ciencia, Tecnología e Innovación - Convocatorias"
+  },
+  {
+      "codPadre": "SE000",
+      "codigo": "SE004",
+      "entidad": "Asignación para Ciencia, Tecnología e Innovación - Ambiente y Desarrollo Disponible"
+  },
+  {
+      "codPadre": "SE000",
+      "codigo": "SE005",
+      "entidad": "Asignación para Ciencia, Tecnología e Innovación - Ambiente y Desarrollo Disponible - Convocatorias"
+  }
+]

@@ -118,7 +118,6 @@ export class SgpInicioComponent implements OnInit {
       titulo: 'Variables Certificadas',
       descripcion: 'Disponibles desde 2002 por entidad territorial.',
       boton: 'Consultar',
-      link: 'reports-sgp-budget',
       icon: 'assets/img/sgp/segmentation.png',
       download: 'assets/data/sgp/sgp_variables.xlsx'
     },     
