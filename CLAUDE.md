@@ -43,11 +43,11 @@ ng generate pipe utils/pipe-name                 # New pipe
 ### Project Structure
 ```
 src/app/
-├── components/           # 52 standalone components organized by system
+├── components/           # 42 standalone components organized by system
 │   ├── sgr-*/           # SGR (Regalías) components
 │   ├── sgp-*/           # SGP (Participaciones) components
 │   ├── pgn-*/           # PGN (Presupuesto) components
-│   └── home/, dashboard/, reports-*
+│   └── home/, faq/, reports-*
 ├── services/
 │   └── sicodis-api.service.ts  # Single API service (1,252 lines)
 ├── utils/               # Custom pipes and data utilities
@@ -55,7 +55,7 @@ src/app/
 │   ├── sgr-functions.ts
 │   └── hierarchicalDataStructure.ts
 ├── data/                # Static reference data
-├── app.routes.ts        # 71 route definitions
+├── app.routes.ts        # 61 route definitions
 ├── app.config.ts        # DI providers, theme config
 ├── auth.service.ts      # Token management with auto-renewal
 ├── auth.interceptor.ts  # Adds Bearer token to requests
