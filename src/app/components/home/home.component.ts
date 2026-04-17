@@ -14,14 +14,12 @@ import { RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 
-
 import { CarouselModule } from 'primeng/carousel';
 import { TagModule } from 'primeng/tag';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
-import { SafeGaugeComponent } from './safe-gauge.component';
-import { SicodisApiService, ResumenParticipaciones } from '../../services/sicodis-api.service';
+import { SicodisApiService } from '../../services/sicodis-api.service';
 import Chart from 'chart.js/auto';
 import { DialogModule } from 'primeng/dialog';
 
@@ -41,7 +39,6 @@ import { DialogModule } from 'primeng/dialog';
     CarouselModule,
     TagModule,
     NumberFormatPipe,
-    //SafeGaugeComponent,
     TableModule,
     ChartModule,
     RouterModule,
@@ -88,136 +85,6 @@ export class HomeComponent implements OnInit {
 
   ];
 
-  highlightApps = [
-    {
-        id: '1000',
-        code: 'f230fh0g3',
-        name: 'Aplicativo ABC',
-        description: 'Product Description',
-        image: 'https://colaboracion.dnp.gov.co/CDT/PublishingImages/Noticias/2024/Diciembre/boletin-conpes-dnp.jpg',
-        price: 65,
-        category: 'Accessories',
-        quantity: 24,
-        inventoryStatus: 'INSTOCK',
-        rating: 5
-    },
-    {
-        id: '1001',
-        code: 'nvklal433',
-        name: 'Aplicativo XYZ',
-        description: 'Product Description',
-        image: 'https://colaboracion.dnp.gov.co/CDT/PublishingImages/Noticias/2024/Diciembre/boletin-dh.jpg',
-        price: 72,
-        category: 'Accessories',
-        quantity: 61,
-        inventoryStatus: 'OUTOFSTOCK',
-        rating: 4
-    },
-    {
-        id: '1002',
-        code: 'zz21cz3c1',
-        name: 'Aplicativo 123',
-        description: 'Product Description',
-        image: 'https://colaboracion.dnp.gov.co/CDT/PublishingImages/Noticias/2024/Diciembre/comunales.jpg',
-        price: 79,
-        category: 'Fitness',
-        quantity: 2,
-        inventoryStatus: 'LOWSTOCK',
-        rating: 3
-    },
-    {
-        id: '1003',
-        code: '244wgerg2',
-        name: 'Aplicativo QWE',
-        description: 'Product Description',
-        image: 'https://colaboracion.dnp.gov.co/CDT/PublishingImages/Noticias/2024/Diciembre/boletin-mercado-popular.jpg',
-        price: 29,
-        category: 'Clothing',
-        quantity: 25,
-        inventoryStatus: 'INSTOCK',
-        rating: 5
-    },
-    {
-        id: '1004',
-        code: 'h456wer53',
-        name: 'Aplicativo ASD',
-        description: 'Product Description',
-        image: 'https://colaboracion.dnp.gov.co/CDT/PublishingImages/Noticias/2024/Diciembre/Bolet%C3%ADn-Director%20firmando%20acuerdo%20en%20Cali.jpeg',
-        price: 15,
-        category: 'Accessories',
-        quantity: 73,
-        inventoryStatus: 'INSTOCK',
-        rating: 4
-    },
-    {
-        id: '1005',
-        code: 'av2231fwg',
-        name: 'Aplicativo ZXC',
-        description: 'Product Description',
-        image: 'https://colaboracion.dnp.gov.co/CDT/PublishingImages/Noticias/2024/Diciembre/Imagen%20de%20vendedores%20de%20corabastos%20con%20sus%20mercados.jpg',
-        price: 120,
-        category: 'Accessories',
-        quantity: 0,
-        inventoryStatus: 'OUTOFSTOCK',
-        rating: 4
-    },
-    {
-        id: '1006',
-        code: 'bib36pfvm',
-        name: 'Aplicativo POI',
-        description: 'Product Description',
-        image: 'https://colaboracion.dnp.gov.co/CDT/PublishingImages/Noticias/2024/Diciembre/director-dnp.jpg',
-        price: 32,
-        category: 'Accessories',
-        quantity: 5,
-        inventoryStatus: 'LOWSTOCK',
-        rating: 3
-    },
-    {
-        id: '1007',
-        code: 'mbvjkgip5',
-        name: 'Aplicativo MNB',
-        description: 'Product Description',
-        image: 'https://colaboracion.dnp.gov.co/CDT/PublishingImages/Noticias/2024/Diciembre/Cuarta%20Sesi%C3%B3n%20Ordinaria%20del%20Consejo%20del%20Mecanismo%20Especial%20de%20Seguimiento%20de%20Pol%C3%ADticas%20P%C3%BAblicas.jpeg',
-        price: 34,
-        category: 'Accessories',
-        quantity: 23,
-        inventoryStatus: 'INSTOCK',
-        rating: 5
-    }
-  ];
-
-  // cards2: MyCard[] = [
-  //   {
-  //     title: 'Servicios Profesionales',
-  //     description: 'Ofrecemos servicios de alta calidad adaptados a sus necesidades específicas. Nuestro equipo de expertos está listo para ayudarte.',
-  //     imageUrl: '/assets/img/target2.svg',
-  //     date: 'Junio 3 de 2024',
-  //     buttonLabel: 'Ver Reportes'
-  //   },
-  //   {
-  //     title: 'Productos Innovadores',
-  //     description: 'Descubre nuestra línea de productos innovadores diseñados para mejorar tu vida diaria. Calidad y tecnología de vanguardia.',
-  //     imageUrl: '/assets/img/target1.svg',
-  //     date: 'Junio 3 de 2024',
-  //     buttonLabel: 'Explorar Más'
-  //   },
-  //   {
-  //     title: 'Nuestro Equipo',
-  //     description: 'Conoce al equipo de profesionales detrás de nuestro éxito. Personas apasionadas y comprometidas con la excelencia.',
-  //     imageUrl: '/assets/img/target2.svg',
-  //     date: 'Junio 3 de 2024',
-  //     buttonLabel: 'Conocer Equipo'
-  //   },
-  //   {
-  //     title: 'Contacto',
-  //     description: 'Estamos aquí para responder tus preguntas. Contáctanos y descubre cómo podemos ayudarte a alcanzar tus objetivos.',
-  //     imageUrl: '/assets/img/target1.svg',
-  //     date: 'Junio 3 de 2024',
-  //     buttonLabel: 'Contactar'
-  //   }
-  // ];
-
   titleSGR = 'Sistema General de Regalías - SGR';
   titleSGP = 'Sistema General de Participaciones - SGP';
   titlePGN = 'Presupuesto General de la Nación - PGN';
@@ -242,25 +109,6 @@ export class HomeComponent implements OnInit {
   cols3: number = 3;
 
 showImage: boolean = true; // o false, según cuándo quieras mostrarla  
-
-  // Add to the component class
-  departments = [
-    { id: 1, name: 'Antioquia' },
-    { id: 2, name: 'Cundinamarca' },
-    { id: 3, name: 'Santander' },
-    // Add more departments as needed
-  ];
-
-  municipalities = [
-    { id: 1, name: 'Medellín', deptId: 1 },
-    { id: 2, name: 'Bogotá', deptId: 2 },
-    { id: 3, name: 'Bucaramanga', deptId: 3 },
-    // Add more municipalities as needed
-  ];
-
-  selectedDepartment: number | null = null;
-
-  //sgpItems: { concept: string; amount: number; isTotal: boolean; avanceDistribucion?: number }[] = [];
 
   // Datos para el gráfico donut SGP
   donutSgpData: any;
@@ -299,17 +147,6 @@ sgpItems = [
   gaugeTick: number = 10;
   gaugeValue: number = 37.32;
 
-  markerConfig = {
-    "0": { color: '#555', size: 8, label: '0', type: 'line'},
-    "15": { color: '#555', size: 4, type: 'line'},
-    "30": { color: '#555', size: 8, label: '30', type: 'line'},
-    "40": { color: '#555', size: 4, type: 'line'},
-    "50": { color: '#555', size: 8, label: '50', type: 'line'},
-    "60": { color: '#555', size: 4, type: 'line'},
-    "70": { color: '#555', size: 8, label: '70', type: 'line'},
-    "85": { color: '#555', size: 4, type: 'line'},
-    "100": { color: '#555', size: 8, label: '100', type: 'line'},
-  }
   showVideo = false;
   showPlayer = false;
 
@@ -451,9 +288,6 @@ sgpItems = [
       Chart.register(centerTextPlugin);
     }
 
-    //const documentStyle = getComputedStyle(document.documentElement);
-    //const textColor = documentStyle.getPropertyValue('--text-color') || '#333';
-    
     this.donutSgpOptions = {
       cutout: '60%',
       rotation: -90,
@@ -570,9 +404,12 @@ sgpItems = [
         },
         title: {
           display: true,
-          text: 'Avance de distribución otros',
+          text: 'Avance de distribución no corrientes',
           color: "#333",
           font: { size: 18, weight: 'bold' }
+        },
+        datalabels: {
+          display: false
         },
         tooltip: {
           callbacks: {
@@ -633,8 +470,8 @@ sgpItems = [
       datasets: [
         {
           data: [otrosDistribuido, otrosRestante],
-          backgroundColor: ['#77d6ba', '#eceae9'],
-          hoverBackgroundColor: ['#5bc4a7', '#dee2e6'],
+          backgroundColor: ['#52af66', '#eceae9'],
+          hoverBackgroundColor: ['#1f7a36', '#dee2e6'],
           borderColor: '#CCCCCC',
           borderWidth: 1,
         }
@@ -671,25 +508,7 @@ sgpItems = [
     
     // Calcular sumatoria de conceptos principales
     const sumaConcepts = principalRecords.reduce((sum, item) => sum + (item.total || 0), 0);
-    
-    // Procesar registros principales y calcular avance distribución
-    // this.sgpItems = principalRecords.map(item => ({
-    //   concept: item.concepto,
-    //   amount: item.total,
-    //   isTotal: false,
-    //   avanceDistribucion: totalAmount > 0 ? (item.total / totalAmount) * 100 : 0
-    // }));
-    
-    // // Agregar el registro total al final
-    // if (totalRecord) {
-    //   this.sgpItems.push({
-    //     concept: totalRecord.concepto,
-    //     amount: totalRecord.total,
-    //     isTotal: true,
-    //     avanceDistribucion: 100//
-    //   });
-    // }
-    
+      
     // Calcular datos para el gráfico donut
     this.updateDonutChart(sumaConcepts, 88352506170320);
   }
