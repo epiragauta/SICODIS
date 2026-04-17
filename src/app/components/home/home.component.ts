@@ -108,7 +108,7 @@ export class HomeComponent implements OnInit {
   cols2: number = 2;
   cols3: number = 3;
 
-showImage: boolean = true; // o false, según cuándo quieras mostrarla  
+  showImage: boolean = false; // Controlado por sessionStorage en ngOnInit  
 
   // Datos para el gráfico donut SGP
   donutSgpData: any;
@@ -210,6 +210,16 @@ sgpItems = [
   }
 
   ngOnInit() {
+    // Verificar si ya se mostró el popup en esta sesión
+    const popupShown = sessionStorage.getItem('homePopupShown');
+
+    if (!popupShown) {
+      this.showImage = true;
+      sessionStorage.setItem('homePopupShown', 'true');
+    } else {
+      this.showImage = false;
+    }
+
     this.initializeDonutChart();
     this.initializeSgrDonutCharts();
     this.responsiveOptions = [
@@ -234,7 +244,7 @@ sgpItems = [
             numScroll: 1
         }
     ];
-    
+
     this.loadSgpData();
     this.initializeSgrData();
 
