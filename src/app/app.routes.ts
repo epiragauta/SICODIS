@@ -13,7 +13,6 @@ import { ToolsComponent } from './components/tools/tools.component';
 import { ComparativoIacVsPresupuestoComponent } from './components/comparativo-iac-vs-presupuesto/comparativo-iac-vs-presupuesto.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { PropuestaResumenSgrComponent } from './components/propuesta-resumen-sgr/propuesta-resumen-sgr.component';
-import { HighchartsDashboardComponent } from './components/highcharts-dashboard/highcharts-dashboard.component';
 import { PresupuestoYRecaudoComponent } from './components/presupuesto-y-recaudo/presupuesto-y-recaudo.component';
 import { GraphicsSgpComponent } from './components/graphics-sgp/graphics-sgp.component';
 import { ReporteFuncionamientoComponent } from './components/reporte-funcionamiento/reporte-funcionamiento.component';
@@ -76,8 +75,7 @@ export const routes: Routes = [
     { path: 'faq',                            component: FaqComponent,                                      data: { breadcrumb: 'Preguntas Frecuentes' } },
     { path: 'tools',                          component: ToolsComponent,                                    data: { breadcrumb: 'Herramientas' } },
     { path: 'mapa-del-sitio',                 component: SitemapComponent,                                  data: { breadcrumb: 'Mapa del sitio' } },
-    { path: 'dashboard',                      component: DashboardComponent,                                data: { breadcrumb: 'Dashboard' } },
-    { path: 'dashboard2',                     component: HighchartsDashboardComponent,                      data: { breadcrumb: 'Dashboard Highcharts' } },
+    { path: 'dashboard',                      component: DashboardComponent,                                data: { breadcrumb: 'Dashboard' } },    
     { path: 'reports-map',                    component: ReportsMapComponent,                               data: { breadcrumb: 'Mapa de Reportes' } },
     { path: 'mapa-recursos',                  component: MapaRecursosComponent,                             data: { breadcrumb: 'Mapa de Recursos' } },
     // 404
