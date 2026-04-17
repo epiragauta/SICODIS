@@ -40,7 +40,8 @@
       "Bash(npm install:*)",
       "Bash(dir /s \"C:\\\\ws\\\\dnp\\\\ws\\\\SICODIS_WebII\\\\src\\\\assets\")",
       "Bash(dir \"C:\\\\ws\\\\dnp\\\\ws\\\\SICODIS_WebII\\\\src\\\\app\\\\components\")",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(gh pr create:*)"
     ]
   }
 }
