@@ -29,7 +29,18 @@
       "Bash(tasklist:*)",
       "Bash(cmd //c \"taskkill /PID 30260 /F\")",
       "Bash(cmd //c \"taskkill /PID 62440 /F\")",
-      "Bash(cmd //c \"npm start\")"
+      "Bash(cmd //c \"npm start\")",
+      "Bash(cmd //c \"taskkill /PID 7828 /F\")",
+      "Bash(cmd //c \"start /B npm start > nul 2>&1\")",
+      "Bash(git restore:*)",
+      "Bash(wc:*)",
+      "Bash(ng generate:*)",
+      "Bash(if not exist \"src\\\\assets\\\\leaflet\" mkdir \"src\\\\assets\\\\leaflet\")",
+      "Bash(ng build:*)",
+      "Bash(npm install:*)",
+      "Bash(dir /s \"C:\\\\ws\\\\dnp\\\\ws\\\\SICODIS_WebII\\\\src\\\\assets\")",
+      "Bash(dir \"C:\\\\ws\\\\dnp\\\\ws\\\\SICODIS_WebII\\\\src\\\\app\\\\components\")",
+      "Bash(git checkout:*)"
     ]
   }
 }
