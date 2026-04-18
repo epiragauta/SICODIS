@@ -401,9 +401,10 @@
           <div class="notes-section">
             <h3 class="notes-title">NOTAS</h3>
             <div class="notes-content">
-              <p class="note-item">(1) Ley 2441 de 2024 - Decretos 379 y 380 del 2025</p>
+              <p class="note-item" *ngFor="let nota of notasActuales">{{ nota }}</p>
             </div>
           </div>
+
   </div>
 
 </div>

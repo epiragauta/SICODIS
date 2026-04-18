@@ -233,8 +233,9 @@ export class PresupuestoYRecaudoComponent implements OnInit {
 
   ngOnInit():void {
     
-  
+    
     this.cargarVigencias();
+    
     this.cargarDepartamentos();
     //this.selectedVigencia = '0'
     this.departmentSelected = '0';
@@ -253,21 +254,12 @@ export class PresupuestoYRecaudoComponent implements OnInit {
 
     this.townSelected = '0';
 
-    this.sicodisApiService.getSGRFechasActualizacionCorteRecaudoIAC().subscribe({
-      next: (data: SGRFechaActualizacionCorte []) => {
-        if (data && data.length > 0) {
-          const registro = data[0];
-          this.fechaActualizacion = registro.fecha_actualizacion;
-          this.fechaCorteRecaudo = registro.fecha_corte_recaudo;
-        }
-
-      },
-      error: (err) => console.error('Error cargando fechas', err)
-    });    
+    
     
     this.initializeMenuItems();
     this.initializeHistoricMenu();
     this.initializeCharts();
+
     //this.initializeTreeTableColumns();
     //this.loadFinancialData();
     //this.initializeChart();
@@ -505,6 +497,8 @@ export class PresupuestoYRecaudoComponent implements OnInit {
     }
 
 
+
+
     // --- REGLA PARA CAMBIAR EL TÍTULO ---
     const codigoMunicipio = municipio?.id ?? '';
     const descripcionMunicipio = municipio?.label ?? '';
@@ -542,6 +536,21 @@ export class PresupuestoYRecaudoComponent implements OnInit {
           this.initializeDonutCharts();
           this.isLoading = false;
           console.log('Base data loaded successfully.');
+
+
+          this.sicodisApiService.getSGRFechasActualizacionCorteRecaudoIACVigencia(idVigencia).subscribe({
+            next: (data: SGRFechaActualizacionCorte []) => {
+              console.log('Vigencia seleccionada...', idVigencia);
+              console.log('Fechas cargadas...', data);
+              if (data && data.length > 0) {
+                const registro = data[0];
+                this.fechaActualizacion = registro.fecha_actualizacion;
+                this.fechaCorteRecaudo = registro.fecha_corte_recaudo;
+              }
+
+            },
+            error: (err) => console.error('Error cargando fechas', err)
+          });           
         },
         error: (error) => {
           console.error('Error fetching base data:', error);
@@ -550,7 +559,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
         }
       });
 
-      console.log('Datos cargados...');
+      console.log('Datos cargados...');     
   }
 
 
@@ -1316,4 +1325,22 @@ private formatCurrency(value: number): string {
   closeSiglasPopup(): void {
     this.showSiglasPopup = false;
   }
+
+
+notasVigencia: Record<number, string[]> = {
+  8: ['(1) Ley 2441 de 2024 - Decretos 379 y 380 del 2025'],
+  7: ['(1) Fuente: Decreto 379 del 31 de marzo de 2025'],
+  6: ['(1) Fuente: Decreto 363 del 16 de marzo de 2023'],
+  5: ['(1) Fuente: Decreto 317 del 30 de marzo de 2021'],
+  4: ['(1) Fuente: Decreto 606 del 05 de abril de 2019'],
+  3: ['(1) Fuente: Decreto 1103 del 27 de junio de 2017'],
+  2: ['(1) Fuente: Decreto 722 del 17 de abril de 2015'],
+  1: ['(1) Fuente: Decreto 1399 del 28 de junio de 2013'],
+  // agrega las demás vigencias con su id correspondiente
+};
+
+get notasActuales(): string[] {
+  const id = this.selectedVigencia?.id;
+  return this.notasVigencia[id] ?? [];
+}  
 }

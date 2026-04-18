@@ -850,6 +850,14 @@ export class SicodisApiService {
     return this.http.get<SGRFechaActualizacionCorte[]>(url);
   }
 
+  getSGRFechasActualizacionCorteRecaudoIACVigencia(idvigencia : number): Observable<SGRFechaActualizacionCorte[]> {
+    const url = `${this.baseUrl}/sgr/fecha_actualizacion_corte_vigencia`;
+    return this.http.get<SGRFechaActualizacionCorte[]>(url, {
+    params: { idvigencia }
+    });
+    
+  }
+
 
   /**
    * Obtiene las vigencias registradas del SGR
