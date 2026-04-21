@@ -389,6 +389,7 @@
             </button>
             
             <p-splitbutton 
+              *ngIf="selectedVigencia?.id >= 6"  
               label="Informes de recaudo" 
               icon="pi pi-history"
               class="p-button-secondary historic-split-btn"
