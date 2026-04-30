@@ -1337,7 +1337,8 @@ notasVigencia: Record<number, string[]> = {
      ],
   4: ['(1) Fuente: Decreto 606 del 05 de abril de 2019',
       '•	El recaudo de ingresos corrientes contiene la compensación establecida en el Decreto 737 de 2018',
-      '•	La compensación establecida en el Decreto 2152 de 2017, aplica sobre los recursos de disponibilidad inicial. '
+      '•	La compensación establecida en el Decreto 2152 de 2017, aplica sobre los recursos de disponibilidad inicial. ',
+      '•	El valor de mayor recaudo contiene el monto por concepto de reintegros de conformidad con lo señalado en el cierre del bienio.' 
      ],
   3: ['(1) Fuente: Decreto 1103 del 27 de junio de 2017', 
       '•	El recaudo de ingresos corrientes contiene la compensación establecida en los Decretos 724 y 1296 de 2015',
