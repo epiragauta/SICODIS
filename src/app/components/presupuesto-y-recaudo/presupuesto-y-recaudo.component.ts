@@ -1331,9 +1331,19 @@ notasVigencia: Record<number, string[]> = {
   8: ['(1) Ley 2441 de 2024 - Decretos 379 y 380 del 2025'],
   7: ['(1) Fuente: Decreto 379 del 31 de marzo de 2025'],
   6: ['(1) Fuente: Decreto 363 del 16 de marzo de 2023'],
-  5: ['(1) Fuente: Decreto 317 del 30 de marzo de 2021'],
-  4: ['(1) Fuente: Decreto 606 del 05 de abril de 2019'],
-  3: ['(1) Fuente: Decreto 1103 del 27 de junio de 2017'],
+  5: ['(1) Fuente: Decreto 317 del 30 de marzo de 2021',
+      '•	Para el concepto "FDR - Compensación", el recaudo de ingresos corrientes contiene la compensación establecida en el Decreto 599 de 2020 por valor de $733.855.017.884',
+      '•	La compensación establecida en el Decreto 1131 de 2019, es descontada de los recursos de disponibilidad inicial y del saldo de mayor recaudo de las entidades correspondientes.'
+     ],
+  4: ['(1) Fuente: Decreto 606 del 05 de abril de 2019',
+      '•	El recaudo de ingresos corrientes contiene la compensación establecida en el Decreto 737 de 2018',
+      '•	La compensación establecida en el Decreto 2152 de 2017, aplica sobre los recursos de disponibilidad inicial. ',
+      '•	El valor de mayor recaudo contiene el monto por concepto de reintegros de conformidad con lo señalado en el cierre del bienio.' 
+     ],
+  3: ['(1) Fuente: Decreto 1103 del 27 de junio de 2017', 
+      '•	El recaudo de ingresos corrientes contiene la compensación establecida en los Decretos 724 y 1296 de 2015',
+      '•	La compensación establecida en el Decreto 1490 de 2015, es descontada de los recursos de disponibilidad inicial y del saldo de mayor recaudo de las entidades correspondientes. '
+     ],
   2: ['(1) Fuente: Decreto 722 del 17 de abril de 2015'],
   1: ['(1) Fuente: Decreto 1399 del 28 de junio de 2013'],
   // agrega las demás vigencias con su id correspondiente
