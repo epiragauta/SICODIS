@@ -210,6 +210,7 @@ sgpItems = [
   }
 
   ngOnInit() {
+    console.log('HomeComponent initialized... 202605051055');
     // Verificar si ya se mostró el popup en esta sesión
     // const popupShown = sessionStorage.getItem('homePopupShown');
 
