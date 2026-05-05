@@ -348,15 +348,15 @@
     <!-- =========================================================== -->
 
     <!-- ================= MODAL IMAGEN BIENVENIDA ================= -->
-<p-dialog 
+<p-dialog
   [(visible)]="showImage"
   [modal]="true"
   appendTo="body"
   [closable]="true"
   [dismissableMask]="true"
   [showHeader]="false"
-  [style]="{width:'25vw'}"
-  [contentStyle]="{'overflow':'hidden', 'padding':'0'}"
+  [style]="{width:'42vw', 'max-height':'90vh'}"
+  [contentStyle]="{'overflow-y':'auto', 'padding':'0', 'max-height':'85vh'}"
   [breakpoints]="{'1200px':'35vw', '960px':'55vw', '640px':'85vw'}">
 
   <ng-template pTemplate="header">
