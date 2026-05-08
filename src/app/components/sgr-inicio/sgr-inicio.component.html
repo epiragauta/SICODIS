@@ -59,6 +59,15 @@
                    styleClass="tabla-recaudo-tree"
                    [tableStyle]="{'min-width':'100%'}"
                    *ngIf="treeTableData.length > 0">
+        <ng-template pTemplate="colgroup">
+          <colgroup>
+            <col style="width:35%">
+            <col style="width:18%">
+            <col style="width:18%">
+            <col style="width:18%">
+            <col style="width:11%">
+          </colgroup>
+        </ng-template>
         <ng-template pTemplate="header">
           <tr>
             <th class="concepto-header">Concepto</th>
@@ -70,7 +79,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
           <tr>
-            <td class="concepto-cell" [style.color]="'#103d6e'" [style.font-weight]="rowNode.parent ? '600' : '700'">
+            <td class="concepto-cell" [style.color]="'#103d6e'" [style.font-weight]="rowNode.parent ? '500' : '600'">
               <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
               {{ rowData.concepto }}
             </td>
