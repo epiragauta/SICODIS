@@ -240,22 +240,23 @@
       </mat-grid-list>
     </div>
 
-    <!-- <div class="grid-container geovisor-section">
-      <p-card class="card-container geovisor-card pgn-full-width">
-        <div class="card-header">
-          <img class="img-icon" src="/assets/img/icon-geovisor.svg" alt="Icono del Geovisor">
-          <h2 class="sicodis-large-title">{{titleGeovisor}}</h2>
-        </div>
-        <div class="card-description">
-          <p>{{descriptionGeovisor}}</p>
-        </div>
-        <ng-template pTemplate="footer">
-          <div class="card-footer">
-            <button pButton type="button" label="Ir al Geovisor" (click)="redirectTo('reports-map')" class="p-button-primary"></button>
+    <div class="grid-container geovisor-section" style="cursor: pointer;">
+      <p-card class="card-container geovisor-card pgn-full-width" (click)="redirectTo('mapa-recursos')">
+        <div class="geovisor-card-inner">
+          <div class="geovisor-card-content">
+            <div class="card-header">
+              <h2 class="sicodis-large-title">{{titleGeovisor}}</h2>
+            </div>
+            <div class="card-description">
+              <p>{{descriptionGeovisor}}</p>
+            </div>
           </div>
-        </ng-template>
+          <div class="geovisor-card-image">
+            <img src="/assets/img/icon-geovisor.png" alt="Geovisor">
+          </div>
+        </div>
       </p-card>
-    </div> -->
+    </div>
 
     </div> <!-- /reports cifras -->
     </section> <!-- /cifras -->

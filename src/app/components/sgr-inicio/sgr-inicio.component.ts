@@ -4,17 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { ButtonModule } from 'primeng/button';
-import { ChartModule } from 'primeng/chart';
-import { FloatLabel } from 'primeng/floatlabel';
-import { Select } from 'primeng/select';
+import { Select, SelectChangeEvent } from 'primeng/select';
+import { TreeTableModule } from 'primeng/treetable';
+import { TreeNode } from 'primeng/api';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { PercentFormatPipe } from '../../utils/percentFormatPipe';
 import { Router } from '@angular/router';
-
-interface SelectOption {
-  value: string;
-  label: string;
-}
+import { SicodisApiService, SgrPtoRecaudoItem, Vigencia } from '../../services/sicodis-api.service';
+import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
 
 @Component({
   selector: 'app-sgr-inicio',
@@ -25,9 +22,8 @@ interface SelectOption {
     MatCardModule,
     MatIconModule,
     ButtonModule,
-    ChartModule,
-    FloatLabel,
     Select,
+    TreeTableModule,
     NumberFormatPipe,
     PercentFormatPipe
   ],
@@ -37,27 +33,21 @@ interface SelectOption {
 export class SgrInicioComponent implements OnInit {
   platformId = inject(PLATFORM_ID);
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private sicodisApiService: SicodisApiService) {}
 
-  // Vigencias disponibles
-  vigencias: SelectOption[] = [
-    { value: '2025-2026', label: '2025 - 2026' },
-    { value: '2023-2024', label: '2023 - 2024' },
-    { value: '2021-2022', label: '2021 - 2022' }
-  ];
+  vigencias: Vigencia[] = [];
+  selectedVigencia: Vigencia = { id_vigencia: 0, vigencia: '' };
 
-  selectedVigencia: SelectOption = this.vigencias[0];
+  presupuestoTotal: number = 0;
+  recaudoTotal: number = 0;
+  avanceTotal: number = 0;
+  saldoTotal: number = 0;
 
-  // Datos de ejemplo para las tarjetas
-  presupuestoTotal: number = 64087661072292;
-  recaudoTotal: number = 49658264357763;
-  avanceTotal: number = 0.7748; // 77.48%
+  treeTableData: TreeNode[] = [];
 
-  // Datos para el gráfico de dona
-  donutDistribucionData: any;
-  donutDistribucionOptions: any;
+  fechaActualizacion: string = '';
+  fechaCorteRecaudo: string = '';
 
-  // Recursos y herramientas
   recursos = [
     {
       titulo: 'Programación',
@@ -81,7 +71,7 @@ export class SgrInicioComponent implements OnInit {
       titulo: 'Recaudo-Presupuesto',
       descripcion: 'Avance del recaudo frente al presupuesto por asignación y beneficiarios',
       link: 'sgr-presupuesto-y-recaudo',
-      icon: 'assets/img/sgr/icono-sgr-comparativo.png'
+      icon: 'assets/img/sgr/icono-sgr-recaudo-presupuesto.png'
     },
     {
       titulo: 'Comparativo',
@@ -104,117 +94,89 @@ export class SgrInicioComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.loadData();
-    this.initializeChart();
+    this.loadVigencias();
+  }
+
+  loadVigencias(): void {
+    this.sicodisApiService.getSgrVigenciasQa().subscribe({
+      next: (vigencias) => {
+        this.vigencias = vigencias;
+        if (vigencias.length > 0) {
+          this.selectedVigencia = vigencias[0];
+          this.loadData();
+        }
+      },
+      error: () => {
+        this.vigencias = [
+          { id_vigencia: 7, vigencia: '2025 - 2026' },
+          { id_vigencia: 6, vigencia: '2023 - 2024' },
+          { id_vigencia: 5, vigencia: '2021 - 2022' }
+        ];
+        this.selectedVigencia = this.vigencias[0];
+        this.loadData();
+      }
+    });
   }
 
   loadData(): void {
-    // Aquí se cargarían los datos desde la API
-    // Por ahora usamos datos estáticos
-    this.updateDonutChart();
-  }
+    const idVigencia = this.selectedVigencia.id_vigencia;
 
-  onVigenciaChange(event: any): void {
-    // Simular cambio de datos al cambiar vigencia
-    this.loadData();
-  }
-
-  private updateDonutChart(): void {
-    this.donutDistribucionData = {
-      labels: [
-        'Inversión corriente',
-        'Administración y SSEC del SGR corriente',
-        'Inversión otros',
-        'Administración y SSEC del SGR otros',
-        'Ahorro corriente',
-        'No Aforado',
-        'Ahorro otros'
-      ],
-      datasets: [
-        {
-          data: [71.1, 20.4, 5, 1.2, 1.0, 0.7, 0.2],
-          backgroundColor: [
-            '#9B3D9F', // Púrpura - Inversión corriente (71.1%)
-            '#1E5A8E', // Azul oscuro - Administración y SSEC corriente (20.4%)
-            '#8B4789', // Púrpura medio - Inversión otros (5%)
-            '#4A8FC7', // Azul medio - Ahorro corriente (1.2%)
-            '#D4A5D6', // Rosa claro - No Aforado (1.0%)
-            '#B8B8B8', // Gris - Ahorro otros (0.7%)
-            '#E8C1E9'  // Rosa muy claro - Administración y SSEC otros (0.2%)
-          ],
-          hoverBackgroundColor: [
-            '#8B2D8F',
-            '#144A7E',
-            '#7B3779',
-            '#3A7FB7',
-            '#C495C6',
-            '#A8A8A8',
-            '#D8B1D9'
-          ],
-          borderColor: '#ffffff',
-          borderWidth: 2
-        }
-      ]
-    };
-  }
-
-  private initializeChart(): void {
-    const textColor = '#303135';
-
-    this.donutDistribucionOptions = {
-      responsive: true,
-      maintainAspectRatio: true,
-      aspectRatio: 1.5,
-      devicePixelRatio: window.devicePixelRatio || 2,
-      plugins: {
-        legend: {
-          position: 'bottom',
-          labels: {
-            color: textColor,
-            font: { size: 11 },
-            padding: 8,
-            boxWidth: 12,
-            boxHeight: 12,
-            usePointStyle: false
-          }
-        },
-        title: {
-          display: false
-        },
-        tooltip: {
-          mode: 'index',
-          callbacks: {
-            label: function(tooltipItem: any) {
-              return `${tooltipItem.label}: ${tooltipItem.parsed}%`;
-            }
-          }
-        },
-        datalabels: {
-          display: true,
-          color: '#fff',
-          font: {
-            weight: 'bold',
-            size: 11
-          },
-          formatter: (value: number) => {
-            return value >= 1 ? `${value}%` : '';
-          }
+    this.sicodisApiService.getSGRFechasActualizacionCorteRecaudoIACVigencia(idVigencia).subscribe({
+      next: (fechas) => {
+        if (fechas && fechas.length > 0) {
+          this.fechaActualizacion = fechas[0].fecha_actualizacion;
+          this.fechaCorteRecaudo = fechas[0].fecha_corte_recaudo;
         }
       },
-      elements: {
-        arc: {
-          borderWidth: 2,
-          borderColor: '#ffffff'
-        }
+      error: () => {}
+    });
+
+    this.sicodisApiService.getSgrResumenPtoRecaudoQA(idVigencia, '1', '0').subscribe({
+      next: (data) => {
+        this.buildTreeTableData(data);
+      },
+      error: () => {
+        this.presupuestoTotal = 64087661072292;
+        this.recaudoTotal = 49658264357763;
+        this.avanceTotal = 0.7748;
+        this.saldoTotal = this.presupuestoTotal - this.recaudoTotal;
+        this.treeTableData = [];
       }
-    };
+    });
   }
 
-  formatMillions(value: number): string {
-    return value.toLocaleString('es-CO', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    });
+  buildTreeTableData(data: SgrPtoRecaudoItem[]): void {
+    const totalRecord = data.find(item => item.categoria === 'total');
+    if (totalRecord) {
+      this.presupuestoTotal = totalRecord.presupuesto_total_vigente;
+      this.recaudoTotal = totalRecord.caja_total;
+      this.avanceTotal = totalRecord.avance_iac_presupuesto / 100;
+      this.saldoTotal = this.presupuestoTotal - this.recaudoTotal;
+    }
+
+    const treeData = data.filter(item => item.categoria !== 'total');
+    const organized = organizeCategoryData(treeData);
+    this.treeTableData = this.mapTreeNodes(organized);
+  }
+
+  private mapTreeNodes(nodes: any[]): TreeNode[] {
+    return nodes.map(node => ({
+      key: node.data.categoria,
+      data: {
+        concepto: node.data.concepto,
+        presupuesto: node.data.presupuesto_total_vigente,
+        recaudo: node.data.caja_total,
+        saldo: node.data.presupuesto_total_vigente - node.data.caja_total,
+        avance: node.data.avance_iac_presupuesto / 100
+      },
+      children: node.children?.length ? this.mapTreeNodes(node.children) : [],
+      expanded: false
+    }));
+  }
+
+  onVigenciaChange(event: SelectChangeEvent): void {
+    this.selectedVigencia = event.value;
+    this.loadData();
   }
 
   onResourceClick(recurso: any): void {

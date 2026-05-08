@@ -8,69 +8,101 @@
     </div>
   </div>
 
-  <!-- Panel de selección de vigencia -->
-  <div class="filters-panel">
-    <div class="filters-row">
-      <div class="p-field vigencia-select">
-        <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-select
-            id="vigencia"
-            [options]="vigencias"
-            inputId="vigenciaSelect"
-            [(ngModel)]="selectedVigencia"
-            (onChange)="onVigenciaChange($event)"
-            optionLabel="label"
-            placeholder="Vigencia">
-          </p-select>
-          <label for="vigenciaSelect">Vigencia</label>
-        </p-floatlabel>
-      </div>
-    </div>
+  <!-- Fechas de información -->
+  <div class="dates-buttons-container">
+    <p class="date-update" *ngIf="fechaActualizacion">Fecha de actualización: {{ fechaActualizacion }}</p>
+    <p class="date-update" *ngIf="fechaCorteRecaudo">Fecha de corte de recaudo: {{ fechaCorteRecaudo }}</p>
   </div>
 
-  <!-- Panel principal con dos columnas -->
-  <div class="main-panel">
-    <!-- Columna izquierda (50%) - Tarjetas -->
-    <div class="left-column">
+  <!-- Card principal de resumen -->
+  <div class="resumen-card">
 
-      <!-- Tarjeta 1: Presupuesto Total -->
-      <mat-card class="info-card">
-        <mat-card-header>
-          <mat-card-title class="card-title">Presupuesto Total</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="card-value">{{ presupuestoTotal | numberFormat }}</div>
-        </mat-card-content>
-      </mat-card>
-
-      <!-- Tarjeta 2: Recaudo Total -->
-      <mat-card class="info-card">
-        <mat-card-header>
-          <mat-card-title class="card-title">Recaudo Total</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="card-value">{{ recaudoTotal | numberFormat }}</div>
-        </mat-card-content>
-      </mat-card>
-
-      <!-- Tarjeta 3: Avance Total -->
-      <mat-card class="info-card">
-        <mat-card-header>
-          <mat-card-title class="card-title">Avance Total</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="card-value card-value-percentage">{{ avanceTotal | percentFormat:2 }}</div>
-        </mat-card-content>
-      </mat-card>
-
-    </div>
-
-    <!-- Columna derecha (50%) - Gráfico de dona -->
-    <div class="right-column">
-      <div class="chart-container">
-        <p-chart type="doughnut" [data]="donutDistribucionData" [options]="donutDistribucionOptions" class="chart"></p-chart>
+    <!-- Encabezado: título + selector vigencia -->
+    <div class="resumen-header">
+      <h2 class="resumen-titulo">Resumen de la distribución del recaudo por concepto de gasto</h2>
+      <div class="vigencia-selector-inline">
+        <span class="vigencia-label-text">Vigencia:</span>
+        <p-select
+          [options]="vigencias"
+          [(ngModel)]="selectedVigencia"
+          (onChange)="onVigenciaChange($event)"
+          optionLabel="vigencia"
+          placeholder="Vigencia">
+        </p-select>
       </div>
     </div>
+
+    <!-- KPIs -->
+    <div class="kpi-row">
+      <div class="kpi-item">
+        <div class="kpi-label">% Avance total</div>
+        <div class="kpi-value kpi-avance">{{ avanceTotal | percentFormat:2 }}</div>
+      </div>
+      <div class="kpi-divider"></div>
+      <div class="kpi-item">
+        <div class="kpi-label">Presupuesto total</div>
+        <div class="kpi-value">{{ presupuestoTotal | numberFormat }}</div>
+      </div>
+      <div class="kpi-divider"></div>
+      <div class="kpi-item">
+        <div class="kpi-label">Recaudo total</div>
+        <div class="kpi-value">{{ recaudoTotal | numberFormat }}</div>
+      </div>
+    </div>
+
+    <!-- Tabla jerárquica por concepto de gasto -->
+    <div class="card">
+      <p-treetable [value]="treeTableData"
+                   dataKey="key"
+                   [scrollable]="true"
+                   [scrollHeight]="treeTableData && treeTableData.length > 5 ? '400px' : 'auto'"
+                   styleClass="tabla-recaudo-tree"
+                   [tableStyle]="{'min-width':'100%'}"
+                   *ngIf="treeTableData.length > 0">
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="concepto-header">Concepto</th>
+            <th class="col-number">Presupuesto ($)</th>
+            <th class="col-number">Recaudo ($)</th>
+            <th class="col-number">Saldo a recaudar ($)</th>
+            <th class="col-avance">Avance (%)</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+          <tr>
+            <td class="concepto-cell" [style.color]="'#103d6e'" [style.font-weight]="rowNode.parent ? '600' : '700'">
+              <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+              {{ rowData.concepto }}
+            </td>
+            <td class="col-number">{{ rowData.presupuesto | numberFormat }}</td>
+            <td class="col-number">{{ rowData.recaudo | numberFormat }}</td>
+            <td class="col-number">{{ rowData.saldo | numberFormat }}</td>
+            <td class="col-avance">
+              <span class="avance-badge"
+                    [class.badge-green]="rowData.avance >= 1"
+                    [class.badge-orange]="rowData.avance < 1">
+                {{ rowData.avance | percentFormat:2 }}
+              </span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <tr class="total-row">
+            <td><strong>Total SGR</strong></td>
+            <td class="col-number"><strong>{{ presupuestoTotal | numberFormat }}</strong></td>
+            <td class="col-number"><strong>{{ recaudoTotal | numberFormat }}</strong></td>
+            <td class="col-number"><strong>{{ saldoTotal | numberFormat }}</strong></td>
+            <td></td>
+          </tr>
+        </ng-template>
+      </p-treetable>
+
+      <div *ngIf="treeTableData.length === 0"
+           style="padding: 1rem; text-align: center; color: #666;">
+        <p>No hay datos para mostrar para la vigencia: {{ selectedVigencia?.vigencia }}</p>
+      </div>
+    </div>
+
   </div>
 
   <!-- Notas finales como tarjeta -->
