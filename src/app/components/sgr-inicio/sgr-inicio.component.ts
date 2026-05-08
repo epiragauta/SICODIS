@@ -146,15 +146,20 @@ export class SgrInicioComponent implements OnInit {
   }
 
   buildTreeTableData(data: SgrPtoRecaudoItem[]): void {
-    const totalRecord = data.find(item => item.categoria === 'total');
+    const TOTAL_CONCEPTO = 'TOTAL SGR (incluye aforado y no aforado)';
+    const totalRecord = data.find(
+      item => item.concepto === TOTAL_CONCEPTO || item.categoria === 'total'
+    );
     if (totalRecord) {
       this.presupuestoTotal = totalRecord.presupuesto_total_vigente;
       this.recaudoTotal = totalRecord.caja_total;
-      this.avanceTotal = totalRecord.avance_iac_presupuesto / 100;
+      this.avanceTotal = totalRecord.avance_iac_presupuesto;
       this.saldoTotal = this.presupuestoTotal - this.recaudoTotal;
     }
 
-    const treeData = data.filter(item => item.categoria !== 'total');
+    const treeData = data.filter(
+      item => item.concepto !== TOTAL_CONCEPTO && item.categoria !== 'total'
+    );
     const organized = organizeCategoryData(treeData);
     this.treeTableData = this.mapTreeNodes(organized);
   }
@@ -167,7 +172,7 @@ export class SgrInicioComponent implements OnInit {
         presupuesto: node.data.presupuesto_total_vigente,
         recaudo: node.data.caja_total,
         saldo: node.data.presupuesto_total_vigente - node.data.caja_total,
-        avance: node.data.avance_iac_presupuesto / 100
+        avance: node.data.avance_iac_presupuesto
       },
       children: node.children?.length ? this.mapTreeNodes(node.children) : [],
       expanded: false

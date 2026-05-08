@@ -128,11 +128,6 @@ export class SgpInicioComponent implements OnInit {
       link: 'sgp-historico',
       icon: 'assets/img/sgp/analysis.png'
     }
-
-    
-
-
-
     
     // {
     //   titulo: 'Consulta de eficiencia',

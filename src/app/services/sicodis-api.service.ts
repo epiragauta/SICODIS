@@ -561,21 +561,6 @@ export interface SgrRecaudoItem {
 
 }
 
-
-
-export interface SgrPtoRecaudoItem {
-  categoria: string;
-  concepto: string;
-  presupuesto_total_vigente: number;
-  presupuesto_corriente: number;
-  presupuesto_otros: number;
-  caja_corriente_informada: number;
-  caja_otros: number;
-  caja_total: number;
-  avance_iac_presupuesto: number;
-}
-
-
 export interface SgrPtoRecaudoItem {
   categoria: string;
   concepto: string;
@@ -674,9 +659,6 @@ export class SicodisApiService {
       'Expires': '0'
     });
   }
-
-
-
 
   private getAuthHeaders(): HttpHeaders {
   let headers = this.getNoCacheHeaders(); // tus headers anti-caché
@@ -854,10 +836,8 @@ export class SicodisApiService {
     const url = `${this.baseUrl}/sgr/fecha_actualizacion_corte_vigencia`;
     return this.http.get<SGRFechaActualizacionCorte[]>(url, {
     params: { idvigencia }
-    });
-    
+    });    
   }
-
 
   /**
    * Obtiene las vigencias registradas del SGR
@@ -869,8 +849,7 @@ export class SicodisApiService {
     return this.http.get<Vigencia[]>(url);
   }
 
-
-    /**
+  /**
    * Obtiene las vigencias registradas del SGR
    * @returns Observable con el array de vigencias
    * @note Este endpoint puede tener restricciones CORS en desarrollo local
@@ -880,8 +859,7 @@ export class SicodisApiService {
     return this.http.get<Vigencia[]>(url);
   }
 
-
-    /**
+  /**
    * Obtiene las vigencias registradas del SGR
    * @returns Observable con el array de vigencias
    * @note Este endpoint puede tener restricciones CORS en desarrollo local
@@ -927,8 +905,6 @@ export class SicodisApiService {
     );
   }
 
-
-
   /**
    * Obtiene los departamentos de SGR
    * @returns Observable con el array 
@@ -947,7 +923,6 @@ export class SicodisApiService {
     const url = `${this.baseUrl}/sgR/municipios_departamentos/${codigoDepto}`;
     return this.http.get<MunicipioSgp[]>(url);
   }
-
 
   /**
    * Obtiene el resumen de PBC vs Recaudo
@@ -994,8 +969,6 @@ export class SicodisApiService {
     return this.http.get(url, { responseType: 'blob' });  // responseType 'blob' indica que será un archivo binario
   }
 
-
-
   /**
    * Obtiene el resumen de Presupuesto vs Recaudo
    * @param idvigencia - vigencia de consulta
@@ -1014,7 +987,6 @@ export class SicodisApiService {
 
     return response$;    
   }
-
 
   /**
    * Obtiene el resumen de Presupuesto vs Recaudo
@@ -1035,9 +1007,7 @@ export class SicodisApiService {
     return response$;    
   }
 
-
-
-    /**
+  /**
    * Obtiene el archivo de resumen de PBC vs Recaudo
    * @param idvigencia - vigencia de consulta
    * @param codigoDepto - Código del departamento
