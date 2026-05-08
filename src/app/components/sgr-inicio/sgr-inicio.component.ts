@@ -161,7 +161,30 @@ export class SgrInicioComponent implements OnInit {
       item => item.concepto !== TOTAL_CONCEPTO && item.categoria !== 'total'
     );
     const organized = organizeCategoryData(treeData);
-    this.treeTableData = this.mapTreeNodes(organized);
+    const sorted = this.sortRootNodes(organized);
+    this.treeTableData = this.mapTreeNodes(sorted);
+  }
+
+  private readonly CONCEPTO_ORDER: string[] = [
+    'AHORRO',
+    'INVERSIÓN',
+    'RECAUDO CORRIENTE NO AFORADO',
+    'OTROS',
+    'TOTAL AFORADO'
+  ];
+
+  private sortRootNodes(nodes: any[]): any[] {
+    return [...nodes].sort((a, b) => {
+      const ai = this.CONCEPTO_ORDER.findIndex(
+        o => a.data.concepto?.toUpperCase().includes(o)
+      );
+      const bi = this.CONCEPTO_ORDER.findIndex(
+        o => b.data.concepto?.toUpperCase().includes(o)
+      );
+      const aIdx = ai === -1 ? this.CONCEPTO_ORDER.length : ai;
+      const bIdx = bi === -1 ? this.CONCEPTO_ORDER.length : bi;
+      return aIdx - bIdx;
+    });
   }
 
   private mapTreeNodes(nodes: any[]): TreeNode[] {
