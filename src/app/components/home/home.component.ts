@@ -100,7 +100,7 @@ export class HomeComponent implements OnInit {
     'En esta sección podrá consultar información relacionada con la regionalización del Presupuesto General de la Nación (PGN).';
 
   descriptionGeovisor =
-    'Comparativo y valores vigentes de los recursos distribuidos del SGP y SGR por regiones y departamentos.';
+    'Comparativo y valores vigentes de los recursos distribuidos del SGP, SGR y PGN por regiones y departamentos.';
 
   responsiveOptions: any[] | undefined;
 
