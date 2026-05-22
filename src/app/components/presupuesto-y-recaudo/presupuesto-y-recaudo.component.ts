@@ -758,10 +758,21 @@ private formatCurrency(value: number): string {
         tooltip: {
           callbacks: {
             label: (context: any) => {
+              // const label = context.label || '';
+              // const value = context.parsed || 0;
+              // const formatted = this.formatMillions2(value);
+              // return `${label}: ${formatted}`;
               const label = context.label || '';
-              const value = context.parsed || 0;
-              const formatted = this.formatMillions2(value);
-              return `${label}: ${formatted}`;
+              let value: number;
+
+              if (context.dataIndex === 1) {
+                // Mostrar presupuesto completo, no el restante
+                value = this.financialData.presupuesto_corriente;
+              } else {
+                value = context.parsed || 0;
+              }
+
+              return `${label}: ${this.formatMillions2(value)}`;              
             }
           },
           xAlign: 'left',
@@ -924,15 +935,72 @@ private formatCurrency(value: number): string {
 
   clearFilters() {
     console.log('Clearing filters...');
-    this.selectedVigencia = this.vigencia[0]; // Reset to first vigencia
-    this.selectedTipoIngreso = this.tiposIngreso[0]; // Reset to first tipo ingreso
-    this.selectedAsignaciones = []; // Reset asignaciones selection
-    this.selectedSearchType = this.searchTypes[0]; // Reset to first search type
-    this.selectedDpto = { codigo: '-1', nombre: 'Por departamento' }; // Reset to default department
-    this.selectedEntity = undefined; // Reset entity selection
-    this.selectedDetailEntity = undefined; // Reset detail entity selection
-    this.detailEntitiesFiltered = []; // Clear filtered detail entities 
-    this.data = organizeCategoryData(this.detailedData)
+    this.cargarVigencias();
+    
+    this.cargarDepartamentos();
+    //this.selectedVigencia = '0'
+    this.departmentSelected = '0';
+
+
+
+    /// Inicializa en TODOS los municipios
+    const municipios = [
+                          { codigo: '0', nombre: 'Todos' },
+                       ];    
+
+    this.towns = municipios.map(m => ({
+      id: m.codigo,
+      label: m.nombre
+    }));
+
+    this.townSelected = '0';
+
+    
+    
+    this.initializeMenuItems();
+    this.initializeHistoricMenu();
+    this.initializeCharts();
+
+    //this.initializeTreeTableColumns();
+    //this.loadFinancialData();
+    //this.initializeChart();
+//    this.initializeDonutCharts();
+    //this.loadTreeTableData();
+    this.colsA = [
+        { field: 'concepto', header: 'Concepto', width: '32%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Descripción de la categoría presupuestal' },
+        { field: 'presupuesto_total_vigente', header: 'Presupuesto Total', width: '10%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Suma total del presupuesto vigente (corriente + otros)' },
+        { field: 'presupuesto_corriente', header: 'Presupuesto Corriente', width: '10%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Monto presupuestado para ingresos corrientes' },
+        { field: 'presupuesto_otros', header: 'Presupuesto Otros', width: '10%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Montos presupuestados para otras fuentes de ingreso.' },
+        { field: 'caja_corriente_informada', header: 'Recaudo <br>Corriente', width: '10%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Valores de recaudo reportados para los ingresos corrientes' },
+        { field: 'caja_otros', header: 'Recaudo <br>Otros', width: '10%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Valores de recaudo reportados para otros ingresos.' },
+        { field: 'caja_total', header: 'Recaudo <br>Total', width: '10%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Valores de recaudo reportados para todos los ingresos.' },
+        { field: 'avance_iac_presupuesto', header: 'Avance IAC frente a Presupuesto', width: '7%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Porcentaje de ejecución: (Recaudo Total / Presupuesto Corriente) * 100.' },
+      ]
+      this.colsB = [
+        { field: 'presupuesto_corriente', header: 'Presupuesto Corriente', width: '14%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Monto presupuestado para ingresos corrientes' },
+        { field: 'caja_corriente_informada', header: 'Recaudo Corriente Informado', width: '14%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Valores de recaudo reportados para los ingresos corrientes' },
+        { field: 'porcentaje_1', header: '%', width: '5%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Porcentaje de ejecución: (Recaudo Corriente Informado / Presupuesto Corriente) * 100' },
+        { field: 'caja_total', header: 'Recaudo Total', width: '14%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Monto total de recaudo' },
+        { field: 'porcentaje_2', header: '%', width: '5%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Porcentaje de ejecución: (Recaudo Total / Presupuesto Total Vigente) * 100' },
+      ]
+      this.cols = [
+        ...this.colsA
+        //...this.colsB
+      ];
+
+      // Configurar columnas expandidas que serán mostradas/ocultadas
+      this.expandedCols = [
+        { field: 'rendimientos_financieros', header: 'Rendimientos Financieros', width: '14%', 'color': '#a5cef6', 'class': 'col-expanded', tooltip: 'Ingresos generados por rendimientos de inversiones' },
+        { field: 'reintegros', header: 'Reintegros', width: '14%', 'color': '#a5cef6', 'class': 'col-expanded', tooltip: 'Devoluciones o retornos de recursos' },
+        { field: 'excedentes_faep_fonpet', header: 'Excedentes FAEP FONPET', width: '14%', 'color': '#a5cef6', 'class': 'col-expanded', tooltip: 'Excedentes provenientes del Fondo de Ahorro y Estabilización (FAE) y del Fondo de Pensiones Territoriales (FONPET)' },
+        { field: 'multas', header: 'Multas', width: '14%', 'color': '#a5cef6', 'class': 'col-expanded', tooltip: 'Ingresos provenientes de sanciones o penalidades'  },
+        { field: 'mineral_sin_identificacion_de_origen', header: 'Mineral Sin Identificación', width: '14%', 'color': '#a5cef6', 'class': 'col-expanded', tooltip: 'Ingresos provenientes de minerales cuyo origen no está identificado' },
+        { field: 'mr', header: 'MR', width: '14%', 'color': '#a5cef6', 'class': 'col-expanded', tooltip: 'Categoría específica de ingresos MR (Mayor Recaudo)' }
+      ];
+      this.selectedSearchType = this.searchTypes.find(st => st.id === 1) || this.searchTypes[0];
+
+      this.cargarSiglasDiccionario();
+
   }
 
   /**
@@ -1327,30 +1395,29 @@ private formatCurrency(value: number): string {
   }
 
 
-notasVigencia: Record<number, string[]> = {
-  8: ['(1) Ley 2441 de 2024 - Decretos 379 y 380 del 2025'],
-  7: ['(1) Fuente: Decreto 379 del 31 de marzo de 2025'],
-  6: ['(1) Fuente: Decreto 363 del 16 de marzo de 2023'],
-  5: ['(1) Fuente: Decreto 317 del 30 de marzo de 2021',
-      '•	Para el concepto "FDR - Compensación", el recaudo de ingresos corrientes contiene la compensación establecida en el Decreto 599 de 2020 por valor de $733.855.017.884',
-      '•	La compensación establecida en el Decreto 1131 de 2019, es descontada de los recursos de disponibilidad inicial y del saldo de mayor recaudo de las entidades correspondientes.'
-     ],
-  4: ['(1) Fuente: Decreto 606 del 05 de abril de 2019',
-      '•	El recaudo de ingresos corrientes contiene la compensación establecida en el Decreto 737 de 2018',
-      '•	La compensación establecida en el Decreto 2152 de 2017, aplica sobre los recursos de disponibilidad inicial. ',
-      '•	El valor de mayor recaudo contiene el monto por concepto de reintegros de conformidad con lo señalado en el cierre del bienio.' 
-     ],
-  3: ['(1) Fuente: Decreto 1103 del 27 de junio de 2017', 
-      '•	El recaudo de ingresos corrientes contiene la compensación establecida en los Decretos 724 y 1296 de 2015',
-      '•	La compensación establecida en el Decreto 1490 de 2015, es descontada de los recursos de disponibilidad inicial y del saldo de mayor recaudo de las entidades correspondientes. '
-     ],
-  2: ['(1) Fuente: Decreto 722 del 17 de abril de 2015'],
-  1: ['(1) Fuente: Decreto 1399 del 28 de junio de 2013'],
-  // agrega las demás vigencias con su id correspondiente
-};
+  notasVigencia: Record<number, string[]> = {
+    8: ['(1) Ley 2441 de 2024 - Decretos 379, Decreto 380, Decreto 0070, Resolución 1169, Decreto 0854, Decreto 1165, Resolución 3158, todos del año 2025. Decretos 0043, 0110, 0288 del 2026.'],
+    7: ['(1) Fuente: Decreto 379 del 31 de marzo de 2025'],
+    6: ['(1) Fuente: Decreto 363 del 16 de marzo de 2023'],
+    5: ['(1) Fuente: Decreto 317 del 30 de marzo de 2021',
+        '•	Para el concepto "FDR - Compensación", el recaudo de ingresos corrientes contiene la compensación establecida en el Decreto 599 de 2020 por valor de $733.855.017.884',
+        '•	La compensación establecida en el Decreto 1131 de 2019, es descontada de los recursos de disponibilidad inicial y del saldo de mayor recaudo de las entidades correspondientes.'
+      ],
+    4: ['(1) Fuente: Decreto 606 del 05 de abril de 2019',
+        '•	El recaudo de ingresos corrientes contiene la compensación establecida en el Decreto 737 de 2018',
+        '•	La compensación establecida en el Decreto 2152 de 2017, aplica sobre los recursos de disponibilidad inicial. '
+      ],
+    3: ['(1) Fuente: Decreto 1103 del 27 de junio de 2017', 
+        '•	El recaudo de ingresos corrientes contiene la compensación establecida en los Decretos 724 y 1296 de 2015',
+        '•	La compensación establecida en el Decreto 1490 de 2015, es descontada de los recursos de disponibilidad inicial y del saldo de mayor recaudo de las entidades correspondientes. '
+      ],
+    2: ['(1) Fuente: Decreto 722 del 17 de abril de 2015'],
+    1: ['(1) Fuente: Decreto 1399 del 28 de junio de 2013'],
+    // agrega las demás vigencias con su id correspondiente
+  };
 
-get notasActuales(): string[] {
-  const id = this.selectedVigencia?.id;
-  return this.notasVigencia[id] ?? [];
-}  
+  get notasActuales(): string[] {
+    const id = this.selectedVigencia?.id;
+    return this.notasVigencia[id] ?? [];
+  }  
 }

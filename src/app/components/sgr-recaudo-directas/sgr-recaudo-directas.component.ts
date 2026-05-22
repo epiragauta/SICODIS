@@ -105,7 +105,7 @@ export class SgrRecaudoDirectasComponent implements OnInit {
   // Table data for monthly comparison
   monthlyComparisonData: any[] = [];
 
-  lblAsignacionesDirectas: string = '25% Asignaciones Directas';
+  lblAsignacionesDirectas: string = '20% Asignaciones Directas';
   chartTitle: string = 'Recaudo Directas (20% y 5% anticipadas)';
 
   dataRecaudo: SgrRecaudoItem[] = [
@@ -406,7 +406,7 @@ export class SgrRecaudoDirectasComponent implements OnInit {
     //const label: string = this.selectedVigencia?.label || '';
     //this.showAnticipadas = label.includes(currentYear);
     this.showAnticipadas = this.selectedVigencia.id >= 6; // Asumiendo que las vigencias tienen IDs correlativos y los más recientes son menores o iguales a 6
-    this.lblAsignacionesDirectas = this.showAnticipadas ? '25% Asignaciones Directas' : 'Asignaciones Directas';
+    this.lblAsignacionesDirectas = this.showAnticipadas ? '20% Asignaciones Directas' : 'Asignaciones Directas';
     this.chartTitle = this.showAnticipadas ? 'Recaudo Directas (20% y 5% anticipadas)' : 'Recaudo Directas';
     this.applyFilters();
   }
@@ -1344,5 +1344,37 @@ export class SgrRecaudoDirectasComponent implements OnInit {
     contenido += '</tbody></table></div>';
     return contenido;
   }
+
+
+  notasVigencia: Record<number, string[]> = {
+    8: ['(1) El recaudo de Asignaciones Directas por sector se visualiza hasta la apropiación presupuestal corriente total por este concepto. Existen beneficiarios de estos recursos que recaudaron la totalidad de su presupuesto más rápido que lo proyectado en el PBC. Igualmente, hay otras entidades que presentan rezago en el recaudo frente a la proyección mensual del PBC.',
+          'Fuente: Plan Bienal de Caja (PBC) Asignaciones Directas 2025-2026, recaudo efectivo informado por las Agencias Nacional de Minería (ANM)  y Nacional de Hidrocarburos (ANH), e información remitida por el Ministerio de Minas y Energía según el numeral 2 del artículo 2.1.1.2.17. del Decreto 1821 de 2020. Esta información puede contener recursos correspondientes a mayor recaudo generado durante el bienio.'],
+    7: ['(1) El recaudo de Asignaciones Directas por sector se visualiza hasta la apropiación presupuestal corriente total por este concepto.',
+          'Fuente: Plan Bienal de Caja (PBC), recaudo efectivo informado por las Agencias Nacional de Minería (ANM) y Nacional de Hidrocarburos (ANH), e información remitida por el Ministerio de Minas y Energía según el numeral 2 del artículo 2.1.1.2.17. del Decreto 1821 de 2020. Esta información puede contener recursos correspondientes al mayor recaudo generado durante el bienio.'],
+    6: ['(1) El recaudo de Asignaciones Directas por sector se visualiza hasta la apropiación presupuestal corriente total por este concepto.',
+          'Fuente: Plan Bienal de Caja (PBC) Asignaciones Directas, recaudo efectivo informado por las Agencias Nacional de Minería (ANM) y Nacional de Hidrocarburos (ANH), e información remitida por el Ministerio de Minas y Energía según el numeral 3 del artículo 956 de 2022. Esta información puede contener recursos correspondientes al mayor recaudo generado durante el bienio.'],
+    5: ['(1) El recaudo de Asignaciones Directas por sector se visualiza hasta la apropiación presupuestal corriente total por este concepto.',
+        'Fuente: Plan Bienal de Caja (PBC) Asignaciones Directas, recaudo efectivo informado por las Agencias Nacional de Minería (ANM) y Nacional de Hidrocarburos (ANH).'
+      ],
+    4: ['(1) Fuente: Decreto 606 del 05 de abril de 2019',
+        '•	El recaudo de ingresos corrientes contiene la compensación establecida en el Decreto 737 de 2018',
+        '•	La compensación establecida en el Decreto 2152 de 2017, aplica sobre los recursos de disponibilidad inicial. '
+      ],
+    3: ['(1) Fuente: Decreto 1103 del 27 de junio de 2017', 
+        '•	El recaudo de ingresos corrientes contiene la compensación establecida en los Decretos 724 y 1296 de 2015',
+        '•	La compensación establecida en el Decreto 1490 de 2015, es descontada de los recursos de disponibilidad inicial y del saldo de mayor recaudo de las entidades correspondientes. '
+      ],
+    2: ['(1) Fuente: Decreto 722 del 17 de abril de 2015'],
+    1: ['(1) Fuente: Decreto 1399 del 28 de junio de 2013'],
+    // agrega las demás vigencias con su id correspondiente
+  };
+
+  get notasActuales(): string[] {
+    const id = this.selectedVigencia?.id;
+    if (id <= 5) {
+      return this.notasVigencia[5] ?? [];
+    }
+    return this.notasVigencia[id] ?? [];
+  } 
 
 }
