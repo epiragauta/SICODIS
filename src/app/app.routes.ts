@@ -6,7 +6,7 @@ import { FaqComponent } from './components/faq/faq.component';
 import { ToolsComponent } from './components/tools/tools.component';
 import { PresupuestoYRecaudoComponent } from './components/presupuesto-y-recaudo/presupuesto-y-recaudo.component';
 import { ReporteFuncionamientoComponent } from './components/reporte-funcionamiento/reporte-funcionamiento.component';
-import { ReportsSgpResguardosComponent } from './components/reports-sgp-resguardos/reports-sgp-resguardos.component';
+import { SgpResguardosComponent } from './components/sgp-resguardos/sgp-resguardos.component';
 import { HistoricoSgpComponent } from './components/historico-sgp/historico-sgp.component';
 import { SgpInicioComponent } from './components/sgp-inicio/sgp-inicio.component';
 import { SgpDetallePresupuestalComponent } from './components/sgp-detalle-presupuestal/sgp-detalle-presupuestal.component';
@@ -42,7 +42,7 @@ export const routes: Routes = [
     { path: 'sgr-inicio',                     component: SgrInicioComponent,                               data: { breadcrumb: 'SGR' } },
     // SGP
     { path: 'sgp-inicio',                     component: SgpInicioComponent,                               data: { breadcrumb: 'SGP' } },
-    { path: 'sgp-resguardos',                 component: ReportsSgpResguardosComponent,                    data: { breadcrumb: 'SGP — Resguardos' } },
+    { path: 'sgp-resguardos',                 component: SgpResguardosComponent,                           data: { breadcrumb: 'SGP — Resguardos' } },
     { path: 'sgp-historico',                  component: HistoricoSgpComponent,                            data: { breadcrumb: 'SGP — Histórico' } },
     { path: 'sgp-documentos-anexos',          component: ReportsSgpComponent,                              data: { breadcrumb: 'SGP — Documentos y Anexos' } },
     { path: 'sgp-detalle-presupuestal',       component: SgpDetallePresupuestalComponent,                  data: { breadcrumb: 'SGP — Detalle Presupuestal' } },

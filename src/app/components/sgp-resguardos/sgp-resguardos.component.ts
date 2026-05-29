@@ -3,13 +3,13 @@ import { Breadcrumb } from 'primeng/breadcrumb';
 import { MenuItem } from 'primeng/api';
 
 @Component({
-  selector: 'app-reports-sgp-resguardos',
+  selector: 'app-sgp-resguardos',
   standalone: true,
   imports: [Breadcrumb],
-  templateUrl: './reports-sgp-resguardos.component.html',
-  styleUrl: './reports-sgp-resguardos.component.scss'
+  templateUrl: './sgp-resguardos.component.html',
+  styleUrl: './sgp-resguardos.component.scss'
 })
-export class ReportsSgpResguardosComponent implements OnInit {
+export class SgpResguardosComponent implements OnInit {
 
   items: MenuItem[] | undefined;
   home: MenuItem | undefined;
