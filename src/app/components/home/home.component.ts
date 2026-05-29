@@ -578,6 +578,24 @@ sgpItems = [
       window.scrollTo(0, 0);
     });
   }
+
+  openBoletinWindow() {
+    const url = 'https://www.dnp.gov.co/LaEntidad_/subdireccion-general-inversiones-seguimiento-evaluacion/direccion-programacion-inversiones-publicas/Paginas/sistema-general-de-regalias.aspx';
+    const newWindow = window.open(url, '_blank');
+
+    if (newWindow) {
+      // Intentar ejecutar la función una vez cargada la ventana
+      // NOTA: Esto podría fallar debido a restricciones CORS si el sitio destino está en otro dominio
+      newWindow.addEventListener('load', () => {
+        try {
+          // Ejecutar la función DNPopen en el contexto de la nueva ventana
+          (newWindow as any).DNPopen('DNPDropdown6061', 'DNPDropdown-element606');
+        } catch (error) {
+          console.warn('No se pudo ejecutar DNPopen debido a restricciones de seguridad del navegador:', error);
+        }
+      });
+    }
+  }
 }
 
 export interface Product {
