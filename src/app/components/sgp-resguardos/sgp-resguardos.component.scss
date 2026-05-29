@@ -1,0 +1,705 @@
+.sgp-resguardos-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+
+  // Container principal
+  .container {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+
+  // Banner Section
+  .gradient-banner {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    background-image: url('/assets/img/sgp/sgp-banner-resguardos-indigenas.jpg');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    display: flex;
+    margin-bottom: .5rem;
+    border-radius: 8px;
+
+    .gradient-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #f9fbfccc 0%, rgb(53 95 147 / 31%) 100%);
+    }
+
+    .banner-content {
+      position: relative;
+      margin-top: 1rem;
+      z-index: 2;
+      padding: 1rem;
+      max-width: 80%;
+
+      h1 {
+        font-size: 2rem;
+        margin-top: 2.25rem;
+        margin-bottom: 2.5rem;
+        color: #e4e6eb;
+        font-weight: bold;
+        text-shadow: 1px 1px 3px rgba(245, 245, 247, 0.92);
+        color: #103d6e;
+      }
+
+      p {
+        font-size: 1.35rem;
+        margin-bottom: 1rem;
+        color: #103d6e;
+        width: 80%;
+        font-weight: 500;
+        text-shadow: 1px 1px 3px rgba(245, 245, 247, 0.92);
+      }
+    }
+  }
+
+  // Fechas de información
+  .date-update {
+    font-size: 0.65rem;
+    font-weight: bold;
+    color: #0943b5;
+    text-align: left;
+    margin-bottom: 0.125rem;
+  }
+
+  .dates-buttons-container {
+    display: flex;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  // Filters Section
+  .filters-section {
+    background: white;
+    padding: 2rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+
+    .filters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+
+      .filter-item {
+        ::ng-deep {
+          .p-floatlabel {
+            width: 100%;
+
+            .p-select,
+            .p-inputtext {
+              width: 100%;
+            }
+          }
+        }
+
+        .search-input {
+          width: 100%;
+        }
+      }
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+    }
+  }
+
+  // Results Section
+  .results-section {
+    margin-bottom: 2rem;
+
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+
+      h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #333;
+        margin: 0;
+      }
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #555;
+      margin: 2.5rem 0 1.5rem;
+      text-align: left;
+      letter-spacing: 0.5px;
+    }
+
+    // Cards Grid
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+
+      ::ng-deep .result-card {
+        .p-card-content {
+          padding: 1.5rem;
+        }
+
+        .card-content {
+          display: flex;
+          gap: 1.5rem;
+          margin-bottom: 1rem;
+
+          .card-icon {
+            img {
+              width: 60px;
+              height: 60px;
+            }
+          }
+
+          .card-info {
+            flex: 1;
+
+            h3 {
+              font-size: 1rem;
+              color: #666;
+              margin: 0 0 0.5rem;
+              font-weight: 500;
+            }
+
+            .card-value {
+              font-size: 1.8rem;
+              font-weight: 700;
+              color: #1e3a8a;
+              margin: 0.5rem 0;
+            }
+
+            .card-subtitle {
+              font-size: 0.9rem;
+              color: #666;
+              margin: 0;
+            }
+          }
+        }
+
+        .card-note {
+          background-color: #fff7e6;
+          border-left: 4px solid #ffa940;
+          padding: 1rem;
+          display: flex;
+          gap: 0.5rem;
+          align-items: flex-start;
+          margin-bottom: 1.5rem;
+
+          i {
+            color: #ffa940;
+            margin-top: 0.2rem;
+          }
+
+          p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #666;
+            line-height: 1.5;
+          }
+        }
+
+        .vigencias-dentro-card {
+          padding-top: 1rem;
+          border-top: 1px solid #f0f0f0;
+
+          h3 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #999;
+            margin: 0 0 1rem;
+            letter-spacing: 0.5px;
+          }
+
+          .vigencias-list {
+            .vigencia-item {
+              display: flex;
+              align-items: center;
+              gap: 1rem;
+              padding: 0.75rem 0;
+              border-bottom: 1px solid #f5f5f5;
+
+              &:last-child {
+                border-bottom: none;
+              }
+
+              .vigencia-dot {
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                flex-shrink: 0;
+              }
+
+              .vigencia-year {
+                font-weight: 600;
+                color: #333;
+                min-width: 50px;
+              }
+
+              .vigencia-value {
+                font-weight: 600;
+                color: #1e3a8a;
+                margin-left: auto;
+                font-size: 0.95rem;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Comparativo Grid
+    .comparativo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+
+      .comparativo-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e5e7eb;
+
+        h3 {
+          font-size: 1.1rem;
+          font-weight: 600;
+          color: #333;
+          margin: 0 0 0.25rem;
+        }
+
+        .comparativo-subtitle {
+          font-size: 0.9rem;
+          color: #666;
+          margin: 0 0 1.5rem;
+        }
+
+        .comparativo-bars {
+          margin-bottom: 1rem;
+
+          .bar-item {
+            margin-bottom: 1rem;
+
+            .bar-year-label {
+              font-weight: 600;
+              color: #555;
+              font-size: 0.95rem;
+              margin-bottom: 0.5rem;
+            }
+
+            .bar-container {
+              height: 50px;
+              background-color: #f3f4f6;
+              border-radius: 8px;
+              overflow: hidden;
+              position: relative;
+
+              .bar-fill {
+                height: 100%;
+                border-radius: 8px;
+                transition: width 0.5s ease;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                padding-right: 1.25rem;
+
+                .bar-value {
+                  font-weight: 700;
+                  color: white;
+                  font-size: 1rem;
+                  white-space: nowrap;
+                }
+              }
+            }
+          }
+        }
+
+        .comparativo-difference {
+          text-align: left;
+          margin: 1rem 0 1.5rem;
+
+          p {
+            font-size: 0.9rem;
+            color: #555;
+            margin: 0;
+            font-weight: 500;
+          }
+        }
+
+        .poblacion-comparativo {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1rem;
+          margin-bottom: 1.5rem;
+
+          .poblacion-box {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+
+            .poblacion-label {
+              font-size: 0.85rem;
+              color: #1e40af;
+              margin: 0 0 0.5rem;
+              font-weight: 500;
+            }
+
+            .poblacion-number {
+              font-size: 2.5rem;
+              font-weight: 700;
+              color: #1e3a8a;
+              margin: 0.5rem 0;
+              line-height: 1;
+            }
+
+            .poblacion-text {
+              font-size: 0.85rem;
+              color: #1e40af;
+              margin: 0.5rem 0 0;
+            }
+          }
+        }
+
+        .comparativo-stats {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1rem;
+
+          .stat-box {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            padding: 1.25rem;
+            border-radius: 10px;
+            text-align: center;
+
+            .stat-label {
+              font-size: 0.85rem;
+              color: #1e40af;
+              margin: 0 0 0.5rem;
+              font-weight: 500;
+
+              .stat-label-bold {
+                font-weight: 700;
+                color: #1e3a8a;
+              }
+            }
+
+            .stat-value {
+              font-size: 1.3rem;
+              font-weight: 700;
+              color: #1e3a8a;
+              margin: 0;
+
+              &.stat-value-large {
+                font-size: 1.5rem;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Charts Grid
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+
+      .chart-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e5e7eb;
+
+        h3 {
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: #666;
+          margin: 0 0 1.5rem;
+          text-align: left;
+          letter-spacing: 0.5px;
+        }
+
+        .chart-note {
+          background-color: #d1fae5;
+          border-left: 4px solid #10b981;
+          padding: 0.75rem 1rem;
+          margin-top: 1rem;
+
+          &.positive {
+            background-color: #d1fae5;
+            border-color: #10b981;
+          }
+
+          p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #065f46;
+            font-weight: 500;
+          }
+        }
+      }
+
+      // Tarjeta Resguardos
+      .resguardos-card {
+        .resguardos-content {
+          display: flex;
+          gap: 1.5rem;
+          align-items: center;
+
+          .resguardos-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #1e3a8a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+
+            .circle-number {
+              font-size: 2rem;
+              font-weight: 700;
+              line-height: 1;
+            }
+
+            .circle-year {
+              font-size: 0.85rem;
+              margin-top: 0.25rem;
+            }
+          }
+
+          .resguardos-bars {
+            flex: 1;
+
+            .resguardo-bar-item {
+              display: flex;
+              align-items: center;
+              gap: 0.75rem;
+              margin-bottom: 0.5rem;
+
+              &:last-child {
+                margin-bottom: 0;
+              }
+
+              .resguardo-year {
+                font-size: 0.9rem;
+                font-weight: 600;
+                color: #555;
+                min-width: 40px;
+              }
+
+              .resguardo-bar-container {
+                flex: 1;
+                height: 20px;
+                background-color: #f3f4f6;
+                border-radius: 4px;
+                overflow: hidden;
+
+                .resguardo-bar-fill {
+                  height: 100%;
+                  transition: width 0.5s ease;
+                  border-radius: 4px;
+                }
+              }
+
+              .resguardo-value {
+                font-size: 0.9rem;
+                font-weight: 600;
+                color: #333;
+                min-width: 35px;
+                text-align: right;
+              }
+            }
+          }
+        }
+      }
+
+      // Tarjeta Población
+      .poblacion-card {
+        .poblacion-box {
+          background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+          padding: 2rem 1.5rem;
+          border-radius: 12px;
+          text-align: center;
+          color: white;
+
+          .poblacion-label-top {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            opacity: 0.95;
+          }
+
+          .poblacion-number-large {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+          }
+
+          .poblacion-text-bottom {
+            font-size: 0.85rem;
+            opacity: 0.9;
+          }
+        }
+      }
+
+      // Tarjeta Enlaces
+      .enlaces-card {
+        .enlaces-list {
+          .enlace-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            transition: all 0.2s ease;
+
+            &:last-child {
+              margin-bottom: 0;
+            }
+
+            &:hover {
+              background-color: #f3f4f6;
+              border-color: #d1d5db;
+            }
+
+            i {
+              color: #6b7280;
+              font-size: 0.85rem;
+
+              &.enlace-external {
+                margin-left: auto;
+              }
+            }
+
+            a {
+              flex: 1;
+              color: #374151;
+              text-decoration: none;
+              font-size: 0.9rem;
+              font-weight: 500;
+
+              &:hover {
+                color: #1e3a8a;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Footer Notes
+    .footer-notes {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-top: 2rem;
+
+      p {
+        margin: 0;
+        font-size: 0.85rem;
+        color: #6b7280;
+        line-height: 1.6;
+
+        strong {
+          color: #374151;
+        }
+      }
+    }
+  }
+}
+
+// Responsive adjustments - Tablets
+@media (max-width: 1024px) {
+  .sgp-resguardos-container {
+    .results-section {
+      .charts-grid {
+        grid-template-columns: repeat(2, 1fr);
+
+        .enlaces-card {
+          grid-column: 1 / -1;
+        }
+      }
+    }
+  }
+}
+
+// Responsive adjustments - Mobile
+@media (max-width: 768px) {
+  .sgp-resguardos-container {
+    .container {
+      padding: 0.5rem;
+    }
+
+    .gradient-banner {
+      height: 250px;
+
+      .banner-content {
+        max-width: 100%;
+        padding: 0.5rem;
+
+        h1 {
+          font-size: 1.5rem;
+          margin-top: 1rem;
+          margin-bottom: 1.5rem;
+        }
+
+        p {
+          font-size: 1rem;
+          width: 100%;
+        }
+      }
+    }
+
+    .filters-section {
+      padding: 1rem;
+
+      .filters-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .results-section {
+      .cards-grid,
+      .comparativo-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .charts-grid {
+        grid-template-columns: 1fr;
+
+        .resguardos-card .resguardos-content {
+          flex-direction: column;
+          align-items: flex-start;
+
+          .resguardos-circle {
+            margin-bottom: 1rem;
+          }
+        }
+      }
+    }
+  }
+}

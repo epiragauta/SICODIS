@@ -1,3 +1,327 @@
-<div class="container">
-  <p>sgp-resguardos works!</p>
-</div>
+<div class="sgp-resguardos-container">
+  <!-- Container principal -->
+  <div class="container">
+    <!-- Banner Superior -->
+    <div class="gradient-banner">
+      <div class="gradient-overlay"></div>
+      <div class="banner-content">
+        <h1>RESGUARDOS INDÍGENAS</h1>
+        <p>Consulte el detalle de la información de la AESGPRI</p>
+      </div>
+    </div>
+
+    <!-- Fechas de información -->
+    <div class="dates-buttons-container">
+      <div style="width: 83%;">
+        <p class="date-update">Fecha de consulta: mayo 28 de 2026</p>
+        <p class="date-update">Información en pesos corrientes</p>
+      </div>
+    </div>
+
+    <!-- Sección de Filtros -->
+    <div class="filters-section">
+    <div class="filters-grid">
+      <div class="filter-item">
+        <p-floatlabel>
+          <p-select
+            inputId="vigencia"
+            [(ngModel)]="selectedVigencia"
+            [options]="vigencias"
+            optionLabel="label"
+            optionValue="id"
+            (onChange)="onVigenciaChange()"
+            styleClass="filter-select"
+          />
+          <label for="vigencia">Vigencia</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="filter-item">
+        <p-floatlabel>
+          <p-select
+            inputId="departamento"
+            [(ngModel)]="selectedDepartamento"
+            [options]="departamentos"
+            optionLabel="label"
+            optionValue="id"
+            (onChange)="onDepartamentoChange()"
+            styleClass="filter-select"
+          />
+          <label for="departamento">Departamento</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="filter-item">
+        <p-floatlabel>
+          <p-select
+            inputId="municipio"
+            [(ngModel)]="selectedMunicipio"
+            [options]="municipios"
+            optionLabel="label"
+            optionValue="id"
+            (onChange)="onMunicipioChange()"
+            styleClass="filter-select"
+          />
+          <label for="municipio">Municipio</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="filter-item">
+        <p-floatlabel>
+          <input
+            pInputText
+            id="search"
+            [(ngModel)]="searchText"
+            class="search-input"
+            placeholder="Buscar resguardo indígena"
+          />
+          <label for="search">Buscar resguardo indígena</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="filter-buttons">
+      <p-button
+        label="Aplicar"
+        icon="pi pi-filter"
+        (onClick)="aplicarFiltros()"
+        styleClass="p-button-primary"
+      />
+      <p-button
+        label="Limpiar"
+        icon="pi pi-filter-slash"
+        (onClick)="limpiarFiltros()"
+        styleClass="p-button-outlined"
+      />
+    </div>
+  </div>
+
+    <!-- Sección de Resultados -->
+    <div class="results-section">
+    <div class="results-header">
+      <h2>RESULTADOS DE LA CONSULTA</h2>
+      <p-button
+        label="Exportar Excel"
+        icon="pi pi-download"
+        (onClick)="exportarExcel()"
+        styleClass="p-button-success"
+      />
+    </div>
+
+    <!-- Tarjetas Principales -->
+    <div class="cards-grid">
+      <!-- Tarjeta Presupuesto Distribuido -->
+      <p-card styleClass="result-card">
+        <div class="card-content">
+          <div class="card-icon">
+            <img src="assets/img/sgp/resguardos/financial-profit.png" alt="Presupuesto" />
+          </div>
+          <div class="card-info">
+            <h3>Presupuesto distribuido</h3>
+            <p class="card-value">${{ presupuestoActual | numberFormat }}</p>
+            <p class="card-subtitle">Vigencia seleccionada: {{ selectedVigencia }}</p>
+          </div>
+        </div>
+        <div class="card-note">
+          <i class="pi pi-info-circle"></i>
+          <p>Este resguardo tiene jurisdicción en múltiples territorios: Amazonas (Leticia) - Vaupés (Mitú). El presupuesto no refleja el total consolidado.</p>
+        </div>
+
+        <!-- Últimas Tres Vigencias - Presupuesto -->
+        <div class="vigencias-dentro-card">
+          <h3>ÚLTIMAS TRES VIGENCIAS</h3>
+          <div class="vigencias-list">
+            @for (dato of datosHistoricos; track dato.vigencia) {
+              <div class="vigencia-item">
+                <span class="vigencia-dot" [style.background-color]="dato.vigencia === 2026 ? '#1e3a8a' : dato.vigencia === 2025 ? '#3b82f6' : '#93c5fd'"></span>
+                <span class="vigencia-year">{{ dato.vigencia }}</span>
+                <span class="vigencia-value">${{ dato.presupuesto | numberFormat }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      </p-card>
+
+      <!-- Tarjeta Población Certificada -->
+      <p-card styleClass="result-card">
+        <div class="card-content">
+          <div class="card-icon">
+            <img src="assets/img/sgp/resguardos/indigenous.png" alt="Población" />
+          </div>
+          <div class="card-info">
+            <h3>Población certificada</h3>
+            <p class="card-value">{{ poblacionActual | numberFormat }} personas</p>
+            <p class="card-subtitle">Vigencia seleccionada: {{ selectedVigencia }}</p>
+          </div>
+        </div>
+        <div class="card-note">
+          <i class="pi pi-info-circle"></i>
+          <p>Población distribuida entre los municipios: Leticia (Amazonas) 2.105 hab. - Mitú (Vaupés) 1.356 hab.</p>
+        </div>
+
+        <!-- Últimas Tres Vigencias - Población -->
+        <div class="vigencias-dentro-card">
+          <h3>ÚLTIMAS TRES VIGENCIAS</h3>
+          <div class="vigencias-list">
+            @for (dato of datosHistoricos; track dato.vigencia) {
+              <div class="vigencia-item">
+                <span class="vigencia-dot" [style.background-color]="dato.vigencia === 2026 ? '#1e3a8a' : dato.vigencia === 2025 ? '#3b82f6' : '#93c5fd'"></span>
+                <span class="vigencia-year">{{ dato.vigencia }}</span>
+                <span class="vigencia-value">{{ dato.poblacion | numberFormat }} personas</span>
+              </div>
+            }
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <!-- Comparativo Últimas Dos Vigencias -->
+    <h2 class="section-title">COMPARATIVO ÚLTIMAS DOS VIGENCIAS</h2>
+
+    <div class="comparativo-grid">
+      <!-- Comparativo Presupuesto -->
+      <div class="comparativo-card">
+        <h3>Presupuesto</h3>
+        <p class="comparativo-subtitle">Cifras en pesos corrientes</p>
+
+        <div class="comparativo-bars">
+          <div class="bar-item">
+            <div class="bar-year-label">{{ datosHistoricos[0].vigencia }}</div>
+            <div class="bar-container">
+              <div class="bar-fill" style="width: 100%; background-color: #1e3a8a;">
+                <span class="bar-value">${{ datosHistoricos[0].presupuesto | numberFormat }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bar-item">
+            <div class="bar-year-label">{{ datosHistoricos[1].vigencia }}</div>
+            <div class="bar-container">
+              <div class="bar-fill" [style.width.%]="(datosHistoricos[1].presupuesto / datosHistoricos[0].presupuesto) * 100" style="background-color: #60a5fa;">
+                <span class="bar-value">${{ datosHistoricos[1].presupuesto | numberFormat }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="comparativo-difference">
+          <p>Diferencia: ${{ diferenciaPresupuesto | numberFormat }}</p>
+        </div>
+
+        <div class="comparativo-stats">
+          <div class="stat-box">
+            <p class="stat-label">Variación $</p>
+            <p class="stat-value">+${{ diferenciaPresupuesto | numberFormat }}</p>
+          </div>
+          <div class="stat-box">
+            <p class="stat-label">Variación %</p>
+            <p class="stat-value">+{{ porcentajeVariacionPresupuesto | number:'1.1-1' }}%</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparativo Población -->
+      <div class="comparativo-card">
+        <h3>Población certificada</h3>
+        <p class="comparativo-subtitle">Personas por vigencia</p>
+
+        <div class="poblacion-comparativo">
+          <div class="poblacion-box">
+            <p class="poblacion-label">Vigencia {{ datosHistoricos[1].vigencia }}</p>
+            <p class="poblacion-number">{{ datosHistoricos[1].poblacion | numberFormat }}</p>
+            <p class="poblacion-text">personas certificadas</p>
+          </div>
+
+          <div class="poblacion-box">
+            <p class="poblacion-label">Vigencia {{ datosHistoricos[0].vigencia }}</p>
+            <p class="poblacion-number">{{ datosHistoricos[0].poblacion | numberFormat }}</p>
+            <p class="poblacion-text">personas certificadas</p>
+          </div>
+        </div>
+
+        <div class="comparativo-stats">
+          <div class="stat-box">
+            <p class="stat-label">Variación <span class="stat-label-bold">personas</span></p>
+            <p class="stat-value stat-value-large">{{ diferenciaPoblacion | numberFormat }} personas</p>
+          </div>
+          <div class="stat-box">
+            <p class="stat-label">Variación %</p>
+            <p class="stat-value">+{{ porcentajeVariacionPoblacion | number:'1.1-1' }}%</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráficas y Datos Adicionales -->
+    <div class="charts-grid">
+      <!-- Cantidad de Resguardos -->
+      <div class="chart-card resguardos-card">
+        <h3>CANTIDAD DE RESGUARDOS CERTIFICADOS</h3>
+
+        <div class="resguardos-content">
+          <!-- Círculo con número principal -->
+          <div class="resguardos-circle">
+            <div class="circle-number">{{ datosHistoricos[0].cantidadResguardos }}</div>
+            <div class="circle-year">{{ datosHistoricos[0].vigencia }}</div>
+          </div>
+
+          <!-- Barras horizontales -->
+          <div class="resguardos-bars">
+            @for (dato of datosHistoricos; track dato.vigencia) {
+              <div class="resguardo-bar-item">
+                <span class="resguardo-year">{{ dato.vigencia }}</span>
+                <div class="resguardo-bar-container">
+                  <div class="resguardo-bar-fill"
+                       [style.width.%]="(dato.cantidadResguardos / datosHistoricos[0].cantidadResguardos) * 100"
+                       [style.background-color]="dato.vigencia === 2026 ? '#1e3a8a' : dato.vigencia === 2025 ? '#60a5fa' : '#93c5fd'">
+                  </div>
+                </div>
+                <span class="resguardo-value">{{ dato.cantidadResguardos }}</span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Nota de crecimiento -->
+        <div class="chart-note positive">
+          <p>+ {{ diferenciaResguardos }} nuevos resguardos en {{ datosHistoricos[0].vigencia }} vs {{ datosHistoricos[1].vigencia }}</p>
+        </div>
+      </div>
+
+      <!-- Población Total -->
+      <div class="chart-card poblacion-card">
+        <h3>POBLACIÓN INDÍGENA EN COLOMBIA</h3>
+        <div class="poblacion-box">
+          <div class="poblacion-label-top">Total histórico certificado</div>
+          <div class="poblacion-number-large">{{ poblacionTotalHistorica | numberFormat }}</div>
+          <div class="poblacion-text-bottom">personas — todas las vigencias</div>
+        </div>
+      </div>
+
+      <!-- Enlaces de Interés -->
+      <div class="chart-card enlaces-card">
+        <h3>Enlaces de interés</h3>
+        <div class="enlaces-list">
+          @for (enlace of enlacesInteres; track enlace.titulo) {
+            <div class="enlace-item">
+              <i class="pi pi-chevron-right"></i>
+              <a [href]="enlace.url" target="_blank" rel="noopener noreferrer">
+                {{ enlace.titulo }}
+              </a>
+              <i class="pi pi-external-link enlace-external"></i>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Notas al pie -->
+    <div class="footer-notes">
+      <p>
+        <strong>Notas:</strong> (1) Cifras en pesos corrientes. (2) La distribución de estos recursos se realiza conforme con el artículo 83 de la Ley 715 de 2001,
+        artículos 25 y 26 del Decreto 1953 de 2014 y la información de la población en cada resguardo indígena certificada por el Departamento
+        Administrativo Nacional de Estadística (DANE).
+      </p>
+    </div>
+  </div><!-- /container -->
+</div><!-- /sgp-resguardos-container -->
