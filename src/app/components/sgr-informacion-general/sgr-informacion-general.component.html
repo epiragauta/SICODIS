@@ -1,0 +1,325 @@
+<div class="sgr-info-general-container">
+  <div class="container">
+    <!-- Header: Información General del SGR -->
+    <div class="header-section">
+      <h1 class="main-title">Información general del SGR</h1>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <h3>Presupuesto total SGR</h3>
+          <p class="kpi-value">${{ kpiData.presupuestoTotal | numberFormat }}</p>
+        </div>
+
+        <div class="kpi-card">
+          <h3>Recaudo corriente</h3>
+          <p class="kpi-value">${{ kpiData.recaudoCorriente | numberFormat }}</p>
+        </div>
+
+        <div class="kpi-card">
+          <h3>Avance recaudo corriente</h3>
+          <p class="kpi-value">{{ kpiData.avanceRecaudo }}%</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tarjetas de Entidades -->
+    <div class="entidades-grid">
+      <div class="entidad-card">
+        <h4>Beneficiarias</h4>
+        <p class="entidad-count">{{ entidadesCount.beneficiarias }}</p>
+      </div>
+
+      <div class="entidad-card">
+        <h4>Entidades Productoras</h4>
+        <p class="entidad-count">{{ entidadesCount.productoras }}</p>
+      </div>
+
+      <div class="entidad-card">
+        <h4>Entidades ZOMAC</h4>
+        <p class="entidad-count">{{ entidadesCount.zomac }}</p>
+      </div>
+
+      <div class="entidad-card">
+        <h4>Entidades PDET</h4>
+        <p class="entidad-count">{{ entidadesCount.pdet }}</p>
+      </div>
+
+      <div class="entidad-card">
+        <h4>Entidades con destinación Étnica</h4>
+        <p class="entidad-count">{{ entidadesCount.etnicas }} </p>
+      </div>
+    </div>
+
+    <!-- Sección de Filtros -->
+    <div class="filtros-section">
+      <h2 class="section-title">Aplique a su consulta</h2>
+
+      <div class="filtros-container">
+        <!-- Periodicidad -->
+        <div class="filtro-box">
+          <h3>Periodicidad</h3>
+          <div class="radio-group">
+            <div class="radio-item">
+              <p-radiobutton
+                name="periodicidad"
+                value="Mensual"
+                [(ngModel)]="periodicidad"
+                inputId="mensual"
+              />
+              <label for="mensual">Mensual</label>
+            </div>
+
+            <div class="radio-item">
+              <p-radiobutton
+                name="periodicidad"
+                value="Anual"
+                [(ngModel)]="periodicidad"
+                inputId="anual"
+              />
+              <label for="anual">Anual</label>
+            </div>
+
+            <div class="radio-item">
+              <p-radiobutton
+                name="periodicidad"
+                value="Bienal"
+                [(ngModel)]="periodicidad"
+                inputId="bienal"
+              />
+              <label for="bienal">Bienal</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Caracterización de la consulta -->
+        <div class="filtro-box caracterizacion-box">
+          <h3>Caracterización de la consulta</h3>
+          <div class="checkbox-grid">
+            <div class="checkbox-item">
+              <p-radiobutton
+                name="caracterizacion"
+                value="conceptoGasto"
+                [(ngModel)]="filtroCaracterizacion.conceptoGasto"
+                inputId="conceptoGasto"
+              />
+              <label for="conceptoGasto">Concepto de gasto</label>
+            </div>
+
+            <div class="checkbox-item">
+              <p-radiobutton
+                name="caracterizacion"
+                value="regional"
+                [(ngModel)]="filtroCaracterizacion.regional"
+                inputId="regional"
+              />
+              <label for="regional">Regional</label>
+            </div>
+
+            <div class="checkbox-item">
+              <p-radiobutton
+                name="caracterizacion"
+                value="asignacion"
+                [(ngModel)]="filtroCaracterizacion.asignacion"
+                inputId="asignacion"
+              />
+              <label for="asignacion">Asignación</label>
+            </div>
+
+            <div class="checkbox-item">
+              <p-radiobutton
+                name="caracterizacion"
+                value="grupoInteres"
+                [(ngModel)]="filtroCaracterizacion.grupoInteres"
+                inputId="grupoInteres"
+              />
+              <label for="grupoInteres">Grupo de interés</label>
+            </div>
+          </div>
+
+          <div class="checkbox-grid">
+            <div class="checkbox-item">
+              <p-radiobutton
+                name="entidad"
+                value="beneficiario"
+                [(ngModel)]="filtroEntidad.beneficiario"
+                inputId="beneficiario"
+              />
+              <label for="beneficiario">Beneficiario</label>
+            </div>
+
+            <div class="checkbox-item">
+              <p-radiobutton
+                name="entidad"
+                value="productoras"
+                [(ngModel)]="filtroEntidad.productoras"
+                inputId="productoras"
+              />
+              <label for="productoras">Entidades Productora</label>
+            </div>
+
+            <div class="checkbox-item">
+              <p-radiobutton
+                name="entidad"
+                value="pdet"
+                [(ngModel)]="filtroEntidad.pdet"
+                inputId="pdet"
+              />
+              <label for="pdet">Entidades PDET</label>
+            </div>
+
+            <div class="checkbox-item">
+              <p-radiobutton
+                name="entidad"
+                value="zomac"
+                [(ngModel)]="filtroEntidad.zomac"
+                inputId="zomac"
+              />
+              <label for="zomac">Entidades ZOMAC</label>
+            </div>
+
+            <div class="checkbox-item">
+              <p-radiobutton
+                name="entidad"
+                value="etnica"
+                [(ngModel)]="filtroEntidad.etnica"
+                inputId="etnica"
+              />
+              <label for="etnica">Entidades con destinación Étnica</label>
+            </div>
+
+            <div class="checkbox-item">
+              <p-radiobutton
+                name="entidad"
+                value="capital"
+                [(ngModel)]="filtroEntidad.capital"
+                inputId="capital"
+              />
+              <label for="capital">Capital</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Presupuesto de consulta -->
+        <div class="filtro-box presupuesto-box">
+          <h3>Presupuesto de consulta</h3>
+          <div class="metricas-navegacion">
+            <button class="nav-btn" (click)="prevPresupuesto()" [disabled]="currentPresupuestoIndex === 0">
+              <i class="pi pi-chevron-left"></i>
+            </button>
+            <div class="metrica-list">
+              <p>Presupuesto Total</p>
+              <p>Presupuesto Corriente</p>
+              <p>Presupuesto Otros</p>
+              <p>% participación de la Disponibilidad Inicial por vigencia</p>
+            </div>
+            <button class="nav-btn" (click)="nextPresupuesto()" [disabled]="currentPresupuestoIndex === 3">
+              <i class="pi pi-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Recaudo -->
+        <div class="filtro-box recaudo-box">
+          <h3>Recaudo</h3>
+          <div class="metrica-simple">
+            <p>Recaudo Total</p>
+            <p>Recaudo Corriente</p>
+            <p>Recaudo Otros</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vista General de la Consulta -->
+    <div class="vista-general-section">
+      <h2 class="section-title">Vista general de la consulta</h2>
+
+      <div class="resultados-grid">
+        <!-- Tarjeta grande con gráfica -->
+        <div class="resultado-card grande">
+          <div class="card-header">
+            <div class="card-info">
+              <h4>Presupuesto Total</h4>
+              <p class="card-value">${{ presupuestoMetricas.presupuestoTotal | numberFormat }}</p>
+              <p class="card-periodo">Bienio 2025 - 2026</p>
+            </div>
+            <div class="card-icon">
+              <i class="pi pi-dollar"></i>
+            </div>
+          </div>
+          <div class="chart-area">
+            <canvas id="chartLinea"></canvas>
+          </div>
+        </div>
+
+        <!-- Tarjeta Presupuesto Corriente -->
+        <div class="resultado-card">
+          <div class="card-header-small">
+            <div class="card-icon-small cyan">
+              <i class="pi pi-wallet"></i>
+            </div>
+            <div class="card-info-small">
+              <h4>Presupuesto Corriente</h4>
+              <p class="card-value-small">${{ presupuestoMetricas.presupuestoCorriente | numberFormat }}</p>
+              <div class="porcentaje-bar">
+                <div class="porcentaje-label cyan">{{ porcentajeCorriente | number:'1.1-1' }}%</div>
+                <div class="porcentaje-text">del total</div>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill cyan" [style.width.%]="porcentajeCorriente"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta Presupuesto Otros -->
+        <div class="resultado-card">
+          <div class="card-header-small">
+            <div class="card-icon-small orange">
+              <i class="pi pi-box"></i>
+            </div>
+            <div class="card-info-small">
+              <h4>Presupuesto Otros</h4>
+              <p class="card-value-small">${{ presupuestoMetricas.presupuestoOtros | numberFormat }}</p>
+              <div class="porcentaje-bar">
+                <div class="porcentaje-label orange">{{ porcentajeOtros | number:'1.1-1' }}%</div>
+                <div class="porcentaje-text">del total</div>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill orange" [style.width.%]="porcentajeOtros"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta Gauge -->
+        <div class="resultado-card gauge-card">
+          <h4>% de otros recursos por vigencia</h4>
+          <div class="gauge-container">
+            <canvas id="chartGauge"></canvas>
+            <div class="gauge-value">
+              <span class="gauge-number">{{ presupuestoMetricas.porcentajeDisponibilidad }}%</span>
+              <span class="gauge-label">del total</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-section">
+      <div class="footer-left">
+        <i class="pi pi-star-fill"></i>
+        <span>Reporte generado el {{ fechaReporte }}</span>
+      </div>
+      <div class="footer-right">
+        <p-button
+          label="Exportar reporte"
+          icon="pi pi-download"
+          (onClick)="exportarReporte()"
+          styleClass="p-button-rounded export-btn"
+        />
+      </div>
+    </div>
+  </div>
+</div>

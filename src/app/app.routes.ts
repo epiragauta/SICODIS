@@ -26,6 +26,7 @@ import { SgrPlanBienalRecursosComponent } from './components/sgr-plan-bienal-rec
 import { SitemapComponent } from './components/sitemap/sitemap.component';
 import { MapaRecursosComponent } from './components/mapa-recursos/mapa-recursos.component';
 import { SgrInicioComponent } from './components/sgr-inicio/sgr-inicio.component';
+import { SgrInformacionGeneralComponent } from './components/sgr-informacion-general/sgr-informacion-general.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -40,6 +41,7 @@ export const routes: Routes = [
     { path: 'sgr-plan-bienal-de-caja',        component: SgrPlanBienalCajaComponent,                       data: { breadcrumb: 'SGR — Plan Bienal de Caja' } },
     { path: 'reporte-funcionamiento',         component: ReporteFuncionamientoComponent,                   data: { breadcrumb: 'SGR — Reporte de Funcionamiento' } },
     { path: 'sgr-inicio',                     component: SgrInicioComponent,                               data: { breadcrumb: 'SGR' } },
+    { path: 'sgr-informacion-general',        component: SgrInformacionGeneralComponent,                   data: { breadcrumb: 'SGR — Información General' } },
     // SGP
     { path: 'sgp-inicio',                     component: SgpInicioComponent,                               data: { breadcrumb: 'SGP' } },
     { path: 'sgp-resguardos',                 component: SgpResguardosComponent,                           data: { breadcrumb: 'SGP — Resguardos' } },

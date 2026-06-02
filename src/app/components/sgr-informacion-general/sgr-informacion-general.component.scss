@@ -1,0 +1,519 @@
+.sgr-info-general-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 2rem 0;
+
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  // Header Section
+  .header-section {
+    margin-bottom: 2rem;
+
+    .main-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #ec4899;
+      margin-bottom: 1.5rem;
+      padding: 1rem 1.5rem;
+      background: white;
+      border-radius: 12px;
+      border-left: 4px solid #14b8a6;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+
+      .kpi-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border-top: 4px solid #14b8a6;
+
+        h3 {
+          font-size: 0.9rem;
+          font-weight: 600;
+          color: #ec4899;
+          margin: 0 0 0.75rem;
+        }
+
+        .kpi-value {
+          font-size: 1.8rem;
+          font-weight: 700;
+          color: #1f2937;
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  // Entidades Grid
+  .entidades-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+
+    .entidad-card {
+      background: white;
+      padding: 1.25rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      border-top: 4px solid #14b8a6;
+      text-align: center;
+
+      h4 {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #ec4899;
+        margin: 0 0 0.5rem;
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .entidad-count {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin: 0;
+      }
+    }
+  }
+
+  // Filtros Section
+  .filtros-section {
+    margin-bottom: 2rem;
+
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #ec4899;
+      margin-bottom: 1.5rem;
+      padding: 1rem 1.5rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .filtros-container {
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      gap: 1.5rem;
+
+      .filtro-box {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+        h3 {
+          font-size: 1rem;
+          font-weight: 600;
+          color: #ec4899;
+          margin: 0 0 1rem;
+        }
+
+        .radio-group {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+
+          .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            label {
+              font-size: 0.9rem;
+              color: #4b5563;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+
+      .caracterizacion-box {
+        .checkbox-grid {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+          margin-bottom: 1.5rem;
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+
+          .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            label {
+              font-size: 0.9rem;
+              color: #4b5563;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+
+      .presupuesto-box {
+        .metricas-navegacion {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+
+          .nav-btn {
+            background: #ec4899;
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+
+            &:hover:not(:disabled) {
+              background: #db2777;
+            }
+
+            &:disabled {
+              background: #e5e7eb;
+              cursor: not-allowed;
+            }
+
+            i {
+              font-size: 0.8rem;
+            }
+          }
+
+          .metrica-list {
+            flex: 1;
+
+            p {
+              font-size: 0.85rem;
+              color: #6b7280;
+              margin: 0.5rem 0;
+            }
+          }
+        }
+      }
+
+      .recaudo-box {
+        .metrica-simple {
+          p {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin: 0.5rem 0;
+          }
+        }
+      }
+    }
+  }
+
+  // Vista General Section
+  .vista-general-section {
+    margin-bottom: 2rem;
+
+    .resultados-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 1.5rem;
+
+      .resultado-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+
+        &.grande {
+          background: linear-gradient(135deg, #14b8a6 0%, #a855f7 100%);
+          color: white;
+
+          .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+
+            .card-info {
+              h4 {
+                font-size: 1rem;
+                font-weight: 600;
+                margin: 0 0 0.5rem;
+                color: white;
+              }
+
+              .card-value {
+                font-size: 2rem;
+                font-weight: 700;
+                margin: 0.5rem 0;
+                color: white;
+              }
+
+              .card-periodo {
+                font-size: 0.85rem;
+                margin: 0;
+                opacity: 0.9;
+              }
+            }
+
+            .card-icon {
+              width: 60px;
+              height: 60px;
+              background: rgba(255, 255, 255, 0.2);
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+
+              i {
+                font-size: 1.8rem;
+                color: white;
+              }
+            }
+          }
+
+          .chart-area {
+            height: 150px;
+            margin-top: 1rem;
+          }
+        }
+
+        .card-header-small {
+          display: flex;
+          gap: 1rem;
+          align-items: flex-start;
+
+          .card-icon-small {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+
+            &.cyan {
+              background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            }
+
+            &.orange {
+              background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            }
+
+            i {
+              font-size: 1.5rem;
+              color: white;
+            }
+          }
+
+          .card-info-small {
+            flex: 1;
+
+            h4 {
+              font-size: 0.9rem;
+              font-weight: 600;
+              color: #6b7280;
+              margin: 0 0 0.5rem;
+            }
+
+            .card-value-small {
+              font-size: 1.3rem;
+              font-weight: 700;
+              color: #1f2937;
+              margin: 0.5rem 0;
+            }
+
+            .porcentaje-bar {
+              display: flex;
+              align-items: baseline;
+              gap: 0.5rem;
+              margin: 0.75rem 0 0.5rem;
+
+              .porcentaje-label {
+                font-size: 1.1rem;
+                font-weight: 700;
+
+                &.cyan {
+                  color: #0891b2;
+                }
+
+                &.orange {
+                  color: #ea580c;
+                }
+              }
+
+              .porcentaje-text {
+                font-size: 0.8rem;
+                color: #9ca3af;
+              }
+            }
+
+            .progress-bar {
+              height: 8px;
+              background: #f3f4f6;
+              border-radius: 4px;
+              overflow: hidden;
+
+              .progress-fill {
+                height: 100%;
+                border-radius: 4px;
+                transition: width 0.5s ease;
+
+                &.cyan {
+                  background: linear-gradient(90deg, #06b6d4 0%, #0891b2 100%);
+                }
+
+                &.orange {
+                  background: linear-gradient(90deg, #f97316 0%, #ea580c 100%);
+                }
+              }
+            }
+          }
+        }
+
+        &.gauge-card {
+          h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #6b7280;
+            margin: 0 0 1rem;
+            text-align: center;
+          }
+
+          .gauge-container {
+            position: relative;
+            height: 180px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+
+            canvas {
+              max-height: 180px;
+            }
+
+            .gauge-value {
+              position: absolute;
+              bottom: 20px;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+
+              .gauge-number {
+                font-size: 2rem;
+                font-weight: 700;
+                color: #ec4899;
+                line-height: 1;
+              }
+
+              .gauge-label {
+                font-size: 0.8rem;
+                color: #9ca3af;
+                margin-top: 0.25rem;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Footer Section
+  .footer-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 0;
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #9ca3af;
+      font-size: 0.9rem;
+
+      i {
+        color: #fbbf24;
+        font-size: 1.1rem;
+      }
+    }
+
+    .footer-right {
+      ::ng-deep .export-btn {
+        background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);
+        border: none;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+
+        &:hover {
+          background: linear-gradient(135deg, #db2777 0%, #9333ea 100%);
+        }
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 1200px) {
+  .sgr-info-general-container {
+    .header-section .kpi-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .entidades-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .filtros-section .filtros-container {
+      grid-template-columns: 1fr;
+    }
+
+    .vista-general-section .resultados-grid {
+      grid-template-columns: 1fr 1fr;
+
+      .resultado-card.grande {
+        grid-column: 1 / -1;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .sgr-info-general-container {
+    .container {
+      padding: 0 1rem;
+    }
+
+    .entidades-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .vista-general-section .resultados-grid {
+      grid-template-columns: 1fr;
+
+      .resultado-card.grande {
+        grid-column: 1;
+      }
+    }
+
+    .footer-section {
+      flex-direction: column;
+      gap: 1rem;
+      text-align: center;
+    }
+  }
+}
