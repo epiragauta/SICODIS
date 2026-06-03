@@ -26,8 +26,13 @@ describe('SgrInformacionGeneralComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize with default periodicidad', () => {
+  it('should initialize with default values', () => {
     expect(component.periodicidad).toBe('Bienal');
+    expect(component.caracterizacionSeleccionada).toBe('grupoInteres');
+    expect(component.entidadSeleccionada).toBe('zomac');
+    expect(component.presupuestoSeleccionado).toBe('total');
+    expect(component.recaudoSeleccionado).toBe('total');
+    expect(component.porcentajeDisponibilidad).toBe(50);
   });
 
   it('should have KPI data', () => {
@@ -41,12 +46,15 @@ describe('SgrInformacionGeneralComponent', () => {
     expect(component.entidadesCount.productoras).toBeGreaterThan(0);
   });
 
-  it('should navigate presupuesto correctly', () => {
-    expect(component.currentPresupuestoIndex).toBe(0);
-    component.nextPresupuesto();
-    expect(component.currentPresupuestoIndex).toBe(1);
-    component.prevPresupuesto();
-    expect(component.currentPresupuestoIndex).toBe(0);
+  it('should update porcentajeDisponibilidad', () => {
+    component.porcentajeDisponibilidad = 75;
+    expect(component.porcentajeDisponibilidad).toBe(75);
+
+    component.porcentajeDisponibilidad = 0;
+    expect(component.porcentajeDisponibilidad).toBe(0);
+
+    component.porcentajeDisponibilidad = 100;
+    expect(component.porcentajeDisponibilidad).toBe(100);
   });
 
   it('should calculate porcentajeCorriente correctly', () => {

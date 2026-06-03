@@ -1,47 +1,21 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Chart } from 'chart.js/auto';
+import { Subject, takeUntil } from 'rxjs';
 
 // PrimeNG imports
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { CheckboxModule } from 'primeng/checkbox';
+import { SliderModule } from 'primeng/slider';
 
 // Services
-import { SicodisApiService } from '../../services/sicodis-api.service';
+import { SgrPresupuestoService } from '../../services/sgr-presupuesto.service';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 
-interface KPIData {
-  presupuestoTotal: number;
-  recaudoCorriente: number;
-  avanceRecaudo: number;
-}
-
-interface EntidadCount {
-  beneficiarias: number;
-  productoras: number;
-  zomac: number;
-  pdet: number;
-  etnicas: number;
-}
-
-interface FiltroCaracterizacion {
-  conceptoGasto: boolean;
-  regional: boolean;
-  asignacion: boolean;
-  grupoInteres: boolean;
-}
-
-interface FiltroEntidad {
-  beneficiario: boolean;
-  productoras: boolean;
-  pdet: boolean;
-  zomac: boolean;
-  etnica: boolean;
-  capital: boolean;
-}
+// Models
+import { FiltrosSGR, DatosAgregados, EntidadCount } from '../../models/sgr-presupuesto.models';
 
 interface PresupuestoMetricas {
   presupuestoTotal: number;
@@ -66,73 +40,52 @@ interface RecaudoMetricas {
     CardModule,
     RadioButtonModule,
     CheckboxModule,
+    SliderModule,
     NumberFormatPipe
   ],
   templateUrl: './sgr-informacion-general.component.html',
   styleUrl: './sgr-informacion-general.component.scss'
 })
-export class SgrInformacionGeneralComponent implements OnInit {
-
-  // KPIs principales
-  kpiData: KPIData = {
-    presupuestoTotal: 54627842000000,
-    recaudoCorriente: 48234567000000,
-    avanceRecaudo: 88.3
-  };
+export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
 
   // Conteo de entidades
   entidadesCount: EntidadCount = {
-    beneficiarias: 1124,
-    productoras: 32,
-    zomac: 344,
-    pdet: 170,
-    etnicas: 913
+    beneficiarias: 0,
+    productoras: 0,
+    zomac: 0,
+    pdet: 0,
+    etnicas: 0
   };
 
   // Filtros
   periodicidad: string = 'Bienal';
-
-  filtroCaracterizacion: FiltroCaracterizacion = {
-    conceptoGasto: false,
-    regional: false,
-    asignacion: false,
-    grupoInteres: true
-  };
-
-  filtroEntidad: FiltroEntidad = {
-    beneficiario: false,
-    productoras: false,
-    pdet: false,
-    zomac: true,
-    etnica: false,
-    capital: false
-  };
+  caracterizacionSeleccionada: string = 'grupoInteres';
+  entidadSeleccionada: string = 'beneficiario';
+  presupuestoSeleccionado: string = 'total';
+  recaudoSeleccionado: string = 'total';
+  porcentajeDisponibilidad: number = 50;
 
   // Métricas de presupuesto
   presupuestoMetricas: PresupuestoMetricas = {
-    presupuestoTotal: 54627842000000,
-    presupuestoCorriente: 48234567000000,
-    presupuestoOtros: 6393275000000,
-    porcentajeDisponibilidad: 11.7
+    presupuestoTotal: 0,
+    presupuestoCorriente: 0,
+    presupuestoOtros: 0,
+    porcentajeDisponibilidad: 0
   };
 
   // Métricas de recaudo
   recaudoMetricas: RecaudoMetricas = {
-    recaudoTotal: 48234567000000,
-    recaudoCorriente: 42567234000000,
-    recaudoOtros: 5667333000000
+    recaudoTotal: 0,
+    recaudoCorriente: 0,
+    recaudoOtros: 0
   };
-
-  // Datos para gráficas
-  private chartLinea: Chart | null = null;
-  private chartGauge: Chart | null = null;
 
   // Estados
   isLoading = signal(false);
-  currentPresupuestoIndex = 0;
   fechaReporte: string = '';
 
-  constructor(private sicodisApiService: SicodisApiService) {
+  constructor(private sgrPresupuestoService: SgrPresupuestoService) {
     const fecha = new Date();
     const meses = [
       'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
@@ -143,52 +96,90 @@ export class SgrInformacionGeneralComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadData();
-    setTimeout(() => {
-      this.createChartLinea();
-      this.createChartGauge();
-    }, 100);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   loadData(): void {
     this.isLoading.set(true);
 
-    // Aquí se conectaría con los endpoints reales cuando estén disponibles
-    // this.sicodisApiService.getSgrResumenPtoRecaudo(...).subscribe(...)
+    // Construir filtros basados en la entidad seleccionada
+    const filtros: FiltrosSGR = {};
 
-    setTimeout(() => {
-      this.isLoading.set(false);
-    }, 500);
+    switch (this.entidadSeleccionada) {
+      case 'productoras':
+        filtros.productor = true;
+        break;
+      case 'zomac':
+        filtros.zomac = true;
+        break;
+      case 'pdet':
+        filtros.pdet = true;
+        break;
+      case 'etnica':
+        filtros.destinacionEtnica = true;
+        break;
+      case 'capital':
+        // Nota: esCapital no está soportado directamente en FiltrosSGR
+        // Se podría agregar en el futuro al modelo
+        break;
+      case 'beneficiario':
+        // Mostrar todas las entidades sin filtro específico
+        break;
+    }
+
+    // Cargar datos agregados con filtros
+    this.sgrPresupuestoService.getDatosAgregados(filtros)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (datos: DatosAgregados) => {
+          this.actualizarDatosComponente(datos);
+          this.isLoading.set(false);
+        },
+        error: (error) => {
+          console.error('Error al cargar datos:', error);
+          this.isLoading.set(false);
+        }
+      });
   }
 
-  aplicarFiltros(): void {
-    console.log('Aplicando filtros:', {
-      periodicidad: this.periodicidad,
-      caracterizacion: this.filtroCaracterizacion,
-      entidad: this.filtroEntidad
-    });
+  private actualizarDatosComponente(datos: DatosAgregados): void {
+    // Actualizar conteo de entidades
+    this.entidadesCount = datos.entidadesCount;
+
+    // Actualizar métricas de presupuesto
+    this.presupuestoMetricas = {
+      presupuestoTotal: datos.presupuestoTotal,
+      presupuestoCorriente: datos.presupuestoCorriente,
+      presupuestoOtros: datos.presupuestoOtros,
+      porcentajeDisponibilidad: datos.presupuestoTotal > 0
+        ? (datos.presupuestoOtros / datos.presupuestoTotal) * 100
+        : 0
+    };
+
+    // Actualizar métricas de recaudo
+    this.recaudoMetricas = {
+      recaudoTotal: datos.recaudoTotal,
+      recaudoCorriente: datos.recaudoCorriente,
+      recaudoOtros: datos.recaudoOtros
+    };
+  }
+
+
+  onEntidadChange(nuevaEntidad: string): void {
+    console.log('Cambio de entidad detectado:', nuevaEntidad);
+    this.entidadSeleccionada = nuevaEntidad;
     this.loadData();
   }
 
-  prevPresupuesto(): void {
-    if (this.currentPresupuestoIndex > 0) {
-      this.currentPresupuestoIndex--;
-    }
-  }
-
-  nextPresupuesto(): void {
-    if (this.currentPresupuestoIndex < 3) {
-      this.currentPresupuestoIndex++;
-    }
-  }
-
-  get presupuestoActual(): string {
-    const metricas = [
-      'Presupuesto Total',
-      'Presupuesto Corriente',
-      'Presupuesto Otros',
-      '% participación de la Disponibilidad Inicial por vigencia'
-    ];
-    return metricas[this.currentPresupuestoIndex];
+  aplicarFiltros(): void {
+    console.log('Aplicando filtros de entidad:', {
+      entidadSeleccionada: this.entidadSeleccionada
+    });
+    this.loadData();
   }
 
   exportarReporte(): void {
@@ -196,114 +187,88 @@ export class SgrInformacionGeneralComponent implements OnInit {
     alert('Funcionalidad de exportación en desarrollo');
   }
 
-  createChartLinea(): void {
-    const ctx = document.getElementById('chartLinea') as HTMLCanvasElement;
-    if (!ctx) return;
-
-    // Datos de ejemplo: avance de recaudo mensual
-    const labels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-    const data = [15, 22, 28, 35, 42, 48, 55, 62, 68, 75, 82, 88.3];
-
-    this.chartLinea = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: 'Avance Recaudo (%)',
-          data: data,
-          borderColor: 'rgba(255, 255, 255, 0.9)',
-          backgroundColor: 'rgba(255, 255, 255, 0.2)',
-          borderWidth: 3,
-          tension: 0.4,
-          fill: true,
-          pointBackgroundColor: 'white',
-          pointBorderColor: 'white',
-          pointBorderWidth: 2,
-          pointRadius: 4,
-          pointHoverRadius: 6
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false
-          },
-          tooltip: {
-            callbacks: {
-              label: (context) => `${context.parsed.y}%`
-            }
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 100,
-            ticks: {
-              color: 'rgba(255, 255, 255, 0.8)',
-              callback: (value) => `${value}%`
-            },
-            grid: {
-              color: 'rgba(255, 255, 255, 0.1)'
-            }
-          },
-          x: {
-            ticks: {
-              color: 'rgba(255, 255, 255, 0.8)'
-            },
-            grid: {
-              color: 'rgba(255, 255, 255, 0.1)'
-            }
-          }
-        }
-      }
-    });
+  // Getters dinámicos para KPIs según filtros de Presupuesto y Recaudo
+  get presupuestoKPI(): number {
+    switch (this.presupuestoSeleccionado) {
+      case 'corriente':
+        return this.presupuestoMetricas.presupuestoCorriente;
+      case 'otros':
+        return this.presupuestoMetricas.presupuestoOtros;
+      default:
+        return this.presupuestoMetricas.presupuestoTotal;
+    }
   }
 
-  createChartGauge(): void {
-    const ctx = document.getElementById('chartGauge') as HTMLCanvasElement;
-    if (!ctx) return;
-
-    const porcentaje = this.presupuestoMetricas.porcentajeDisponibilidad;
-    const restante = 100 - porcentaje;
-
-    this.chartGauge = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        datasets: [{
-          data: [porcentaje, restante],
-          backgroundColor: [
-            '#ec4899', // Magenta
-            '#e5e7eb'  // Gris claro
-          ],
-          borderWidth: 0,
-          circumference: 180,
-          rotation: 270
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '75%',
-        plugins: {
-          legend: {
-            display: false
-          },
-          tooltip: {
-            enabled: false
-          }
-        }
-      }
-    });
+  get tituloPresupuestoKPI(): string {
+    switch (this.presupuestoSeleccionado) {
+      case 'corriente':
+        return 'Presupuesto Corriente';
+      case 'otros':
+        return 'Presupuesto Otros';
+      default:
+        return 'Presupuesto Total';
+    }
   }
 
-  // Métodos auxiliares para calcular porcentajes
+  get recaudoKPI(): number {
+    switch (this.recaudoSeleccionado) {
+      case 'corriente':
+        return this.recaudoMetricas.recaudoCorriente;
+      case 'otros':
+        return this.recaudoMetricas.recaudoOtros;
+      default:
+        return this.recaudoMetricas.recaudoTotal;
+    }
+  }
+
+  get tituloRecaudoKPI(): string {
+    switch (this.recaudoSeleccionado) {
+      case 'corriente':
+        return 'Recaudo Corriente';
+      case 'otros':
+        return 'Recaudo Otros';
+      default:
+        return 'Recaudo Total';
+    }
+  }
+
+  get avanceRecaudoKPI(): number {
+    return this.presupuestoKPI > 0
+      ? (this.recaudoKPI / this.presupuestoKPI) * 100
+      : 0;
+  }
+
+  // Métodos para manejar cambios en filtros de Presupuesto y Recaudo
+  onPresupuestoSeleccionChange(nuevoValor: string): void {
+    console.log('Presupuesto seleccionado:', nuevoValor);
+    this.presupuestoSeleccionado = nuevoValor;
+    // Los KPIs se actualizan automáticamente mediante los getters
+  }
+
+  onRecaudoSeleccionChange(nuevoValor: string): void {
+    console.log('Recaudo seleccionado:', nuevoValor);
+    this.recaudoSeleccionado = nuevoValor;
+    // Los KPIs se actualizan automáticamente mediante los getters
+  }
+
+  // Getters para la sección "Vista General" (aunque esté oculta, evitan errores de compilación)
   get porcentajeCorriente(): number {
-    return (this.presupuestoMetricas.presupuestoCorriente / this.presupuestoMetricas.presupuestoTotal) * 100;
+    return this.presupuestoMetricas.presupuestoTotal > 0
+      ? (this.presupuestoMetricas.presupuestoCorriente / this.presupuestoMetricas.presupuestoTotal) * 100
+      : 0;
   }
 
   get porcentajeOtros(): number {
-    return (this.presupuestoMetricas.presupuestoOtros / this.presupuestoMetricas.presupuestoTotal) * 100;
+    return this.presupuestoMetricas.presupuestoTotal > 0
+      ? (this.presupuestoMetricas.presupuestoOtros / this.presupuestoMetricas.presupuestoTotal) * 100
+      : 0;
+  }
+
+  get presupuestoVisualizacion(): number {
+    return this.presupuestoMetricas.presupuestoTotal;
+  }
+
+  get tituloPresupuesto(): string {
+    return 'Presupuesto Total';
   }
 }

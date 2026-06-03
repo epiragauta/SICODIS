@@ -49,6 +49,7 @@
           font-size: 1.8rem;
           font-weight: 700;
           color: #1f2937;
+          text-align: right;
           margin: 0;
         }
       }
@@ -59,33 +60,128 @@
   .entidades-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 1rem;
+    gap: 1.5rem;
     margin-bottom: 2rem;
 
     .entidad-card {
       background: white;
-      padding: 1.25rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      border-top: 4px solid #14b8a6;
-      text-align: center;
+      padding: 1.5rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
 
-      h4 {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #ec4899;
-        margin: 0 0 0.5rem;
-        min-height: 40px;
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #14b8a6 0%, #06b6d4 100%);
+      }
+
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+      }
+
+      .entidad-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-shrink: 0;
+        background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+
+        i {
+          font-size: 1.8rem;
+          color: white;
+        }
       }
 
-      .entidad-count {
-        font-size: 1.3rem;
-        font-weight: 700;
-        color: #1f2937;
-        margin: 0;
+      .entidad-info {
+        flex: 1;
+        text-align: left;
+
+        h4 {
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: #6b7280;
+          margin: 0 0 0.5rem;
+          line-height: 1.3;
+        }
+
+        .entidad-count {
+          font-size: 1.8rem;
+          font-weight: 700;
+          color: #1f2937;
+          margin: 0.25rem 0;
+          line-height: 1;
+        }
+
+        .entidad-label {
+          font-size: 0.75rem;
+          color: #9ca3af;
+          font-weight: 500;
+        }
+      }
+
+      // Colores específicos por tipo de entidad
+      &.beneficiarias {
+        &::before {
+          background: linear-gradient(90deg, #ec4899 0%, #f472b6 100%);
+        }
+
+        .entidad-icon {
+          background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+        }
+      }
+
+      &.productoras {
+        &::before {
+          background: linear-gradient(90deg, #8b5cf6 0%, #a78bfa 100%);
+        }
+
+        .entidad-icon {
+          background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+        }
+      }
+
+      &.zomac {
+        &::before {
+          background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%);
+        }
+
+        .entidad-icon {
+          background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+        }
+      }
+
+      &.pdet {
+        &::before {
+          background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+        }
+
+        .entidad-icon {
+          background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+        }
+      }
+
+      &.etnicas {
+        &::before {
+          background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%);
+        }
+
+        .entidad-icon {
+          background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+        }
       }
     }
   }
@@ -143,81 +239,67 @@
       }
 
       .caracterizacion-box {
-        .checkbox-grid {
-          display: flex;
-          flex-direction: column;
-          gap: 0.75rem;
-          margin-bottom: 1.5rem;
+        .caracterizacion-columnas {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 2rem;
 
-          &:last-child {
-            margin-bottom: 0;
-          }
-
-          .checkbox-item {
+          .caracterizacion-columna {
             display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            flex-direction: column;
+            gap: 0.75rem;
 
-            label {
-              font-size: 0.9rem;
-              color: #4b5563;
-              cursor: pointer;
+            .checkbox-item {
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+
+              label {
+                font-size: 0.9rem;
+                color: #4b5563;
+                cursor: pointer;
+              }
             }
           }
         }
       }
 
-      .presupuesto-box {
-        .metricas-navegacion {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-
-          .nav-btn {
-            background: #ec4899;
-            border: none;
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-
-            &:hover:not(:disabled) {
-              background: #db2777;
-            }
-
-            &:disabled {
-              background: #e5e7eb;
-              cursor: not-allowed;
-            }
-
-            i {
-              font-size: 0.8rem;
-            }
-          }
-
-          .metrica-list {
-            flex: 1;
-
-            p {
-              font-size: 0.85rem;
-              color: #6b7280;
-              margin: 0.5rem 0;
-            }
-          }
-        }
-      }
-
+      .presupuesto-box,
       .recaudo-box {
-        .metrica-simple {
-          p {
+        .slider-container {
+          margin-top: 1.5rem;
+          padding-top: 1.5rem;
+          border-top: 1px solid #e5e7eb;
+
+          label {
             font-size: 0.85rem;
             color: #6b7280;
-            margin: 0.5rem 0;
+            display: block;
+            margin-bottom: 0.5rem;
+          }
+
+          .slider-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ec4899;
+            margin-bottom: 1rem;
+            text-align: center;
+          }
+
+          ::ng-deep .slider-disponibilidad {
+            .p-slider-range {
+              background: linear-gradient(90deg, #ec4899 0%, #a855f7 100%);
+            }
+
+            .p-slider-handle {
+              background: #ec4899;
+              border-color: #ec4899;
+
+              &:hover {
+                background: #db2777;
+                border-color: #db2777;
+              }
+            }
           }
         }
       }
@@ -226,6 +308,7 @@
 
   // Vista General Section
   .vista-general-section {
+    display: none;
     margin-bottom: 2rem;
 
     .resultados-grid {
@@ -475,7 +558,7 @@
     }
 
     .entidades-grid {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
     }
 
     .filtros-section .filtros-container {
@@ -492,6 +575,14 @@
   }
 }
 
+@media (max-width: 992px) {
+  .sgr-info-general-container {
+    .entidades-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .sgr-info-general-container {
     .container {
@@ -499,7 +590,36 @@
     }
 
     .entidades-grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr;
+      gap: 1rem;
+
+      .entidad-card {
+        .entidad-icon {
+          width: 50px;
+          height: 50px;
+
+          i {
+            font-size: 1.4rem;
+          }
+        }
+
+        .entidad-info {
+          h4 {
+            font-size: 0.8rem;
+          }
+
+          .entidad-count {
+            font-size: 1.5rem;
+          }
+        }
+      }
+    }
+
+    .filtros-section .filtros-container {
+      .caracterizacion-box .caracterizacion-columnas {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
     }
 
     .vista-general-section .resultados-grid {
