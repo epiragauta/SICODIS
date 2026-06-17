@@ -27,6 +27,8 @@ import { SitemapComponent } from './components/sitemap/sitemap.component';
 import { MapaRecursosComponent } from './components/mapa-recursos/mapa-recursos.component';
 import { SgrInicioComponent } from './components/sgr-inicio/sgr-inicio.component';
 import { SgrInformacionGeneralComponent } from './components/sgr-informacion-general/sgr-informacion-general.component';
+import { AdminConfigComponent } from './components/admin-config/admin-config.component';
+import { adminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -60,6 +62,8 @@ export const routes: Routes = [
     { path: 'tools',                          component: ToolsComponent,                                    data: { breadcrumb: 'Herramientas' } },
     { path: 'mapa-del-sitio',                 component: SitemapComponent,                                  data: { breadcrumb: 'Mapa del sitio' } },
     { path: 'mapa-recursos',                  component: MapaRecursosComponent,                             data: { breadcrumb: 'Mapa de Recursos' } },
+    // Administración (protegido con guard)
+    { path: 'admin-config',                   component: AdminConfigComponent,    canActivate: [adminGuard], data: { breadcrumb: 'Administración' } },
     // 404
     { path: '**', component: NotFoundComponent, data: { breadcrumb: 'Página no encontrada' } },
 ];

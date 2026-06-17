@@ -348,34 +348,71 @@
 
     <!-- =========================================================== -->
 
-    <!-- ================= MODAL IMAGEN BIENVENIDA ================= -->
+    <!-- ================= BANNER INTELIGENTE ================= -->
+    <!-- Configurado dinámicamente desde el panel de administración -->
 <p-dialog
-  [(visible)]="showImage"
+  [(visible)]="showBanner"
   [modal]="true"
   appendTo="body"
   [closable]="true"
   [dismissableMask]="true"
-  [showHeader]="false"
+  (onHide)="closeBanner()"
+  [showHeader]="true"
   [style]="{width:'42vw', 'max-height':'90vh'}"
-  [contentStyle]="{'overflow-y':'auto', 'padding':'0', 'max-height':'85vh'}"
-  [breakpoints]="{'1200px':'35vw', '960px':'55vw', '640px':'85vw'}">
+  [contentStyle]="{'overflow-y':'auto', 'padding':'1rem', 'max-height':'85vh'}"
+  [breakpoints]="{'1200px':'50vw', '960px':'60vw', '640px':'90vw'}">
 
   <ng-template pTemplate="header">
-    <span style="width: 100%; text-align: center; font-weight: bold; font-size: 1.1rem;">
-      Importante
-    </span>
+    <div style="width: 100%; display: flex; align-items: center; gap: 0.5rem;">
+      <i
+        [class]="'pi ' + (bannerConfig?.tipo === 'warning' ? 'pi-exclamation-triangle' :
+                          bannerConfig?.tipo === 'error' ? 'pi-times-circle' :
+                          bannerConfig?.tipo === 'success' ? 'pi-check-circle' : 'pi-info-circle')"
+        [style.color]="bannerConfig?.tipo === 'warning' ? '#fbbf24' :
+                       bannerConfig?.tipo === 'error' ? '#ef4444' :
+                       bannerConfig?.tipo === 'success' ? '#10b981' : '#3b82f6'"
+        style="font-size: 1.5rem;">
+      </i>
+      <span style="font-weight: bold; font-size: 1.1rem;">
+        {{ bannerConfig?.titulo || 'Información importante' }}
+      </span>
+    </div>
   </ng-template>
 
-  <div style="text-align: center;">
-    <a href="https://www.dnp.gov.co/LaEntidad_/subdireccion-general-inversiones-seguimiento-evaluacion/direccion-programacion-inversiones-publicas/Paginas/sistema-general-de-regalias.aspx#veinticincoseiscaja" target="_blank"
-       style="cursor: pointer; display: block;">
-      <img
-        src="/assets/img/alertasboletin.jpg"
-        alt="Boletín informativo del Sistema General de Regalías — haga clic para ver el documento completo en el sitio del DNP"
-        style="width: 100%; height: auto; display: block;"
-        title="Clic para ver el boletín en el sitio del DNP"
-      />
-  </a>
+  <div class="banner-content">
+    <!-- Banner HTML estructurado: Alertas de Caja -->
+    <div *ngIf="bannerConfig?.template === 'alertas-caja'">
+      <app-banner-alertas-caja></app-banner-alertas-caja>
+    </div>
+
+    <!-- Banner tradicional (imagen + texto) -->
+    <ng-container *ngIf="bannerConfig?.template !== 'alertas-caja'">
+      <!-- Mensaje de texto -->
+      <div *ngIf="bannerConfig?.mensaje" style="margin-bottom: 1rem; line-height: 1.6;">
+        <p [innerHTML]="bannerConfig?.mensaje"></p>
+      </div>
+
+      <!-- Imagen si está configurada -->
+      <div *ngIf="bannerConfig?.imagen_url" style="text-align: center; margin-bottom: 1rem;">
+        <img
+          [src]="bannerConfig?.imagen_url"
+          [alt]="bannerConfig?.titulo"
+          style="width: 100%; height: auto; max-width: 600px; border-radius: 4px;"
+        />
+      </div>
+
+      <!-- Botón de acción opcional -->
+      <div *ngIf="bannerConfig?.boton_texto" style="text-align: center; margin-top: 1.5rem;">
+        <button
+          pButton
+          type="button"
+          [label]="bannerConfig?.boton_texto ?? 'Ver más'"
+          (click)="onBannerButtonClick()"
+          class="p-button-primary"
+          style="min-width: 200px;">
+        </button>
+      </div>
+    </ng-container>
   </div>
 
 </p-dialog>

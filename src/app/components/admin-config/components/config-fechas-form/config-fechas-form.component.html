@@ -1,0 +1,514 @@
+<div class="config-fechas-container p-4">
+  <!-- Mensajes de éxito/error -->
+  <p-messages severity="success" *ngIf="saveSuccess()">
+    <ng-template pTemplate>
+      <div class="flex align-items-center">
+        <i class="pi pi-check-circle mr-2"></i>
+        <span>Configuración guardada exitosamente</span>
+      </div>
+    </ng-template>
+  </p-messages>
+
+  <p-messages severity="error" *ngIf="saveError()">
+    <ng-template pTemplate>
+      <div class="flex align-items-center">
+        <i class="pi pi-times-circle mr-2"></i>
+        <span>{{ saveError() }}</span>
+      </div>
+    </ng-template>
+  </p-messages>
+
+  <!-- Acordeón con secciones -->
+  <p-accordion [multiple]="true" [activeIndex]="[0]">
+
+    <!-- ====================================================================== -->
+    <!-- SECCIÓN: SGR VIGENCIA ACTUAL (2025-2026) -->
+    <!-- ====================================================================== -->
+    <p-accordionTab header="SGR - Vigencia Actual (2025-2026)">
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="card-header p-3">
+            <h3 class="m-0 text-lg font-semibold">Fechas de Actualización - Vigencia 2025-2026</h3>
+            <p class="text-sm text-gray-600 mt-1">
+              Componentes afectados: sgr-comparativo, sgr-montos-corrientes-constantes, sgr-programacion
+            </p>
+          </div>
+        </ng-template>
+
+        <form [formGroup]="sgrVigenciaForm" class="p-fluid">
+          <div class="grid">
+            <!-- Fecha de Actualización -->
+            <div class="col-12 md:col-6">
+              <label for="sgr-vigencia-fecha-act" class="block mb-2 font-semibold">
+                Fecha de Actualización
+                <i class="pi pi-info-circle ml-2 text-sm cursor-pointer"
+                   pTooltip="Formato: 'mes día de año' (ej: mayo 30 de 2025)"
+                   tooltipPosition="top"></i>
+              </label>
+              <input
+                pInputText
+                id="sgr-vigencia-fecha-act"
+                formControlName="fecha_actualizacion"
+                placeholder="mayo 30 de 2025"
+                (blur)="onFechaTextoChange(sgrVigenciaForm, 'fecha_actualizacion', 'fecha_iso_actualizacion')"
+                [class.ng-invalid]="sgrVigencia['fecha_actualizacion'].invalid && sgrVigencia['fecha_actualizacion'].touched"
+              />
+              <small class="text-red-500" *ngIf="sgrVigencia['fecha_actualizacion'].hasError('required') && sgrVigencia['fecha_actualizacion'].touched">
+                Campo requerido
+              </small>
+              <small class="text-red-500" *ngIf="sgrVigencia['fecha_actualizacion'].hasError('formatoInvalido')">
+                Formato inválido. Use: "mes día de año"
+              </small>
+              <small class="text-red-500" *ngIf="sgrVigencia['fecha_actualizacion'].hasError('mesInvalido')">
+                Mes inválido. Use un mes en español
+              </small>
+            </div>
+
+            <!-- Fecha ISO de Actualización -->
+            <div class="col-12 md:col-6">
+              <label for="sgr-vigencia-fecha-iso-act" class="block mb-2 font-semibold">
+                Fecha ISO (Actualización)
+              </label>
+              <p-calendar
+                inputId="sgr-vigencia-fecha-iso-act"
+                formControlName="fecha_iso_actualizacion"
+                dateFormat="yy-mm-dd"
+                [showIcon]="true"
+                (onSelect)="onFechaISOChange(sgrVigenciaForm, 'fecha_iso_actualizacion', 'fecha_actualizacion')"
+                [class.ng-invalid]="sgrVigencia['fecha_iso_actualizacion'].invalid && sgrVigencia['fecha_iso_actualizacion'].touched">
+              </p-calendar>
+              <small class="text-red-500" *ngIf="sgrVigencia['fecha_iso_actualizacion'].hasError('required') && sgrVigencia['fecha_iso_actualizacion'].touched">
+                Campo requerido
+              </small>
+            </div>
+
+            <!-- Fecha de Corte de Recaudo -->
+            <div class="col-12 md:col-6">
+              <label for="sgr-vigencia-fecha-corte" class="block mb-2 font-semibold">
+                Fecha de Corte de Recaudo
+              </label>
+              <input
+                pInputText
+                id="sgr-vigencia-fecha-corte"
+                formControlName="fecha_corte_recaudo"
+                placeholder="junio 30 de 2025"
+                (blur)="onFechaTextoChange(sgrVigenciaForm, 'fecha_corte_recaudo', 'fecha_iso_corte')"
+                [class.ng-invalid]="sgrVigencia['fecha_corte_recaudo'].invalid && sgrVigencia['fecha_corte_recaudo'].touched"
+              />
+              <small class="text-red-500" *ngIf="sgrVigencia['fecha_corte_recaudo'].hasError('required') && sgrVigencia['fecha_corte_recaudo'].touched">
+                Campo requerido
+              </small>
+            </div>
+
+            <!-- Fecha ISO de Corte -->
+            <div class="col-12 md:col-6">
+              <label for="sgr-vigencia-fecha-iso-corte" class="block mb-2 font-semibold">
+                Fecha ISO (Corte)
+              </label>
+              <p-calendar
+                inputId="sgr-vigencia-fecha-iso-corte"
+                formControlName="fecha_iso_corte"
+                dateFormat="yy-mm-dd"
+                [showIcon]="true"
+                (onSelect)="onFechaISOChange(sgrVigenciaForm, 'fecha_iso_corte', 'fecha_corte_recaudo')"
+                [class.ng-invalid]="sgrVigencia['fecha_iso_corte'].invalid && sgrVigencia['fecha_iso_corte'].touched">
+              </p-calendar>
+              <small class="text-red-500" *ngIf="sgrVigencia['fecha_iso_corte'].hasError('required') && sgrVigencia['fecha_iso_corte'].touched">
+                Campo requerido
+              </small>
+            </div>
+          </div>
+
+          <!-- Botón Guardar -->
+          <div class="flex justify-content-end mt-4">
+            <button
+              pButton
+              type="button"
+              label="Guardar Configuración"
+              icon="pi pi-save"
+              [loading]="isSaving()"
+              (click)="guardarSgrVigencia()"
+              class="p-button-primary">
+            </button>
+          </div>
+        </form>
+      </p-card>
+    </p-accordionTab>
+
+    <!-- ====================================================================== -->
+    <!-- SECCIÓN: SGR PLAN BIENAL (2025-2026) -->
+    <!-- ====================================================================== -->
+    <p-accordionTab header="SGR - Plan Bienal (2025-2026)">
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="card-header p-3">
+            <h3 class="m-0 text-lg font-semibold">Fechas de Plan Bienal 2025-2026</h3>
+            <p class="text-sm text-gray-600 mt-1">
+              Componentes afectados: sgr-plan-bienal-caja, sgr-plan-bienal-recursos
+            </p>
+          </div>
+        </ng-template>
+
+        <form [formGroup]="sgrPlanBienalForm" class="p-fluid">
+          <div class="grid">
+            <!-- Fecha de Actualización -->
+            <div class="col-12 md:col-6">
+              <label for="sgr-bienal-fecha-act" class="block mb-2 font-semibold">
+                Fecha de Actualización
+              </label>
+              <input
+                pInputText
+                id="sgr-bienal-fecha-act"
+                formControlName="fecha_actualizacion"
+                placeholder="febrero 12 de 2026"
+                (blur)="onFechaTextoChange(sgrPlanBienalForm, 'fecha_actualizacion', 'fecha_iso_actualizacion')"
+                [class.ng-invalid]="sgrPlanBienal['fecha_actualizacion'].invalid && sgrPlanBienal['fecha_actualizacion'].touched"
+              />
+              <small class="text-red-500" *ngIf="sgrPlanBienal['fecha_actualizacion'].hasError('required') && sgrPlanBienal['fecha_actualizacion'].touched">
+                Campo requerido
+              </small>
+            </div>
+
+            <div class="col-12 md:col-6">
+              <label for="sgr-bienal-fecha-iso-act" class="block mb-2 font-semibold">
+                Fecha ISO (Actualización)
+              </label>
+              <p-calendar
+                inputId="sgr-bienal-fecha-iso-act"
+                formControlName="fecha_iso_actualizacion"
+                dateFormat="yy-mm-dd"
+                [showIcon]="true"
+                (onSelect)="onFechaISOChange(sgrPlanBienalForm, 'fecha_iso_actualizacion', 'fecha_actualizacion')"
+                [class.ng-invalid]="sgrPlanBienal['fecha_iso_actualizacion'].invalid && sgrPlanBienal['fecha_iso_actualizacion'].touched">
+              </p-calendar>
+            </div>
+
+            <!-- Fecha de Corte -->
+            <div class="col-12 md:col-6">
+              <label for="sgr-bienal-fecha-corte" class="block mb-2 font-semibold">
+                Fecha de Corte de Recaudo
+              </label>
+              <input
+                pInputText
+                id="sgr-bienal-fecha-corte"
+                formControlName="fecha_corte_recaudo"
+                placeholder="enero 31 de 2026"
+                (blur)="onFechaTextoChange(sgrPlanBienalForm, 'fecha_corte_recaudo', 'fecha_iso_corte')"
+                [class.ng-invalid]="sgrPlanBienal['fecha_corte_recaudo'].invalid && sgrPlanBienal['fecha_corte_recaudo'].touched"
+              />
+            </div>
+
+            <div class="col-12 md:col-6">
+              <label for="sgr-bienal-fecha-iso-corte" class="block mb-2 font-semibold">
+                Fecha ISO (Corte)
+              </label>
+              <p-calendar
+                inputId="sgr-bienal-fecha-iso-corte"
+                formControlName="fecha_iso_corte"
+                dateFormat="yy-mm-dd"
+                [showIcon]="true"
+                (onSelect)="onFechaISOChange(sgrPlanBienalForm, 'fecha_iso_corte', 'fecha_corte_recaudo')"
+                [class.ng-invalid]="sgrPlanBienal['fecha_iso_corte'].invalid && sgrPlanBienal['fecha_iso_corte'].touched">
+              </p-calendar>
+            </div>
+          </div>
+
+          <div class="flex justify-content-end mt-4">
+            <button
+              pButton
+              type="button"
+              label="Guardar Configuración"
+              icon="pi pi-save"
+              [loading]="isSaving()"
+              (click)="guardarSgrPlanBienal()"
+              class="p-button-primary">
+            </button>
+          </div>
+        </form>
+      </p-card>
+    </p-accordionTab>
+
+    <!-- ====================================================================== -->
+    <!-- SECCIÓN: SGP EFICIENCIAS -->
+    <!-- ====================================================================== -->
+    <p-accordionTab header="SGP - Reporte de Eficiencias">
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="card-header p-3">
+            <h3 class="m-0 text-lg font-semibold">Fechas para Reporte de Eficiencias SGP</h3>
+            <p class="text-sm text-gray-600 mt-1">
+              Componente afectado: sgp-eficiencias
+            </p>
+          </div>
+        </ng-template>
+
+        <form [formGroup]="sgpEficienciasForm" class="p-fluid">
+          <div class="grid">
+            <div class="col-12 md:col-6">
+              <label for="sgp-ef-fecha-act" class="block mb-2 font-semibold">
+                Fecha de Actualización
+              </label>
+              <input
+                pInputText
+                id="sgp-ef-fecha-act"
+                formControlName="fecha_actualizacion"
+                placeholder="octubre 01 de 2025"
+                (blur)="onFechaTextoChange(sgpEficienciasForm, 'fecha_actualizacion', 'fecha_iso_actualizacion')"
+                [class.ng-invalid]="sgpEficiencias['fecha_actualizacion'].invalid && sgpEficiencias['fecha_actualizacion'].touched"
+              />
+            </div>
+
+            <div class="col-12 md:col-6">
+              <label for="sgp-ef-fecha-iso-act" class="block mb-2 font-semibold">
+                Fecha ISO (Actualización)
+              </label>
+              <p-calendar
+                inputId="sgp-ef-fecha-iso-act"
+                formControlName="fecha_iso_actualizacion"
+                dateFormat="yy-mm-dd"
+                [showIcon]="true"
+                (onSelect)="onFechaISOChange(sgpEficienciasForm, 'fecha_iso_actualizacion', 'fecha_actualizacion')"
+                [class.ng-invalid]="sgpEficiencias['fecha_iso_actualizacion'].invalid && sgpEficiencias['fecha_iso_actualizacion'].touched">
+              </p-calendar>
+            </div>
+
+            <div class="col-12 md:col-6">
+              <label for="sgp-ef-fecha-corte" class="block mb-2 font-semibold">
+                Fecha de Corte
+              </label>
+              <input
+                pInputText
+                id="sgp-ef-fecha-corte"
+                formControlName="fecha_corte_recaudo"
+                placeholder="31 de agosto de 2024"
+                (blur)="onFechaTextoChange(sgpEficienciasForm, 'fecha_corte_recaudo', 'fecha_iso_corte')"
+                [class.ng-invalid]="sgpEficiencias['fecha_corte_recaudo'].invalid && sgpEficiencias['fecha_corte_recaudo'].touched"
+              />
+            </div>
+
+            <div class="col-12 md:col-6">
+              <label for="sgp-ef-fecha-iso-corte" class="block mb-2 font-semibold">
+                Fecha ISO (Corte)
+              </label>
+              <p-calendar
+                inputId="sgp-ef-fecha-iso-corte"
+                formControlName="fecha_iso_corte"
+                dateFormat="yy-mm-dd"
+                [showIcon]="true"
+                (onSelect)="onFechaISOChange(sgpEficienciasForm, 'fecha_iso_corte', 'fecha_corte_recaudo')"
+                [class.ng-invalid]="sgpEficiencias['fecha_iso_corte'].invalid && sgpEficiencias['fecha_iso_corte'].touched">
+              </p-calendar>
+            </div>
+          </div>
+
+          <div class="flex justify-content-end mt-4">
+            <button
+              pButton
+              type="button"
+              label="Guardar Configuración"
+              icon="pi pi-save"
+              [loading]="isSaving()"
+              (click)="guardarSgpEficiencias()"
+              class="p-button-primary">
+            </button>
+          </div>
+        </form>
+      </p-card>
+    </p-accordionTab>
+
+    <!-- ====================================================================== -->
+    <!-- SECCIÓN: SGP RESGUARDOS -->
+    <!-- ====================================================================== -->
+    <p-accordionTab header="SGP - Resguardos Indígenas">
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="card-header p-3">
+            <h3 class="m-0 text-lg font-semibold">Fecha de Actualización - Resguardos</h3>
+            <p class="text-sm text-gray-600 mt-1">
+              Componente afectado: sgp-resguardos
+            </p>
+          </div>
+        </ng-template>
+
+        <form [formGroup]="sgpResguardosForm" class="p-fluid">
+          <div class="grid">
+            <div class="col-12 md:col-6">
+              <label for="sgp-res-fecha-act" class="block mb-2 font-semibold">
+                Fecha de Actualización
+              </label>
+              <input
+                pInputText
+                id="sgp-res-fecha-act"
+                formControlName="fecha_actualizacion"
+                placeholder="mayo 28 de 2026"
+                (blur)="onFechaTextoChange(sgpResguardosForm, 'fecha_actualizacion', 'fecha_iso_actualizacion')"
+                [class.ng-invalid]="sgpResguardos['fecha_actualizacion'].invalid && sgpResguardos['fecha_actualizacion'].touched"
+              />
+              <small class="text-red-500" *ngIf="sgpResguardos['fecha_actualizacion'].hasError('required') && sgpResguardos['fecha_actualizacion'].touched">
+                Campo requerido
+              </small>
+            </div>
+
+            <div class="col-12 md:col-6">
+              <label for="sgp-res-fecha-iso-act" class="block mb-2 font-semibold">
+                Fecha ISO (Actualización)
+              </label>
+              <p-calendar
+                inputId="sgp-res-fecha-iso-act"
+                formControlName="fecha_iso_actualizacion"
+                dateFormat="yy-mm-dd"
+                [showIcon]="true"
+                (onSelect)="onFechaISOChange(sgpResguardosForm, 'fecha_iso_actualizacion', 'fecha_actualizacion')"
+                [class.ng-invalid]="sgpResguardos['fecha_iso_actualizacion'].invalid && sgpResguardos['fecha_iso_actualizacion'].touched">
+              </p-calendar>
+              <small class="text-red-500" *ngIf="sgpResguardos['fecha_iso_actualizacion'].hasError('required') && sgpResguardos['fecha_iso_actualizacion'].touched">
+                Campo requerido
+              </small>
+            </div>
+          </div>
+
+          <div class="flex justify-content-end mt-4">
+            <button
+              pButton
+              type="button"
+              label="Guardar Configuración"
+              icon="pi pi-save"
+              [loading]="isSaving()"
+              (click)="guardarSgpResguardos()"
+              class="p-button-primary">
+            </button>
+          </div>
+        </form>
+      </p-card>
+    </p-accordionTab>
+
+    <!-- ====================================================================== -->
+    <!-- SECCIÓN: REPORTE FUNCIONAMIENTO (TABLA EDITABLE) -->
+    <!-- ====================================================================== -->
+    <p-accordionTab header="SGR - Reporte de Funcionamiento (Todas las Vigencias)">
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="card-header p-3">
+            <h3 class="m-0 text-lg font-semibold">Diccionario de Fechas por Vigencia</h3>
+            <p class="text-sm text-gray-600 mt-1">
+              Componente afectado: reporte-funcionamiento
+            </p>
+          </div>
+        </ng-template>
+
+        <p-table
+          [value]="fechasReporteFuncionamiento"
+          dataKey="vigencia"
+          editMode="row"
+          [tableStyle]="{ 'min-width': '50rem' }"
+          styleClass="p-datatable-sm">
+
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width:15%">Vigencia</th>
+              <th style="width:30%">Fecha Actualización</th>
+              <th style="width:30%">Fecha Corte Recaudo</th>
+              <th style="width:10%">ISO Actualización</th>
+              <th style="width:10%">ISO Corte</th>
+              <th style="width:5%"></th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-vigencia let-editing="editing" let-ri="rowIndex">
+            <tr [pEditableRow]="vigencia">
+              <td>{{ vigencia.vigencia }}</td>
+
+              <td>
+                <p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <input
+                      pInputText
+                      type="text"
+                      [(ngModel)]="vigencia.fecha_actualizacion"
+                      class="w-full"
+                    />
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{ vigencia.fecha_actualizacion }}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+
+              <td>
+                <p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <input
+                      pInputText
+                      type="text"
+                      [(ngModel)]="vigencia.fecha_corte_recaudo"
+                      class="w-full"
+                    />
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{ vigencia.fecha_corte_recaudo }}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+
+              <td>
+                <small class="text-gray-500">{{ vigencia.fecha_iso_actualizacion }}</small>
+              </td>
+
+              <td>
+                <small class="text-gray-500">{{ vigencia.fecha_iso_corte }}</small>
+              </td>
+
+              <td>
+                <div class="flex align-items-center justify-content-center gap-2">
+                  <button
+                    *ngIf="!editing"
+                    pButton
+                    pRipple
+                    type="button"
+                    pInitEditableRow
+                    icon="pi pi-pencil"
+                    (click)="onRowEditInit(vigencia.vigencia)"
+                    class="p-button-rounded p-button-text">
+                  </button>
+                  <button
+                    *ngIf="editing"
+                    pButton
+                    pRipple
+                    type="button"
+                    pSaveEditableRow
+                    icon="pi pi-check"
+                    (click)="onRowEditSave(vigencia)"
+                    class="p-button-rounded p-button-text p-button-success mr-2">
+                  </button>
+                  <button
+                    *ngIf="editing"
+                    pButton
+                    pRipple
+                    type="button"
+                    pCancelEditableRow
+                    icon="pi pi-times"
+                    (click)="onRowEditCancel(vigencia, ri)"
+                    class="p-button-rounded p-button-text p-button-danger">
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+        <div class="flex justify-content-end mt-4">
+          <button
+            pButton
+            type="button"
+            label="Guardar Todas las Vigencias"
+            icon="pi pi-save"
+            [loading]="isSaving()"
+            (click)="guardarReporteFuncionamiento()"
+            class="p-button-success">
+          </button>
+        </div>
+      </p-card>
+    </p-accordionTab>
+
+  </p-accordion>
+</div>

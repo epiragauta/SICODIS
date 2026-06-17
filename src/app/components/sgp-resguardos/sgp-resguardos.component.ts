@@ -12,6 +12,7 @@ import { AccordionModule } from 'primeng/accordion';
 
 // Services & Pipes
 import { SicodisApiService } from '../../services/sicodis-api.service';
+import { ConfigService, FechaActualizacion } from '../../services/config.service';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 
 interface ResguardoData {
@@ -72,6 +73,9 @@ export class SgpResguardosComponent implements OnInit {
   // Estados de carga
   isLoading = signal(false);
 
+  // Fecha de actualización (desde ConfigService)
+  fechaActualizacion: string = 'mayo 28 de 2026'; // Valor por defecto
+
   // Datos actuales
   presupuestoActual: number = 2966366220;
   poblacionActual: number = 3461;
@@ -102,10 +106,21 @@ export class SgpResguardosComponent implements OnInit {
     }
   ];
 
-  constructor(private sicodisApiService: SicodisApiService) { }
+  constructor(
+    private sicodisApiService: SicodisApiService,
+    private configService: ConfigService
+  ) { }
 
   ngOnInit(): void {
+    this.loadFechaActualizacion();
     this.loadData();
+  }
+
+  private loadFechaActualizacion(): void {
+    const fechas = this.configService.getSgpFechaResguardosSync();
+    if (fechas && fechas.fecha_actualizacion) {
+      this.fechaActualizacion = fechas.fecha_actualizacion;
+    }
   }
 
   onVigenciaChange(): void {

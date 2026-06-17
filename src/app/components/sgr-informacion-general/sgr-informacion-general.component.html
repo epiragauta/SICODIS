@@ -93,7 +93,8 @@
               <p-radiobutton
                 name="periodicidad"
                 value="Mensual"
-                [(ngModel)]="periodicidad"
+                [ngModel]="periodicidad"
+                (ngModelChange)="onPeriodicidadChange($event)"
                 inputId="mensual"
               />
               <label for="mensual">Mensual</label>
@@ -103,7 +104,8 @@
               <p-radiobutton
                 name="periodicidad"
                 value="Anual"
-                [(ngModel)]="periodicidad"
+                [ngModel]="periodicidad"
+                (ngModelChange)="onPeriodicidadChange($event)"
                 inputId="anual"
               />
               <label for="anual">Anual</label>
@@ -113,10 +115,49 @@
               <p-radiobutton
                 name="periodicidad"
                 value="Bienal"
-                [(ngModel)]="periodicidad"
+                [ngModel]="periodicidad"
+                (ngModelChange)="onPeriodicidadChange($event)"
                 inputId="bienal"
               />
               <label for="bienal">Bienal</label>
+            </div>
+          </div>
+
+          <!-- Dropdown para seleccionar periodo según periodicidad -->
+          <div class="periodo-seleccion">
+            <!-- Dropdown para Bienal/Anual/Mes -->
+            <div class="dropdown-wrapper" *ngIf="periodicidad !== 'Mensual'">
+              <p-dropdown
+                [options]="opcionesPeriodicidad"
+                [(ngModel)]="valorPeriodicidadSeleccionado"
+                (ngModelChange)="onValorPeriodicidadChange()"
+                optionLabel="label"
+                optionValue="value"
+                [placeholder]="periodicidad === 'Bienal' ? 'Seleccione bienio' : 'Seleccione año'"
+                styleClass="w-full"
+              ></p-dropdown>
+            </div>
+
+            <!-- Dropdowns para Mensual (año + mes) -->
+            <div class="dropdown-wrapper mensual-wrapper" *ngIf="periodicidad === 'Mensual'">
+              <p-dropdown
+                [options]="anosOpciones"
+                [(ngModel)]="anoMensualSeleccionado"
+                (ngModelChange)="onAnoMensualChange()"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Seleccione año"
+                styleClass="w-full"
+              ></p-dropdown>
+              <p-dropdown
+                [options]="mesesOpciones"
+                [(ngModel)]="valorPeriodicidadSeleccionado"
+                (ngModelChange)="onValorPeriodicidadChange()"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Seleccione mes"
+                styleClass="w-full"
+              ></p-dropdown>
             </div>
           </div>
         </div>
@@ -131,7 +172,8 @@
                 <p-radiobutton
                   name="caracterizacion"
                   value="conceptoGasto"
-                  [(ngModel)]="caracterizacionSeleccionada"
+                  [ngModel]="caracterizacionSeleccionada"
+                  (ngModelChange)="onCaracterizacionChange($event)"
                   inputId="conceptoGasto"
                 />
                 <label for="conceptoGasto">Concepto de gasto</label>
@@ -141,7 +183,8 @@
                 <p-radiobutton
                   name="caracterizacion"
                   value="regional"
-                  [(ngModel)]="caracterizacionSeleccionada"
+                  [ngModel]="caracterizacionSeleccionada"
+                  (ngModelChange)="onCaracterizacionChange($event)"
                   inputId="regional"
                 />
                 <label for="regional">Regional</label>
@@ -151,7 +194,8 @@
                 <p-radiobutton
                   name="caracterizacion"
                   value="asignacion"
-                  [(ngModel)]="caracterizacionSeleccionada"
+                  [ngModel]="caracterizacionSeleccionada"
+                  (ngModelChange)="onCaracterizacionChange($event)"
                   inputId="asignacion"
                 />
                 <label for="asignacion">Asignación</label>
@@ -161,10 +205,28 @@
                 <p-radiobutton
                   name="caracterizacion"
                   value="grupoInteres"
-                  [(ngModel)]="caracterizacionSeleccionada"
+                  [ngModel]="caracterizacionSeleccionada"
+                  (ngModelChange)="onCaracterizacionChange($event)"
                   inputId="grupoInteres"
                 />
                 <label for="grupoInteres">Grupo de interés</label>
+              </div>
+
+              <!-- Dropdown dinámico debajo de la opción seleccionada -->
+              <div class="dropdown-wrapper">
+                <p-dropdown
+                  id="valorCaracterizacion"
+                  [options]="opcionesCaracterizacion"
+                  [(ngModel)]="valorCaracterizacionSeleccionado"
+                  (ngModelChange)="onValorCaracterizacionChange()"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Seleccione una opción"
+                  [filter]="opcionesCaracterizacion.length > 10"
+                  filterPlaceholder="Buscar..."
+                  [showClear]="false"
+                  styleClass="w-full"
+                ></p-dropdown>
               </div>
             </div>
 

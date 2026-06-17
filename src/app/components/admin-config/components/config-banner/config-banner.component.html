@@ -1,0 +1,511 @@
+<div class="config-banner-container">
+
+  <!-- Loading state -->
+  <div *ngIf="isLoading()" class="loading-state">
+    <i class="pi pi-spin pi-spinner" style="font-size: 2rem;"></i>
+    <p>Cargando configuración...</p>
+  </div>
+
+  <!-- Formulario principal -->
+  <form [formGroup]="bannerForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading()">
+
+    <!-- ========================================== -->
+    <!-- CARD 1: Estado y Configuración Básica -->
+    <!-- ========================================== -->
+    <p-card styleClass="form-card">
+      <ng-template pTemplate="header">
+        <div class="card-title">
+          <i class="pi pi-cog"></i>
+          <span>Configuración Básica</span>
+        </div>
+      </ng-template>
+
+      <div class="form-grid">
+        <!-- Estado activo/inactivo -->
+        <div class="form-field full-width">
+          <div class="checkbox-field">
+            <p-checkbox
+              formControlName="activo"
+              [binary]="true"
+              inputId="banner-activo">
+            </p-checkbox>
+            <label for="banner-activo" class="checkbox-label">
+              <strong>Banner activo</strong>
+              <span class="field-help">Cuando está desactivado, el banner nunca se mostrará</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Tipo de banner -->
+        <div class="form-field">
+          <label for="banner-tipo" class="field-label">
+            Tipo de banner <span class="required">*</span>
+          </label>
+          <p-dropdown
+            id="banner-tipo"
+            formControlName="tipo"
+            [options]="tipoOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Selecciona el tipo"
+            styleClass="w-full">
+            <ng-template pTemplate="selectedItem" let-option>
+              <div class="tipo-option">
+                <i [class]="'pi ' + option.icon" [style.color]="option.color"></i>
+                <span>{{ option.label }}</span>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="item" let-option>
+              <div class="tipo-option">
+                <i [class]="'pi ' + option.icon" [style.color]="option.color"></i>
+                <span>{{ option.label }}</span>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          <small class="field-help">Define el estilo visual del banner</small>
+        </div>
+
+        <!-- Título -->
+        <div class="form-field">
+          <label for="banner-titulo" class="field-label">
+            Título <span class="required">*</span>
+          </label>
+          <input
+            pInputText
+            id="banner-titulo"
+            formControlName="titulo"
+            placeholder="Ej: Bienvenido a SICODIS"
+            class="w-full"
+          />
+          <small class="field-error" *ngIf="titulo?.invalid && titulo?.touched">
+            <span *ngIf="titulo?.errors?.['required']">El título es obligatorio</span>
+            <span *ngIf="titulo?.errors?.['maxlength']">Máximo 100 caracteres</span>
+          </small>
+          <small class="field-help" *ngIf="titulo?.valid || !titulo?.touched">
+            Título principal del banner (máx. 100 caracteres)
+          </small>
+        </div>
+      </div>
+    </p-card>
+
+    <!-- ========================================== -->
+    <!-- CARD 2: Contenido del Banner -->
+    <!-- ========================================== -->
+    <p-card styleClass="form-card">
+      <ng-template pTemplate="header">
+        <div class="card-title">
+          <i class="pi pi-file-edit"></i>
+          <span>Contenido</span>
+        </div>
+      </ng-template>
+
+      <div class="form-grid">
+        <!-- Mensaje -->
+        <div class="form-field full-width">
+          <label for="banner-mensaje" class="field-label">
+            Mensaje <span class="required">*</span>
+          </label>
+          <textarea
+            pInputTextarea
+            id="banner-mensaje"
+            formControlName="mensaje"
+            rows="4"
+            placeholder="Escribe el contenido del mensaje..."
+            class="w-full"
+          ></textarea>
+          <small class="field-error" *ngIf="mensaje?.invalid && mensaje?.touched">
+            <span *ngIf="mensaje?.errors?.['required']">El mensaje es obligatorio</span>
+            <span *ngIf="mensaje?.errors?.['maxlength']">Máximo 1000 caracteres</span>
+          </small>
+          <small class="field-help" *ngIf="mensaje?.valid || !mensaje?.touched">
+            Contenido principal del banner. Soporta HTML básico (máx. 1000 caracteres)
+          </small>
+        </div>
+
+        <!-- Selector de Template -->
+        <div class="form-field full-width">
+          <label for="banner-template" class="field-label">
+            Tipo de diseño
+          </label>
+          <p-dropdown
+            id="banner-template"
+            formControlName="template"
+            [options]="templateOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Selecciona el diseño"
+            styleClass="w-full">
+          </p-dropdown>
+          <small class="field-help">
+            <strong>Banner tradicional:</strong> Muestra título, mensaje, imagen y botón.<br>
+            <strong>Alertas de Caja SGR:</strong> Infografía estructurada con datos de asignaciones (ignora imagen y mensaje).
+          </small>
+        </div>
+
+        <!-- URL de imagen -->
+        <div class="form-field full-width">
+          <label for="banner-imagen" class="field-label">
+            URL de imagen (opcional)
+          </label>
+          <input
+            pInputText
+            id="banner-imagen"
+            formControlName="imagen_url"
+            placeholder="/assets/img/banner.jpg"
+            class="w-full"
+          />
+          <small class="field-help">
+            Ruta a una imagen que se mostrará en el banner. Puede ser relativa o absoluta.
+          </small>
+        </div>
+
+        <p-divider styleClass="full-width"></p-divider>
+
+        <!-- Botón de acción -->
+        <div class="form-field">
+          <label for="banner-boton-texto" class="field-label">
+            Texto del botón (opcional)
+          </label>
+          <input
+            pInputText
+            id="banner-boton-texto"
+            formControlName="boton_texto"
+            placeholder="Ej: Ver más información"
+            class="w-full"
+          />
+          <small class="field-help">
+            Si se completa, se mostrará un botón de acción
+          </small>
+        </div>
+
+        <div class="form-field">
+          <label for="banner-boton-url" class="field-label">
+            URL del botón (opcional)
+          </label>
+          <input
+            pInputText
+            id="banner-boton-url"
+            formControlName="boton_url"
+            placeholder="https://ejemplo.com"
+            class="w-full"
+          />
+          <small class="field-help">
+            Enlace que se abrirá al hacer clic en el botón
+          </small>
+        </div>
+      </div>
+    </p-card>
+
+    <!-- ========================================== -->
+    <!-- CARD 3: Rango de Fechas -->
+    <!-- ========================================== -->
+    <p-card styleClass="form-card">
+      <ng-template pTemplate="header">
+        <div class="card-title">
+          <i class="pi pi-calendar"></i>
+          <span>Rango de Fechas</span>
+        </div>
+      </ng-template>
+
+      <p-message
+        *ngIf="isDateRangeInvalid"
+        severity="error"
+        text="La fecha de inicio debe ser anterior a la fecha de fin"
+        styleClass="w-full mb-3">
+      </p-message>
+
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="banner-fecha-inicio" class="field-label">
+            Fecha de inicio <span class="required">*</span>
+          </label>
+          <p-calendar
+            id="banner-fecha-inicio"
+            formControlName="fecha_inicio"
+            dateFormat="yy-mm-dd"
+            [showIcon]="true"
+            placeholder="Selecciona fecha"
+            styleClass="w-full">
+          </p-calendar>
+          <small class="field-help">
+            El banner comenzará a mostrarse desde esta fecha
+          </small>
+        </div>
+
+        <div class="form-field">
+          <label for="banner-fecha-fin" class="field-label">
+            Fecha de fin <span class="required">*</span>
+          </label>
+          <p-calendar
+            id="banner-fecha-fin"
+            formControlName="fecha_fin"
+            dateFormat="yy-mm-dd"
+            [showIcon]="true"
+            placeholder="Selecciona fecha"
+            styleClass="w-full">
+          </p-calendar>
+          <small class="field-help">
+            El banner dejará de mostrarse después de esta fecha
+          </small>
+        </div>
+      </div>
+    </p-card>
+
+    <!-- ========================================== -->
+    <!-- CARD 4: Control de Frecuencia -->
+    <!-- ========================================== -->
+    <p-card styleClass="form-card">
+      <ng-template pTemplate="header">
+        <div class="card-title">
+          <i class="pi pi-clock"></i>
+          <span>Control de Frecuencia</span>
+        </div>
+      </ng-template>
+
+      <div class="info-banner">
+        <i class="pi pi-info-circle"></i>
+        <div>
+          Estos parámetros controlan con qué frecuencia se muestra el banner a los usuarios.
+          Esto evita saturar a los usuarios con el mismo mensaje.
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="banner-frecuencia" class="field-label">
+            Frecuencia diaria <span class="required">*</span>
+          </label>
+          <p-inputNumber
+            id="banner-frecuencia"
+            formControlName="frecuencia_diaria"
+            [min]="1"
+            [max]="10"
+            [showButtons]="true"
+            buttonLayout="horizontal"
+            decrementButtonClass="p-button-secondary"
+            incrementButtonClass="p-button-secondary"
+            incrementButtonIcon="pi pi-plus"
+            decrementButtonIcon="pi pi-minus"
+            styleClass="w-full">
+          </p-inputNumber>
+          <small class="field-error" *ngIf="frecuencia_diaria?.invalid && frecuencia_diaria?.touched">
+            Debe ser entre 1 y 10
+          </small>
+          <small class="field-help" *ngIf="frecuencia_diaria?.valid || !frecuencia_diaria?.touched">
+            Número de veces que se mostrará el banner por día al mismo usuario
+          </small>
+        </div>
+
+        <div class="form-field">
+          <label for="banner-dias-consecutivos" class="field-label">
+            Máximo días consecutivos <span class="required">*</span>
+          </label>
+          <p-inputNumber
+            id="banner-dias-consecutivos"
+            formControlName="max_dias_consecutivos"
+            [min]="1"
+            [max]="30"
+            [showButtons]="true"
+            buttonLayout="horizontal"
+            decrementButtonClass="p-button-secondary"
+            incrementButtonClass="p-button-secondary"
+            incrementButtonIcon="pi pi-plus"
+            decrementButtonIcon="pi pi-minus"
+            styleClass="w-full">
+          </p-inputNumber>
+          <small class="field-error" *ngIf="max_dias_consecutivos?.invalid && max_dias_consecutivos?.touched">
+            Debe ser entre 1 y 30
+          </small>
+          <small class="field-help" *ngIf="max_dias_consecutivos?.valid || !max_dias_consecutivos?.touched">
+            Número máximo de días consecutivos que se mostrará el banner
+          </small>
+        </div>
+      </div>
+
+      <div class="frequency-example">
+        <strong>Ejemplo con valores actuales:</strong>
+        <ul>
+          <li *ngIf="frecuencia_diaria?.value">
+            El banner se mostrará <strong>{{ frecuencia_diaria?.value }}</strong>
+            {{ frecuencia_diaria?.value === 1 ? 'vez' : 'veces' }} por día
+          </li>
+          <li *ngIf="max_dias_consecutivos?.value">
+            Se mostrará durante máximo <strong>{{ max_dias_consecutivos?.value }}</strong>
+            {{ max_dias_consecutivos?.value === 1 ? 'día' : 'días' }} consecutivos
+          </li>
+          <li>
+            Después de alcanzar el límite de días, el banner dejará de mostrarse automáticamente
+          </li>
+        </ul>
+      </div>
+    </p-card>
+
+    <!-- ========================================== -->
+    <!-- CARD 5: Estado de Tracking -->
+    <!-- ========================================== -->
+    <p-card styleClass="form-card" *ngIf="trackingState()">
+      <ng-template pTemplate="header">
+        <div class="card-title">
+          <i class="pi pi-chart-line"></i>
+          <span>Estado Actual del Tracking</span>
+        </div>
+      </ng-template>
+
+      <div class="tracking-info">
+        <div class="tracking-item">
+          <span class="tracking-label">Versión de configuración:</span>
+          <span class="tracking-value">{{ trackingState()!.configVersion }}</span>
+        </div>
+
+        <div class="tracking-item" *ngIf="trackingState()!.lastShownDate">
+          <span class="tracking-label">Última vez mostrado:</span>
+          <span class="tracking-value">{{ trackingState()!.lastShownDate }}</span>
+        </div>
+
+        <div class="tracking-item" *ngIf="trackingState()!.lastShownDate">
+          <span class="tracking-label">Veces mostrado hoy:</span>
+          <span class="tracking-value">{{ trackingState()!.countToday }}</span>
+        </div>
+
+        <div class="tracking-item">
+          <span class="tracking-label">Días consecutivos:</span>
+          <span class="tracking-value">{{ trackingState()!.consecutiveDays }}</span>
+        </div>
+
+        <div class="tracking-item">
+          <span class="tracking-label">¿Debe mostrarse ahora?:</span>
+          <span class="tracking-value" [class.tracking-yes]="trackingState()!.shouldShow" [class.tracking-no]="!trackingState()!.shouldShow">
+            {{ trackingState()!.shouldShow ? 'SÍ' : 'NO' }}
+          </span>
+        </div>
+      </div>
+
+      <p-divider></p-divider>
+
+      <div style="text-align: center;">
+        <button
+          pButton
+          type="button"
+          label="Resetear Tracking"
+          icon="pi pi-refresh"
+          (click)="resetTracking()"
+          class="p-button-warning p-button-outlined">
+        </button>
+        <small class="field-help" style="display: block; margin-top: 0.5rem;">
+          Esto eliminará el tracking actual y hará que el banner vuelva a mostrarse
+        </small>
+      </div>
+    </p-card>
+
+    <div class="tracking-info info-banner" *ngIf="!trackingState()">
+      <i class="pi pi-info-circle"></i>
+      <div>
+        No hay tracking activo. El banner se mostrará según las reglas configuradas cuando un usuario lo vea por primera vez.
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- Botones de Acción -->
+    <!-- ========================================== -->
+    <div class="form-actions">
+      <button
+        pButton
+        type="button"
+        label="Vista Previa"
+        icon="pi pi-eye"
+        (click)="togglePreview()"
+        class="p-button-secondary"
+        [disabled]="bannerForm.invalid">
+      </button>
+
+      <button
+        pButton
+        type="button"
+        label="Restablecer"
+        icon="pi pi-undo"
+        (click)="resetForm()"
+        class="p-button-secondary p-button-outlined">
+      </button>
+
+      <button
+        pButton
+        type="submit"
+        label="Guardar Configuración"
+        icon="pi pi-save"
+        [loading]="isSaving()"
+        [disabled]="bannerForm.invalid || isSaving()"
+        class="p-button-primary">
+      </button>
+    </div>
+
+  </form>
+
+  <!-- ========================================== -->
+  <!-- DIÁLOGO DE PREVIEW -->
+  <!-- ========================================== -->
+  <p-dialog
+    [(visible)]="showPreview"
+    [modal]="true"
+    [closable]="true"
+    [dismissableMask]="true"
+    (onHide)="closePreview()"
+    [showHeader]="true"
+    [style]="{width:'42vw', 'max-height':'90vh'}"
+    [contentStyle]="{'overflow-y':'auto', 'padding':'1rem', 'max-height':'85vh'}"
+    [breakpoints]="{'1200px':'50vw', '960px':'60vw', '640px':'90vw'}">
+
+    <ng-template pTemplate="header">
+      <div style="width: 100%; display: flex; align-items: center; gap: 0.5rem;">
+        <i
+          [class]="'pi ' + (previewConfig()?.tipo === 'warning' ? 'pi-exclamation-triangle' :
+                            previewConfig()?.tipo === 'error' ? 'pi-times-circle' :
+                            previewConfig()?.tipo === 'success' ? 'pi-check-circle' : 'pi-info-circle')"
+          [style.color]="previewConfig()?.tipo === 'warning' ? '#fbbf24' :
+                         previewConfig()?.tipo === 'error' ? '#ef4444' :
+                         previewConfig()?.tipo === 'success' ? '#10b981' : '#3b82f6'"
+          style="font-size: 1.5rem;">
+        </i>
+        <span style="font-weight: bold; font-size: 1.1rem;">
+          {{ previewConfig()?.titulo || 'Vista previa del banner' }}
+        </span>
+      </div>
+    </ng-template>
+
+    <div class="banner-preview-content">
+      <!-- Mensaje de texto -->
+      <div *ngIf="previewConfig()?.mensaje" style="margin-bottom: 1rem; line-height: 1.6;">
+        <p [innerHTML]="previewConfig()?.mensaje"></p>
+      </div>
+
+      <!-- Imagen si está configurada -->
+      <div *ngIf="previewConfig()?.imagen_url" style="text-align: center; margin-bottom: 1rem;">
+        <img
+          [src]="previewConfig()?.imagen_url"
+          [alt]="previewConfig()?.titulo ?? 'Banner preview'"
+          style="width: 100%; height: auto; max-width: 600px; border-radius: 4px;"
+          (error)="$any($event.target).style.display='none'"
+        />
+      </div>
+
+      <!-- Botón de acción opcional -->
+      <div *ngIf="previewConfig()?.boton_texto" style="text-align: center; margin-top: 1.5rem;">
+        <button
+          pButton
+          type="button"
+          [label]="previewConfig()?.boton_texto ?? 'Ver más'"
+          class="p-button-primary"
+          style="min-width: 200px;">
+        </button>
+      </div>
+
+      <p-divider></p-divider>
+
+      <div class="preview-info">
+        <small>
+          <strong>Nota:</strong> Esta es una vista previa. El banner se mostrará según las reglas de frecuencia y fechas configuradas.
+        </small>
+      </div>
+    </div>
+  </p-dialog>
+
+</div>

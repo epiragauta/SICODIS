@@ -22,6 +22,8 @@ import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { SicodisApiService } from '../../services/sicodis-api.service';
 import Chart from 'chart.js/auto';
 import { DialogModule } from 'primeng/dialog';
+import { ConfigService, BannerConfig } from '../../services/config.service';
+import { BannerAlertasCajaComponent } from './banner-alertas-caja.component';
 
 @Component({
   selector: 'app-home',
@@ -42,7 +44,8 @@ import { DialogModule } from 'primeng/dialog';
     TableModule,
     ChartModule,
     RouterModule,
-    DialogModule
+    DialogModule,
+    BannerAlertasCajaComponent
 ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
@@ -108,7 +111,9 @@ export class HomeComponent implements OnInit {
   cols2: number = 2;
   cols3: number = 3;
 
-  showImage: boolean = true; // Controlado por sessionStorage en ngOnInit  
+  // Banner inteligente con ConfigService
+  showBanner: boolean = false;
+  bannerConfig: BannerConfig | null = null;  
 
   // Datos para el gráfico donut SGP
   donutSgpData: any;
@@ -152,7 +157,8 @@ sgpItems = [
 
   constructor(private route: Router,
     private breakpointObserver: BreakpointObserver,
-    private sicodisApiService: SicodisApiService
+    private sicodisApiService: SicodisApiService,
+    private configService: ConfigService
   ) {
     this.breakpointObserver.observe([
       Breakpoints.XSmall,
@@ -210,16 +216,10 @@ sgpItems = [
   }
 
   ngOnInit() {
-    console.log('HomeComponent initialized... 202605051055');
-    // Verificar si ya se mostró el popup en esta sesión
-    // const popupShown = sessionStorage.getItem('homePopupShown');
+    console.log('HomeComponent initialized... 202606101200');
 
-    // if (!popupShown) {
-    //   this.showImage = true;
-    //   sessionStorage.setItem('homePopupShown', 'true');
-    // } else {
-    //   this.showImage = false;
-    // }
+    // Verificar si se debe mostrar el banner usando el nuevo ConfigService
+    this.initializeBanner();
 
     this.initializeDonutChart();
     this.initializeSgrDonutCharts();
@@ -268,6 +268,38 @@ sgpItems = [
   destroyVideo(): void {
     // elimina el video del DOM
     this.showPlayer = false;
+  }
+
+  // ============================================================================
+  // BANNER INTELIGENTE
+  // ============================================================================
+
+  private initializeBanner(): void {
+    // Obtener configuración del banner
+    this.bannerConfig = this.configService.getBannerConfigSync();
+
+    // Verificar si debe mostrarse según las reglas de negocio
+    this.showBanner = this.configService.shouldShowBanner();
+
+    if (this.showBanner && this.bannerConfig) {
+      console.log('Banner activado:', this.bannerConfig.titulo);
+    }
+  }
+
+  closeBanner(): void {
+    this.showBanner = false;
+
+    // Registrar que el banner fue mostrado
+    this.configService.recordBannerShown();
+
+    console.log('Banner cerrado y tracking actualizado');
+  }
+
+  onBannerButtonClick(): void {
+    if (this.bannerConfig?.boton_url) {
+      window.open(this.bannerConfig.boton_url, '_blank');
+    }
+    this.closeBanner();
   }
 
 

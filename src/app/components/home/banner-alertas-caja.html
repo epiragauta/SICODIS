@@ -1,0 +1,159 @@
+<!-- Banner: Alertas de Caja SGR -->
+<div class="alertas-caja-container">
+
+  <!-- Header -->
+  <div class="header-section">
+    <div class="header-gradient"></div>
+    <div class="header-content">
+      <h1 class="title">
+        Alertas<br>de caja
+      </h1>
+      <img src="assets/img/logo-dnp-2024.png" alt="DNP" class="dnp-logo">
+    </div>
+  </div>
+
+  <!-- Sistema General de Regalías Badge -->
+  <div class="sgr-badge">
+    Sistema General de Regalías
+  </div>
+
+  <!-- Descripción -->
+  <div class="description-section">
+    <p class="description-text">
+      Situación de caja frente a aprobaciones de proyectos de Asignaciones Directas
+      registradas en el SPGR de las entidades territoriales beneficiarias de estas asignaciones.
+    </p>
+  </div>
+
+  <!-- Panorama General -->
+  <div class="panorama-section">
+    <h2 class="section-title">Panorama general:</h2>
+
+    <div class="panorama-content">
+      <!-- Recaudo Card -->
+      <div class="recaudo-card">
+        <div class="recaudo-icon">💰</div>
+        <div class="recaudo-amount">$9.9</div>
+        <div class="recaudo-label">Billones</div>
+        <div class="recaudo-sublabel">Recaudo total</div>
+      </div>
+
+      <!-- Check Icon -->
+      <div class="check-icon">✓</div>
+
+      <!-- Stats -->
+      <div class="stats-list">
+        <div class="stat-item">
+          <span class="stat-bullet">•</span>
+          <span class="stat-text">$9.3 Billones<br>Proyectos registrados<br>en el SPGR</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-bullet">•</span>
+          <span class="stat-text">El recaudo total supera<br>los aprobaciones en<br>$617 mil millones.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Por Asignación -->
+  <div class="asignacion-section">
+    <h2 class="asignacion-title">Por asignación</h2>
+
+    <div class="asignacion-grid">
+
+      <!-- Asignaciones Directas (20%) -->
+      <div class="asignacion-column">
+        <h3 class="column-title">Asignaciones Directas<br>(20%)</h3>
+        <div class="badge-count pink">De 732 entidades</div>
+
+        <div class="entity-list">
+          <div class="entity-item">
+            <span class="entity-number">• 72</span>
+            <span class="entity-text">no cuentan con caja suficiente para cubrir sus compromisos, ni la totalidad del valor de los proyectos.</span>
+          </div>
+          <div class="entity-item">
+            <span class="entity-number">• 24</span>
+            <span class="entity-text">cuentan con la caja suficiente para cubrir sus compromisos pero no el valor restante de los proyectos.</span>
+          </div>
+          <div class="entity-item">
+            <span class="entity-number">• 636</span>
+            <span class="entity-text">cuentan con la caja suficiente para cubrir sus compromisos y el valor restante de los proyectos.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- AD Anticipadas (80%) -->
+      <div class="asignacion-column">
+        <h3 class="column-title">AD Anticipadas<br>(80%)</h3>
+        <div class="badge-count pink">De 676 municipios</div>
+
+        <div class="entity-list">
+          <div class="entity-item">
+            <span class="entity-number">• 45</span>
+            <span class="entity-text">no cuentan con caja suficiente para cubrir sus compromisos, ni la totalidad del valor de los proyectos.</span>
+          </div>
+          <div class="entity-item">
+            <span class="entity-number">• 17</span>
+            <span class="entity-text">cuentan con la caja suficiente para cubrir sus compromisos pero no el valor restante de los proyectos.</span>
+          </div>
+          <div class="entity-item">
+            <span class="entity-number">• 614</span>
+            <span class="entity-text">cuentan con la caja suficiente para cubrir sus compromisos y el valor restante de los proyectos.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ¿Qué pueden hacer? -->
+  <div class="actions-section">
+    <h2 class="actions-title">¿Qué pueden hacer?</h2>
+
+    <div class="actions-flow">
+      <!-- Step 1 -->
+      <div class="action-step">
+        <div class="action-icon check-circle">✓</div>
+        <p class="action-text">Evaluar el cronograma<br>o flujo de pagos.</p>
+      </div>
+
+      <!-- Connector -->
+      <div class="flow-connector"></div>
+
+      <!-- Step 2 -->
+      <div class="action-step">
+        <div class="action-icon target">🎯</div>
+        <p class="action-text">Las entidades que presenten<br>montos negativos no<br>pueden solicitar Asignaciones<br>Directas al DNP.</p>
+      </div>
+
+      <!-- Connector -->
+      <div class="flow-connector"></div>
+
+      <!-- Step 3 -->
+      <div class="action-step">
+        <div class="action-icon clock">⏱️</div>
+        <p class="action-text">Evaluar la recurrencia<br>y monto mensual del<br>recaudo corriente.</p>
+      </div>
+    </div>
+
+    <!-- CTA Button -->
+    <button class="cta-button" (click)="verMasInformacion()">
+      Conoce más sobre Alertas de Caja ››
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer-section">
+    <p class="footer-text">
+      Fuente: SICODIS-SGR Cálculos DDTS con cifras de cierre 31 de enero de 2025.
+    </p>
+    <p class="footer-subtext">
+      Los montos mensuales de los recaudos corrientes corresponden al promedio de los últimos 6 meses del año de Asignaciones.
+    </p>
+    <p class="footer-credits">
+      SICODIS: Sistema de Consultas y Distribuciones del departamento del recaudo<br>
+      SPGR: Sistema de Presupuesto y Giro de Regalías
+    </p>
+  </div>
+
+</div>

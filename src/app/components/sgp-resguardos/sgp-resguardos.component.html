@@ -13,7 +13,7 @@
     <!-- Fechas de información -->
     <div class="dates-buttons-container">
       <div style="width: 83%;">
-        <p class="date-update">Fecha de consulta: mayo 28 de 2026</p>
+        <p class="date-update">Fecha de consulta: {{ fechaActualizacion }}</p>
         <p class="date-update">Información en pesos corrientes</p>
       </div>
     </div>
@@ -292,9 +292,9 @@
       <div class="chart-card poblacion-card">
         <h3>POBLACIÓN INDÍGENA EN COLOMBIA</h3>
         <div class="poblacion-box">
-          <div class="poblacion-label-top">Total histórico certificado</div>
+          <div class="poblacion-label-top">Total población certificada</div>
           <div class="poblacion-number-large">{{ poblacionTotalHistorica | numberFormat }}</div>
-          <div class="poblacion-text-bottom">personas — todas las vigencias</div>
+          <div class="poblacion-text-bottom">personas - vigencia actual</div>
         </div>
       </div>
 

@@ -236,6 +236,69 @@
             }
           }
         }
+
+        .periodo-seleccion {
+          margin-top: 1rem;
+          padding-top: 1rem;
+          border-top: 1px solid #e5e7eb;
+
+          .dropdown-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+
+            &.mensual-wrapper {
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 0.75rem;
+            }
+
+            ::ng-deep .p-dropdown {
+              width: 100%;
+              border-radius: 8px;
+              border-color: #d1d5db;
+
+              &:hover {
+                border-color: #9ca3af;
+              }
+
+              &.p-focus {
+                border-color: #ec4899;
+                box-shadow: 0 0 0 0.2rem rgba(236, 72, 153, 0.25);
+              }
+
+              .p-dropdown-label {
+                padding: 0.75rem;
+                font-size: 0.9rem;
+              }
+
+              .p-dropdown-trigger {
+                width: 2.5rem;
+              }
+            }
+
+            ::ng-deep .p-dropdown-panel {
+              border-radius: 8px;
+              box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+
+              .p-dropdown-items {
+                .p-dropdown-item {
+                  padding: 0.75rem 1rem;
+                  font-size: 0.9rem;
+
+                  &.p-highlight {
+                    background: #fce7f3;
+                    color: #ec4899;
+                  }
+
+                  &:hover {
+                    background: #fce7f3;
+                  }
+                }
+              }
+            }
+          }
+        }
       }
 
       .caracterizacion-box {
@@ -258,6 +321,75 @@
                 font-size: 0.9rem;
                 color: #4b5563;
                 cursor: pointer;
+              }
+            }
+
+            .dropdown-wrapper {
+              display: flex;
+              flex-direction: column;
+              gap: 0.75rem;
+              margin-top: 1rem;
+              padding-top: 1rem;
+              border-top: 1px solid #e5e7eb;
+
+              .dropdown-label {
+                font-size: 0.85rem;
+                font-weight: 600;
+                color: #374151;
+              }
+
+              ::ng-deep .p-dropdown {
+                width: 100%;
+                border-radius: 8px;
+                border-color: #d1d5db;
+
+                &:hover {
+                  border-color: #9ca3af;
+                }
+
+                &.p-focus {
+                  border-color: #ec4899;
+                  box-shadow: 0 0 0 0.2rem rgba(236, 72, 153, 0.25);
+                }
+
+                .p-dropdown-label {
+                  padding: 0.75rem;
+                  font-size: 0.9rem;
+                }
+
+                .p-dropdown-trigger {
+                  width: 2.5rem;
+                }
+              }
+
+              ::ng-deep .p-dropdown-panel {
+                border-radius: 8px;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+
+                .p-dropdown-items {
+                  .p-dropdown-item {
+                    padding: 0.75rem 1rem;
+                    font-size: 0.9rem;
+
+                    &.p-highlight {
+                      background: #fce7f3;
+                      color: #ec4899;
+                    }
+
+                    &:hover {
+                      background: #fce7f3;
+                    }
+                  }
+                }
+
+                .p-dropdown-filter-container {
+                  padding: 0.75rem;
+
+                  .p-dropdown-filter {
+                    padding: 0.5rem;
+                    border-radius: 6px;
+                  }
+                }
               }
             }
           }
