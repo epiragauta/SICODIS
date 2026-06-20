@@ -91,9 +91,10 @@
           <button
             class="limpiar-filtros-btn"
             (click)="limpiarTodosFiltros()"
-            title="Limpiar todos los filtros"
+            title="Remover todos los filtros"
           >
-            <i class="pi pi-times-circle"></i> Limpiar todos
+            <span class="icon">⟲</span>
+            Remover todos los filtros
           </button>
         </div>
         <div class="filtros-chips">
@@ -394,93 +395,102 @@
           </div>
         </div>
 
-        <!-- Presupuesto de consulta -->
-        <div class="filtro-box presupuesto-box">
-          <h3>Presupuesto de consulta</h3>
-          <div class="radio-group">
-            <div class="radio-item">
-              <p-radiobutton
-                name="presupuesto"
-                value="total"
-                [ngModel]="presupuestoSeleccionado"
-                (ngModelChange)="onPresupuestoSeleccionChange($event)"
-                inputId="presupuestoTotal"
-              />
-              <label for="presupuestoTotal">Presupuesto Total</label>
+        <!-- Presupuesto y Recaudo (Combinados) -->
+        <div class="filtro-box presupuesto-recaudo-box">
+          <!-- Presupuesto de consulta -->
+          <div class="presupuesto-section">
+            <h3>Presupuesto de consulta</h3>
+            <div class="radio-group">
+              <div class="radio-item">
+                <p-radiobutton
+                  name="presupuesto"
+                  value="total"
+                  [ngModel]="presupuestoSeleccionado"
+                  (ngModelChange)="onPresupuestoSeleccionChange($event)"
+                  inputId="presupuestoTotal"
+                />
+                <label for="presupuestoTotal">Presupuesto Total</label>
+              </div>
+
+              <div class="radio-item">
+                <p-radiobutton
+                  name="presupuesto"
+                  value="corriente"
+                  [ngModel]="presupuestoSeleccionado"
+                  (ngModelChange)="onPresupuestoSeleccionChange($event)"
+                  inputId="presupuestoCorriente"
+                />
+                <label for="presupuestoCorriente">Presupuesto Corriente</label>
+              </div>
+
+              <div class="radio-item">
+                <p-radiobutton
+                  name="presupuesto"
+                  value="otros"
+                  [ngModel]="presupuestoSeleccionado"
+                  (ngModelChange)="onPresupuestoSeleccionChange($event)"
+                  inputId="presupuestoOtros"
+                />
+                <label for="presupuestoOtros">Presupuesto Otros</label>
+              </div>
             </div>
 
-            <div class="radio-item">
-              <p-radiobutton
-                name="presupuesto"
-                value="corriente"
-                [ngModel]="presupuestoSeleccionado"
-                (ngModelChange)="onPresupuestoSeleccionChange($event)"
-                inputId="presupuestoCorriente"
-              />
-              <label for="presupuestoCorriente">Presupuesto Corriente</label>
-            </div>
-
-            <div class="radio-item">
-              <p-radiobutton
-                name="presupuesto"
-                value="otros"
-                [ngModel]="presupuestoSeleccionado"
-                (ngModelChange)="onPresupuestoSeleccionChange($event)"
-                inputId="presupuestoOtros"
-              />
-              <label for="presupuestoOtros">Presupuesto Otros</label>
+            <!-- Slider para porcentaje -->
+            <div class="slider-container">
+              <label for="sliderDisponibilidad" class="slider-label-multiline">
+                <span class="slider-label-line1">% participación de la</span>
+                <span class="slider-label-line2">Disponibilidad Inicial por vigencia</span>
+              </label>
+              <div class="slider-value">{{ porcentajeDisponibilidad }}%</div>
+              <p-slider
+                [(ngModel)]="porcentajeDisponibilidad"
+                [min]="0"
+                [max]="100"
+                [step]="1"
+                styleClass="slider-disponibilidad"
+              ></p-slider>
             </div>
           </div>
 
-          <!-- Slider para porcentaje -->
-          <div class="slider-container">
-            <label for="sliderDisponibilidad">% participación de la Disponibilidad Inicial por vigencia</label>
-            <div class="slider-value">{{ porcentajeDisponibilidad }}%</div>
-            <p-slider
-              [(ngModel)]="porcentajeDisponibilidad"
-              [min]="0"
-              [max]="100"
-              [step]="1"
-              styleClass="slider-disponibilidad"
-            ></p-slider>
-          </div>
-        </div>
+          <!-- Separador visual -->
+          <div class="seccion-separador"></div>
 
-        <!-- Recaudo -->
-        <div class="filtro-box recaudo-box">
-          <h3>Recaudo</h3>
-          <div class="radio-group">
-            <div class="radio-item">
-              <p-radiobutton
-                name="recaudo"
-                value="total"
-                [ngModel]="recaudoSeleccionado"
-                (ngModelChange)="onRecaudoSeleccionChange($event)"
-                inputId="recaudoTotal"
-              />
-              <label for="recaudoTotal">Recaudo Total</label>
-            </div>
+          <!-- Recaudo -->
+          <div class="recaudo-section">
+            <h3>Recaudo</h3>
+            <div class="radio-group">
+              <div class="radio-item">
+                <p-radiobutton
+                  name="recaudo"
+                  value="total"
+                  [ngModel]="recaudoSeleccionado"
+                  (ngModelChange)="onRecaudoSeleccionChange($event)"
+                  inputId="recaudoTotal"
+                />
+                <label for="recaudoTotal">Recaudo Total</label>
+              </div>
 
-            <div class="radio-item">
-              <p-radiobutton
-                name="recaudo"
-                value="corriente"
-                [ngModel]="recaudoSeleccionado"
-                (ngModelChange)="onRecaudoSeleccionChange($event)"
-                inputId="recaudoCorriente"
-              />
-              <label for="recaudoCorriente">Recaudo Corriente</label>
-            </div>
+              <div class="radio-item">
+                <p-radiobutton
+                  name="recaudo"
+                  value="corriente"
+                  [ngModel]="recaudoSeleccionado"
+                  (ngModelChange)="onRecaudoSeleccionChange($event)"
+                  inputId="recaudoCorriente"
+                />
+                <label for="recaudoCorriente">Recaudo Corriente</label>
+              </div>
 
-            <div class="radio-item">
-              <p-radiobutton
-                name="recaudo"
-                value="otros"
-                [ngModel]="recaudoSeleccionado"
-                (ngModelChange)="onRecaudoSeleccionChange($event)"
-                inputId="recaudoOtros"
-              />
-              <label for="recaudoOtros">Recaudo Otros</label>
+              <div class="radio-item">
+                <p-radiobutton
+                  name="recaudo"
+                  value="otros"
+                  [ngModel]="recaudoSeleccionado"
+                  (ngModelChange)="onRecaudoSeleccionChange($event)"
+                  inputId="recaudoOtros"
+                />
+                <label for="recaudoOtros">Recaudo Otros</label>
+              </div>
             </div>
           </div>
         </div>
