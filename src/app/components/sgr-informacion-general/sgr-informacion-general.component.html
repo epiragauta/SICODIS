@@ -84,6 +84,39 @@
     <div class="filtros-section">
       <h2 class="section-title">Aplique a su consulta</h2>
 
+      <!-- Trazabilidad de Filtros -->
+      <div class="filtros-activos" *ngIf="filtrosActivos.length > 0">
+        <div class="filtros-activos-header">
+          <h4><i class="pi pi-filter-fill"></i> Filtros aplicados</h4>
+          <button
+            class="limpiar-filtros-btn"
+            (click)="limpiarTodosFiltros()"
+            title="Limpiar todos los filtros"
+          >
+            <i class="pi pi-times-circle"></i> Limpiar todos
+          </button>
+        </div>
+        <div class="filtros-chips">
+          <div
+            *ngFor="let filtro of filtrosActivos"
+            class="filtro-chip"
+            [class.no-removable]="filtro.tipo === 'Periodicidad'"
+          >
+            <i class="pi {{ filtro.icono }}"></i>
+            <span class="filtro-tipo">{{ filtro.tipo }}:</span>
+            <span class="filtro-valor">{{ filtro.valor }}</span>
+            <button
+              *ngIf="filtro.tipo !== 'Periodicidad'"
+              class="remove-filtro"
+              (click)="removerFiltro(filtro)"
+              title="Remover filtro"
+            >
+              <i class="pi pi-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div class="filtros-container">
         <!-- Periodicidad -->
         <div class="filtro-box">
@@ -168,65 +201,125 @@
           <div class="caracterizacion-columnas">
             <!-- Columna Izquierda -->
             <div class="caracterizacion-columna">
-              <div class="checkbox-item">
-                <p-radiobutton
-                  name="caracterizacion"
-                  value="conceptoGasto"
-                  [ngModel]="caracterizacionSeleccionada"
-                  (ngModelChange)="onCaracterizacionChange($event)"
-                  inputId="conceptoGasto"
-                />
-                <label for="conceptoGasto">Concepto de gasto</label>
+              <!-- Concepto de gasto -->
+              <div class="caracterizacion-grupo">
+                <div class="checkbox-item">
+                  <p-checkbox
+                    name="caracterizacion"
+                    [(ngModel)]="caracterizacionesActivas.conceptoGasto"
+                    (ngModelChange)="onCaracterizacionChange('conceptoGasto', $event)"
+                    [binary]="true"
+                    inputId="conceptoGasto"
+                  />
+                  <label for="conceptoGasto">Concepto de gasto</label>
+                </div>
+                <div class="multiselect-wrapper" *ngIf="caracterizacionesActivas.conceptoGasto">
+                  <p-multiselect
+                    [options]="conceptoGastoOpciones"
+                    [(ngModel)]="valoresConceptoGasto"
+                    (ngModelChange)="onValoresConceptoGastoChange()"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Seleccione opciones"
+                    [filter]="false"
+                    [showClear]="true"
+                    display="chip"
+                    styleClass="w-full"
+                    [maxSelectedLabels]="2"
+                    selectedItemsLabel="{0} seleccionados"
+                  ></p-multiselect>
+                </div>
               </div>
 
-              <div class="checkbox-item">
-                <p-radiobutton
-                  name="caracterizacion"
-                  value="regional"
-                  [ngModel]="caracterizacionSeleccionada"
-                  (ngModelChange)="onCaracterizacionChange($event)"
-                  inputId="regional"
-                />
-                <label for="regional">Regional</label>
+              <!-- Regional -->
+              <div class="caracterizacion-grupo">
+                <div class="checkbox-item">
+                  <p-checkbox
+                    name="caracterizacion"
+                    [(ngModel)]="caracterizacionesActivas.regional"
+                    (ngModelChange)="onCaracterizacionChange('regional', $event)"
+                    [binary]="true"
+                    inputId="regional"
+                  />
+                  <label for="regional">Regional</label>
+                </div>
+                <div class="multiselect-wrapper" *ngIf="caracterizacionesActivas.regional">
+                  <p-multiselect
+                    [options]="regionalOpciones"
+                    [(ngModel)]="valoresRegional"
+                    (ngModelChange)="onValoresRegionalChange()"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Seleccione regiones"
+                    [filter]="false"
+                    [showClear]="true"
+                    display="chip"
+                    styleClass="w-full"
+                    [maxSelectedLabels]="2"
+                    selectedItemsLabel="{0} regiones"
+                  ></p-multiselect>
+                </div>
               </div>
 
-              <div class="checkbox-item">
-                <p-radiobutton
-                  name="caracterizacion"
-                  value="asignacion"
-                  [ngModel]="caracterizacionSeleccionada"
-                  (ngModelChange)="onCaracterizacionChange($event)"
-                  inputId="asignacion"
-                />
-                <label for="asignacion">Asignación</label>
+              <!-- Asignación -->
+              <div class="caracterizacion-grupo">
+                <div class="checkbox-item">
+                  <p-checkbox
+                    name="caracterizacion"
+                    [(ngModel)]="caracterizacionesActivas.asignacion"
+                    (ngModelChange)="onCaracterizacionChange('asignacion', $event)"
+                    [binary]="true"
+                    inputId="asignacion"
+                  />
+                  <label for="asignacion">Asignación</label>
+                </div>
+                <div class="multiselect-wrapper" *ngIf="caracterizacionesActivas.asignacion">
+                  <p-multiselect
+                    [options]="asignacionOpciones"
+                    [(ngModel)]="valoresAsignacion"
+                    (ngModelChange)="onValoresAsignacionChange()"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Seleccione asignaciones"
+                    [filter]="true"
+                    filterPlaceholder="Buscar..."
+                    [showClear]="true"
+                    display="chip"
+                    styleClass="w-full"
+                    [maxSelectedLabels]="2"
+                    selectedItemsLabel="{0} asignaciones"
+                  ></p-multiselect>
+                </div>
               </div>
 
-              <div class="checkbox-item">
-                <p-radiobutton
-                  name="caracterizacion"
-                  value="grupoInteres"
-                  [ngModel]="caracterizacionSeleccionada"
-                  (ngModelChange)="onCaracterizacionChange($event)"
-                  inputId="grupoInteres"
-                />
-                <label for="grupoInteres">Grupo de interés</label>
-              </div>
-
-              <!-- Dropdown dinámico debajo de la opción seleccionada -->
-              <div class="dropdown-wrapper">
-                <p-dropdown
-                  id="valorCaracterizacion"
-                  [options]="opcionesCaracterizacion"
-                  [(ngModel)]="valorCaracterizacionSeleccionado"
-                  (ngModelChange)="onValorCaracterizacionChange()"
-                  optionLabel="label"
-                  optionValue="value"
-                  placeholder="Seleccione una opción"
-                  [filter]="opcionesCaracterizacion.length > 10"
-                  filterPlaceholder="Buscar..."
-                  [showClear]="false"
-                  styleClass="w-full"
-                ></p-dropdown>
+              <!-- Grupo de interés -->
+              <div class="caracterizacion-grupo">
+                <div class="checkbox-item">
+                  <p-checkbox
+                    name="caracterizacion"
+                    [(ngModel)]="caracterizacionesActivas.grupoInteres"
+                    (ngModelChange)="onCaracterizacionChange('grupoInteres', $event)"
+                    [binary]="true"
+                    inputId="grupoInteres"
+                  />
+                  <label for="grupoInteres">Grupo de interés</label>
+                </div>
+                <div class="multiselect-wrapper" *ngIf="caracterizacionesActivas.grupoInteres">
+                  <p-multiselect
+                    [options]="grupoInteresOpciones"
+                    [(ngModel)]="valoresGrupoInteres"
+                    (ngModelChange)="onValoresGrupoInteresChange()"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Seleccione grupos"
+                    [filter]="false"
+                    [showClear]="true"
+                    display="chip"
+                    styleClass="w-full"
+                    [maxSelectedLabels]="2"
+                    selectedItemsLabel="{0} grupos"
+                  ></p-multiselect>
+                </div>
               </div>
             </div>
 

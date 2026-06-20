@@ -10,6 +10,8 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { CheckboxModule } from 'primeng/checkbox';
 import { SliderModule } from 'primeng/slider';
 import { DropdownModule } from 'primeng/dropdown';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { ChipModule } from 'primeng/chip';
 
 // Services
 import { SgrPresupuestoService } from '../../services/sgr-presupuesto.service';
@@ -43,6 +45,8 @@ interface RecaudoMetricas {
     CheckboxModule,
     SliderModule,
     DropdownModule,
+    MultiSelectModule,
+    ChipModule,
     NumberFormatPipe
   ],
   templateUrl: './sgr-informacion-general.component.html',
@@ -64,8 +68,26 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
   periodicidad: string = 'Bienal';
   valorPeriodicidadSeleccionado: string = '2025-2026';
   anoMensualSeleccionado: number = 2025; // Para periodicidad mensual
-  caracterizacionSeleccionada: string = 'grupoInteres';
-  valorCaracterizacionSeleccionado: string = 'Otros';
+
+  // Caracterizaciones activas (ahora múltiples, no excluyentes)
+  caracterizacionesActivas: {
+    conceptoGasto: boolean;
+    regional: boolean;
+    asignacion: boolean;
+    grupoInteres: boolean;
+  } = {
+    conceptoGasto: false,
+    regional: false,
+    asignacion: false,
+    grupoInteres: false
+  };
+
+  // Valores seleccionados para cada caracterización
+  valoresConceptoGasto: string[] = [];
+  valoresRegional: string[] = [];
+  valoresAsignacion: string[] = [];
+  valoresGrupoInteres: string[] = [];
+
   entidadSeleccionada: string = 'beneficiario';
   presupuestoSeleccionado: string = 'total';
   recaudoSeleccionado: string = 'total';
@@ -219,38 +241,44 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
   loadData(): void {
     this.isLoading.set(true);
 
-    // Construir filtros combinando caracterización y entidad
+    // Construir filtros combinando todas las caracterizaciones activas
     const filtros: FiltrosSGR = {};
 
-    // 1. Aplicar filtros de caracterización (columna izquierda con dropdown)
-    switch (this.caracterizacionSeleccionada) {
-      case 'conceptoGasto':
-        if (this.valorCaracterizacionSeleccionado !== 'Todos') {
-          filtros.conceptoGasto = this.valorCaracterizacionSeleccionado;
-        }
-        break;
+    // 1. Filtros de Concepto de Gasto (si está activo)
+    if (this.caracterizacionesActivas.conceptoGasto && this.valoresConceptoGasto.length > 0) {
+      const conceptosGasto = this.valoresConceptoGasto.filter(v => v !== 'Todos');
+      if (conceptosGasto.length > 0) {
+        // El servicio actual solo soporta un valor, tomar el primero
+        // TODO: Extender FiltrosSGR para soportar arrays
+        filtros.conceptoGasto = conceptosGasto[0];
+      }
+    }
 
-      case 'regional':
-        if (this.valorCaracterizacionSeleccionado !== 'Todos') {
-          filtros.region = this.valorCaracterizacionSeleccionado;
-        }
-        break;
+    // 2. Filtros de Regional (si está activo)
+    if (this.caracterizacionesActivas.regional && this.valoresRegional.length > 0) {
+      const regiones = this.valoresRegional.filter(v => v !== 'Todos');
+      if (regiones.length > 0) {
+        filtros.region = regiones[0];
+      }
+    }
 
-      case 'asignacion':
-        filtros.conceptoGasto = this.valorCaracterizacionSeleccionado;
-        break;
+    // 3. Filtros de Asignación (si está activo)
+    if (this.caracterizacionesActivas.asignacion && this.valoresAsignacion.length > 0) {
+      // Asignación usa el campo conceptoGasto
+      // Si ya hay un filtro de conceptoGasto, dar prioridad a asignación
+      if (this.valoresAsignacion.length > 0) {
+        filtros.conceptoGasto = this.valoresAsignacion[0];
+      }
+    }
 
-      case 'grupoInteres':
-        switch (this.valorCaracterizacionSeleccionado) {
-          case 'Gobernación':
-          case 'Municipio':
-          case 'Corporación':
-          case 'Étnicos':
-          case 'Región':
-            filtros.tipoEntidad = this.valorCaracterizacionSeleccionado;
-            break;
-        }
-        break;
+    // 4. Filtros de Grupo de Interés (si está activo)
+    if (this.caracterizacionesActivas.grupoInteres && this.valoresGrupoInteres.length > 0) {
+      const tiposEntidad = this.valoresGrupoInteres.filter(v =>
+        ['Gobernación', 'Municipio', 'Corporación', 'Étnicos', 'Región'].includes(v)
+      );
+      if (tiposEntidad.length > 0) {
+        filtros.tipoEntidad = tiposEntidad[0];
+      }
     }
 
     // 2. Aplicar filtros de entidad (columna derecha con radio buttons)
@@ -333,39 +361,52 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Getter para opciones dinámicas del dropdown de caracterización
-  get opcionesCaracterizacion(): any[] {
-    switch (this.caracterizacionSeleccionada) {
+  // Métodos para manejar cambios en caracterizaciones
+  onCaracterizacionChange(tipo: string, activo: boolean): void {
+    // Actualizar estado de caracterización
+    switch (tipo) {
       case 'conceptoGasto':
-        return this.conceptoGastoOpciones;
+        this.caracterizacionesActivas.conceptoGasto = activo;
+        if (!activo) this.valoresConceptoGasto = [];
+        break;
       case 'regional':
-        return this.regionalOpciones;
+        this.caracterizacionesActivas.regional = activo;
+        if (!activo) this.valoresRegional = [];
+        break;
       case 'asignacion':
-        return this.asignacionOpciones;
+        this.caracterizacionesActivas.asignacion = activo;
+        if (!activo) this.valoresAsignacion = [];
+        break;
       case 'grupoInteres':
-        return this.grupoInteresOpciones;
-      default:
-        return [];
+        this.caracterizacionesActivas.grupoInteres = activo;
+        if (!activo) this.valoresGrupoInteres = [];
+        break;
+    }
+
+    // Recargar datos si se desactivó una caracterización
+    if (!activo) {
+      this.loadData();
     }
   }
 
-  // Método para manejar cambio de caracterización
-  onCaracterizacionChange(nuevaCaracterizacion: string): void {
-    this.caracterizacionSeleccionada = nuevaCaracterizacion;
-
-    // Resetear el valor seleccionado a la primera opción de la nueva lista
-    const opciones = this.opcionesCaracterizacion;
-    if (opciones.length > 0) {
-      this.valorCaracterizacionSeleccionado = opciones[0].value;
-    }
-
-    // Recargar datos con el nuevo filtro
+  // Métodos para manejar cambios en valores de multiselect
+  onValoresConceptoGastoChange(): void {
+    console.log('Concepto de Gasto cambiado:', this.valoresConceptoGasto);
     this.loadData();
   }
 
-  // Método para manejar cambio en el dropdown de valor
-  onValorCaracterizacionChange(): void {
-    console.log('Valor de caracterización cambiado:', this.valorCaracterizacionSeleccionado);
+  onValoresRegionalChange(): void {
+    console.log('Regional cambiado:', this.valoresRegional);
+    this.loadData();
+  }
+
+  onValoresAsignacionChange(): void {
+    console.log('Asignación cambiada:', this.valoresAsignacion);
+    this.loadData();
+  }
+
+  onValoresGrupoInteresChange(): void {
+    console.log('Grupo de Interés cambiado:', this.valoresGrupoInteres);
     this.loadData();
   }
 
@@ -489,5 +530,191 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
 
   get tituloPresupuesto(): string {
     return 'Presupuesto Total';
+  }
+
+  // Métodos para trazabilidad de filtros
+  get filtrosActivos(): Array<{tipo: string, valor: string, icono: string}> {
+    const filtros: Array<{tipo: string, valor: string, icono: string}> = [];
+
+    // Periodicidad
+    if (this.periodicidad && this.valorPeriodicidadSeleccionado) {
+      let valorMostrar = this.valorPeriodicidadSeleccionado;
+      if (this.periodicidad === 'Mensual') {
+        const mesLabel = this.mesesOpciones.find(m => m.value === this.valorPeriodicidadSeleccionado)?.label;
+        valorMostrar = `${mesLabel} ${this.anoMensualSeleccionado}`;
+      }
+      filtros.push({
+        tipo: 'Periodicidad',
+        valor: `${this.periodicidad}: ${valorMostrar}`,
+        icono: 'pi-calendar'
+      });
+    }
+
+    // Concepto de Gasto
+    if (this.caracterizacionesActivas.conceptoGasto && this.valoresConceptoGasto.length > 0) {
+      this.valoresConceptoGasto.forEach(valor => {
+        if (valor !== 'Todos') {
+          filtros.push({
+            tipo: 'Concepto de Gasto',
+            valor: valor,
+            icono: 'pi-tag'
+          });
+        }
+      });
+    }
+
+    // Regional
+    if (this.caracterizacionesActivas.regional && this.valoresRegional.length > 0) {
+      this.valoresRegional.forEach(valor => {
+        if (valor !== 'Todos') {
+          filtros.push({
+            tipo: 'Regional',
+            valor: valor,
+            icono: 'pi-map'
+          });
+        }
+      });
+    }
+
+    // Asignación
+    if (this.caracterizacionesActivas.asignacion && this.valoresAsignacion.length > 0) {
+      this.valoresAsignacion.forEach(valor => {
+        filtros.push({
+          tipo: 'Asignación',
+          valor: valor,
+          icono: 'pi-briefcase'
+        });
+      });
+    }
+
+    // Grupo de Interés
+    if (this.caracterizacionesActivas.grupoInteres && this.valoresGrupoInteres.length > 0) {
+      this.valoresGrupoInteres.forEach(valor => {
+        filtros.push({
+          tipo: 'Grupo de Interés',
+          valor: valor,
+          icono: 'pi-sitemap'
+        });
+      });
+    }
+
+    // Entidad
+    if (this.entidadSeleccionada && this.entidadSeleccionada !== 'beneficiario') {
+      const entidadLabel = this.obtenerLabelEntidad(this.entidadSeleccionada);
+      filtros.push({
+        tipo: 'Entidad',
+        valor: entidadLabel,
+        icono: 'pi-users'
+      });
+    }
+
+    // Presupuesto (solo si no es total)
+    if (this.presupuestoSeleccionado !== 'total') {
+      filtros.push({
+        tipo: 'Presupuesto',
+        valor: this.presupuestoSeleccionado === 'corriente' ? 'Corriente' : 'Otros',
+        icono: 'pi-dollar'
+      });
+    }
+
+    // Recaudo (solo si no es total)
+    if (this.recaudoSeleccionado !== 'total') {
+      filtros.push({
+        tipo: 'Recaudo',
+        valor: this.recaudoSeleccionado === 'corriente' ? 'Corriente' : 'Otros',
+        icono: 'pi-money-bill'
+      });
+    }
+
+    return filtros;
+  }
+
+  private obtenerLabelCaracterizacion(tipo: string): string {
+    switch (tipo) {
+      case 'conceptoGasto': return 'Concepto de Gasto';
+      case 'regional': return 'Regional';
+      case 'asignacion': return 'Asignación';
+      case 'grupoInteres': return 'Grupo de Interés';
+      default: return tipo;
+    }
+  }
+
+  private obtenerLabelEntidad(tipo: string): string {
+    switch (tipo) {
+      case 'productoras': return 'Productoras';
+      case 'pdet': return 'PDET';
+      case 'zomac': return 'ZOMAC';
+      case 'etnica': return 'Étnica';
+      case 'capital': return 'Capital';
+      case 'beneficiario': return 'Beneficiario';
+      default: return tipo;
+    }
+  }
+
+  removerFiltro(filtro: {tipo: string, valor: string}): void {
+    // Remover filtro específico
+    if (filtro.tipo === 'Periodicidad') {
+      // No permitir remover periodicidad (es obligatorio)
+      return;
+    }
+
+    // Remover de caracterizaciones
+    if (filtro.tipo === 'Concepto de Gasto') {
+      this.valoresConceptoGasto = this.valoresConceptoGasto.filter(v => v !== filtro.valor);
+      this.loadData();
+      return;
+    }
+
+    if (filtro.tipo === 'Regional') {
+      this.valoresRegional = this.valoresRegional.filter(v => v !== filtro.valor);
+      this.loadData();
+      return;
+    }
+
+    if (filtro.tipo === 'Asignación') {
+      this.valoresAsignacion = this.valoresAsignacion.filter(v => v !== filtro.valor);
+      this.loadData();
+      return;
+    }
+
+    if (filtro.tipo === 'Grupo de Interés') {
+      this.valoresGrupoInteres = this.valoresGrupoInteres.filter(v => v !== filtro.valor);
+      this.loadData();
+      return;
+    }
+
+    if (filtro.tipo === 'Entidad') {
+      this.entidadSeleccionada = 'beneficiario';
+      this.loadData();
+      return;
+    }
+
+    if (filtro.tipo === 'Presupuesto') {
+      this.presupuestoSeleccionado = 'total';
+      return;
+    }
+
+    if (filtro.tipo === 'Recaudo') {
+      this.recaudoSeleccionado = 'total';
+      return;
+    }
+  }
+
+  limpiarTodosFiltros(): void {
+    // Resetear todos los filtros de caracterización
+    this.valoresConceptoGasto = [];
+    this.valoresRegional = [];
+    this.valoresAsignacion = [];
+    this.valoresGrupoInteres = [];
+
+    // Resetear otros filtros
+    this.entidadSeleccionada = 'beneficiario';
+    this.presupuestoSeleccionado = 'total';
+    this.recaudoSeleccionado = 'total';
+
+    // No resetear periodicidad ni las caracterizaciones activas
+    // El usuario decide cuáles mantener activas
+
+    this.loadData();
   }
 }

@@ -647,6 +647,234 @@
     }
   }
 
+  // Trazabilidad de Filtros
+  .filtros-activos {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-left: 4px solid #ec4899;
+
+    .filtros-activos-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+
+      h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #374151;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        i {
+          color: #ec4899;
+        }
+      }
+
+      .limpiar-filtros-btn {
+        background: #fee2e2;
+        color: #dc2626;
+        border: none;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: #fecaca;
+          transform: translateY(-1px);
+        }
+
+        i {
+          font-size: 1rem;
+        }
+      }
+    }
+
+    .filtros-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+
+      .filtro-chip {
+        background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 0.5rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        box-shadow: 0 2px 6px rgba(236, 72, 153, 0.3);
+        transition: all 0.3s ease;
+        position: relative;
+
+        &.no-removable {
+          background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+          box-shadow: 0 2px 6px rgba(20, 184, 166, 0.3);
+        }
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4);
+
+          &.no-removable {
+            box-shadow: 0 4px 12px rgba(20, 184, 166, 0.4);
+          }
+        }
+
+        i {
+          font-size: 0.9rem;
+        }
+
+        .filtro-tipo {
+          font-weight: 600;
+        }
+
+        .filtro-valor {
+          font-weight: 400;
+          opacity: 0.95;
+        }
+
+        .remove-filtro {
+          background: rgba(255, 255, 255, 0.2);
+          border: none;
+          border-radius: 50%;
+          width: 20px;
+          height: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          margin-left: 0.25rem;
+          transition: all 0.2s ease;
+
+          i {
+            font-size: 0.7rem;
+            color: white;
+          }
+
+          &:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: scale(1.1);
+          }
+        }
+      }
+    }
+  }
+
+  // Caracterización Grupo (checkbox + multiselect)
+  .caracterizacion-grupo {
+    margin-bottom: 1.5rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .checkbox-item {
+      margin-bottom: 0.75rem;
+    }
+  }
+
+  // MultiSelect Wrapper
+  .multiselect-wrapper {
+    margin-top: 0.5rem;
+
+    ::ng-deep .p-multiselect {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+
+      &:hover {
+        border-color: #ec4899;
+      }
+
+      &.p-focus {
+        border-color: #ec4899;
+        box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+      }
+
+      .p-multiselect-label {
+        padding: 0.75rem 1rem;
+      }
+
+      .p-multiselect-trigger {
+        color: #ec4899;
+      }
+    }
+
+    ::ng-deep .p-multiselect-panel {
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+      .p-multiselect-header {
+        background: #f9fafb;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 0.75rem 1rem;
+
+        .p-multiselect-filter-container {
+          .p-inputtext {
+            border-color: #e5e7eb;
+
+            &:focus {
+              border-color: #ec4899;
+              box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+            }
+          }
+        }
+      }
+
+      .p-multiselect-items {
+        .p-multiselect-item {
+          padding: 0.75rem 1rem;
+          transition: all 0.2s ease;
+
+          &:hover {
+            background: #fdf2f8;
+          }
+
+          &.p-highlight {
+            background: #ec4899;
+            color: white;
+          }
+
+          .p-checkbox {
+            .p-checkbox-box {
+              border-color: #e5e7eb;
+
+              &.p-highlight {
+                background: #ec4899;
+                border-color: #ec4899;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    ::ng-deep .p-multiselect-token {
+      background: #ec4899;
+      color: white;
+      border-radius: 12px;
+      padding: 0.25rem 0.5rem;
+      margin-right: 0.5rem;
+
+      .p-multiselect-token-icon {
+        margin-left: 0.5rem;
+      }
+    }
+  }
+
   // Footer Section
   .footer-section {
     display: flex;
