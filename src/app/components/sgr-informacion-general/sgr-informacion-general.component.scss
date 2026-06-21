@@ -1,5 +1,6 @@
 // Paleta de colores cívicos
 $civic-navy: #1e3a5f;      // Principal - autoridad institucional
+$civic-navy-dark: #14293f; // Navy oscuro para hover/active
 $civic-gold: #d4a655;      // Acento - riqueza mineral colombiana
 $civic-slate: #64748b;     // Texto/bordes secundarios
 $civic-steel: #4a5f7a;     // Texto secundario
@@ -90,7 +91,7 @@ $alert-amber: #f59e0b;     // Acciones de remoción
         left: 0;
         right: 0;
         height: 4px;
-        background: linear-gradient(90deg, $civic-gold 0%, $civic-gold 100%);
+        background: $civic-gold;
       }
 
       &:hover {
@@ -106,7 +107,7 @@ $alert-amber: #f59e0b;     // Acciones de remoción
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        background: linear-gradient(135deg, $civic-gold 0%, $civic-gold 100%);
+        background: $civic-gold;
 
         i {
           font-size: 1.8rem;
@@ -144,11 +145,11 @@ $alert-amber: #f59e0b;     // Acciones de remoción
       // Colores específicos por tipo de entidad
       &.beneficiarias {
         &::before {
-          background: linear-gradient(90deg, $civic-navy 0%, #f472b6 100%);
+          background: linear-gradient(90deg, $civic-navy 0%, $civic-steel 100%);
         }
 
         .entidad-icon {
-          background: linear-gradient(135deg, $civic-navy 0%, #f472b6 100%);
+          background: linear-gradient(135deg, $civic-navy 0%, $civic-steel 100%);
         }
       }
 
@@ -429,15 +430,10 @@ $alert-amber: #f59e0b;     // Acciones de remoción
           .slider-label-multiline {
             font-size: 0.85rem;
             color: #6b7280;
-            display: flex;
-            flex-direction: column;
+            display: block;
             margin-bottom: 0.5rem;
             line-height: 1.3;
-
-            .slider-label-line1,
-            .slider-label-line2 {
-              display: block;
-            }
+            max-width: 200px;
           }
 
           label:not(.slider-label-multiline) {
@@ -465,8 +461,8 @@ $alert-amber: #f59e0b;     // Acciones de remoción
               border-color: $civic-navy;
 
               &:hover {
-                background: #db2777;
-                border-color: #db2777;
+                background: $civic-navy-dark;
+                border-color: $civic-navy-dark;
               }
             }
           }
