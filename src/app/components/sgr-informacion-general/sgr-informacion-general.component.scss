@@ -834,6 +834,7 @@ $alert-amber: #f59e0b;     // Acciones de remoción
 
     ::ng-deep .p-multiselect {
       width: 100%;
+      max-width: 100%; // Prevenir expansión más allá del contenedor
       border-radius: 8px;
       border: 1px solid #e5e7eb;
 
@@ -846,8 +847,23 @@ $alert-amber: #f59e0b;     // Acciones de remoción
         box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
       }
 
+      // Contenedor de los chips seleccionados
+      .p-multiselect-label-container {
+        overflow: hidden; // Ocultar contenido que exceda el ancho
+      }
+
       .p-multiselect-label {
         padding: 0.75rem 1rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        // Cuando hay chips, permitir wrapping
+        &.p-multiselect-label-chip {
+          white-space: normal;
+          max-height: 80px; // Limitar altura máxima
+          overflow-y: auto; // Scroll si hay muchos chips
+        }
       }
 
       .p-multiselect-trigger {
@@ -910,9 +926,19 @@ $alert-amber: #f59e0b;     // Acciones de remoción
       border-radius: 12px;
       padding: 0.25rem 0.5rem;
       margin-right: 0.5rem;
+      max-width: 200px; // Limitar ancho máximo de cada chip
+      display: inline-flex;
+      align-items: center;
+
+      .p-multiselect-token-label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
 
       .p-multiselect-token-icon {
         margin-left: 0.5rem;
+        flex-shrink: 0; // El botón de cerrar no se debe comprimir
       }
     }
   }
