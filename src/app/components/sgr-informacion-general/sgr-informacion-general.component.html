@@ -81,9 +81,7 @@
     </div>
 
     <!-- Sección de Filtros -->
-    <div class="filtros-section">
-      <h2 class="section-title">Aplique a su consulta</h2>
-
+    <div class="filtros-section">      
       <!-- Trazabilidad de Filtros -->
       <div class="filtros-activos" *ngIf="filtrosActivos.length > 0">
         <div class="filtros-activos-header">
@@ -119,79 +117,121 @@
       </div>
 
       <div class="filtros-container">
-        <!-- Periodicidad -->
-        <div class="filtro-box">
+        <!-- Periodicidad (nuevo diseño en cascada) -->
+        <div class="filtro-box periodicidad-box">
           <h3>Periodicidad</h3>
-          <div class="radio-group">
-            <div class="radio-item">
-              <p-radiobutton
-                name="periodicidad"
-                value="Mensual"
-                [ngModel]="periodicidad"
-                (ngModelChange)="onPeriodicidadChange($event)"
-                inputId="mensual"
-              />
-              <label for="mensual">Mensual</label>
-            </div>
 
-            <div class="radio-item">
-              <p-radiobutton
+          <!-- Bienio (siempre visible) -->
+          <div class="caracterizacion-grupo">
+            <div class="checkbox-item">
+              <p-checkbox
                 name="periodicidad"
-                value="Anual"
-                [ngModel]="periodicidad"
-                (ngModelChange)="onPeriodicidadChange($event)"
-                inputId="anual"
+                [(ngModel)]="periodicidadActiva.bienio"
+                (ngModelChange)="onPeriodicidadActivaChange('bienio', $event)"
+                [binary]="true"
+                inputId="filtroBienio"
+                [disabled]="true"
               />
-              <label for="anual">Anual</label>
+              <label for="filtroBienio">Bienio</label>
             </div>
-
-            <div class="radio-item">
-              <p-radiobutton
-                name="periodicidad"
-                value="Bienal"
-                [ngModel]="periodicidad"
-                (ngModelChange)="onPeriodicidadChange($event)"
-                inputId="bienal"
-              />
-              <label for="bienal">Bienal</label>
+            <div class="multiselect-wrapper" *ngIf="periodicidadActiva.bienio">
+              <p-multiselect
+                [options]="bieniosOpciones"
+                [(ngModel)]="bieniosSeleccionados"
+                (ngModelChange)="onBieniosChange()"
+                optionLabel="label"
+                optionValue="value"
+                [optionDisabled]="'disabled'"
+                placeholder="Seleccione bienios"
+                [filter]="false"
+                [showClear]="false"
+                display="comma"
+                styleClass="w-full"
+                [maxSelectedLabels]="2"
+                selectedItemsLabel="{0} bienios"
+                class="w-full md:w-80"
+                [displaySelectedLabel]="false"
+              ></p-multiselect>
             </div>
           </div>
 
-          <!-- Dropdown para seleccionar periodo según periodicidad -->
-          <div class="periodo-seleccion">
-            <!-- Dropdown para Bienal/Anual/Mes -->
-            <div class="dropdown-wrapper" *ngIf="periodicidad !== 'Mensual'">
-              <p-dropdown
-                [options]="opcionesPeriodicidad"
-                [(ngModel)]="valorPeriodicidadSeleccionado"
-                (ngModelChange)="onValorPeriodicidadChange()"
-                optionLabel="label"
-                optionValue="value"
-                [placeholder]="periodicidad === 'Bienal' ? 'Seleccione bienio' : 'Seleccione año'"
-                styleClass="w-full"
-              ></p-dropdown>
+          <!-- Año (condicional) -->
+          <div class="caracterizacion-grupo">
+            <div class="checkbox-item">
+              <p-checkbox
+                name="periodicidad"
+                [(ngModel)]="periodicidadActiva.anio"
+                (ngModelChange)="onPeriodicidadActivaChange('anio', $event)"
+                [binary]="true"
+                inputId="filtroAnio"
+              />
+              <label for="filtroAnio">Año</label>
             </div>
+            <div class="multiselect-wrapper" *ngIf="periodicidadActiva.anio">
+              <p-multiselect
+                [options]="aniosDisponibles"
+                [(ngModel)]="aniosSeleccionados"
+                (ngModelChange)="onAniosChange()"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Seleccione años"
+                [filter]="false"
+                [showClear]="true"
+                display="comma"
+                styleClass="w-full"
+                [maxSelectedLabels]="3"
+                selectedItemsLabel="{0} años"
+                class="w-full md:w-80"
+              ></p-multiselect>
+            </div>
+          </div>
 
-            <!-- Dropdowns para Mensual (año + mes) -->
-            <div class="dropdown-wrapper mensual-wrapper" *ngIf="periodicidad === 'Mensual'">
-              <p-dropdown
-                [options]="anosOpciones"
-                [(ngModel)]="anoMensualSeleccionado"
-                (ngModelChange)="onAnoMensualChange()"
-                optionLabel="label"
-                optionValue="value"
-                placeholder="Seleccione año"
-                styleClass="w-full"
-              ></p-dropdown>
-              <p-dropdown
-                [options]="mesesOpciones"
-                [(ngModel)]="valorPeriodicidadSeleccionado"
-                (ngModelChange)="onValorPeriodicidadChange()"
-                optionLabel="label"
-                optionValue="value"
-                placeholder="Seleccione mes"
-                styleClass="w-full"
-              ></p-dropdown>
+          <!-- Mes (condicional) - Rango de meses -->
+          <div class="caracterizacion-grupo">
+            <div class="checkbox-item">
+              <p-checkbox
+                name="periodicidad"
+                [(ngModel)]="periodicidadActiva.mes"
+                (ngModelChange)="onPeriodicidadActivaChange('mes', $event)"
+                [binary]="true"
+                inputId="filtroMes"
+              />
+              <label for="filtroMes">Período mensual</label>
+            </div>
+            <div class="multiselect-wrapper rango-meses-wrapper" *ngIf="periodicidadActiva.mes">
+              <!-- Mes desde -->
+              <div class="rango-mes-item">
+                <label class="rango-mes-label">Desde</label>
+                <p-calendar
+                  [(ngModel)]="mesDesde"
+                  (onSelect)="onMesDesdeChange()"
+                  view="month"
+                  dateFormat="MM yy"
+                  [showIcon]="true"
+                  [minDate]="minDateMes"
+                  [maxDate]="mesHasta || maxDateMes"
+                  placeholder="Mes inicial"
+                  styleClass="w-full"
+                  class="w-full"
+                ></p-calendar>
+              </div>
+
+              <!-- Mes hasta -->
+              <div class="rango-mes-item">
+                <label class="rango-mes-label">Hasta</label>
+                <p-calendar
+                  [(ngModel)]="mesHasta"
+                  (onSelect)="onMesHastaChange()"
+                  view="month"
+                  dateFormat="MM yy"
+                  [showIcon]="true"
+                  [minDate]="mesDesde || minDateMes"
+                  [maxDate]="maxDateMes"
+                  placeholder="Mes final"
+                  styleClass="w-full"
+                  class="w-full"
+                ></p-calendar>
+              </div>
             </div>
           </div>
         </div>

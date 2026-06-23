@@ -832,6 +832,25 @@ $alert-amber: #f59e0b;     // Acciones de remoción
   .multiselect-wrapper {
     margin-top: 0.5rem;
 
+    // Wrapper específico para rango de meses
+    &.rango-meses-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      .rango-mes-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        .rango-mes-label {
+          font-size: 0.875rem;
+          font-weight: 500;
+          color: $civic-steel;
+        }
+      }
+    }
+
     ::ng-deep .p-multiselect {
       width: 100%;
       max-width: 100%; // Prevenir expansión más allá del contenedor

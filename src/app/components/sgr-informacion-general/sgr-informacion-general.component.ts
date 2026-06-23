@@ -12,6 +12,7 @@ import { SliderModule } from 'primeng/slider';
 import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { ChipModule } from 'primeng/chip';
+import { CalendarModule } from 'primeng/calendar';
 
 // Services
 import { SgrPresupuestoService } from '../../services/sgr-presupuesto.service';
@@ -47,6 +48,7 @@ interface RecaudoMetricas {
     DropdownModule,
     MultiSelectModule,
     ChipModule,
+    CalendarModule,
     NumberFormatPipe
   ],
   templateUrl: './sgr-informacion-general.component.html',
@@ -64,10 +66,27 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     etnicas: 0
   };
 
-  // Filtros
-  periodicidad: string = 'Bienal';
-  valorPeriodicidadSeleccionado: string = '2025-2026';
-  anoMensualSeleccionado: number = 2025; // Para periodicidad mensual
+  // Filtros de periodicidad (nuevo diseño en cascada)
+  periodicidadActiva: {
+    bienio: boolean;
+    anio: boolean;
+    mes: boolean;
+  } = {
+    bienio: true,  // Siempre activo por defecto
+    anio: false,
+    mes: false
+  };
+
+  // Valores seleccionados para cada nivel
+  bieniosSeleccionados: string[] = ['2025-2026']; // Pre-seleccionado y bloqueado
+  aniosSeleccionados: number[] = [];
+  mesDesde: Date | null = null;  // Rango de meses: inicio
+  mesHasta: Date | null = null;  // Rango de meses: fin
+
+  // Propiedades calculadas (para evitar recalcular en cada change detection)
+  aniosDisponibles: Array<{label: string, value: number}> = [];
+  minDateMes: Date | undefined = undefined;
+  maxDateMes: Date | undefined = undefined;
 
   // Caracterizaciones activas (ahora múltiples, no excluyentes)
   caracterizacionesActivas: {
@@ -98,7 +117,7 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     { label: 'Todos', value: 'Todos' },
     { label: 'Inversión', value: 'Inversión' },
     { label: 'Ahorro', value: 'Ahorro' },
-    { label: 'Administración', value: 'Administración' }
+    { label: 'Administración', value: 'Administración ' }  // Nota: incluye espacio al final para coincidir con los datos
   ];
 
   regionalOpciones = [
@@ -160,46 +179,43 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     { label: 'Región', value: 'Región' }
   ];
 
-  // Opciones para periodicidad
+  // Opciones para periodicidad (nuevo diseño)
   bieniosOpciones = [
-    { label: '2025-2026', value: '2025-2026' },
-    { label: '2023-2024', value: '2023-2024' },
-    { label: '2021-2022', value: '2021-2022' },
-    { label: '2019-2020', value: '2019-2020' },
-    { label: '2017-2018', value: '2017-2018' },
-    { label: '2015-2016', value: '2015-2016' },
-    { label: '2013-2014', value: '2013-2014' }
+    { label: '2025-2026', value: '2025-2026', disabled: false },  // Tiene datos, no se puede desseleccionar
+    { label: '2023-2024', value: '2023-2024', disabled: true },   // Placeholder futuro
+    { label: '2021-2022', value: '2021-2022', disabled: true },
+    { label: '2019-2020', value: '2019-2020', disabled: true },
+    { label: '2017-2018', value: '2017-2018', disabled: true },
+    { label: '2015-2016', value: '2015-2016', disabled: true },
+    { label: '2013-2014', value: '2013-2014', disabled: true }
   ];
 
-  anosOpciones = [
-    { label: '2025', value: '2025' },
-    { label: '2024', value: '2024' },
-    { label: '2023', value: '2023' },
-    { label: '2022', value: '2022' },
-    { label: '2021', value: '2021' },
-    { label: '2020', value: '2020' },
-    { label: '2019', value: '2019' },
-    { label: '2018', value: '2018' },
-    { label: '2017', value: '2017' },
-    { label: '2016', value: '2016' },
-    { label: '2015', value: '2015' },
-    { label: '2014', value: '2014' }
-  ];
+  // Métodos para actualizar propiedades calculadas
+  private actualizarAniosDisponibles(): void {
+    const anios: number[] = [];
 
-  mesesOpciones = [
-    { label: 'Enero', value: '01' },
-    { label: 'Febrero', value: '02' },
-    { label: 'Marzo', value: '03' },
-    { label: 'Abril', value: '04' },
-    { label: 'Mayo', value: '05' },
-    { label: 'Junio', value: '06' },
-    { label: 'Julio', value: '07' },
-    { label: 'Agosto', value: '08' },
-    { label: 'Septiembre', value: '09' },
-    { label: 'Octubre', value: '10' },
-    { label: 'Noviembre', value: '11' },
-    { label: 'Diciembre', value: '12' }
-  ];
+    this.bieniosSeleccionados.forEach(bienio => {
+      const [inicio, fin] = bienio.split('-').map(y => parseInt(y));
+      if (!anios.includes(inicio)) anios.push(inicio);
+      if (!anios.includes(fin)) anios.push(fin);
+    });
+
+    this.aniosDisponibles = anios
+      .sort((a, b) => b - a)  // Ordenar descendente
+      .map(anio => ({ label: anio.toString(), value: anio }));
+  }
+
+  private actualizarRangoFechasMes(): void {
+    if (this.aniosSeleccionados.length === 0) {
+      this.minDateMes = undefined;
+      this.maxDateMes = undefined;
+    } else {
+      const minAnio = Math.min(...this.aniosSeleccionados);
+      const maxAnio = Math.max(...this.aniosSeleccionados);
+      this.minDateMes = new Date(minAnio, 0, 1);  // 1 de enero del año mínimo
+      this.maxDateMes = new Date(maxAnio, 11, 31);  // 31 de diciembre del año máximo
+    }
+  }
 
   // Métricas de presupuesto
   presupuestoMetricas: PresupuestoMetricas = {
@@ -230,6 +246,10 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Inicializar propiedades calculadas
+    this.actualizarAniosDisponibles();
+    this.actualizarRangoFechasMes();
+
     this.loadData();
   }
 
@@ -248,9 +268,8 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     if (this.caracterizacionesActivas.conceptoGasto && this.valoresConceptoGasto.length > 0) {
       const conceptosGasto = this.valoresConceptoGasto.filter(v => v !== 'Todos');
       if (conceptosGasto.length > 0) {
-        // El servicio actual solo soporta un valor, tomar el primero
-        // TODO: Extender FiltrosSGR para soportar arrays
-        filtros.conceptoGasto = conceptosGasto[0];
+        // Enviar todos los valores seleccionados
+        filtros.conceptoGasto = conceptosGasto.length === 1 ? conceptosGasto[0] : conceptosGasto;
       }
     }
 
@@ -258,7 +277,7 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     if (this.caracterizacionesActivas.regional && this.valoresRegional.length > 0) {
       const regiones = this.valoresRegional.filter(v => v !== 'Todos');
       if (regiones.length > 0) {
-        filtros.region = regiones[0];
+        filtros.region = regiones.length === 1 ? regiones[0] : regiones;
       }
     }
 
@@ -267,7 +286,7 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
       // Asignación usa el campo conceptoGasto
       // Si ya hay un filtro de conceptoGasto, dar prioridad a asignación
       if (this.valoresAsignacion.length > 0) {
-        filtros.conceptoGasto = this.valoresAsignacion[0];
+        filtros.conceptoGasto = this.valoresAsignacion.length === 1 ? this.valoresAsignacion[0] : this.valoresAsignacion;
       }
     }
 
@@ -277,7 +296,7 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
         ['Gobernación', 'Municipio', 'Corporación', 'Étnicos', 'Región'].includes(v)
       );
       if (tiposEntidad.length > 0) {
-        filtros.tipoEntidad = tiposEntidad[0];
+        filtros.tipoEntidad = tiposEntidad.length === 1 ? tiposEntidad[0] : tiposEntidad;
       }
     }
 
@@ -347,18 +366,96 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     alert('Funcionalidad de exportación en desarrollo');
   }
 
-  // Getter para opciones dinámicas del dropdown de periodicidad
-  get opcionesPeriodicidad(): any[] {
-    switch (this.periodicidad) {
-      case 'Bienal':
-        return this.bieniosOpciones;
-      case 'Anual':
-        return this.anosOpciones;
-      case 'Mensual':
-        return this.mesesOpciones;
-      default:
-        return [];
+  // Métodos para manejar cambios en filtros de periodicidad
+  onPeriodicidadActivaChange(tipo: 'bienio' | 'anio' | 'mes', activo: boolean): void {
+    this.periodicidadActiva[tipo] = activo;
+
+    // Si se desactiva un nivel, limpiar sus valores y niveles dependientes
+    if (!activo) {
+      switch (tipo) {
+        case 'bienio':
+          // No permitir desactivar bienio si 2025-2026 está seleccionado
+          if (this.bieniosSeleccionados.includes('2025-2026')) {
+            this.periodicidadActiva.bienio = true;
+            return;
+          }
+          this.bieniosSeleccionados = [];
+          this.periodicidadActiva.anio = false;
+          this.aniosSeleccionados = [];
+          this.periodicidadActiva.mes = false;
+          this.mesDesde = null;
+          this.mesHasta = null;
+          break;
+        case 'anio':
+          this.aniosSeleccionados = [];
+          this.periodicidadActiva.mes = false;
+          this.mesDesde = null;
+          this.mesHasta = null;
+          break;
+        case 'mes':
+          this.mesDesde = null;
+          this.mesHasta = null;
+          break;
+      }
+      this.loadData();
     }
+  }
+
+  onBieniosChange(): void {
+    // Asegurar que 2025-2026 siempre esté seleccionado
+    if (!this.bieniosSeleccionados.includes('2025-2026')) {
+      this.bieniosSeleccionados.push('2025-2026');
+    }
+
+    // Actualizar años disponibles
+    this.actualizarAniosDisponibles();
+
+    // Limpiar años seleccionados que ya no están en los bienios
+    const aniosValidos = this.aniosDisponibles.map(a => a.value);
+    this.aniosSeleccionados = this.aniosSeleccionados.filter(a => aniosValidos.includes(a));
+
+    // Actualizar rango de fechas para mes
+    this.actualizarRangoFechasMes();
+
+    this.loadData();
+  }
+
+  onAniosChange(): void {
+    // Actualizar rango de fechas para el selector de mes
+    this.actualizarRangoFechasMes();
+
+    // Validar que los meses seleccionados estén en el rango de años
+    if (this.mesDesde) {
+      const anioDesde = this.mesDesde.getFullYear();
+      if (!this.aniosSeleccionados.includes(anioDesde)) {
+        this.mesDesde = null;
+      }
+    }
+
+    if (this.mesHasta) {
+      const anioHasta = this.mesHasta.getFullYear();
+      if (!this.aniosSeleccionados.includes(anioHasta)) {
+        this.mesHasta = null;
+      }
+    }
+
+    this.loadData();
+  }
+
+  onMesDesdeChange(): void {
+    // Validar que mesHasta sea posterior a mesDesde
+    if (this.mesDesde && this.mesHasta && this.mesDesde > this.mesHasta) {
+      this.mesHasta = null;
+    }
+    this.loadData();
+  }
+
+  onMesHastaChange(): void {
+    // Validar que mesHasta sea posterior a mesDesde
+    if (this.mesDesde && this.mesHasta && this.mesHasta < this.mesDesde) {
+      this.mesDesde = null;
+    }
+    this.loadData();
   }
 
   // Métodos para manejar cambios en caracterizaciones
@@ -417,35 +514,6 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     this.loadData();
   }
 
-  // Método para manejar cambio de periodicidad
-  onPeriodicidadChange(nuevaPeriodicidad: string): void {
-    this.periodicidad = nuevaPeriodicidad;
-
-    // Resetear el valor seleccionado a la primera opción de la nueva lista
-    const opciones = this.opcionesPeriodicidad;
-    if (opciones.length > 0) {
-      this.valorPeriodicidadSeleccionado = opciones[0].value;
-    }
-
-    // Si es mensual, también resetear el año
-    if (nuevaPeriodicidad === 'Mensual') {
-      this.anoMensualSeleccionado = 2025;
-    }
-
-    this.loadData();
-  }
-
-  // Método para manejar cambio en el dropdown de periodicidad
-  onValorPeriodicidadChange(): void {
-    console.log('Valor de periodicidad cambiado:', this.valorPeriodicidadSeleccionado);
-    this.loadData();
-  }
-
-  // Método para manejar cambio en el año mensual
-  onAnoMensualChange(): void {
-    console.log('Año mensual cambiado:', this.anoMensualSeleccionado);
-    this.loadData();
-  }
 
   // Getters dinámicos para KPIs según filtros de Presupuesto y Recaudo
   get presupuestoKPI(): number {
@@ -536,18 +604,51 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
   get filtrosActivos(): Array<{tipo: string, valor: string, icono: string}> {
     const filtros: Array<{tipo: string, valor: string, icono: string}> = [];
 
-    // Periodicidad
-    if (this.periodicidad && this.valorPeriodicidadSeleccionado) {
-      let valorMostrar = this.valorPeriodicidadSeleccionado;
-      if (this.periodicidad === 'Mensual') {
-        const mesLabel = this.mesesOpciones.find(m => m.value === this.valorPeriodicidadSeleccionado)?.label;
-        valorMostrar = `${mesLabel} ${this.anoMensualSeleccionado}`;
-      }
-      filtros.push({
-        tipo: 'Periodicidad',
-        valor: `${this.periodicidad}: ${valorMostrar}`,
-        icono: 'pi-calendar'
+    // Bienios
+    if (this.periodicidadActiva.bienio && this.bieniosSeleccionados.length > 0) {
+      this.bieniosSeleccionados.forEach(bienio => {
+        filtros.push({
+          tipo: 'Bienio',
+          valor: bienio,
+          icono: 'pi-calendar'
+        });
       });
+    }
+
+    // Años
+    if (this.periodicidadActiva.anio && this.aniosSeleccionados.length > 0) {
+      this.aniosSeleccionados.forEach(anio => {
+        filtros.push({
+          tipo: 'Año',
+          valor: anio.toString(),
+          icono: 'pi-calendar'
+        });
+      });
+    }
+
+    // Rango de meses
+    if (this.periodicidadActiva.mes && (this.mesDesde || this.mesHasta)) {
+      const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+      let rangoTexto = '';
+      if (this.mesDesde && this.mesHasta) {
+        const mesDesdeLabel = `${meses[this.mesDesde.getMonth()]} ${this.mesDesde.getFullYear()}`;
+        const mesHastaLabel = `${meses[this.mesHasta.getMonth()]} ${this.mesHasta.getFullYear()}`;
+        rangoTexto = `${mesDesdeLabel} - ${mesHastaLabel}`;
+      } else if (this.mesDesde) {
+        rangoTexto = `Desde ${meses[this.mesDesde.getMonth()]} ${this.mesDesde.getFullYear()}`;
+      } else if (this.mesHasta) {
+        rangoTexto = `Hasta ${meses[this.mesHasta.getMonth()]} ${this.mesHasta.getFullYear()}`;
+      }
+
+      if (rangoTexto) {
+        filtros.push({
+          tipo: 'Período',
+          valor: rangoTexto,
+          icono: 'pi-calendar'
+        });
+      }
     }
 
     // Concepto de Gasto
@@ -653,8 +754,27 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
 
   removerFiltro(filtro: {tipo: string, valor: string}): void {
     // Remover filtro específico
-    if (filtro.tipo === 'Periodicidad') {
-      // No permitir remover periodicidad (es obligatorio)
+
+    // Filtros de periodicidad
+    if (filtro.tipo === 'Bienio') {
+      // No permitir remover 2025-2026
+      if (filtro.valor === '2025-2026') return;
+
+      this.bieniosSeleccionados = this.bieniosSeleccionados.filter(b => b !== filtro.valor);
+      this.loadData();
+      return;
+    }
+
+    if (filtro.tipo === 'Año') {
+      this.aniosSeleccionados = this.aniosSeleccionados.filter(a => a.toString() !== filtro.valor);
+      this.loadData();
+      return;
+    }
+
+    if (filtro.tipo === 'Período') {
+      this.mesDesde = null;
+      this.mesHasta = null;
+      this.loadData();
       return;
     }
 
@@ -701,6 +821,14 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
   }
 
   limpiarTodosFiltros(): void {
+    // Resetear filtros de periodicidad (mantener solo 2025-2026)
+    this.bieniosSeleccionados = ['2025-2026'];
+    this.aniosSeleccionados = [];
+    this.mesDesde = null;
+    this.mesHasta = null;
+    this.periodicidadActiva.anio = false;
+    this.periodicidadActiva.mes = false;
+
     // Resetear todos los filtros de caracterización
     this.valoresConceptoGasto = [];
     this.valoresRegional = [];
@@ -711,9 +839,6 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     this.entidadSeleccionada = 'beneficiario';
     this.presupuestoSeleccionado = 'total';
     this.recaudoSeleccionado = 'total';
-
-    // No resetear periodicidad ni las caracterizaciones activas
-    // El usuario decide cuáles mantener activas
 
     this.loadData();
   }

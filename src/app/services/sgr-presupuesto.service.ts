@@ -131,11 +131,13 @@ export class SgrPresupuestoService {
 
         if (filtros) {
           if (filtros.tipoEntidad) {
-            entidadesFiltradas = entidadesFiltradas.filter(e => e.tipo === filtros.tipoEntidad);
+            const tipos = Array.isArray(filtros.tipoEntidad) ? filtros.tipoEntidad : [filtros.tipoEntidad];
+            entidadesFiltradas = entidadesFiltradas.filter(e => tipos.includes(e.tipo));
           }
 
           if (filtros.region) {
-            entidadesFiltradas = entidadesFiltradas.filter(e => e.region === filtros.region);
+            const regiones = Array.isArray(filtros.region) ? filtros.region : [filtros.region];
+            entidadesFiltradas = entidadesFiltradas.filter(e => regiones.includes(e.region));
           }
 
           if (filtros.productor !== null && filtros.productor !== undefined) {
@@ -158,7 +160,8 @@ export class SgrPresupuestoService {
         let registrosFiltrados = registros.filter(r => codigosEntidades.has(r.codigoEntidad));
 
         if (filtros?.conceptoGasto) {
-          registrosFiltrados = registrosFiltrados.filter(r => r.conceptoGasto === filtros.conceptoGasto);
+          const conceptos = Array.isArray(filtros.conceptoGasto) ? filtros.conceptoGasto : [filtros.conceptoGasto];
+          registrosFiltrados = registrosFiltrados.filter(r => conceptos.includes(r.conceptoGasto));
         }
 
         // Filtro por destinación étnica
@@ -263,10 +266,12 @@ export class SgrPresupuestoService {
 
         if (filtros) {
           if (filtros.tipoEntidad) {
-            entidadesFiltradas = entidadesFiltradas.filter(e => e.tipo === filtros.tipoEntidad);
+            const tipos = Array.isArray(filtros.tipoEntidad) ? filtros.tipoEntidad : [filtros.tipoEntidad];
+            entidadesFiltradas = entidadesFiltradas.filter(e => tipos.includes(e.tipo));
           }
           if (filtros.region) {
-            entidadesFiltradas = entidadesFiltradas.filter(e => e.region === filtros.region);
+            const regiones = Array.isArray(filtros.region) ? filtros.region : [filtros.region];
+            entidadesFiltradas = entidadesFiltradas.filter(e => regiones.includes(e.region));
           }
         }
 

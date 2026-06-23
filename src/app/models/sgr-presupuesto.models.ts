@@ -192,13 +192,13 @@ export class PresupuestoUtils {
  */
 export interface FiltrosSGR {
   periodicidad?: string;
-  tipoEntidad?: string;
-  region?: string;
+  tipoEntidad?: string | string[];
+  region?: string | string[];
   productor?: boolean | null;
   pdet?: boolean | null;
   zomac?: boolean | null;
   destinacionEtnica?: boolean | null;
-  conceptoGasto?: string;
+  conceptoGasto?: string | string[];
 }
 
 export interface EntidadCount {
