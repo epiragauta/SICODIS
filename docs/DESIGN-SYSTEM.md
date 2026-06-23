@@ -51,6 +51,37 @@ Guía de referencia rápida para el uso del nuevo sistema de diseño implementad
 --azul-hover: #2797ce;     /* Azul hover */
 ```
 
+### Sistema de Diseño Cívico (Civic Design) - SGR Información General
+
+**Implementado en:** `sgr-informacion-general` (desde 2026-06-20)
+
+**Contexto:** Para módulos con datos fiscales gubernamentales que requieren un lenguaje visual autoritativo y confiable. Sustituye los colores vibrantes (magenta/púrpura) con una paleta cívica profesional.
+
+```scss
+$civic-navy: #1e3a5f;      // Principal - autoridad institucional
+$civic-navy-dark: #14293f; // Navy oscuro para hover/active
+$civic-gold: #d4a655;      // Acento - riqueza mineral colombiana
+$civic-slate: #64748b;     // Texto/bordes secundarios
+$civic-steel: #4a5f7a;     // Texto secundario
+$civic-cloud: #f1f5f9;     // Fondo alternativo
+$alert-amber: #f59e0b;     // Acciones de remoción
+```
+
+**Características visuales:**
+- Chips estilo ledger/libro contable (fondo blanco + borde izquierdo de acento)
+- Border-radius mínimo (2px) para estética de contabilidad
+- Sombras sutiles (0 2px 8px rgba(0, 0, 0, 0.08))
+- Tipografía estructurada con labels en uppercase
+
+**Cuándo usar:**
+- ✅ Módulos de datos fiscales/presupuestales
+- ✅ Reportes financieros gubernamentales
+- ✅ Dashboards de transparencia fiscal
+- ❌ Módulos de marketing o comunicación pública
+- ❌ Páginas de inicio o landing pages
+
+**Archivo de referencia:** `src/app/components/sgr-informacion-general/sgr-informacion-general.component.scss`
+
 ---
 
 ## 🏷️ Variables por Sistema
@@ -489,5 +520,8 @@ Para preguntas o sugerencias sobre el sistema de diseño, consulta:
 
 ---
 
-**Última actualización:** 2026-04-14
-**Versión:** 1.0.0
+**Última actualización:** 2026-06-22  
+**Versión:** 1.1.0  
+**Historial de cambios:**
+- **v1.1.0** (2026-06-22): Documentación del sistema de diseño cívico para módulos fiscales
+- **v1.0.0** (2026-04-14): Versión inicial del sistema de diseño SICODIS
