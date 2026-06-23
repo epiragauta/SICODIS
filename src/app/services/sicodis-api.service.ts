@@ -630,6 +630,33 @@ export interface SgrRecaudoMensualResponse {
   detallesector: SgrRecaudoMensualSectorDetallePeriodo[];
 }
 
+// ========== Alertas de Caja SGR Interfaces ==========
+export interface AlertasCajaMonto {
+  periodo: number;
+  periodo_corto: string;
+  id_concepto: number;
+  presupuesto: number;
+  recaudo: number;
+  aprobaciones: number;
+  recaudo_supera_aprobaciones: number;
+}
+
+export interface AlertasCajaEntidad {
+  periodo: number;
+  periodo_corto: string;
+  id_concepto: number;
+  codigo_spgr: string;
+  entidades_no_caja: number;
+  entidades_caja_compromisos_no_total: number;
+  entidades_caja: number;
+  entidades_total: number;
+}
+
+export interface AlertasCajaResponse {
+  montos: AlertasCajaMonto[];
+  entidades: AlertasCajaEntidad[];
+}
+
 // ========== Request Parameters Interfaces ==========
 export interface DistribucionTotalParams {
   idVigencia?: number;
@@ -1143,6 +1170,16 @@ getSgrDescargaResumenPbcRecaudoMensual( idvigencia: number
   getSgrPlanBienalDetalle(idVigencia: number, codigoEntidad: string, codigoMunicipio: string): Observable<DetallePlanBienal[]> {
     const url = `${this.baseUrl}/sgrplanbienal/detalle_planbienal/${idVigencia}/${codigoEntidad}/${codigoMunicipio}`;
     return this.http.get<DetallePlanBienal[]>(url);
+  }
+
+  /**
+   * Obtiene los insumos del boletín de alertas de caja del SGR
+   * Incluye información sobre recaudo, aprobaciones y estado de entidades
+   * @returns Observable con los datos de montos y entidades para alertas de caja
+   */
+  getSgrInsumosBoletinAlertas(): Observable<AlertasCajaResponse> {
+    const url = `${this.baseUrl}/sgr/insumos_boletin_alerta`;
+    return this.http.get<AlertasCajaResponse>(url);
   }
 
   // ========== SGP Methods ==========

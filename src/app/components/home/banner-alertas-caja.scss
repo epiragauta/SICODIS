@@ -618,4 +618,65 @@
       }
     }
   }
+
+  // ============================================================================
+  // LOADING AND ERROR STATES
+  // ============================================================================
+
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 30px;
+    text-align: center;
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #e0e0e0;
+      border-top-color: #00bcd4;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    p {
+      color: #666;
+      font-size: 16px;
+      margin: 0;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  }
+
+  .error-state {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 4px;
+    padding: 15px 20px;
+    margin: 20px;
+    text-align: center;
+
+    p {
+      color: #856404;
+      font-size: 14px;
+      margin: 0;
+      font-weight: 500;
+    }
+  }
+
+  // Periodo badge (nuevo)
+  .periodo-badge {
+    margin-left: 10px;
+    background: #e91e63;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+  }
 }

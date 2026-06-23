@@ -241,29 +241,30 @@ location.reload();
 
 ---
 
-## Futuras Mejoras
+## Mejoras Implementadas
 
-### Fase 1: Datos Dinámicos (Sprint futuro)
-Reemplazar valores hardcodeados por datos del API:
+### ✅ Fase 1: Datos Dinámicos (Completado - 23 Jun 2026)
+Se ha completado la integración con el servicio de API para mostrar datos en tiempo real.
 
+**Servicio implementado:**
 ```typescript
-export class BannerAlertasCajaComponent implements OnInit {
-  recaudoTotal = signal('$9.9 Billones');
-  proyectosRegistrados = signal('$9.3 Billones');
-  // ...
-
-  ngOnInit() {
-    this.loadAlertasCajaData();
-  }
-
-  private loadAlertasCajaData() {
-    this.apiService.getAlertasCaja().subscribe(data => {
-      this.recaudoTotal.set(data.recaudo_total);
-      // ...
-    });
-  }
-}
+getSgrInsumosBoletinAlertas(): Observable<AlertasCajaResponse>
 ```
+
+**Endpoint:**
+```
+GET /apiws/ApiSicodisNew/sgr/insumos_boletin_alerta
+```
+
+**Características implementadas:**
+- ✅ Signals de Angular 18 para datos reactivos
+- ✅ Formateo automático de números a billones
+- ✅ Estado de loading con spinner
+- ✅ Manejo de errores con fallback
+- ✅ Badge de período dinámico (ej: "May 2026")
+- ✅ Mapeo de datos de montos y entidades (ADIR/ADAN)
+
+**Ver documentación detallada:** `docs/banner/INTEGRACION_API_ALERTAS.md`
 
 ### Fase 2: Configuración Desde Admin Panel
 Permitir editar los números directamente desde el panel de administración:
@@ -397,14 +398,15 @@ imports: [
 El nuevo **banner de Alertas de Caja SGR** proporciona una experiencia visual mejorada, mejor performance, y mayor accesibilidad comparado con la imagen estática anterior.
 
 **Próximos pasos:**
-1. ✅ **Completado:** Implementación básica con HTML/CSS
-2. ⏳ **Pendiente:** Integración con API para datos dinámicos
+1. ✅ **Completado:** Implementación básica con HTML/CSS (11 Jun 2026)
+2. ✅ **Completado:** Integración con API para datos dinámicos (23 Jun 2026)
 3. ⏳ **Pendiente:** Tests unitarios completos
 4. ⏳ **Pendiente:** Más templates de banners especializados
 
 ---
 
 **Autor:** Claude Code (Sonnet 4.5)  
-**Fecha:** 11 de junio de 2026  
+**Fecha Creación:** 11 de junio de 2026  
+**Última Actualización:** 23 de junio de 2026  
 **Proyecto:** SICODIS WebII - DNP Colombia  
 **Usuario:** Edwin Piragauta (edwin.piragauta@gmail.com)
