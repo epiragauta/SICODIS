@@ -1,3 +1,12 @@
+// Paleta de colores cívicos
+$civic-navy: #1e3a5f;      // Principal - autoridad institucional
+$civic-navy-dark: #14293f; // Navy oscuro para hover/active
+$civic-gold: #d4a655;      // Acento - riqueza mineral colombiana
+$civic-slate: #64748b;     // Texto/bordes secundarios
+$civic-steel: #4a5f7a;     // Texto secundario
+$civic-cloud: #f1f5f9;     // Fondo alternativo
+$alert-amber: #f59e0b;     // Acciones de remoción
+
 .sgr-info-general-container {
   width: 100%;
   min-height: 100vh;
@@ -17,12 +26,12 @@
     .main-title {
       font-size: 1.5rem;
       font-weight: 600;
-      color: #ec4899;
+      color: $civic-navy;
       margin-bottom: 1.5rem;
       padding: 1rem 1.5rem;
       background: white;
       border-radius: 12px;
-      border-left: 4px solid #14b8a6;
+      border-left: 4px solid $civic-gold;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 
@@ -36,12 +45,12 @@
         padding: 1.5rem;
         border-radius: 12px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        border-top: 4px solid #14b8a6;
+        border-top: 4px solid $civic-gold;
 
         h3 {
           font-size: 0.9rem;
           font-weight: 600;
-          color: #ec4899;
+          color: $civic-navy;
           margin: 0 0 0.75rem;
         }
 
@@ -82,7 +91,7 @@
         left: 0;
         right: 0;
         height: 4px;
-        background: linear-gradient(90deg, #14b8a6 0%, #06b6d4 100%);
+        background: $civic-gold;
       }
 
       &:hover {
@@ -98,7 +107,7 @@
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+        background: $civic-gold;
 
         i {
           font-size: 1.8rem;
@@ -136,11 +145,11 @@
       // Colores específicos por tipo de entidad
       &.beneficiarias {
         &::before {
-          background: linear-gradient(90deg, #ec4899 0%, #f472b6 100%);
+          background: linear-gradient(90deg, $civic-navy 0%, $civic-steel 100%);
         }
 
         .entidad-icon {
-          background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+          background: linear-gradient(135deg, $civic-navy 0%, $civic-steel 100%);
         }
       }
 
@@ -193,7 +202,7 @@
     .section-title {
       font-size: 1.3rem;
       font-weight: 600;
-      color: #ec4899;
+      color: $civic-navy;
       margin-bottom: 1.5rem;
       padding: 1rem 1.5rem;
       background: white;
@@ -203,7 +212,7 @@
 
     .filtros-container {
       display: grid;
-      grid-template-columns: auto 1fr auto auto;
+      grid-template-columns: auto 1fr auto;
       gap: 1.5rem;
 
       .filtro-box {
@@ -215,7 +224,7 @@
         h3 {
           font-size: 1rem;
           font-weight: 600;
-          color: #ec4899;
+          color: $civic-navy;
           margin: 0 0 1rem;
         }
 
@@ -263,7 +272,7 @@
               }
 
               &.p-focus {
-                border-color: #ec4899;
+                border-color: $civic-navy;
                 box-shadow: 0 0 0 0.2rem rgba(236, 72, 153, 0.25);
               }
 
@@ -288,7 +297,7 @@
 
                   &.p-highlight {
                     background: #fce7f3;
-                    color: #ec4899;
+                    color: $civic-navy;
                   }
 
                   &:hover {
@@ -348,7 +357,7 @@
                 }
 
                 &.p-focus {
-                  border-color: #ec4899;
+                  border-color: $civic-navy;
                   box-shadow: 0 0 0 0.2rem rgba(236, 72, 153, 0.25);
                 }
 
@@ -373,7 +382,7 @@
 
                     &.p-highlight {
                       background: #fce7f3;
-                      color: #ec4899;
+                      color: $civic-navy;
                     }
 
                     &:hover {
@@ -396,14 +405,38 @@
         }
       }
 
-      .presupuesto-box,
-      .recaudo-box {
+      // Panel combinado Presupuesto + Recaudo
+      .presupuesto-recaudo-box {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+
+        .presupuesto-section,
+        .recaudo-section {
+          flex: 1;
+        }
+
+        .seccion-separador {
+          height: 1px;
+          background: #e5e7eb;
+          margin: 1.5rem 0;
+        }
+
         .slider-container {
           margin-top: 1.5rem;
           padding-top: 1.5rem;
           border-top: 1px solid #e5e7eb;
 
-          label {
+          .slider-label-multiline {
+            font-size: 0.85rem;
+            color: #6b7280;
+            display: block;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+            max-width: 200px;
+          }
+
+          label:not(.slider-label-multiline) {
             font-size: 0.85rem;
             color: #6b7280;
             display: block;
@@ -413,23 +446,23 @@
           .slider-value {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #ec4899;
+            color: $civic-navy;
             margin-bottom: 1rem;
             text-align: center;
           }
 
           ::ng-deep .slider-disponibilidad {
             .p-slider-range {
-              background: linear-gradient(90deg, #ec4899 0%, #a855f7 100%);
+              background: linear-gradient(90deg, $civic-navy 0%, $civic-steel 100%);
             }
 
             .p-slider-handle {
-              background: #ec4899;
-              border-color: #ec4899;
+              background: $civic-navy;
+              border-color: $civic-navy;
 
               &:hover {
-                background: #db2777;
-                border-color: #db2777;
+                background: $civic-navy-dark;
+                border-color: $civic-navy-dark;
               }
             }
           }
@@ -455,7 +488,7 @@
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 
         &.grande {
-          background: linear-gradient(135deg, #14b8a6 0%, #a855f7 100%);
+          background: linear-gradient(135deg, $civic-gold 0%, $civic-steel 100%);
           color: white;
 
           .card-header {
@@ -523,7 +556,7 @@
             flex-shrink: 0;
 
             &.cyan {
-              background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+              background: linear-gradient(135deg, $civic-gold 0%, #0891b2 100%);
             }
 
             &.orange {
@@ -590,7 +623,7 @@
                 transition: width 0.5s ease;
 
                 &.cyan {
-                  background: linear-gradient(90deg, #06b6d4 0%, #0891b2 100%);
+                  background: linear-gradient(90deg, $civic-gold 0%, #0891b2 100%);
                 }
 
                 &.orange {
@@ -631,7 +664,7 @@
               .gauge-number {
                 font-size: 2rem;
                 font-weight: 700;
-                color: #ec4899;
+                color: $civic-navy;
                 line-height: 1;
               }
 
@@ -654,7 +687,7 @@
     padding: 1.5rem;
     margin-bottom: 1.5rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    border-left: 4px solid #ec4899;
+    border-left: 4px solid $civic-navy;
 
     .filtros-activos-header {
       display: flex;
@@ -672,31 +705,33 @@
         gap: 0.5rem;
 
         i {
-          color: #ec4899;
+          color: $civic-navy;
         }
       }
 
       .limpiar-filtros-btn {
-        background: #fee2e2;
-        color: #dc2626;
-        border: none;
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
+        background: transparent;
+        border: 1.5px solid $civic-slate;
+        color: $civic-steel;
+        border-radius: 2px;
+        padding: 8px 16px;
         font-size: 0.85rem;
-        font-weight: 600;
+        font-weight: 500;
         cursor: pointer;
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
 
-        &:hover {
-          background: #fecaca;
-          transform: translateY(-1px);
+        .icon {
+          display: inline-block;
+          font-size: 16px;
         }
 
-        i {
-          font-size: 1rem;
+        &:hover {
+          border-color: $alert-amber;
+          color: $alert-amber;
+          transform: translateY(-1px);
         }
       }
     }
@@ -706,52 +741,56 @@
       flex-wrap: wrap;
       gap: 0.75rem;
 
+      // Estilo Ledger (libro contable) para chips de filtros
       .filtro-chip {
-        background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);
-        color: white;
-        border-radius: 20px;
-        padding: 0.5rem 1rem;
+        background: white;
+        border: 1px solid $civic-slate;
+        border-left: 3px solid $civic-gold; // Barra de acento tipo pestaña
+        border-radius: 2px; // Mínimo, casi cuadrado
+        padding: 6px 12px 6px 10px;
         display: flex;
         align-items: center;
         gap: 0.5rem;
         font-size: 0.85rem;
-        box-shadow: 0 2px 6px rgba(236, 72, 153, 0.3);
-        transition: all 0.3s ease;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
         position: relative;
 
         &.no-removable {
-          background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
-          box-shadow: 0 2px 6px rgba(20, 184, 166, 0.3);
+          border-left-color: $civic-navy; // Filtros permanentes usan navy
+          opacity: 0.8;
         }
 
         &:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4);
-
-          &.no-removable {
-            box-shadow: 0 4px 12px rgba(20, 184, 166, 0.4);
-          }
+          transform: translateY(-1px);
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
         }
 
         i {
           font-size: 0.9rem;
+          color: $civic-slate;
         }
 
         .filtro-tipo {
           font-weight: 600;
+          color: $civic-navy;
+          text-transform: uppercase;
+          font-size: 11px;
+          letter-spacing: 0.5px;
         }
 
         .filtro-valor {
           font-weight: 400;
-          opacity: 0.95;
+          color: $civic-steel;
         }
 
         .remove-filtro {
-          background: rgba(255, 255, 255, 0.2);
-          border: none;
-          border-radius: 50%;
-          width: 20px;
-          height: 20px;
+          background: transparent;
+          border: 1px solid $alert-amber;
+          color: $alert-amber;
+          border-radius: 2px;
+          width: 18px;
+          height: 18px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -761,12 +800,15 @@
 
           i {
             font-size: 0.7rem;
-            color: white;
+            color: $alert-amber;
           }
 
           &:hover {
-            background: rgba(255, 255, 255, 0.35);
-            transform: scale(1.1);
+            background: $alert-amber;
+
+            i {
+              color: white;
+            }
           }
         }
       }
@@ -792,24 +834,40 @@
 
     ::ng-deep .p-multiselect {
       width: 100%;
+      max-width: 100%; // Prevenir expansión más allá del contenedor
       border-radius: 8px;
       border: 1px solid #e5e7eb;
 
       &:hover {
-        border-color: #ec4899;
+        border-color: $civic-navy;
       }
 
       &.p-focus {
-        border-color: #ec4899;
+        border-color: $civic-navy;
         box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+      }
+
+      // Contenedor de los chips seleccionados
+      .p-multiselect-label-container {
+        overflow: hidden; // Ocultar contenido que exceda el ancho
       }
 
       .p-multiselect-label {
         padding: 0.75rem 1rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        // Cuando hay chips, permitir wrapping
+        &.p-multiselect-label-chip {
+          white-space: normal;
+          max-height: 80px; // Limitar altura máxima
+          overflow-y: auto; // Scroll si hay muchos chips
+        }
       }
 
       .p-multiselect-trigger {
-        color: #ec4899;
+        color: $civic-navy;
       }
     }
 
@@ -827,7 +885,7 @@
             border-color: #e5e7eb;
 
             &:focus {
-              border-color: #ec4899;
+              border-color: $civic-navy;
               box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
             }
           }
@@ -844,7 +902,7 @@
           }
 
           &.p-highlight {
-            background: #ec4899;
+            background: $civic-navy;
             color: white;
           }
 
@@ -853,8 +911,8 @@
               border-color: #e5e7eb;
 
               &.p-highlight {
-                background: #ec4899;
-                border-color: #ec4899;
+                background: $civic-navy;
+                border-color: $civic-navy;
               }
             }
           }
@@ -863,14 +921,24 @@
     }
 
     ::ng-deep .p-multiselect-token {
-      background: #ec4899;
+      background: $civic-navy;
       color: white;
       border-radius: 12px;
       padding: 0.25rem 0.5rem;
       margin-right: 0.5rem;
+      max-width: 200px; // Limitar ancho máximo de cada chip
+      display: inline-flex;
+      align-items: center;
+
+      .p-multiselect-token-label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
 
       .p-multiselect-token-icon {
         margin-left: 0.5rem;
+        flex-shrink: 0; // El botón de cerrar no se debe comprimir
       }
     }
   }
@@ -897,7 +965,7 @@
 
     .footer-right {
       ::ng-deep .export-btn {
-        background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);
+        background: linear-gradient(135deg, $civic-navy 0%, $civic-steel 100%);
         border: none;
         padding: 0.75rem 2rem;
         font-weight: 600;
