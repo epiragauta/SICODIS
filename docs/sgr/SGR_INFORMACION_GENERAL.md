@@ -2,7 +2,7 @@
 
 **Módulo**: `sgr-informacion-general`  
 **Sistema**: SICODIS Web II  
-**Última actualización**: 2026-06-19
+**Última actualización**: 2026-06-22
 
 ---
 
@@ -374,9 +374,11 @@ Usuario puede seleccionar múltiples opciones:
 - **Grupo de Interés**: "Municipio" + "Gobernación" (2 valores)
 
 **Características del MultiSelect**:
-- Modo de visualización: `display="chip"` (muestra valores como chips)
-- Máximo de etiquetas visibles: 3 (después muestra "X opciones seleccionadas")
-- Filtro integrado para búsqueda rápida
+- Modo de visualización: `display="comma"` (valores separados por comas - más compacto)
+- Máximo de etiquetas visibles: 2 (después muestra "X seleccionados")
+- Ancho responsivo: full-width en móvil, 320px fijo en desktop (`w-full md:w-80`)
+- `displaySelectedLabel="false"` para ocultar etiqueta redundante
+- Filtro integrado para búsqueda rápida (solo en listas largas como Asignación)
 - Botón de limpiar integrado
 
 **Beneficio**: Consultas más granulares y análisis cruzados entre múltiples dimensiones
@@ -429,7 +431,94 @@ limpiarTodosFiltros(): void
 
 **Beneficio**: Mejor UX - usuario ve claramente qué filtros están activos y puede removerlos fácilmente
 
-### 3. Campos Relacionados con el Procesamiento de Datos
+### 3. Sistema de Diseño Cívico (Civic Design)
+
+**Estado**: ✅ **IMPLEMENTADO** (2026-06-20)
+
+**Contexto y Motivación**:
+Los datos fiscales gubernamentales requieren un lenguaje visual autoritativo y confiable. El sistema de diseño anterior utilizaba una paleta vibrante (magenta/púrpura) más apropiada para aplicaciones comerciales. Se implementó un sistema de diseño cívico que transmite profesionalismo institucional.
+
+**Paleta de Colores Cívicos**:
+```scss
+$civic-navy: #1e3a5f;      // Principal - autoridad institucional
+$civic-navy-dark: #14293f; // Navy oscuro para hover/active
+$civic-gold: #d4a655;      // Acento - riqueza mineral colombiana
+$civic-slate: #64748b;     // Texto/bordes secundarios
+$civic-steel: #4a5f7a;     // Texto secundario
+$civic-cloud: #f1f5f9;     // Fondo alternativo
+$alert-amber: #f59e0b;     // Acciones de remoción
+```
+
+**Cambios Visuales**:
+
+**Chips de Filtros - Estilo Ledger/Libro Contable**:
+- Fondo blanco con borde izquierdo de acento (en lugar de gradientes vibrantes)
+- Borde dorado (#d4a655) para filtros removibles
+- Borde navy (#1e3a5f) para filtros permanentes (Periodicidad)
+- Border-radius mínimo (2px) para estética de contabilidad/ledger
+- Tipografía estructurada: labels en uppercase, formato tipo:valor
+- Botón remover: borde amber outlined con fill en hover
+
+**Tarjetas KPI y Entidades**:
+- Borde superior dorado en lugar de gradientes
+- Colores navy para títulos y texto principal
+- Sombras sutiles (0 2px 8px rgba(0, 0, 0, 0.08))
+
+**Botones**:
+- "Limpiar todos" → "Remover todos los filtros" (texto más explícito)
+- Icono cambiado: pi-times-circle → ⟲ (símbolo de reset)
+- Estilo: outlined transparent con borde civic-slate
+- Hover: acento amber para affordance clara
+
+**Layout Reorganizado**:
+- Grid de filtros: 4 columnas → 3 columnas
+- "Presupuesto de consulta" y "Recaudo" combinados en un solo panel vertical
+- Más ancho para sección "Caracterización de la consulta"
+- Etiqueta del slider dividida en dos líneas para display más compacto
+
+**Clases CSS Nuevas**:
+- `.presupuesto-recaudo-box` - Panel combinado de presupuesto y recaudo
+- `.seccion-separador` - Separador visual entre secciones
+- `.slider-label-multiline` - Label del slider en dos líneas
+- Variables SCSS semánticas para toda la paleta
+
+**Beneficio**: Lenguaje visual coherente con la naturaleza institucional de SICODIS. Mayor confianza y profesionalismo percibido por usuarios gubernamentales.
+
+### 4. Mejoras de Responsividad y UX del MultiSelect
+
+**Estado**: ✅ **IMPLEMENTADO** (2026-06-21)
+
+**Contexto**:
+Complementa el sistema de diseño cívico con mejoras técnicas en los componentes p-multiselect para prevenir problemas de expansión de ancho y mejorar la experiencia en dispositivos móviles.
+
+**Cambios Implementados**:
+
+**Modo de Display**:
+- Cambio de `display="chip"` → `display="comma"` en los 4 multiselects
+- Display separado por comas es más compacto y eficiente en espacio
+- Previene expansión horizontal causada por renderizado de chips
+
+**Ancho Responsivo**:
+- Clases Tailwind: `w-full md:w-80`
+- Móvil: ancho completo (w-full)
+- Desktop: ancho fijo 320px (md:w-80)
+- Consistencia de tamaño en todos los breakpoints
+
+**Mejoras UX**:
+- `[displaySelectedLabel]="false"` - Oculta etiqueta redundante
+- `selectedItemsLabel="{0} seleccionados"` - Muestra conteo de items
+- `[maxSelectedLabels]="2"` - Muestra primeros 2 items antes de mostrar conteo
+- Prevención de expansión de width en selección de items
+
+**Multiselects Afectados**:
+1. Concepto de Gasto
+2. Regional
+3. Asignación
+4. Grupo de Interés
+
+**Beneficio**: Comportamiento más predecible y compacto del multiselect. Mejor experiencia en mobile y prevención de problemas de layout causados por expansión dinámica.
+
+### 5. Campos Relacionados con el Procesamiento de Datos
 
 Los filtros actuales están basados en los campos del archivo Excel normalizado:
 
@@ -577,5 +666,11 @@ interface FiltrosSGR {
 ---
 
 **Creado**: 2026-06-19  
+**Última actualización**: 2026-06-22  
 **Autor**: Equipo SICODIS  
-**Versión**: 1.0
+**Versión**: 1.2
+
+**Historial de Cambios**:
+- **v1.2** (2026-06-22): Documentación de mejoras de responsividad en multiselect
+- **v1.1** (2026-06-20): Documentación del sistema de diseño cívico y reorganización de layout
+- **v1.0** (2026-06-19): Versión inicial - filtros multiselect y trazabilidad
