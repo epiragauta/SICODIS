@@ -122,9 +122,10 @@ export class BannerAlertasCajaComponent implements OnInit {
 
   /**
    * Abre el enlace a más información sobre Alertas de Caja
+   * Redirige a la página oficial del DNP sobre el Sistema General de Regalías - Alertas de Caja
    */
   verMasInformacion(): void {
-    window.open('https://sicodis.dnp.gov.co/Alertas/AlertasCaja', '_blank');
+    window.open('https://www.dnp.gov.co/LaEntidad_/subdireccion-general-inversiones-seguimiento-evaluacion/direccion-programacion-inversiones-publicas/Paginas/sistema-general-de-regalias.aspx#veinticincoseiscaja', '_blank');
   }
 
   /**

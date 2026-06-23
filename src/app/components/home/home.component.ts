@@ -112,7 +112,7 @@ export class HomeComponent implements OnInit {
   cols3: number = 3;
 
   // Banner inteligente con ConfigService
-  showBanner: boolean = false;
+  showBanner: boolean = true;  // Mostrar por defecto
   bannerConfig: BannerConfig | null = null;  
 
   // Datos para el gráfico donut SGP
