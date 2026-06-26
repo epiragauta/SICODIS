@@ -1728,7 +1728,7 @@ getSgrDescargaResumenPbcRecaudoMensual( idvigencia: number
 
   // ========== Geovisor Methods ==========
 
-  getGeovisorResumen(annio: number, codigoDepto = 0, codigoEntidad = 0): Observable<ResumenGeovisor> {
+  getGeovisorResumen(annio: number, codigoDepto: string | number = 0, codigoEntidad: string | number = 0): Observable<ResumenGeovisor> {
     const url = `${this.baseUrl}/geovisor/resumen_geovisor/${annio}/${codigoDepto}/${codigoEntidad}`;
     return this.http.get<ResumenGeovisor>(url);
   }
