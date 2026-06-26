@@ -440,33 +440,33 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
   }
 
   private crearPopupHtml(nombre: string, data: ResumenGeovisor): string {
-    const sgr = data.sgr.find(d => d.categoria === '-2');
-    const sgp = data.sgp.find(d => d.id_concepto === '99');
-    const pgn = data.pgn[0];
+    const sgr = Array.isArray(data.sgr) ? data.sgr.find(d => d.categoria === '-2') : undefined;
+    const sgp = Array.isArray(data.sgp) ? data.sgp.find(d => d.id_concepto === '99') : undefined;
+    const pgn = Array.isArray(data.pgn) ? data.pgn[0] : undefined;
 
-    const fmt = (v: number) => v ? '$' + this.formatearValor(v) : 'N/D';
-    const pct = (v: number) => `${(v * 100).toFixed(1)}%`;
+    const fmt = (v: unknown) => { const n = Number(v); return Number.isFinite(n) && n ? '$' + this.formatearValor(n) : 'N/D'; };
+    const pct = (v: unknown) => `${(Number(v) * 100).toFixed(1)}%`;
 
     const sgrHtml = this.capas.find(c => c.sistema === 'SGR')?.visible ? `
       <div class="popup-sistema-bloque popup-sgr">
         <div class="popup-sistema-titulo"><span class="popup-badge sgr">SGR</span></div>
-        <div class="popup-fila"><span>Presupuesto</span><strong>${fmt(sgr?.presupuesto_total_vigente ?? 0)}</strong></div>
-        <div class="popup-fila"><span>Caja</span><strong>${fmt(sgr?.caja_total ?? 0)}</strong></div>
+        <div class="popup-fila"><span>Presupuesto</span><strong>${fmt(sgr?.presupuesto_total_vigente)}</strong></div>
+        <div class="popup-fila"><span>Caja</span><strong>${fmt(sgr?.caja_total)}</strong></div>
         <div class="popup-fila"><span>Avance IAC</span><strong>${pct(sgr?.avance_iac_presupuesto ?? 0)}</strong></div>
       </div>` : '';
 
     const sgpHtml = this.capas.find(c => c.sistema === 'SGP')?.visible ? `
       <div class="popup-sistema-bloque popup-sgp">
         <div class="popup-sistema-titulo"><span class="popup-badge sgp">SGP</span></div>
-        <div class="popup-fila"><span>Total distribución</span><strong>${fmt(sgp?.total ?? 0)}</strong></div>
+        <div class="popup-fila"><span>Total distribución</span><strong>${fmt(sgp?.total)}</strong></div>
       </div>` : '';
 
     const pgnHtml = this.capas.find(c => c.sistema === 'PGN')?.visible ? `
       <div class="popup-sistema-bloque popup-pgn">
         <div class="popup-sistema-titulo"><span class="popup-badge pgn">PGN</span></div>
-        <div class="popup-fila"><span>Apropiación</span><strong>${fmt(pgn?.total_apropiacion_vigente ?? 0)}</strong></div>
-        <div class="popup-fila"><span>Compromisos</span><strong>${(pgn?.porcentaje_total_compromisos ?? 0).toFixed(1)}%</strong></div>
-        <div class="popup-fila"><span>Pagos</span><strong>${(pgn?.porcentaje_total_pagos ?? 0).toFixed(1)}%</strong></div>
+        <div class="popup-fila"><span>Apropiación</span><strong>${fmt(pgn?.total_apropiacion_vigente)}</strong></div>
+        <div class="popup-fila"><span>Compromisos</span><strong>${Number(pgn?.porcentaje_total_compromisos ?? 0).toFixed(1)}%</strong></div>
+        <div class="popup-fila"><span>Pagos</span><strong>${Number(pgn?.porcentaje_total_pagos ?? 0).toFixed(1)}%</strong></div>
       </div>` : '';
 
     return `
