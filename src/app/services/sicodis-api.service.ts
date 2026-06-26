@@ -666,6 +666,31 @@ export interface DistribucionTotalParams {
   tipoEntidad?: string;
 }
 
+// ========== Geovisor Interfaces ==========
+export interface GeovisorSgpItem {
+  annio: number;
+  id_concepto: string;
+  concepto: string;
+  total: number;
+}
+
+export interface GeovisorPgnItem {
+  total_apropiacion_vigente: number;
+  total_compromisos: number;
+  total_obligaciones: number;
+  total_pagos: number;
+  porcentaje_total_apropiacion_vigente: number;
+  porcentaje_total_compromisos: number;
+  porcentaje_total_obligaciones: number;
+  porcentaje_total_pagos: number;
+}
+
+export interface ResumenGeovisor {
+  sgr: SgrPtoRecaudoItem[];
+  sgp: GeovisorSgpItem[];
+  pgn: GeovisorPgnItem[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -1700,6 +1725,13 @@ getSgrDescargaResumenPbcRecaudoMensual( idvigencia: number
   }   
 
 
+
+  // ========== Geovisor Methods ==========
+
+  getGeovisorResumen(annio: number, codigoDepto = 0, codigoEntidad = 0): Observable<ResumenGeovisor> {
+    const url = `${this.baseUrl}/geovisor/resumen_geovisor/${annio}/${codigoDepto}/${codigoEntidad}`;
+    return this.http.get<ResumenGeovisor>(url);
+  }
 
   // ============================================================================
   // EFICIENCIAS FISCALES Y ADMINISTRATIVAS - API Methods
