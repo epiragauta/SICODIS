@@ -570,6 +570,12 @@
     }
   }
 
+  // Marcadores SVG de pie
+  .marcador-pie {
+    background: none !important;
+    border: none !important;
+  }
+
   // Estilos para Leaflet
   .leaflet-popup-content-wrapper {
     border-radius: 8px;

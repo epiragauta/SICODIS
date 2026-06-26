@@ -98,7 +98,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
 
   private map!: L.Map;
   private geoJsonLayer: L.GeoJSON | null = null;
-  private circleMarkers: L.CircleMarker[] = [];
+  private circleMarkers: L.Layer[] = [];
   private deptResults: DeptResult[] = [];
   private maxValue = 0;
 
@@ -283,23 +283,26 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
       if (!value) return;
 
       const radius = this.getCircleRadius(value);
-      const color = this.getDominantColor();
       const opacity = this.getCapasOpacidade() / 100;
+      const segmentos = this.extraerSegmentosPie(result.data);
+      const pad = 2;
+      const iconSize = radius * 2 + pad * 2;
 
-      const circle = L.circleMarker(result.centroid, {
-        radius,
-        fillColor: color,
-        fillOpacity: 0.65 * opacity,
-        color: '#ffffff',
-        weight: 1.5
+      const marker = L.marker(result.centroid, {
+        icon: L.divIcon({
+          html: this.crearSvgPie(segmentos, radius, opacity),
+          className: 'marcador-pie',
+          iconSize: [iconSize, iconSize],
+          iconAnchor: [iconSize / 2, iconSize / 2]
+        })
       });
 
-      circle.on('click', () => {
-        this.mostrarPopupDepartamento(circle.getLatLng(), result.nombre, result.codigoDepto, result.data!);
+      marker.on('click', () => {
+        this.mostrarPopupDepartamento(marker.getLatLng(), result.nombre, result.codigoDepto, result.data!);
       });
 
-      circle.addTo(this.map);
-      this.circleMarkers.push(circle);
+      marker.addTo(this.map);
+      this.circleMarkers.push(marker);
     });
   }
 
@@ -356,6 +359,54 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
   private getCircleRadius(value: number): number {
     const ratio = this.maxValue > 0 ? value / this.maxValue : 0;
     return 4 + ratio * 32;
+  }
+
+  private extraerSegmentosPie(data: ResumenGeovisor): Array<{valor: number, color: string}> {
+    const segmentos: Array<{valor: number, color: string}> = [];
+    const sgrCapa = this.capas.find(c => c.sistema === 'SGR');
+    const sgpCapa = this.capas.find(c => c.sistema === 'SGP');
+    const pgnCapa = this.capas.find(c => c.sistema === 'PGN');
+    if (sgrCapa?.visible) {
+      const val = data.sgr.find(d => d.categoria === '-2')?.caja_total ?? 0;
+      if (val > 0) segmentos.push({ valor: val, color: SISTEMA_COLORES['SGR'] });
+    }
+    if (sgpCapa?.visible) {
+      const val = data.sgp.find(d => d.id_concepto === '99')?.total ?? 0;
+      if (val > 0) segmentos.push({ valor: val, color: SISTEMA_COLORES['SGP'] });
+    }
+    if (pgnCapa?.visible) {
+      const val = data.pgn[0]?.total_apropiacion_vigente ?? 0;
+      if (val > 0) segmentos.push({ valor: val, color: SISTEMA_COLORES['PGN'] });
+    }
+    return segmentos;
+  }
+
+  private crearSvgPie(segmentos: Array<{valor: number, color: string}>, r: number, opacity: number): string {
+    const total = segmentos.reduce((s, d) => s + d.valor, 0);
+    if (!total) return '';
+    const pad = 2;
+    const size = r * 2 + pad * 2;
+    const cx = size / 2;
+    const cy = size / 2;
+    let paths = '';
+    let startAngle = -90;
+    for (const seg of segmentos) {
+      const fraction = seg.valor / total;
+      const sweep = fraction * 360;
+      const endAngle = startAngle + sweep;
+      if (fraction >= 0.9999) {
+        paths += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${seg.color}" opacity="${(opacity * 0.72).toFixed(2)}"/>`;
+      } else {
+        const r1x = (cx + r * Math.cos(startAngle * Math.PI / 180)).toFixed(2);
+        const r1y = (cy + r * Math.sin(startAngle * Math.PI / 180)).toFixed(2);
+        const r2x = (cx + r * Math.cos(endAngle * Math.PI / 180)).toFixed(2);
+        const r2y = (cy + r * Math.sin(endAngle * Math.PI / 180)).toFixed(2);
+        const large = sweep > 180 ? 1 : 0;
+        paths += `<path d="M${cx},${cy}L${r1x},${r1y}A${r},${r} 0 ${large},1 ${r2x},${r2y}Z" fill="${seg.color}" opacity="${(opacity * 0.72).toFixed(2)}"/>`;
+      }
+      startAngle = endAngle;
+    }
+    return `<svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">${paths}<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="white" stroke-width="1.5"/></svg>`;
   }
 
   private computeCentroid(feature: any): L.LatLngExpression {
