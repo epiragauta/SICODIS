@@ -280,7 +280,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
       if (!result.data) return;
 
       const value = this.extractTotalValue(result.data);
-      if (!value) return;
+      if (!value || !Number.isFinite(value)) return;
 
       const radius = this.getCircleRadius(value);
       const opacity = this.getCapasOpacidade() / 100;
@@ -312,14 +312,17 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     const sgpCapa = this.capas.find(c => c.sistema === 'SGP');
     const pgnCapa = this.capas.find(c => c.sistema === 'PGN');
 
-    if (sgrCapa?.visible) {
-      total += data.sgr.find(d => d.categoria === '-2')?.caja_total ?? 0;
+    if (sgrCapa?.visible && Array.isArray(data.sgr)) {
+      const v = data.sgr.find(d => d.categoria === '-2')?.caja_total ?? 0;
+      if (Number.isFinite(v)) total += v;
     }
-    if (sgpCapa?.visible) {
-      total += data.sgp.find(d => d.id_concepto === '99')?.total ?? 0;
+    if (sgpCapa?.visible && Array.isArray(data.sgp)) {
+      const v = data.sgp.find(d => d.id_concepto === '99')?.total ?? 0;
+      if (Number.isFinite(v)) total += v;
     }
-    if (pgnCapa?.visible) {
-      total += data.pgn[0]?.total_apropiacion_vigente ?? 0;
+    if (pgnCapa?.visible && Array.isArray(data.pgn)) {
+      const v = data.pgn[0]?.total_apropiacion_vigente ?? 0;
+      if (Number.isFinite(v)) total += v;
     }
     return total;
   }
@@ -366,24 +369,24 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     const sgrCapa = this.capas.find(c => c.sistema === 'SGR');
     const sgpCapa = this.capas.find(c => c.sistema === 'SGP');
     const pgnCapa = this.capas.find(c => c.sistema === 'PGN');
-    if (sgrCapa?.visible) {
+    if (sgrCapa?.visible && Array.isArray(data.sgr)) {
       const val = data.sgr.find(d => d.categoria === '-2')?.caja_total ?? 0;
-      if (val > 0) segmentos.push({ valor: val, color: SISTEMA_COLORES['SGR'] });
+      if (Number.isFinite(val) && val > 0) segmentos.push({ valor: val, color: SISTEMA_COLORES['SGR'] });
     }
-    if (sgpCapa?.visible) {
+    if (sgpCapa?.visible && Array.isArray(data.sgp)) {
       const val = data.sgp.find(d => d.id_concepto === '99')?.total ?? 0;
-      if (val > 0) segmentos.push({ valor: val, color: SISTEMA_COLORES['SGP'] });
+      if (Number.isFinite(val) && val > 0) segmentos.push({ valor: val, color: SISTEMA_COLORES['SGP'] });
     }
-    if (pgnCapa?.visible) {
+    if (pgnCapa?.visible && Array.isArray(data.pgn)) {
       const val = data.pgn[0]?.total_apropiacion_vigente ?? 0;
-      if (val > 0) segmentos.push({ valor: val, color: SISTEMA_COLORES['PGN'] });
+      if (Number.isFinite(val) && val > 0) segmentos.push({ valor: val, color: SISTEMA_COLORES['PGN'] });
     }
     return segmentos;
   }
 
   private crearSvgPie(segmentos: Array<{valor: number, color: string}>, r: number, opacity: number): string {
     const total = segmentos.reduce((s, d) => s + d.valor, 0);
-    if (!total) return '';
+    if (!total || !Number.isFinite(total) || !Number.isFinite(r) || r <= 0) return '';
     const pad = 2;
     const size = r * 2 + pad * 2;
     const cx = size / 2;
