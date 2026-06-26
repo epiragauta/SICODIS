@@ -15,34 +15,20 @@
           <label for="inversion">Inversión</label>
         </div>
 
-        <div class="field-checkbox sistema-checkbox">
+        <div *ngFor="let capa of capas" class="sistema-row">
           <p-checkbox
-            [(ngModel)]="consultaRecursos.sgr"
+            [(ngModel)]="capa.visible"
             [binary]="true"
-            inputId="sgr"
+            [inputId]="'sistema-' + capa.sistema.toLowerCase()"
+            (onChange)="onCapaVisibleChange(capa)"
           />
-          <i class="pi pi-file sistema-icono"></i>
-          <label for="sgr">SGR</label>
-        </div>
-
-        <div class="field-checkbox sistema-checkbox">
-          <p-checkbox
-            [(ngModel)]="consultaRecursos.sgp"
-            [binary]="true"
-            inputId="sgp"
+          <span class="sistema-dot" [style.background-color]="capa.color"></span>
+          <label [for]="'sistema-' + capa.sistema.toLowerCase()" class="sistema-label">{{ capa.sistema }}</label>
+          <p-slider
+            [(ngModel)]="capa.opacidad"
+            class="sistema-slider"
+            (onChange)="onCapaOpacidadChange(capa)"
           />
-          <i class="pi pi-file sistema-icono"></i>
-          <label for="sgp">SGP</label>
-        </div>
-
-        <div class="field-checkbox sistema-checkbox">
-          <p-checkbox
-            [(ngModel)]="consultaRecursos.pgn"
-            [binary]="true"
-            inputId="pgn"
-          />
-          <i class="pi pi-file sistema-icono"></i>
-          <label for="pgn">PGN</label>
         </div>
       </div>
 
@@ -63,7 +49,8 @@
       <h3 class="titulo-seccion">Visualización</h3>
 
       <div class="visualizacion-toggle">
-        <p-inputSwitch [(ngModel)]="visualizacionActiva" />
+        <p-inputSwitch [(ngModel)]="visualizacionActiva" (onChange)="onCapaVisibleChange(capas[0])" />
+        <span class="visualizacion-label">{{ visualizacionActiva ? 'Activa' : 'Inactiva' }}</span>
       </div>
 
       <div class="tipo-inversion-selector">
@@ -74,28 +61,6 @@
           optionValue="value"
           [style]="{'width': '100%'}"
         />
-      </div>
-
-      <!-- Capas -->
-      <div class="capas-lista">
-        <div *ngFor="let capa of capas" class="capa-item">
-          <div class="capa-header">
-            <p-checkbox
-              [(ngModel)]="capa.visible"
-              [binary]="true"
-              (onChange)="onCapaVisibleChange(capa)"
-            />
-            <i class="pi pi-circle-fill capa-color-indicador" [style.color]="capa.color"></i>
-            <span class="capa-nombre">{{ capa.sistema }}</span>
-          </div>
-          <div class="capa-slider">
-            <p-slider
-              [(ngModel)]="capa.opacidad"
-              [style]="{'width': '100%'}"
-              (onChange)="onCapaOpacidadChange(capa)"
-            />
-          </div>
-        </div>
       </div>
 
       <!-- Botones de acción -->
@@ -137,44 +102,37 @@
 
   <!-- Contenido principal -->
   <div class="contenido-principal">
+
     <!-- Tarjetas de resumen superior -->
-    <div class="tarjetas-resumen">
+    <div class="tarjetas-resumen" [class.tarjetas-cargando]="isLoading()">
       <div
         *ngFor="let recurso of recursos"
         class="tarjeta-recurso"
-        [style.background-color]="recurso.color"
+        [style.--color-sistema]="recurso.color"
       >
         <div class="tarjeta-header">
-          <div class="tarjeta-icono-container">
-            <i [class]="recurso.icono + ' tarjeta-icono'"></i>
-          </div>
-          <div class="tarjeta-info">
-            <h4 class="tarjeta-sigla">{{ recurso.sigla }}</h4>
-            <h2 class="tarjeta-total">${{ recurso.total | numberFormat }}</h2>
-          </div>
+          <span class="tarjeta-sigla">{{ recurso.sigla }}</span>
+          <span class="tarjeta-nombre">{{ recurso.nombre }}</span>
         </div>
-
-        <div class="tarjeta-progreso">
-          <div class="progreso-item">
-            <span class="progreso-label">Presupuesto</span>
-            <p-progressBar
-              [value]="calcularPorcentaje(recurso.presupuesto, recurso.total)"
-              [showValue]="false"
-              [style]="{'height': '8px'}"
-            />
-          </div>
-          <div class="progreso-item">
-            <span class="progreso-label">Recaudo</span>
-            <p-progressBar
-              [value]="calcularPorcentaje(recurso.recaudo, recurso.total)"
-              [showValue]="false"
-              [style]="{'height': '8px'}"
-            />
-          </div>
+        <div class="tarjeta-total-row">
+          <span class="tarjeta-total">${{ formatearValor(recurso.total) }}</span>
+          <span class="tarjeta-cobertura-badge">{{ recurso.cobertura }}</span>
         </div>
-
-        <div class="tarjeta-cobertura">
-          <p>{{ recurso.cobertura }}</p>
+        <div class="tarjeta-barras">
+          <div class="barra-item">
+            <div class="barra-label">
+              <span>Presupuesto</span>
+              <span>{{ calcularPorcentaje(recurso.presupuesto, recurso.total).toFixed(0) }}%</span>
+            </div>
+            <p-progressBar [value]="calcularPorcentaje(recurso.presupuesto, recurso.total)" [showValue]="false" [style]="{'height': '4px'}" />
+          </div>
+          <div class="barra-item">
+            <div class="barra-label">
+              <span>Caja</span>
+              <span>{{ calcularPorcentaje(recurso.recaudo, recurso.total).toFixed(0) }}%</span>
+            </div>
+            <p-progressBar [value]="calcularPorcentaje(recurso.recaudo, recurso.total)" [showValue]="false" [style]="{'height': '4px'}" />
+          </div>
         </div>
       </div>
     </div>
@@ -182,6 +140,27 @@
     <!-- Mapa -->
     <div class="mapa-container">
       <div id="mapaRecursos" class="mapa"></div>
+
+      <!-- Loading overlay del mapa -->
+      <div class="mapa-loading" *ngIf="isLoadingMapa()">
+        <div class="mapa-loading-inner">
+          <i class="pi pi-spin pi-spinner"></i>
+          <span>Cargando datos geográficos (33 departamentos)...</span>
+        </div>
+      </div>
+
+      <!-- Leyenda -->
+      <div class="mapa-leyenda" *ngIf="hasGeoData && !isLoadingMapa()">
+        <div class="leyenda-titulo">Recursos totales</div>
+        <div class="leyenda-escala">
+          <span class="leyenda-min">Menor</span>
+          <div class="leyenda-gradiente"></div>
+          <span class="leyenda-max">Mayor</span>
+        </div>
+        <div class="leyenda-nota">
+          <i class="pi pi-circle-fill" style="font-size:0.6rem"></i> Círculos: proporcionales al valor
+        </div>
+      </div>
 
       <!-- Controles adicionales del mapa -->
       <div class="mapa-controles">
