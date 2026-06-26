@@ -101,6 +101,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
   private circleMarkers: L.Layer[] = [];
   private deptResults: DeptResult[] = [];
   private maxValue = 0;
+  private capitalesMap = new Map<string, L.LatLngExpression>();
 
   ngOnInit(): void {
     this.generarVigencias();
@@ -205,13 +206,20 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
   private cargarGeoJsonYDepartamentos(): void {
     this.isLoadingMapa.set(true);
 
-    this.http.get<any>('/assets/data/departamentos.geojson')
+    forkJoin({
+      deptos: this.http.get<any>('/assets/data/departamentos.geojson'),
+      capitales: this.http.get<any>('/assets/data/capitales.geojson')
+    })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (geojson) => {
+        next: ({ deptos, capitales }) => {
+          capitales.features.forEach((f: any) => {
+            const [lon, lat] = f.geometry.coordinates;
+            this.capitalesMap.set(f.properties.codigoDepto, [lat, lon]);
+          });
           this.hasGeoData = true;
-          this.agregarCapaCoropleta(geojson);
-          this.cargarDatosDepartamentos(geojson.features);
+          this.agregarCapaCoropleta(deptos);
+          this.cargarDatosDepartamentos(deptos.features);
         },
         error: () => this.isLoadingMapa.set(false)
       });
@@ -238,7 +246,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
       const cod: string = feature.properties.cod ?? '0';
       const codigoDepto = cod.padStart(2, '0') + '000';
       const nombre: string = feature.properties.nombre ?? '';
-      const centroid = this.computeCentroid(feature);
+      const centroid = this.capitalesMap.get(codigoDepto) ?? this.computeCentroid(feature);
 
       console.log(`[API] ${nombre}: cod="${cod}" → codigoDepto="${codigoDepto}"`);
 
