@@ -282,6 +282,13 @@ export interface DetallePlanBienal {
   [key: string]: any; // Para soportar períodos dinámicos
 }
 
+export interface DetallePlanRecursos {
+  Orden: number;
+  IdConcepto: string;
+  Concepto: string;
+  [key: string]: any; // Para soportar claves de año dinámicas ("2025", "2026", ...)
+}
+
 // ========== SGP Interfaces ==========
 export interface VigenciaSgp {
   anio: number;
@@ -1195,6 +1202,26 @@ getSgrDescargaResumenPbcRecaudoMensual( idvigencia: number
   getSgrPlanBienalDetalle(idVigencia: number, codigoEntidad: string, codigoMunicipio: string): Observable<DetallePlanBienal[]> {
     const url = `${this.baseUrl}/sgrplanbienal/detalle_planbienal/${idVigencia}/${codigoEntidad}/${codigoMunicipio}`;
     return this.http.get<DetallePlanBienal[]>(url);
+  }
+
+  getSgrPlanRecursosVigencias(): Observable<VigenciaPlanBienal[]> {
+    const url = `${this.baseUrl}/sgrplanrecursos/vigencias`;
+    return this.http.get<VigenciaPlanBienal[]>(url);
+  }
+
+  getSgrPlanRecursosDepartamentos(): Observable<DepartamentoPlanBienal[]> {
+    const url = `${this.baseUrl}/sgrplanrecursos/departamentos`;
+    return this.http.get<DepartamentoPlanBienal[]>(url);
+  }
+
+  getSgrPlanRecursosMunicipiosDepartamento(codigoDepto: string): Observable<MunicipioPlanBienal[]> {
+    const url = `${this.baseUrl}/sgrplanrecursos/municipios_departamentos/${codigoDepto}`;
+    return this.http.get<MunicipioPlanBienal[]>(url);
+  }
+
+  getSgrPlanRecursosDetalle(idVigencia: number, codigoEntidad: string, codigoMunicipio: string): Observable<DetallePlanRecursos[]> {
+    const url = `${this.baseUrl}/sgrplanrecursos/detalle_planrecursos/${idVigencia}/${codigoEntidad}/${codigoMunicipio}`;
+    return this.http.get<DetallePlanRecursos[]>(url);
   }
 
   /**

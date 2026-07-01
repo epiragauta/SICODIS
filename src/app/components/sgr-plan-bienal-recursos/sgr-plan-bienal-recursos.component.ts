@@ -8,14 +8,19 @@ import { TableModule } from 'primeng/table';
 import { TreeTableModule } from 'primeng/treetable';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
-import { SicodisApiService, FuncionamientoSiglasDiccionario, DiccionarioItem, SiglasItem } from '../../services/sicodis-api.service';
+import {
+  SicodisApiService,
+  FuncionamientoSiglasDiccionario,
+  DiccionarioItem,
+  SiglasItem,
+  VigenciaPlanBienal,
+  DepartamentoPlanBienal,
+  MunicipioPlanBienal,
+  DetallePlanRecursos,
+} from '../../services/sicodis-api.service';
 import { Select } from 'primeng/select';
-import { Breadcrumb } from 'primeng/breadcrumb';
-import { MenuItem, TreeNode } from 'primeng/api';
+import { TreeNode } from 'primeng/api';
 import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
-
-import { resumenPlanRecursos } from '../../data/resumen-plan-recursos';
-import { departamentos } from '../../data/departamentos';
 
 @Component({
   selector: 'app-sgr-plan-bienal-recursos',
@@ -31,7 +36,6 @@ import { departamentos } from '../../data/departamentos';
     InfoPopupComponent,
     NumberFormatPipe,
     Select,
-    Breadcrumb
   ],
   templateUrl: './sgr-plan-bienal-recursos.component.html',
   styleUrl: './sgr-plan-bienal-recursos.component.scss'
@@ -40,62 +44,45 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
 
   @ViewChild('planRecursosTable') planRecursosTable: any;
 
-  items: MenuItem[] | undefined;
-  home: MenuItem | undefined;
-
-  // Estado de resaltado sincronizado con el hover del gráfico
   highlightedYear: string | null = null;
   highlightedCategoria: string | null = null;
+  private categoryMap: { [key: string]: string } = {};
 
-  // Mapeo de labels del gráfico a categorías (sin tildes para coincidir con los labels del gráfico)
-  private categoryMap: { [key: string]: string } = {
-    'Asignacion para la Paz': '1.1',
-    'Asignaciones Directas': '1.2',
-    'Asignacion para la Inversion Local': '1.4',
-    'Asignacion para Ciencia, Tecnologia e Innovacion': '1.15',
-    'Asignacion Ambiental': '1.16',
-    'Municipios Rio Magdalena y Canal Dique': '1.17'
-  };
-
-  // Popups Diccionario y Siglas
   showDiccionarioPopup = false;
   showSiglasPopup = false;
   diccionarioContent = '';
   siglasContent = '';
   private siglasDiccionarioData: FuncionamientoSiglasDiccionario | null = null;
 
-  // Opciones de filtros
-  planes = [
-    { label: 'Plan Bienal de Caja' },
-    { label: 'Plan de Recursos' }
-  ];
-  selectedPlan: any = null;
+  isLoading = false;
+  isLoadingMunicipios = false;
 
-  vigencias = [
-    { label: '2025-2034' }
-  ];
-  selectedVigencia: any = null;
+  vigencias: VigenciaPlanBienal[] = [];
+  selectedVigencia: VigenciaPlanBienal | null = null;
 
   beneficiarios = [
-    { label: 'Departamentos' },
-    { label: 'Gobernacion' },
-    { label: 'Regiones' }
+    { label: 'Departamentos', value: 1 },
+    { label: 'Municipios', value: 2 },
   ];
   selectedBeneficiario: any = null;
 
-  departamentosList = departamentos;
-  selectedDepartamento: any = null;
+  departamentosList: DepartamentoPlanBienal[] = [];
+  selectedDepartamento: DepartamentoPlanBienal | null = null;
 
-  // Anios para columnas de tabla
-  years = ['2025', '2026', '2027', '2028', '2029', '2030', '2031', '2032', '2033', '2034'];
+  municipiosList: MunicipioPlanBienal[] = [];
+  selectedMunicipio: MunicipioPlanBienal | null = null;
 
-  // Chart
+  years: string[] = [];
+
   barChartData: any;
   barChartOptions: any;
 
-  // Tabla
   tableData: TreeNode[] = [];
   tableCols: any[] = [];
+
+  private readonly chartColors = [
+    '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#06b6d4', '#f97316', '#64748b'
+  ];
 
   constructor(
     private sicodisApiService: SicodisApiService,
@@ -103,56 +90,42 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.items = [
-        { label: 'SGR', routerLink: '/sgr-inicio' },
-        { label: 'Programación Plan de Recursos' }
-    ];
-
-    this.home = { icon: 'pi pi-home', routerLink: '/' };
-
-    this.selectedPlan = this.planes[1];
-    this.selectedVigencia = this.vigencias[0];
-
-    // Inicializar columnas de la tabla
-    this.tableCols = [
-      { field: 'concepto', header: 'Concepto', width: '25%' },
-      ...this.years.map(year => ({ field: year, header: year, width: `${75 / this.years.length}%` }))
-    ];
-
     this.initializeChart();
-    this.initializeTable();
+    this.initializeChartOptions();
     this.cargarSiglasDiccionario();
+    this.cargarVigencias();
+    this.cargarDepartamentos();
   }
 
-  /**
-   * Inicializar grafico de barras agrupadas
-   */
-  private initializeChart(): void {
-    const chartCategories = [
-      { key: '1.1', label: 'Asignacion para la Paz', color: '#3b82f6' },
-      { key: '1.2', label: 'Asignaciones Directas', color: '#10b981' },
-      { key: '1.4', label: 'Asignacion para la Inversion Local', color: '#f59e0b' },
-      { key: '1.15', label: 'Asignacion para Ciencia, Tecnologia e Innovacion', color: '#8b5cf6' },
-      { key: '1.16', label: 'Asignacion Ambiental', color: '#ef4444' },
-      { key: '1.17', label: 'Municipios Rio Magdalena y Canal Dique', color: '#06b6d4' }
+  get vigenciaLabel(): string {
+    return this.selectedVigencia ? this.selectedVigencia.vigencia.replace(' - ', '-') : '';
+  }
+
+  private getYearsRange(vigencia: string): string[] {
+    const parts = vigencia.split(' - ');
+    const start = parseInt(parts[0].trim());
+    const end = parseInt(parts[1].trim());
+    const result: string[] = [];
+    for (let y = start; y <= end; y++) result.push(String(y));
+    return result;
+  }
+
+  private rebuildYearsAndColumns(years: string[]): void {
+    this.years = years;
+    this.tableCols = [
+      { field: 'concepto', header: 'Concepto', width: '25%' },
+      ...years.map(y => ({ field: y, header: y, width: `${75 / years.length}%` }))
     ];
+  }
 
-    const datasets = chartCategories.map(cat => {
-      const item = resumenPlanRecursos.find((r: any) => r.categoria === cat.key);
-      return {
-        label: cat.label,
-        data: this.years.map(y => item?.[y] || 0),
-        backgroundColor: cat.color,
-        borderColor: cat.color,
-        borderWidth: 1
-      };
-    });
-
+  private initializeChart(): void {
     this.barChartData = {
-      labels: this.years,
-      datasets
+      labels: [],
+      datasets: []
     };
+  }
 
+  private initializeChartOptions(): void {
     this.barChartOptions = {
       responsive: true,
       maintainAspectRatio: false,
@@ -161,32 +134,20 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
           position: 'bottom',
           labels: {
             usePointStyle: true,
-            font: {
-              family: '"Work Sans", sans-serif',
-              size: 11
-            }
+            font: { family: '"Work Sans", sans-serif', size: 11 }
           }
         },
-        datalabels: {
-          display: false
-        },
+        datalabels: { display: false },
         tooltip: {
           callbacks: {
-            label: (context: any) => {
-              return `${context.dataset.label}: ${this.formatCurrency(context.parsed.y)}`;
-            }
+            label: (ctx: any) => `${ctx.dataset.label}: ${this.formatCurrency(ctx.parsed.y)}`
           }
         }
       },
       scales: {
         x: {
           stacked: false,
-          ticks: {
-            font: {
-              family: '"Work Sans", sans-serif',
-              size: 11
-            }
-          }
+          ticks: { font: { family: '"Work Sans", sans-serif', size: 11 } }
         },
         y: {
           stacked: false,
@@ -194,19 +155,11 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
           title: {
             display: true,
             text: 'Cifras en pesos corrientes',
-            font: {
-              family: '"Work Sans", sans-serif',
-              size: 12
-            }
+            font: { family: '"Work Sans", sans-serif', size: 12 }
           },
           ticks: {
-            font: {
-              family: '"Work Sans", sans-serif',
-              size: 11
-            },
-            callback: (value: any) => {
-              return this.formatCurrency(value);
-            }
+            font: { family: '"Work Sans", sans-serif', size: 11 },
+            callback: (value: any) => this.formatCurrency(value)
           }
         }
       },
@@ -224,91 +177,158 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
     };
   }
 
-  /**
-   * Inicializar datos de la tabla usando estructura jerárquica
-   */
-  private initializeTable(): void {
-    // Usar organizeCategoryData para convertir los datos planos en TreeNodes
-    this.tableData = organizeCategoryData(resumenPlanRecursos);
-  }
-
-  /**
-   * Formatear moneda
-   */
-  private formatCurrency(value: number): string {
-    if (value === 0) return '0';
-    return new Intl.NumberFormat('es-CO').format(value);
-  }
-
-  /**
-   * Aplicar filtros
-   */
-  applyFilters(): void {
-    console.log('Aplicando filtros...', {
-      plan: this.selectedPlan,
-      vigencia: this.selectedVigencia,
-      beneficiario: this.selectedBeneficiario,
-      departamento: this.selectedDepartamento
+  private cargarVigencias(): void {
+    this.sicodisApiService.getSgrPlanRecursosVigencias().subscribe({
+      next: (data) => {
+        this.vigencias = data;
+        if (data.length > 0) this.selectedVigencia = data[0];
+      },
+      error: (err) => console.error('Error cargando vigencias:', err)
     });
   }
 
-  /**
-   * Exportar tabla a Excel
-   */
-  exportarExcel(): void {
-    console.log('Exportar excel...');
+  private cargarDepartamentos(): void {
+    this.sicodisApiService.getSgrPlanRecursosDepartamentos().subscribe({
+      next: (data) => { this.departamentosList = data; },
+      error: (err) => console.error('Error cargando departamentos:', err)
+    });
   }
 
-  /**
-   * Navegar a informes de recaudo
-   */
-  verInformesRecaudo(): void {
-    console.log('Ver informes de recaudo...');
+  onBeneficiarioChange(): void {
+    if (this.selectedBeneficiario?.value !== 2) {
+      this.selectedMunicipio = null;
+      this.municipiosList = [];
+    }
   }
 
-  /**
-   * Limpiar filtros
-   */
+  onDepartamentoChange(): void {
+    this.selectedMunicipio = null;
+    this.municipiosList = [];
+    if (this.selectedBeneficiario?.value === 2 &&
+        this.selectedDepartamento &&
+        this.selectedDepartamento.codigo !== '0') {
+      this.isLoadingMunicipios = true;
+      this.sicodisApiService
+        .getSgrPlanRecursosMunicipiosDepartamento(this.selectedDepartamento.codigo)
+        .subscribe({
+          next: (data) => { this.municipiosList = data; this.isLoadingMunicipios = false; },
+          error: (err) => {
+            console.error('Error cargando municipios:', err);
+            this.isLoadingMunicipios = false;
+          }
+        });
+    }
+  }
+
+  applyFilters(): void {
+    if (!this.selectedVigencia || !this.selectedDepartamento) return;
+
+    const years = this.getYearsRange(this.selectedVigencia.vigencia);
+    this.rebuildYearsAndColumns(years);
+
+    const codigoEntidad = this.selectedDepartamento.codigo;
+    const codigoMunicipio = this.selectedMunicipio?.codigo || '0';
+
+    this.isLoading = true;
+    this.sicodisApiService
+      .getSgrPlanRecursosDetalle(this.selectedVigencia.id_vigencia, codigoEntidad, codigoMunicipio)
+      .subscribe({
+        next: (data) => {
+          this.procesarDatosTabla(data);
+          this.actualizarGrafico(data);
+          this.isLoading = false;
+        },
+        error: (err) => {
+          console.error('Error cargando datos del plan de recursos:', err);
+          this.tableData = [];
+          this.isLoading = false;
+        }
+      });
+  }
+
+  private procesarDatosTabla(data: DetallePlanRecursos[]): void {
+    const mappedData = data.map(item => {
+      const row: any = {
+        concepto: item.Concepto,
+        orden: item.Orden,
+        categoria: String(item.Orden),
+        idConcepto: item.IdConcepto,
+      };
+
+      if (item.IdConcepto === '1000') row.section = 'inversion';
+      else if (item.IdConcepto === '2000') row.section = 'ahorro';
+      else if (item.IdConcepto === '3000') row.section = 'otros';
+      else if (item.IdConcepto === '99') row.section = 'total';
+
+      this.years.forEach(year => { row[year] = item[year] || 0; });
+      return row;
+    });
+
+    this.tableData = organizeCategoryData(mappedData);
+  }
+
+  private actualizarGrafico(data: DetallePlanRecursos[]): void {
+    // Los sub-ítems del gráfico son los que tienen Orden entero entre INVERSIÓN y AHORRO
+    const inversionOrd = data.find(d => d.IdConcepto === '1000')?.Orden ?? 1;
+    const ahorroOrd    = data.find(d => d.IdConcepto === '2000')?.Orden ?? Infinity;
+
+    const subItems = data.filter(item =>
+      Number.isInteger(item.Orden) &&
+      item.Orden > inversionOrd &&
+      item.Orden < ahorroOrd
+    );
+
+    this.categoryMap = {};
+    subItems.forEach(item => { this.categoryMap[item.Concepto] = String(item.Orden); });
+
+    const datasets = subItems.map((item, i) => ({
+      label: item.Concepto,
+      data: this.years.map(y => item[y] || 0),
+      backgroundColor: this.chartColors[i % this.chartColors.length],
+      borderColor: this.chartColors[i % this.chartColors.length],
+      borderWidth: 1
+    }));
+
+    this.barChartData = { labels: this.years, datasets };
+  }
+
   clearFilters(): void {
-    this.selectedPlan = this.planes[1];
-    this.selectedVigencia = this.vigencias[0];
+    this.selectedVigencia = this.vigencias.length > 0 ? this.vigencias[0] : null;
     this.selectedBeneficiario = null;
     this.selectedDepartamento = null;
+    this.selectedMunicipio = null;
+    this.municipiosList = [];
+    this.tableData = [];
+    this.initializeChart();
   }
 
-  /**
-   * Mostrar popup del diccionario
-   */
   showPopupDiccionario(): void {
     this.diccionarioContent = this.generarContenidoDiccionario();
     this.showDiccionarioPopup = true;
   }
 
-  /**
-   * Mostrar popup de siglas
-   */
   showPopupSiglas(): void {
     this.siglasContent = this.generarContenidoSiglas();
     this.showSiglasPopup = true;
   }
 
-  closeDiccionarioPopup(): void {
-    this.showDiccionarioPopup = false;
+  closeDiccionarioPopup(): void { this.showDiccionarioPopup = false; }
+  closeSiglasPopup(): void      { this.showSiglasPopup = false; }
+
+  exportarExcel(): void {
+    console.log('Exportar excel...');
   }
 
-  closeSiglasPopup(): void {
-    this.showSiglasPopup = false;
+  verInformesRecaudo(): void {
+    console.log('Ver informes de recaudo...');
   }
 
-  /**
-   * Cargar datos de diccionario y siglas desde API
-   */
   async cargarSiglasDiccionario(): Promise<void> {
     try {
       const data = await this.sicodisApiService.getSgrSiglasDiccionario().toPromise();
       this.siglasDiccionarioData = data || null;
     } catch (error) {
-      console.error('Error cargando datos de diccionario y siglas:', error);
+      console.error('Error cargando diccionario y siglas:', error);
       this.siglasDiccionarioData = null;
     }
   }
@@ -317,105 +337,74 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
     if (!this.siglasDiccionarioData?.diccionario?.data) {
       return '<p>No se pudieron cargar los datos del diccionario.</p>';
     }
-
-    let contenido = '<div style="font-size: 11px;"><table style="width: 100%; border-collapse: collapse;">';
-    contenido += '<thead><tr style="background-color: #f8f9fa;"><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Id</th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Concepto</th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Descripcion</th></tr></thead>';
-    contenido += '<tbody>';
-
+    let html = '<div style="font-size:11px"><table style="width:100%;border-collapse:collapse">';
+    html += '<thead><tr style="background:#f8f9fa">'
+      + '<th style="border:1px solid #dee2e6;padding:8px;text-align:left">Id</th>'
+      + '<th style="border:1px solid #dee2e6;padding:8px;text-align:left">Concepto</th>'
+      + '<th style="border:1px solid #dee2e6;padding:8px;text-align:left">Descripción</th>'
+      + '</tr></thead><tbody>';
     this.siglasDiccionarioData.diccionario.data.forEach((item: DiccionarioItem) => {
-      contenido += `<tr>
-        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top;"><strong>${item.id_concepto}</strong></td>
-        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top; font-weight: 500;"><strong>${item.concepto}</strong></td>
-        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top;">${item.descripcion}</td>
+      html += `<tr>
+        <td style="border:1px solid #dee2e6;padding:8px;vertical-align:top"><strong>${item.id_concepto}</strong></td>
+        <td style="border:1px solid #dee2e6;padding:8px;vertical-align:top"><strong>${item.concepto}</strong></td>
+        <td style="border:1px solid #dee2e6;padding:8px;vertical-align:top">${item.descripcion}</td>
       </tr>`;
     });
-
-    contenido += '</tbody></table></div>';
-    return contenido;
+    html += '</tbody></table></div>';
+    return html;
   }
 
   private generarContenidoSiglas(): string {
     if (!this.siglasDiccionarioData?.siglas?.data) {
       return '<p>No se pudieron cargar los datos de las siglas.</p>';
     }
-
-    let contenido = '<div style="font-size: 11px;"><table style="width: 100%; border-collapse: collapse;">';
-    contenido += '<thead><tr style="background-color: #f8f9fa;"><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Sigla</th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left; font-weight: bold;">Descripcion</th></tr></thead>';
-    contenido += '<tbody>';
-
+    let html = '<div style="font-size:11px"><table style="width:100%;border-collapse:collapse">';
+    html += '<thead><tr style="background:#f8f9fa">'
+      + '<th style="border:1px solid #dee2e6;padding:8px;text-align:left">Sigla</th>'
+      + '<th style="border:1px solid #dee2e6;padding:8px;text-align:left">Descripción</th>'
+      + '</tr></thead><tbody>';
     this.siglasDiccionarioData.siglas.data.forEach((item: SiglasItem) => {
-      contenido += `<tr>
-        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top; font-weight: 500;"><strong>${item.sigla}</strong></td>
-        <td style="border: 1px solid #dee2e6; padding: 8px; vertical-align: top;">${item.descripcion}</td>
+      html += `<tr>
+        <td style="border:1px solid #dee2e6;padding:8px;vertical-align:top"><strong>${item.sigla}</strong></td>
+        <td style="border:1px solid #dee2e6;padding:8px;vertical-align:top">${item.descripcion}</td>
       </tr>`;
     });
-
-    contenido += '</tbody></table></div>';
-    return contenido;
+    html += '</tbody></table></div>';
+    return html;
   }
 
-  /**
-   * Manejar hover sobre el gráfico
-   */
   onChartHover(categoryLabel: string, year: string): void {
     const categoria = this.categoryMap[categoryLabel];
-    if (!categoria) {
-      console.warn('Categoría no encontrada en el mapa:', categoryLabel);
-      return;
-    }
-
+    if (!categoria) return;
     this.highlightedYear = year;
     this.highlightedCategoria = categoria;
-
-    // Expandir el nodo si está colapsado
     this.expandNodeByCategoria(categoria);
-
-    // Hacer scroll a la celda resaltada
     setTimeout(() => this.scrollToHighlightedCell(), 100);
   }
 
-  /**
-   * Limpiar el resaltado
-   */
   clearChartHighlight(): void {
     this.highlightedYear = null;
     this.highlightedCategoria = null;
   }
 
-  /**
-   * Expandir el nodo y sus padres si están colapsados
-   */
   private expandNodeByCategoria(categoria: string): void {
-    // Expandir todos los nodos padres necesarios
     const parts = categoria.split('.');
     for (let i = 1; i <= parts.length; i++) {
-      const parentCategory = parts.slice(0, i).join('.');
-      this.expandNodeRecursive(this.tableData, parentCategory);
+      this.expandNodeRecursive(this.tableData, parts.slice(0, i).join('.'));
     }
   }
 
-  /**
-   * Expandir nodo recursivamente
-   */
   private expandNodeRecursive(nodes: TreeNode[], targetCategory: string): boolean {
     for (const node of nodes) {
-      if (node.data.categoria === targetCategory) {
+      if (node.data.categoria === targetCategory) { node.expanded = true; return true; }
+      if (node.children?.length && this.expandNodeRecursive(node.children, targetCategory)) {
         node.expanded = true;
         return true;
-      }
-      if (node.children && node.children.length > 0) {
-        if (this.expandNodeRecursive(node.children, targetCategory)) {
-          node.expanded = true;
-          return true;
-        }
       }
     }
     return false;
   }
 
-  /**
-   * Hacer scroll a la celda resaltada
-   */
   private scrollToHighlightedCell(): void {
     if (!this.highlightedCategoria || !this.highlightedYear || !this.planRecursosTable) return;
 
@@ -427,10 +416,8 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
     ) as HTMLElement;
 
     const highlightedCell = tableNative.querySelector('td.highlighted-cell') as HTMLElement;
-
     if (!scrollWrapper || !highlightedCell) return;
 
-    // Calcular posición de la celda relativa al scroll container
     let offsetTop = 0;
     let el: HTMLElement | null = highlightedCell;
     while (el && el !== scrollWrapper && el.offsetParent) {
@@ -450,10 +437,12 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
     }
   }
 
-  /**
-   * Verificar si una celda debe estar resaltada
-   */
   isCellHighlighted(rowData: any, year: string): boolean {
     return rowData.categoria === this.highlightedCategoria && year === this.highlightedYear;
+  }
+
+  private formatCurrency(value: number): string {
+    if (!value && value !== 0) return '';
+    return new Intl.NumberFormat('es-CO').format(value);
   }
 }
