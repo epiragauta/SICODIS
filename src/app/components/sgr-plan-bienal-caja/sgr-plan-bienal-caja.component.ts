@@ -285,13 +285,20 @@ export class SgrPlanBienalCajaComponent implements OnInit {
   /**
    * Carga los municipios cuando se selecciona un departamento
    */
+  private sortMunicipios(data: MunicipioPlanBienal[]): MunicipioPlanBienal[] {
+    const todos       = data.filter(m => m.codigo === '0');
+    const gobernacion = data.filter(m => m.nombre.startsWith('Gobernación de'));
+    const rest        = data.filter(m => m.codigo !== '0' && !m.nombre.startsWith('Gobernación de'));
+    return [...todos, ...gobernacion, ...rest];
+  }
+
   onDepartamentoChange(): void {
     if (this.selectedDepartamento && this.selectedDepartamento.codigo !== '0') {
       this.isLoadingMunicipios = true;
       this.sicodisApiService.getSgrPlanBienalMunicipiosDepartamento(this.selectedDepartamento.codigo).subscribe({
         next: (data) => {
-          this.municipiosList = data;
-          this.selectedMunicipio = null; // Resetear municipio seleccionado
+          this.municipiosList = this.sortMunicipios(data);
+          this.selectedMunicipio = null;
           this.isLoadingMunicipios = false;
         },
         error: (error) => {
