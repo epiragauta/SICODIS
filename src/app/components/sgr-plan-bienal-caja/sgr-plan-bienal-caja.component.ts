@@ -112,6 +112,25 @@ export class SgrPlanBienalCajaComponent implements OnInit {
     years.forEach(y => months.forEach(m => this.periods.push(`${y}-${m}`)));
   }
 
+  get vigenciaLabel(): string {
+    return this.selectedVigencia ? this.selectedVigencia.vigencia.replace(' - ', '-') : '';
+  }
+
+  private getYearsFromVigencia(vigencia: VigenciaPlanBienal): [number, number] {
+    const parts = vigencia.vigencia.split(' - ');
+    return [parseInt(parts[0].trim()), parseInt(parts[1].trim())];
+  }
+
+  private rebuildPeriodsAndColumns(year1: number, year2: number): void {
+    this.periods = [];
+    const months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+    [year1, year2].forEach(y => months.forEach(m => this.periods.push(`${y}-${m}`)));
+    this.tableCols = [
+      { field: 'concepto', header: 'Concepto', width: '350px' },
+      ...this.periods.map(period => ({ field: period, header: period, width: '170px' }))
+    ];
+  }
+
   private initializeTableColumns(): void {
     this.tableCols = [
       { field: 'concepto', header: 'Concepto', width: '350px' },
@@ -195,7 +214,7 @@ export class SgrPlanBienalCajaComponent implements OnInit {
         if (activeElements.length > 0) {
           const datasetIndex = activeElements[0].datasetIndex;
           const monthIndex = activeElements[0].index;
-          const year = datasetIndex === 0 ? '2025' : '2026';
+          const year = chart.data.datasets[datasetIndex].label;
           const month = String((monthIndex % 12) + 1).padStart(2, '0');
           const period = `${year}-${month}`;
           this.ngZone.run(() => this.onChartHover(period));
@@ -256,6 +275,13 @@ export class SgrPlanBienalCajaComponent implements OnInit {
     });
   }
 
+  onBeneficiarioChange(): void {
+    if (this.selectedBeneficiario?.value !== 2) {
+      this.selectedMunicipio = null;
+      this.municipiosList = [];
+    }
+  }
+
   /**
    * Carga los municipios cuando se selecciona un departamento
    */
@@ -290,7 +316,9 @@ export class SgrPlanBienalCajaComponent implements OnInit {
       return;
     }
 
-    // Determinar el código de entidad y municipio
+    const [year1, year2] = this.getYearsFromVigencia(this.selectedVigencia);
+    this.rebuildPeriodsAndColumns(year1, year2);
+
     const codigoEntidad = this.selectedDepartamento.codigo;
     const codigoMunicipio = this.selectedMunicipio?.codigo || '0';
 
@@ -302,7 +330,7 @@ export class SgrPlanBienalCajaComponent implements OnInit {
     ).subscribe({
       next: (data) => {
         this.procesarDatosTabla(data);
-        this.actualizarGrafico(data);
+        this.actualizarGrafico(data, year1, year2);
         this.isLoading = false;
       },
       error: (error) => {
@@ -352,8 +380,7 @@ export class SgrPlanBienalCajaComponent implements OnInit {
   /**
    * Actualiza el gráfico con los nuevos datos
    */
-  private actualizarGrafico(data: DetallePlanBienal[]): void {
-    // Buscar el registro de INVERSIÓN para el gráfico (IdConcepto = '1000')
+  private actualizarGrafico(data: DetallePlanBienal[], year1: number, year2: number): void {
     const inversionRow = data.find(r => r.IdConcepto === '1000');
 
     if (!inversionRow) {
@@ -366,21 +393,20 @@ export class SgrPlanBienalCajaComponent implements OnInit {
       'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre',
     ];
 
-    const data2025 = monthNames.map((_, i) => {
+    const data1 = monthNames.map((_, i) => {
       const m = String(i + 1).padStart(2, '0');
-      return inversionRow[`2025-${m}`] ?? 0;
+      return inversionRow[`${year1}-${m}`] ?? 0;
     });
 
-    const data2026 = monthNames.map((_, i) => {
+    const data2 = monthNames.map((_, i) => {
       const m = String(i + 1).padStart(2, '0');
-      return inversionRow[`2026-${m}`] ?? 0;
+      return inversionRow[`${year2}-${m}`] ?? 0;
     });
 
-    // Actualizar datasets del gráfico
-    this.barChartData.datasets[0].data = [...data2025, ...Array(12).fill(null)];
-    this.barChartData.datasets[1].data = [...Array(12).fill(null), ...data2026];
-
-    // Forzar actualización del gráfico
+    this.barChartData.datasets[0].label = String(year1);
+    this.barChartData.datasets[1].label = String(year2);
+    this.barChartData.datasets[0].data = [...data1, ...Array(12).fill(null)];
+    this.barChartData.datasets[1].data = [...Array(12).fill(null), ...data2];
     this.barChartData = { ...this.barChartData };
   }
 
