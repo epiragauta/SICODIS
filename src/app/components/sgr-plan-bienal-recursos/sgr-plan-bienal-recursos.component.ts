@@ -271,7 +271,16 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
       return row;
     });
 
-    this.tableData = organizeCategoryData(mappedData);
+    // Cuando se consulta un municipio específico, eliminar filas sin datos en ningún año
+    const municipioEspecifico = this.selectedMunicipio?.codigo && this.selectedMunicipio.codigo !== '0';
+    const dataFinal = municipioEspecifico
+      ? mappedData.filter(row =>
+          row.idConcepto === '99' ||
+          this.years.some(y => row[y] !== 0)
+        )
+      : mappedData;
+
+    this.tableData = organizeCategoryData(dataFinal);
   }
 
   private actualizarGrafico(data: DetallePlanRecursos[]): void {

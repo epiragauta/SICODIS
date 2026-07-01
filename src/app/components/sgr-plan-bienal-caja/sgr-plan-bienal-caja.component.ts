@@ -380,8 +380,16 @@ export class SgrPlanBienalCajaComponent implements OnInit {
       return row;
     });
 
-    // Usar organizeCategoryData para crear la estructura jerárquica
-    this.tableData = organizeCategoryData(mappedData);
+    // Cuando se consulta un municipio específico, eliminar filas sin datos en ningún período
+    const municipioEspecifico = this.selectedMunicipio?.codigo && this.selectedMunicipio.codigo !== '0';
+    const dataFinal = municipioEspecifico
+      ? mappedData.filter(row =>
+          row.idConcepto === '99' ||
+          this.periods.some(p => row[p] !== 0)
+        )
+      : mappedData;
+
+    this.tableData = organizeCategoryData(dataFinal);
   }
 
   /**
