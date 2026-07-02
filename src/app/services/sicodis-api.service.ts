@@ -1522,6 +1522,24 @@ getSgrDescargaResumenPbcRecaudoMensual( idvigencia: number
     return this.http.get<FichaComparativaEntidad[]>(url);
   }
 
+  /**
+   * Descarga el archivo Excel de la ficha comparativa entre dos entidades del SGP
+   * @param idVigencia - ID de la vigencia
+   * @param codigoDepto1 - Código depto de la primera entidad
+   * @param codigoEntidad1 - Código de la primera entidad
+   * @param codigoDepto2 - Código depto de la segunda entidad
+   * @param codigoEntidad2 - Código de la segunda entidad
+   * @param depto1 - Nombre del departamento de la primera entidad
+   * @param entidad1 - Nombre de la primera entidad
+   * @param depto2 - Nombre del departamento de la segunda entidad
+   * @param entidad2 - Nombre de la segunda entidad
+   * @returns Observable con el archivo binario (Excel)
+   */
+  getSgpDescargarFichaComparativaEntidad(idVigencia: number, codigoDepto1: string, codigoEntidad1: string, codigoDepto2: string, codigoEntidad2: string, depto1: string, entidad1: string, depto2: string, entidad2: string): Observable<Blob> {
+    const url = `${this.baseUrl}/sgp/archivo_ficha_comparativa_entidad/${idVigencia}/${codigoDepto1}/${codigoEntidad1}/${codigoDepto2}/${codigoEntidad2}/${depto1}/${entidad1}/${depto2}/${entidad2}`;
+    return this.http.get(url, { responseType: 'blob' });  // responseType 'blob' indica que será un archivo binario
+  }
+
 // ========== PGN Methods ==========  
 
   /**
