@@ -51,12 +51,12 @@ Cada tarjeta muestra:
 
 ### Tarjetas de Cobertura (beneficiarios por sistema)
 
-Debajo de las tarjetas de resumen, tres tarjetas con datos estáticos de cobertura (aún no hay endpoint de API para esto):
-- **SGR:** 1001 municipios (96% del país) / 32 departamentos beneficiarios (100% del país)
-- **SGP:** 908 municipios (87% del país) / 32 departamentos beneficiarios (100% del país)
-- **PGN:** 32 Departamentos (100% del país) / 32 departamentos beneficiarios (100% del país)
+Debajo de las tarjetas de resumen, tres tarjetas con datos de cobertura (municipios/departamentos beneficiarios) tomados del endpoint `resumen_geovisor`, campos `sgr_beneficiados`, `sgp_beneficiados` y `pgn_beneficiados`:
+- **SGR:** `dato_general_adirectas_municipio` / `dato_general_regional_depto`
+- **SGP:** `dato_general_municipio` / `dato_general_depto`
+- **PGN:** `dato_general_municipio` / `dato_general_depto`
 
-Valores definidos en `buildCoberturas()` en el componente — reemplazar cuando exista un endpoint real.
+Mapeo en `mapearCoberturas()` en el componente. Si el API falla o no retorna estos campos, se usa el fallback estático definido en `COBERTURA_FALLBACK` / `buildCoberturas()`.
 
 ### Mapa Interactivo (Central)
 

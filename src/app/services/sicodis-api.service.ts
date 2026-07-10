@@ -692,10 +692,25 @@ export interface GeovisorPgnItem {
   porcentaje_total_pagos: number;
 }
 
+export interface GeovisorSgrBeneficiados {
+  dato_general_regional_depto: string;
+  dato_general_adirectas_depto: string;
+  dato_general_adirectas_municipio: string;
+  dato_general_local_municipio: string;
+}
+
+export interface GeovisorBeneficiados {
+  dato_general_depto: string;
+  dato_general_municipio: string;
+}
+
 export interface ResumenGeovisor {
   sgr: SgrPtoRecaudoItem[];
   sgp: GeovisorSgpItem[];
   pgn: GeovisorPgnItem[];
+  sgr_beneficiados?: GeovisorSgrBeneficiados[];
+  sgp_beneficiados?: GeovisorBeneficiados[];
+  pgn_beneficiados?: GeovisorBeneficiados[];
 }
 
 @Injectable({

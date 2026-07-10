@@ -19,6 +19,12 @@ import {
   GeovisorPgnItem
 } from '../../services/sicodis-api.service';
 
+const COBERTURA_FALLBACK: Record<string, { lineaSuperior: string; lineaInferior: string }> = {
+  SGR: { lineaSuperior: '1001 municipios (96% del país)', lineaInferior: '32 departamentos beneficiarios (100% del país)' },
+  SGP: { lineaSuperior: '908 municipios (87% del país)', lineaInferior: '32 departamentos beneficiarios (100% del país)' },
+  PGN: { lineaSuperior: '32 Departamentos (100% del país)', lineaInferior: '32 departamentos beneficiarios (100% del país)' }
+};
+
 interface RecursosSistema {
   sigla: string;
   nombre: string;
@@ -130,10 +136,12 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
       .subscribe({
         next: (data) => {
           this.recursos = this.mapearRecursosNacionales(data);
+          this.coberturas = this.mapearCoberturas(data);
           this.isLoading.set(false);
         },
         error: () => {
           this.recursos = this.buildFallbackRecursos();
+          this.coberturas = this.buildCoberturas();
           this.isLoading.set(false);
         }
       });
@@ -194,9 +202,36 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
 
   private buildCoberturas(): CoberturaSistema[] {
     return [
-      { sigla: 'SGR', lineaSuperior: '1001 municipios (96% del país)', lineaInferior: '32 departamentos beneficiarios (100% del país)', color: SISTEMA_COLORES['SGR'] },
-      { sigla: 'SGP', lineaSuperior: '908 municipios (87% del país)', lineaInferior: '32 departamentos beneficiarios (100% del país)', color: SISTEMA_COLORES['SGP'] },
-      { sigla: 'PGN', lineaSuperior: '32 Departamentos (100% del país)', lineaInferior: '32 departamentos beneficiarios (100% del país)', color: SISTEMA_COLORES['PGN'] }
+      { sigla: 'SGR', ...COBERTURA_FALLBACK['SGR'], color: SISTEMA_COLORES['SGR'] },
+      { sigla: 'SGP', ...COBERTURA_FALLBACK['SGP'], color: SISTEMA_COLORES['SGP'] },
+      { sigla: 'PGN', ...COBERTURA_FALLBACK['PGN'], color: SISTEMA_COLORES['PGN'] }
+    ];
+  }
+
+  private mapearCoberturas(data: ResumenGeovisor): CoberturaSistema[] {
+    const sgr = data.sgr_beneficiados?.[0];
+    const sgp = data.sgp_beneficiados?.[0];
+    const pgn = data.pgn_beneficiados?.[0];
+
+    return [
+      {
+        sigla: 'SGR',
+        lineaSuperior: sgr?.dato_general_adirectas_municipio || COBERTURA_FALLBACK['SGR'].lineaSuperior,
+        lineaInferior: sgr?.dato_general_regional_depto || COBERTURA_FALLBACK['SGR'].lineaInferior,
+        color: SISTEMA_COLORES['SGR']
+      },
+      {
+        sigla: 'SGP',
+        lineaSuperior: sgp?.dato_general_municipio || COBERTURA_FALLBACK['SGP'].lineaSuperior,
+        lineaInferior: sgp?.dato_general_depto || COBERTURA_FALLBACK['SGP'].lineaInferior,
+        color: SISTEMA_COLORES['SGP']
+      },
+      {
+        sigla: 'PGN',
+        lineaSuperior: pgn?.dato_general_municipio || COBERTURA_FALLBACK['PGN'].lineaSuperior,
+        lineaInferior: pgn?.dato_general_depto || COBERTURA_FALLBACK['PGN'].lineaInferior,
+        color: SISTEMA_COLORES['PGN']
+      }
     ];
   }
 
