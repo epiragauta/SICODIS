@@ -6,15 +6,6 @@
       <h3 class="titulo-seccion">Consulta de recursos</h3>
 
       <div class="consulta-options">
-        <div class="field-checkbox">
-          <p-checkbox
-            [(ngModel)]="consultaRecursos.inversion"
-            [binary]="true"
-            inputId="inversion"
-          />
-          <label for="inversion">Inversión</label>
-        </div>
-
         <div *ngFor="let capa of capas" class="sistema-row">
           <p-checkbox
             [(ngModel)]="capa.visible"
@@ -53,16 +44,6 @@
         <span class="visualizacion-label">{{ visualizacionActiva ? 'Activa' : 'Inactiva' }}</span>
       </div>
 
-      <div class="tipo-inversion-selector">
-        <p-dropdown
-          [(ngModel)]="tipoInversionSeleccionado"
-          [options]="tiposInversion"
-          optionLabel="label"
-          optionValue="value"
-          [style]="{'width': '100%'}"
-        />
-      </div>
-
       <!-- Botones de acción -->
       <div class="botones-filtro">
         <p-button
@@ -70,14 +51,12 @@
           icon="pi pi-filter"
           (onClick)="aplicarFiltros()"
           styleClass="p-button-sm"
-          [style]="{'width': '48%'}"
         />
         <p-button
           label="Limpiar filtros"
           icon="pi pi-times"
           (onClick)="limpiarFiltros()"
           styleClass="p-button-sm p-button-outlined"
-          [style]="{'width': '48%'}"
         />
       </div>
     </div>
@@ -87,7 +66,7 @@
       <h3 class="titulo-seccion">Consulta Especial</h3>
 
       <div class="consulta-especial-item" (click)="navegarResguardos()">
-        <i class="pi pi-users icono-especial"></i>
+        <img src="assets/img/sgp/resguardos/indigenous.png" alt="Resguardos Indígenas" class="icono-especial-img" />
         <span class="nombre-especial">Resguardos Indígenas</span>
         <i class="pi pi-arrow-right flecha-especial"></i>
       </div>
@@ -128,12 +107,24 @@
           </div>
           <div class="barra-item">
             <div class="barra-label">
-              <span>Caja</span>
+              <span>{{ etiquetaSegundaBarra(recurso.sigla) }}</span>
               <span>{{ calcularPorcentaje(recurso.recaudo, recurso.total).toFixed(0) }}%</span>
             </div>
             <p-progressBar [value]="calcularPorcentaje(recurso.recaudo, recurso.total)" [showValue]="false" [style]="{'height': '4px'}" />
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Tarjetas de cobertura / beneficiarios por sistema -->
+    <div class="tarjetas-cobertura">
+      <div
+        *ngFor="let cob of coberturas"
+        class="tarjeta-cobertura"
+        [style.--color-sistema]="cob.color"
+      >
+        <span class="cobertura-linea-superior">{{ cob.lineaSuperior }}</span>
+        <span class="cobertura-linea-inferior">{{ cob.lineaInferior }}</span>
       </div>
     </div>
 
@@ -169,6 +160,9 @@
         </button>
         <button class="control-btn" (click)="miUbicacion()" title="Mi ubicación">
           <i class="pi pi-compass"></i>
+        </button>
+        <button class="control-btn" (click)="abrirAyuda()" title="Ayuda / Manual de usuario">
+          <i class="pi pi-question-circle"></i>
         </button>
       </div>
     </div>

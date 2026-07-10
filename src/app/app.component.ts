@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { HeaderComponent } from './components/header/header.component';
@@ -16,6 +17,7 @@ declare let gtag: Function;
   selector: 'app-root',
   standalone: true,
   imports: [
+    CommonModule,
     RouterOutlet,
     HeaderComponent,
     FooterComponent,
@@ -30,6 +32,7 @@ declare let gtag: Function;
 export class AppComponent implements OnInit {
 
   title = 'SICODIS';
+  ocultarHeader = false;
 
   constructor(
     private primeng: PrimeNG,
@@ -59,6 +62,9 @@ export class AppComponent implements OnInit {
       .subscribe((event: NavigationEnd) => {
 
         const pagePath = event.urlAfterRedirects;
+
+        // Vista de pantalla completa: el menú superior genera confusión ahí
+        this.ocultarHeader = pagePath.startsWith('/mapa-recursos');
 
         gtag('config', 'G-WMEFPZBK1Y', {
           page_path: pagePath

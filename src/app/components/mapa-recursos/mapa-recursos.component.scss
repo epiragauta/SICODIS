@@ -129,6 +129,17 @@
   display: flex;
   gap: 0.5rem;
   margin-top: 1rem;
+
+  ::ng-deep .p-button {
+    flex: 1;
+    white-space: nowrap;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+
+    .p-button-label {
+      font-size: 0.8rem;
+    }
+  }
 }
 
 // Consulta especial
@@ -151,6 +162,13 @@
 .icono-especial {
   font-size: 1.25rem;
   color: #059669;
+}
+
+.icono-especial-img {
+  width: 1.25rem;
+  height: 1.25rem;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .nombre-especial {
@@ -296,6 +314,40 @@
   }
 }
 
+// Tarjetas de cobertura (beneficiarios por sistema)
+.tarjetas-cobertura {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  flex-shrink: 0;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tarjeta-cobertura {
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  border-left: 4px solid var(--color-sistema, #94a3b8);
+}
+
+.cobertura-linea-superior {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.cobertura-linea-inferior {
+  font-size: 0.7rem;
+  color: #64748b;
+}
+
 // Mapa
 .mapa-container {
   flex: 1;
@@ -314,7 +366,7 @@
 
 .mapa-controles {
   position: absolute;
-  top: 5.5rem;
+  top: 4.5rem;
   left: .5rem;
   display: flex;
   flex-direction: column;
@@ -589,9 +641,13 @@
   // Estilos para controles de zoom de Leaflet
   .leaflet-control-zoom {
     border: none !important;
+    border-radius: 4px !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
     a {
+      width: 26px !important;
+      height: 26px !important;
+      line-height: 26px !important;
       background: white !important;
       color: #334155 !important;
       border: none !important;

@@ -15,20 +15,18 @@ Componente de visualización geográfica que muestra la distribución de recurso
 ### Panel de Consulta (Lateral Izquierdo)
 
 1. **Filtros de Sistemas**
-   - Checkboxes para SGR, SGP, PGN
-   - Checkbox de Inversión
+   - Checkboxes para SGR, SGP, PGN (sin checkbox de Inversión, eliminado por confuso)
    - Todos activos por defecto
 
 2. **Selector de Vigencia**
    - Últimos 10 años disponibles
-   - Predeterminado: 2025
+   - Predeterminado: 2026
 
 3. **Controles de Visualización**
    - Toggle para activar/desactivar capas
-   - Selector de tipo (Inversión, Funcionamiento, Deuda)
    - Controles individuales por sistema:
      - Checkbox de visibilidad
-     - Slider de opacidad (0-100%)
+     - Slider de opacidad (0-100%) — afecta la opacidad de ese sistema en los marcadores circulares, no el mapa base
      - Indicador de color
 
 4. **Acciones**
@@ -36,20 +34,29 @@ Componente de visualización geográfica que muestra la distribución de recurso
    - Botón "Limpiar filtros"
 
 5. **Consultas Especiales**
-   - Acceso a Resguardos Indígenas (preparado para implementación futura)
+   - Acceso a Resguardos Indígenas (ícono `assets/img/sgp/resguardos/indigenous.png`, preparado para implementación futura)
 
 ### Tarjetas de Resumen (Superior)
 
-Tres tarjetas con información agregada:
-- **SGR:** $13,7B - 1001 municipios (95%)
-- **SGP:** $90,3B - 908 municipios (87%)
-- **PGN:** $3,2B - 32 departamentos (100%)
+Tres tarjetas con información agregada. La segunda barra de progreso usa una etiqueta distinta por sistema:
+- **SGR:** Presupuesto / Recaudo
+- **SGP:** Presupuesto / Distribución
+- **PGN:** Presupuesto / Comprometido
 
 Cada tarjeta muestra:
 - Icono representativo
 - Total en formato abreviado
-- Barras de progreso (Presupuesto/Recaudo)
+- Barras de progreso (Presupuesto / etiqueta específica del sistema)
 - Texto de cobertura
+
+### Tarjetas de Cobertura (beneficiarios por sistema)
+
+Debajo de las tarjetas de resumen, tres tarjetas con datos estáticos de cobertura (aún no hay endpoint de API para esto):
+- **SGR:** 1001 municipios (96% del país) / 32 departamentos beneficiarios (100% del país)
+- **SGP:** 908 municipios (87% del país) / 32 departamentos beneficiarios (100% del país)
+- **PGN:** 32 Departamentos (100% del país) / 32 departamentos beneficiarios (100% del país)
+
+Valores definidos en `buildCoberturas()` en el componente — reemplazar cuando exista un endpoint real.
 
 ### Mapa Interactivo (Central)
 
@@ -57,10 +64,11 @@ Cada tarjeta muestra:
 - Librería: Leaflet 1.9.4
 - Marcadores en principales ciudades
 - Popups con información detallada por municipio
-- Controles:
+- Controles (mismo tamaño, agrupados visualmente):
+  - Zoom +/- (control nativo de Leaflet)
   - Inicio (centrar en Colombia)
   - Mi ubicación (geolocalización)
-  - Zoom +/-
+  - Ayuda (abre el manual de usuario — pendiente definir URL en `MANUAL_USUARIO_URL`)
 
 ## Uso del Componente
 

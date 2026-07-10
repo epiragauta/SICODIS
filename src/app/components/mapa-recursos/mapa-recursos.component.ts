@@ -30,6 +30,13 @@ interface RecursosSistema {
   color: string;
 }
 
+interface CoberturaSistema {
+  sigla: string;
+  lineaSuperior: string;
+  lineaInferior: string;
+  color: string;
+}
+
 interface VisualizacionCapa {
   sistema: string;
   visible: boolean;
@@ -72,17 +79,13 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly http = inject(HttpClient);
 
-  consultaRecursos = { inversion: true, sgr: true, sgp: true, pgn: true };
   vigenciaSeleccionada = 2026;
   vigencias: number[] = [];
 
   visualizacionActiva = true;
-  tipoInversionSeleccionado = 'inversion';
-  tiposInversion = [
-    { label: 'Inversión', value: 'inversion' },
-    { label: 'Funcionamiento', value: 'funcionamiento' },
-    { label: 'Deuda', value: 'deuda' }
-  ];
+
+  // TODO: reemplazar con la URL real del manual de usuario cuando esté disponible
+  private readonly MANUAL_USUARIO_URL = '';
 
   capas: VisualizacionCapa[] = [
     { sistema: 'SGR', visible: true, opacidad: 80, color: SISTEMA_COLORES['SGR'] },
@@ -91,6 +94,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
   ];
 
   recursos: RecursosSistema[] = this.buildFallbackRecursos();
+  coberturas: CoberturaSistema[] = this.buildCoberturas();
 
   isLoading = signal(false);
   isLoadingMapa = signal(false);
@@ -177,6 +181,23 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
   calcularPorcentaje(valor: number, total: number): number {
     if (!total) return 0;
     return Math.min(100, (valor / total) * 100);
+  }
+
+  etiquetaSegundaBarra(sigla: string): string {
+    switch (sigla) {
+      case 'SGR': return 'Recaudo';
+      case 'SGP': return 'Distribución';
+      case 'PGN': return 'Comprometido';
+      default: return 'Caja';
+    }
+  }
+
+  private buildCoberturas(): CoberturaSistema[] {
+    return [
+      { sigla: 'SGR', lineaSuperior: '1001 municipios (96% del país)', lineaInferior: '32 departamentos beneficiarios (100% del país)', color: SISTEMA_COLORES['SGR'] },
+      { sigla: 'SGP', lineaSuperior: '908 municipios (87% del país)', lineaInferior: '32 departamentos beneficiarios (100% del país)', color: SISTEMA_COLORES['SGP'] },
+      { sigla: 'PGN', lineaSuperior: '32 Departamentos (100% del país)', lineaInferior: '32 departamentos beneficiarios (100% del país)', color: SISTEMA_COLORES['PGN'] }
+    ];
   }
 
   // ── Map initialization ────────────────────────────────────────────────────────
@@ -310,14 +331,13 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
       if (!value || !Number.isFinite(value)) return;
 
       const radius = this.getCircleRadius(value);
-      const opacity = this.getCapasOpacidade() / 100;
       const segmentos = this.extraerSegmentosPie(result.data);
       const pad = 2;
       const iconSize = radius * 2 + pad * 2;
 
       const marker = L.marker(result.centroid, {
         icon: L.divIcon({
-          html: this.crearSvgPie(segmentos, radius, opacity),
+          html: this.crearSvgPie(segmentos, radius),
           className: 'marcador-pie',
           iconSize: [iconSize, iconSize],
           iconAnchor: [iconSize / 2, iconSize / 2]
@@ -370,8 +390,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     const result = this.deptResults.find(r => r.codigoDepto === codigoDepto);
     const value = result?.data ? this.extractTotalValue(result.data) : 0;
     const ratio = this.maxValue > 0 ? value / this.maxValue : 0;
-    const opacidad = this.getCapasOpacidade() / 100;
-    return (0.06 + ratio * 0.54) * opacidad;
+    return 0.06 + ratio * 0.54;
   }
 
   private getDominantColor(): string {
@@ -380,38 +399,32 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     return '#7c3aed';
   }
 
-  private getCapasOpacidade(): number {
-    const visible = this.capas.filter(c => c.visible);
-    if (!visible.length) return 0;
-    return visible.reduce((s, c) => s + c.opacidad, 0) / visible.length;
-  }
-
   private getCircleRadius(value: number): number {
     const ratio = this.maxValue > 0 ? value / this.maxValue : 0;
     return 4 + ratio * 32;
   }
 
-  private extraerSegmentosPie(data: ResumenGeovisor): Array<{valor: number, color: string}> {
-    const segmentos: Array<{valor: number, color: string}> = [];
+  private extraerSegmentosPie(data: ResumenGeovisor): Array<{valor: number, color: string, opacidad: number}> {
+    const segmentos: Array<{valor: number, color: string, opacidad: number}> = [];
     const sgrCapa = this.capas.find(c => c.sistema === 'SGR');
     const sgpCapa = this.capas.find(c => c.sistema === 'SGP');
     const pgnCapa = this.capas.find(c => c.sistema === 'PGN');
     if (sgrCapa?.visible && Array.isArray(data.sgr)) {
       const val = data.sgr.find(d => d.categoria === '-2')?.caja_total ?? 0;
-      if (Number.isFinite(val) && val > 0) segmentos.push({ valor: val, color: SISTEMA_COLORES['SGR'] });
+      if (Number.isFinite(val) && val > 0) segmentos.push({ valor: val, color: SISTEMA_COLORES['SGR'], opacidad: sgrCapa.opacidad / 100 });
     }
     if (sgpCapa?.visible && Array.isArray(data.sgp)) {
       const val = data.sgp.find(d => d.id_concepto === '99')?.total ?? 0;
-      if (Number.isFinite(val) && val > 0) segmentos.push({ valor: val, color: SISTEMA_COLORES['SGP'] });
+      if (Number.isFinite(val) && val > 0) segmentos.push({ valor: val, color: SISTEMA_COLORES['SGP'], opacidad: sgpCapa.opacidad / 100 });
     }
     if (pgnCapa?.visible && Array.isArray(data.pgn)) {
       const val = data.pgn[0]?.total_apropiacion_vigente ?? 0;
-      if (Number.isFinite(val) && val > 0) segmentos.push({ valor: val, color: SISTEMA_COLORES['PGN'] });
+      if (Number.isFinite(val) && val > 0) segmentos.push({ valor: val, color: SISTEMA_COLORES['PGN'], opacidad: pgnCapa.opacidad / 100 });
     }
     return segmentos;
   }
 
-  private crearSvgPie(segmentos: Array<{valor: number, color: string}>, r: number, opacity: number): string {
+  private crearSvgPie(segmentos: Array<{valor: number, color: string, opacidad: number}>, r: number): string {
     const total = segmentos.reduce((s, d) => s + d.valor, 0);
     if (!total || !Number.isFinite(total) || !Number.isFinite(r) || r <= 0) return '';
     const pad = 2;
@@ -424,15 +437,16 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
       const fraction = seg.valor / total;
       const sweep = fraction * 360;
       const endAngle = startAngle + sweep;
+      const segOpacity = (seg.opacidad * 0.72).toFixed(2);
       if (fraction >= 0.9999) {
-        paths += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${seg.color}" opacity="${(opacity * 0.72).toFixed(2)}"/>`;
+        paths += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${seg.color}" opacity="${segOpacity}"/>`;
       } else {
         const r1x = (cx + r * Math.cos(startAngle * Math.PI / 180)).toFixed(2);
         const r1y = (cy + r * Math.sin(startAngle * Math.PI / 180)).toFixed(2);
         const r2x = (cx + r * Math.cos(endAngle * Math.PI / 180)).toFixed(2);
         const r2y = (cy + r * Math.sin(endAngle * Math.PI / 180)).toFixed(2);
         const large = sweep > 180 ? 1 : 0;
-        paths += `<path d="M${cx},${cy}L${r1x},${r1y}A${r},${r} 0 ${large},1 ${r2x},${r2y}Z" fill="${seg.color}" opacity="${(opacity * 0.72).toFixed(2)}"/>`;
+        paths += `<path d="M${cx},${cy}L${r1x},${r1y}A${r},${r} 0 ${large},1 ${r2x},${r2y}Z" fill="${seg.color}" opacity="${segOpacity}"/>`;
       }
       startAngle = endAngle;
     }
@@ -526,7 +540,6 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
   }
 
   limpiarFiltros(): void {
-    this.consultaRecursos = { inversion: true, sgr: true, sgp: true, pgn: true };
     this.vigenciaSeleccionada = 2026;
     this.visualizacionActiva = true;
     this.capas.forEach(c => { c.visible = true; c.opacidad = 80; });
@@ -559,6 +572,12 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
 
   navegarResguardos(): void {
     console.log('Navegando a Resguardos Indígenas');
+  }
+
+  abrirAyuda(): void {
+    if (this.MANUAL_USUARIO_URL) {
+      window.open(this.MANUAL_USUARIO_URL, '_blank');
+    }
   }
 
   // ── Helpers ──────────────────────────────────────────────────────────────────
