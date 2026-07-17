@@ -117,6 +117,104 @@
       </div>
 
       <div class="filtros-container">
+        <!-- Presupuesto y Recaudo (Combinados) -->
+        <div class="filtro-box presupuesto-recaudo-box">
+          <!-- Presupuesto de consulta -->
+          <div class="presupuesto-section">
+            <h3>Presupuesto de consulta</h3>
+            <div class="radio-group">
+              <div class="radio-item">
+                <p-radiobutton
+                  name="presupuesto"
+                  value="total"
+                  [ngModel]="presupuestoSeleccionado"
+                  (ngModelChange)="onPresupuestoSeleccionChange($event)"
+                  inputId="presupuestoTotal"
+                />
+                <label for="presupuestoTotal">Presupuesto Total</label>
+              </div>
+
+              <div class="radio-item">
+                <p-radiobutton
+                  name="presupuesto"
+                  value="corriente"
+                  [ngModel]="presupuestoSeleccionado"
+                  (ngModelChange)="onPresupuestoSeleccionChange($event)"
+                  inputId="presupuestoCorriente"
+                />
+                <label for="presupuestoCorriente">Presupuesto Corriente</label>
+              </div>
+
+              <div class="radio-item">
+                <p-radiobutton
+                  name="presupuesto"
+                  value="otros"
+                  [ngModel]="presupuestoSeleccionado"
+                  (ngModelChange)="onPresupuestoSeleccionChange($event)"
+                  inputId="presupuestoOtros"
+                />
+                <label for="presupuestoOtros">Presupuesto Otros</label>
+              </div>
+            </div>
+
+            <!-- Slider para porcentaje 
+            <div class="slider-container">
+              <label for="sliderDisponibilidad" class="slider-label-multiline">% participación de la Disponibilidad Inicial por vigencia</label>
+              <div class="slider-value">{{ porcentajeDisponibilidad }}%</div>
+              <p-slider
+                [(ngModel)]="porcentajeDisponibilidad"
+                [min]="0"
+                [max]="100"
+                [step]="1"
+                styleClass="slider-disponibilidad"
+              ></p-slider>
+            </div>
+            -->
+          </div>
+
+          <!-- Separador visual -->
+          <div class="seccion-separador"></div>
+
+          <!-- Recaudo -->
+          <div class="recaudo-section">
+            <h3>Recaudo</h3>
+            <div class="radio-group">
+              <div class="radio-item">
+                <p-radiobutton
+                  name="recaudo"
+                  value="total"
+                  [ngModel]="recaudoSeleccionado"
+                  (ngModelChange)="onRecaudoSeleccionChange($event)"
+                  inputId="recaudoTotal"
+                />
+                <label for="recaudoTotal">Recaudo Total</label>
+              </div>
+
+              <div class="radio-item">
+                <p-radiobutton
+                  name="recaudo"
+                  value="corriente"
+                  [ngModel]="recaudoSeleccionado"
+                  (ngModelChange)="onRecaudoSeleccionChange($event)"
+                  inputId="recaudoCorriente"
+                />
+                <label for="recaudoCorriente">Recaudo Corriente</label>
+              </div>
+
+              <div class="radio-item">
+                <p-radiobutton
+                  name="recaudo"
+                  value="otros"
+                  [ngModel]="recaudoSeleccionado"
+                  (ngModelChange)="onRecaudoSeleccionChange($event)"
+                  inputId="recaudoOtros"
+                />
+                <label for="recaudoOtros">Recaudo Otros</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Periodicidad (nuevo diseño en cascada) -->
         <div class="filtro-box periodicidad-box">
           <h3>Periodicidad</h3>
@@ -239,306 +337,208 @@
         <!-- Caracterización de la consulta -->
         <div class="filtro-box caracterizacion-box">
           <h3>Caracterización de la consulta</h3>
-          <div class="caracterizacion-columnas">
-            <!-- Columna Izquierda -->
-            <div class="caracterizacion-columna">
-              <!-- Concepto de gasto -->
-              <div class="caracterizacion-grupo">
-                <div class="checkbox-item">
-                  <p-checkbox
-                    name="caracterizacion"
-                    [(ngModel)]="caracterizacionesActivas.conceptoGasto"
-                    (ngModelChange)="onCaracterizacionChange('conceptoGasto', $event)"
-                    [binary]="true"
-                    inputId="conceptoGasto"
-                  />
-                  <label for="conceptoGasto">Concepto de gasto</label>
-                </div>
-                <div class="multiselect-wrapper" *ngIf="caracterizacionesActivas.conceptoGasto">
-                  <p-multiselect
-                    [options]="conceptoGastoOpciones"
-                    [(ngModel)]="valoresConceptoGasto"
-                    (ngModelChange)="onValoresConceptoGastoChange()"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Seleccione opciones"
-                    [filter]="false"
-                    [showClear]="true"
-                    display="comma"
-                    styleClass="w-full"
-                    [maxSelectedLabels]="2"
-                    selectedItemsLabel="{0} seleccionados"
-                    class="w-full md:w-80"
-                    [displaySelectedLabel]="false"
-                  ></p-multiselect>
-                </div>
-              </div>
 
-              <!-- Regional -->
-              <div class="caracterizacion-grupo">
-                <div class="checkbox-item">
-                  <p-checkbox
-                    name="caracterizacion"
-                    [(ngModel)]="caracterizacionesActivas.regional"
-                    (ngModelChange)="onCaracterizacionChange('regional', $event)"
-                    [binary]="true"
-                    inputId="regional"
-                  />
-                  <label for="regional">Regional</label>
-                </div>
-                <div class="multiselect-wrapper" *ngIf="caracterizacionesActivas.regional">
-                  <p-multiselect
-                    [options]="regionalOpciones"
-                    [(ngModel)]="valoresRegional"
-                    (ngModelChange)="onValoresRegionalChange()"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Seleccione regiones"
-                    [filter]="false"
-                    [showClear]="true"
-                    display="comma"
-                    styleClass="w-full"
-                    [maxSelectedLabels]="2"
-                    selectedItemsLabel="{0} regiones"
-                    class="w-full md:w-80"
-                    [displaySelectedLabel]="false"
-                  ></p-multiselect>
-                </div>
-              </div>
-
-              <!-- Asignación -->
-              <div class="caracterizacion-grupo">
-                <div class="checkbox-item">
-                  <p-checkbox
-                    name="caracterizacion"
-                    [(ngModel)]="caracterizacionesActivas.asignacion"
-                    (ngModelChange)="onCaracterizacionChange('asignacion', $event)"
-                    [binary]="true"
-                    inputId="asignacion"
-                  />
-                  <label for="asignacion">Asignación</label>
-                </div>
-                <div class="multiselect-wrapper" *ngIf="caracterizacionesActivas.asignacion">
-                  <p-multiselect
-                    [options]="asignacionOpciones"
-                    [(ngModel)]="valoresAsignacion"
-                    (ngModelChange)="onValoresAsignacionChange()"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Seleccione asignaciones"
-                    [filter]="true"
-                    filterPlaceholder="Buscar..."
-                    [showClear]="true"
-                    display="comma"
-                    styleClass="w-full"
-                    [maxSelectedLabels]="2"
-                    selectedItemsLabel="{0} asignaciones"
-                    class="w-full md:w-80"
-                    [displaySelectedLabel]="false"
-                  ></p-multiselect>
-                </div>
-              </div>
-
-              <!-- Grupo de interés -->
-              <div class="caracterizacion-grupo">
-                <div class="checkbox-item">
-                  <p-checkbox
-                    name="caracterizacion"
-                    [(ngModel)]="caracterizacionesActivas.grupoInteres"
-                    (ngModelChange)="onCaracterizacionChange('grupoInteres', $event)"
-                    [binary]="true"
-                    inputId="grupoInteres"
-                  />
-                  <label for="grupoInteres">Grupo de interés</label>
-                </div>
-                <div class="multiselect-wrapper" *ngIf="caracterizacionesActivas.grupoInteres">
-                  <p-multiselect
-                    [options]="grupoInteresOpciones"
-                    [(ngModel)]="valoresGrupoInteres"
-                    (ngModelChange)="onValoresGrupoInteresChange()"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Seleccione grupos"
-                    [filter]="false"
-                    [showClear]="true"
-                    display="comma"
-                    styleClass="w-full"
-                    [maxSelectedLabels]="2"
-                    selectedItemsLabel="{0} grupos"
-                    class="w-full md:w-80"
-                    [displaySelectedLabel]="false"
-                  ></p-multiselect>
-                </div>
-              </div>
+          <!-- Concepto de gasto -->
+          <div class="caracterizacion-grupo">
+            <div class="checkbox-item">
+              <p-checkbox
+                name="caracterizacion"
+                [(ngModel)]="caracterizacionesActivas.conceptoGasto"
+                (ngModelChange)="onCaracterizacionChange('conceptoGasto', $event)"
+                [binary]="true"
+                inputId="conceptoGasto"
+              />
+              <label for="conceptoGasto">Concepto de gasto</label>
             </div>
+            <div class="multiselect-wrapper" *ngIf="caracterizacionesActivas.conceptoGasto">
+              <p-multiselect
+                [options]="conceptoGastoOpciones"
+                [(ngModel)]="valoresConceptoGasto"
+                (ngModelChange)="onValoresConceptoGastoChange()"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Seleccione opciones"
+                [filter]="false"
+                [showClear]="true"
+                display="comma"
+                styleClass="w-full"
+                [maxSelectedLabels]="2"
+                selectedItemsLabel="{0} seleccionados"
+                class="w-full md:w-80"
+                [displaySelectedLabel]="false"
+              ></p-multiselect>
+            </div>
+          </div>
 
-            <!-- Columna Derecha -->
-            <div class="caracterizacion-columna">
-              <div class="checkbox-item">
-                <p-radiobutton
-                  name="entidad"
-                  value="beneficiario"
-                  [ngModel]="entidadSeleccionada"
-                  (ngModelChange)="onEntidadChange($event)"
-                  inputId="beneficiario"
-                />
-                <label for="beneficiario">Beneficiario</label>
-              </div>
+          <!-- Regional -->
+          <div class="caracterizacion-grupo">
+            <div class="checkbox-item">
+              <p-checkbox
+                name="caracterizacion"
+                [(ngModel)]="caracterizacionesActivas.regional"
+                (ngModelChange)="onCaracterizacionChange('regional', $event)"
+                [binary]="true"
+                inputId="regional"
+              />
+              <label for="regional">Regional</label>
+            </div>
+            <div class="multiselect-wrapper" *ngIf="caracterizacionesActivas.regional">
+              <p-multiselect
+                [options]="regionalOpciones"
+                [(ngModel)]="valoresRegional"
+                (ngModelChange)="onValoresRegionalChange()"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Seleccione regiones"
+                [filter]="false"
+                [showClear]="true"
+                display="comma"
+                styleClass="w-full"
+                [maxSelectedLabels]="2"
+                selectedItemsLabel="{0} regiones"
+                class="w-full md:w-80"
+                [displaySelectedLabel]="false"
+              ></p-multiselect>
+            </div>
+          </div>
 
-              <div class="checkbox-item">
-                <p-radiobutton
-                  name="entidad"
-                  value="productoras"
-                  [ngModel]="entidadSeleccionada"
-                  (ngModelChange)="onEntidadChange($event)"
-                  inputId="productoras"
-                />
-                <label for="productoras">Entidades Productora</label>
-              </div>
+          <!-- Asignación -->
+          <div class="caracterizacion-grupo">
+            <div class="checkbox-item">
+              <p-checkbox
+                name="caracterizacion"
+                [(ngModel)]="caracterizacionesActivas.asignacion"
+                (ngModelChange)="onCaracterizacionChange('asignacion', $event)"
+                [binary]="true"
+                inputId="asignacion"
+              />
+              <label for="asignacion">Asignación</label>
+            </div>
+            <div class="multiselect-wrapper" *ngIf="caracterizacionesActivas.asignacion">
+              <p-multiselect
+                [options]="asignacionOpciones"
+                [(ngModel)]="valoresAsignacion"
+                (ngModelChange)="onValoresAsignacionChange()"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Seleccione asignaciones"
+                [filter]="true"
+                filterPlaceholder="Buscar..."
+                [showClear]="true"
+                display="comma"
+                styleClass="w-full"
+                [maxSelectedLabels]="2"
+                selectedItemsLabel="{0} asignaciones"
+                class="w-full md:w-80"
+                [displaySelectedLabel]="false"
+              ></p-multiselect>
+            </div>
+          </div>
 
-              <div class="checkbox-item">
-                <p-radiobutton
-                  name="entidad"
-                  value="pdet"
-                  [ngModel]="entidadSeleccionada"
-                  (ngModelChange)="onEntidadChange($event)"
-                  inputId="pdet"
-                />
-                <label for="pdet">Entidades PDET</label>
-              </div>
-
-              <div class="checkbox-item">
-                <p-radiobutton
-                  name="entidad"
-                  value="zomac"
-                  [ngModel]="entidadSeleccionada"
-                  (ngModelChange)="onEntidadChange($event)"
-                  inputId="zomac"
-                />
-                <label for="zomac">Entidades ZOMAC</label>
-              </div>
-
-              <div class="checkbox-item">
-                <p-radiobutton
-                  name="entidad"
-                  value="etnica"
-                  [ngModel]="entidadSeleccionada"
-                  (ngModelChange)="onEntidadChange($event)"
-                  inputId="etnica"
-                />
-                <label for="etnica">Entidades con destinación Étnica</label>
-              </div>
-
-              <div class="checkbox-item">
-                <p-radiobutton
-                  name="entidad"
-                  value="capital"
-                  [ngModel]="entidadSeleccionada"
-                  (ngModelChange)="onEntidadChange($event)"
-                  inputId="capital"
-                />
-                <label for="capital">Capital</label>
-              </div>
+          <!-- Grupo de interés -->
+          <div class="caracterizacion-grupo">
+            <div class="checkbox-item">
+              <p-checkbox
+                name="caracterizacion"
+                [(ngModel)]="caracterizacionesActivas.grupoInteres"
+                (ngModelChange)="onCaracterizacionChange('grupoInteres', $event)"
+                [binary]="true"
+                inputId="grupoInteres"
+              />
+              <label for="grupoInteres">Grupo de interés</label>
+            </div>
+            <div class="multiselect-wrapper" *ngIf="caracterizacionesActivas.grupoInteres">
+              <p-multiselect
+                [options]="grupoInteresOpciones"
+                [(ngModel)]="valoresGrupoInteres"
+                (ngModelChange)="onValoresGrupoInteresChange()"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Seleccione grupos"
+                [filter]="false"
+                [showClear]="true"
+                display="comma"
+                styleClass="w-full"
+                [maxSelectedLabels]="2"
+                selectedItemsLabel="{0} grupos"
+                class="w-full md:w-80"
+                [displaySelectedLabel]="false"
+              ></p-multiselect>
             </div>
           </div>
         </div>
 
-        <!-- Presupuesto y Recaudo (Combinados) -->
-        <div class="filtro-box presupuesto-recaudo-box">
-          <!-- Presupuesto de consulta -->
-          <div class="presupuesto-section">
-            <h3>Presupuesto de consulta</h3>
-            <div class="radio-group">
-              <div class="radio-item">
-                <p-radiobutton
-                  name="presupuesto"
-                  value="total"
-                  [ngModel]="presupuestoSeleccionado"
-                  (ngModelChange)="onPresupuestoSeleccionChange($event)"
-                  inputId="presupuestoTotal"
-                />
-                <label for="presupuestoTotal">Presupuesto Total</label>
-              </div>
+        <!-- Tipo de entidad -->
+        <div class="filtro-box entidad-box">
+          <h3>Tipo de entidad</h3>
 
-              <div class="radio-item">
-                <p-radiobutton
-                  name="presupuesto"
-                  value="corriente"
-                  [ngModel]="presupuestoSeleccionado"
-                  (ngModelChange)="onPresupuestoSeleccionChange($event)"
-                  inputId="presupuestoCorriente"
-                />
-                <label for="presupuestoCorriente">Presupuesto Corriente</label>
-              </div>
-
-              <div class="radio-item">
-                <p-radiobutton
-                  name="presupuesto"
-                  value="otros"
-                  [ngModel]="presupuestoSeleccionado"
-                  (ngModelChange)="onPresupuestoSeleccionChange($event)"
-                  inputId="presupuestoOtros"
-                />
-                <label for="presupuestoOtros">Presupuesto Otros</label>
-              </div>
-            </div>
-
-            <!-- Slider para porcentaje -->
-            <div class="slider-container">
-              <label for="sliderDisponibilidad" class="slider-label-multiline">% participación de la Disponibilidad Inicial por vigencia</label>
-              <div class="slider-value">{{ porcentajeDisponibilidad }}%</div>
-              <p-slider
-                [(ngModel)]="porcentajeDisponibilidad"
-                [min]="0"
-                [max]="100"
-                [step]="1"
-                styleClass="slider-disponibilidad"
-              ></p-slider>
-            </div>
+          <div class="checkbox-item">
+            <p-radiobutton
+              name="entidad"
+              value="beneficiario"
+              [ngModel]="entidadSeleccionada"
+              (ngModelChange)="onEntidadChange($event)"
+              inputId="beneficiario"
+            />
+            <label for="beneficiario">Beneficiario</label>
           </div>
 
-          <!-- Separador visual -->
-          <div class="seccion-separador"></div>
+          <div class="checkbox-item">
+            <p-radiobutton
+              name="entidad"
+              value="productoras"
+              [ngModel]="entidadSeleccionada"
+              (ngModelChange)="onEntidadChange($event)"
+              inputId="productoras"
+            />
+            <label for="productoras">Entidades Productora</label>
+          </div>
 
-          <!-- Recaudo -->
-          <div class="recaudo-section">
-            <h3>Recaudo</h3>
-            <div class="radio-group">
-              <div class="radio-item">
-                <p-radiobutton
-                  name="recaudo"
-                  value="total"
-                  [ngModel]="recaudoSeleccionado"
-                  (ngModelChange)="onRecaudoSeleccionChange($event)"
-                  inputId="recaudoTotal"
-                />
-                <label for="recaudoTotal">Recaudo Total</label>
-              </div>
+          <div class="checkbox-item">
+            <p-radiobutton
+              name="entidad"
+              value="pdet"
+              [ngModel]="entidadSeleccionada"
+              (ngModelChange)="onEntidadChange($event)"
+              inputId="pdet"
+            />
+            <label for="pdet">Entidades PDET</label>
+          </div>
 
-              <div class="radio-item">
-                <p-radiobutton
-                  name="recaudo"
-                  value="corriente"
-                  [ngModel]="recaudoSeleccionado"
-                  (ngModelChange)="onRecaudoSeleccionChange($event)"
-                  inputId="recaudoCorriente"
-                />
-                <label for="recaudoCorriente">Recaudo Corriente</label>
-              </div>
+          <div class="checkbox-item">
+            <p-radiobutton
+              name="entidad"
+              value="zomac"
+              [ngModel]="entidadSeleccionada"
+              (ngModelChange)="onEntidadChange($event)"
+              inputId="zomac"
+            />
+            <label for="zomac">Entidades ZOMAC</label>
+          </div>
 
-              <div class="radio-item">
-                <p-radiobutton
-                  name="recaudo"
-                  value="otros"
-                  [ngModel]="recaudoSeleccionado"
-                  (ngModelChange)="onRecaudoSeleccionChange($event)"
-                  inputId="recaudoOtros"
-                />
-                <label for="recaudoOtros">Recaudo Otros</label>
-              </div>
-            </div>
+          <div class="checkbox-item">
+            <p-radiobutton
+              name="entidad"
+              value="etnica"
+              [ngModel]="entidadSeleccionada"
+              (ngModelChange)="onEntidadChange($event)"
+              inputId="etnica"
+            />
+            <label for="etnica">Entidades con destinación Étnica</label>
+          </div>
+
+          <div class="checkbox-item">
+            <p-radiobutton
+              name="entidad"
+              value="capital"
+              [ngModel]="entidadSeleccionada"
+              (ngModelChange)="onEntidadChange($event)"
+              inputId="capital"
+            />
+            <label for="capital">Capital</label>
           </div>
         </div>
+
       </div>
     </div>
 

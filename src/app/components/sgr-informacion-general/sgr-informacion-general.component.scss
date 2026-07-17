@@ -212,7 +212,7 @@ $alert-amber: #f59e0b;     // Acciones de remoción
 
     .filtros-container {
       display: grid;
-      grid-template-columns: auto 1fr auto;
+      grid-template-columns: auto auto 1fr auto;
       gap: 1.5rem;
 
       .filtro-box {
@@ -310,102 +310,24 @@ $alert-amber: #f59e0b;     // Acciones de remoción
         }
       }
 
-      .caracterizacion-box {
-        .caracterizacion-columnas {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 2rem;
+      .entidad-box {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
 
-          .caracterizacion-columna {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
+        .checkbox-item {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
 
-            .checkbox-item {
-              display: flex;
-              align-items: center;
-              gap: 0.5rem;
-
-              label {
-                font-size: 0.9rem;
-                color: #4b5563;
-                cursor: pointer;
-              }
-            }
-
-            .dropdown-wrapper {
-              display: flex;
-              flex-direction: column;
-              gap: 0.75rem;
-              margin-top: 1rem;
-              padding-top: 1rem;
-              border-top: 1px solid #e5e7eb;
-
-              .dropdown-label {
-                font-size: 0.85rem;
-                font-weight: 600;
-                color: #374151;
-              }
-
-              ::ng-deep .p-dropdown {
-                width: 100%;
-                border-radius: 8px;
-                border-color: #d1d5db;
-
-                &:hover {
-                  border-color: #9ca3af;
-                }
-
-                &.p-focus {
-                  border-color: $civic-navy;
-                  box-shadow: 0 0 0 0.2rem rgba(236, 72, 153, 0.25);
-                }
-
-                .p-dropdown-label {
-                  padding: 0.75rem;
-                  font-size: 0.9rem;
-                }
-
-                .p-dropdown-trigger {
-                  width: 2.5rem;
-                }
-              }
-
-              ::ng-deep .p-dropdown-panel {
-                border-radius: 8px;
-                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-
-                .p-dropdown-items {
-                  .p-dropdown-item {
-                    padding: 0.75rem 1rem;
-                    font-size: 0.9rem;
-
-                    &.p-highlight {
-                      background: #fce7f3;
-                      color: $civic-navy;
-                    }
-
-                    &:hover {
-                      background: #fce7f3;
-                    }
-                  }
-                }
-
-                .p-dropdown-filter-container {
-                  padding: 0.75rem;
-
-                  .p-dropdown-filter {
-                    padding: 0.5rem;
-                    border-radius: 6px;
-                  }
-                }
-              }
-            }
+          label {
+            font-size: 0.9rem;
+            color: #4b5563;
+            cursor: pointer;
           }
         }
       }
 
-      // Panel combinado Presupuesto + Recaudo
       .presupuesto-recaudo-box {
         display: flex;
         flex-direction: column;
@@ -710,13 +632,13 @@ $alert-amber: #f59e0b;     // Acciones de remoción
       }
 
       .limpiar-filtros-btn {
-        background: transparent;
-        border: 1.5px solid $civic-slate;
-        color: $civic-steel;
-        border-radius: 2px;
-        padding: 8px 16px;
+        background: #0943b5;
+        border: none;
+        color: white;
+        border-radius: 2rem;
+        padding: 0.75rem 2rem;
         font-size: 0.85rem;
-        font-weight: 500;
+        font-weight: 600;
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -729,9 +651,7 @@ $alert-amber: #f59e0b;     // Acciones de remoción
         }
 
         &:hover {
-          border-color: $alert-amber;
-          color: $alert-amber;
-          transform: translateY(-1px);
+          background: #0736a0;
         }
       }
     }
@@ -745,8 +665,8 @@ $alert-amber: #f59e0b;     // Acciones de remoción
       .filtro-chip {
         background: white;
         border: 1px solid $civic-slate;
-        border-left: 3px solid $civic-gold; // Barra de acento tipo pestaña
-        border-radius: 2px; // Mínimo, casi cuadrado
+        border-left: 3px solid $civic-gold;
+        border-radius: 6px;
         padding: 6px 12px 6px 10px;
         display: flex;
         align-items: center;
@@ -788,7 +708,7 @@ $alert-amber: #f59e0b;     // Acciones de remoción
           background: transparent;
           border: 1px solid $alert-amber;
           color: $alert-amber;
-          border-radius: 2px;
+          border-radius: 4px;
           width: 18px;
           height: 18px;
           display: flex;
@@ -984,13 +904,13 @@ $alert-amber: #f59e0b;     // Acciones de remoción
 
     .footer-right {
       ::ng-deep .export-btn {
-        background: linear-gradient(135deg, $civic-navy 0%, $civic-steel 100%);
+        background: #0943b5;
         border: none;
         padding: 0.75rem 2rem;
         font-weight: 600;
 
         &:hover {
-          background: linear-gradient(135deg, #db2777 0%, #9333ea 100%);
+          background: #0736a0;
         }
       }
     }
@@ -1009,7 +929,7 @@ $alert-amber: #f59e0b;     // Acciones de remoción
     }
 
     .filtros-section .filtros-container {
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr 1fr;
     }
 
     .vista-general-section .resultados-grid {
@@ -1063,10 +983,7 @@ $alert-amber: #f59e0b;     // Acciones de remoción
     }
 
     .filtros-section .filtros-container {
-      .caracterizacion-box .caracterizacion-columnas {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-      }
+      grid-template-columns: 1fr;
     }
 
     .vista-general-section .resultados-grid {
