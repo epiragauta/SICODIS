@@ -124,7 +124,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
 
   generarVigencias(): void {
     const base = 2026;
-    for (let i = 0; i < 10; i++) this.vigencias.push(base - i);
+    for (let i = 0; i < 4; i++) this.vigencias.push(base - i);
   }
 
   // ── Summary cards ────────────────────────────────────────────────────────────
