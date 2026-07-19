@@ -1,4 +1,5 @@
 .pgn-comparativa-container {
+  position: relative; // contiene el overlay de carga (skeleton)
   padding: .1rem;
   max-width: 1320px;
   margin: 0 auto;
@@ -493,16 +494,17 @@
 
 /* Loading Overlay */
 .loading-overlay {
-  position: fixed;
+  position: absolute;
+    overflow: hidden;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.97);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   z-index: 9999;
   
   p {

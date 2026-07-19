@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ButtonModule } from 'primeng/button';
 import { Select, SelectChangeEvent } from 'primeng/select';
 import { FloatLabel } from 'primeng/floatlabel';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { SkeletonPaginaComponent } from '../shared/skeleton-pagina/skeleton-pagina.component';
 import { TableModule } from 'primeng/table';
 import { MultiSelect, MultiSelectChangeEvent } from 'primeng/multiselect';
 import { ChartModule } from 'primeng/chart';
@@ -29,7 +29,7 @@ import { MenuItem } from 'primeng/api';
     ButtonModule,
     Select,
     FloatLabel,
-    ProgressSpinnerModule,
+    SkeletonPaginaComponent,
     TableModule,
     MultiSelect,
     ChartModule,

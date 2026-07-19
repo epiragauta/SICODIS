@@ -8,7 +8,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { ButtonModule } from 'primeng/button';
 import { ChartModule } from 'primeng/chart';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { SkeletonPaginaComponent } from '../shared/skeleton-pagina/skeleton-pagina.component';
 import Chart from 'chart.js/auto';
 
 // Funciones de utilidad solo para fallback en caso de que la API no responda
@@ -62,7 +62,7 @@ interface SelectOption {
     MatCardModule,
     ButtonModule,
     ChartModule,
-    ProgressSpinnerModule,
+    SkeletonPaginaComponent,
     NumberFormatPipe,
     PercentFormatPipe,
     MatIconModule,

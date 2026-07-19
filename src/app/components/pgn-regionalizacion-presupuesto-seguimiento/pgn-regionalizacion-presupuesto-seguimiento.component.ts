@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ButtonModule } from 'primeng/button';
 import { Select, SelectChangeEvent } from 'primeng/select';
 import { FloatLabel } from 'primeng/floatlabel';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { SkeletonPaginaComponent } from '../shared/skeleton-pagina/skeleton-pagina.component';
 import { TableModule } from 'primeng/table';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { ChartModule } from 'primeng/chart';
@@ -35,7 +35,7 @@ import { ChartData, ChartOptions } from 'chart.js';
     ButtonModule,
     Select,
     FloatLabel,
-    ProgressSpinnerModule,
+    SkeletonPaginaComponent,
     TableModule,
     Breadcrumb,
     ChartModule    

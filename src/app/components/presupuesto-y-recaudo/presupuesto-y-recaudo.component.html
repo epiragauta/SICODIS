@@ -1,8 +1,7 @@
 <div class="sicodis-container">
   <!-- LOADING OVERLAY -->
 <div *ngIf="isLoading" class="loading-overlay">
-  <p-progressSpinner></p-progressSpinner>
-  <p>Cargando información...</p>
+  <app-skeleton-pagina [tarjetas]="3" [filas]="8" />
 </div>
 
   <!-- DEBUG LOADING -->

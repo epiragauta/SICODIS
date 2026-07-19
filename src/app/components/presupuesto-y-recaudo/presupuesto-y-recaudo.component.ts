@@ -28,7 +28,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { DiccionarioItem, FuncionamientoSiglasDiccionario, SGRFechaActualizacionCorte, SicodisApiService, SiglasItem } from '../../services/sicodis-api.service';
 import { MultiSelectModule } from 'primeng/multiselect';
 import Chart from 'chart.js/auto';
-import { ProgressSpinner } from "primeng/progressspinner";
+import { SkeletonPaginaComponent } from '../shared/skeleton-pagina/skeleton-pagina.component';
 
 
 interface FinancialData {
@@ -62,7 +62,7 @@ interface FinancialData {
     TooltipModule,
     NumberFormatPipe,
     MultiSelectModule,
-    ProgressSpinner
+    SkeletonPaginaComponent
 ],
   templateUrl: './presupuesto-y-recaudo.component.html',
   styleUrl: './presupuesto-y-recaudo.component.scss'

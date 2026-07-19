@@ -143,7 +143,7 @@
     <div class="left-column">
       <!-- Loading overlay for left column -->
       <div class="loading-overlay" *ngIf="isLoadingData">
-        <p-progressSpinner strokeWidth="3" fill="transparent" animationDuration=".5s"></p-progressSpinner>
+        <app-skeleton-pagina [tarjetas]="0" [grafico]="false" [filas]="10" />
       </div>
       
       <!-- Tarjeta 1: Presupuesto -->
@@ -263,7 +263,7 @@
     <div class="right-column">
       <!-- Loading overlay for right column -->
       <div class="loading-overlay" *ngIf="isLoadingData">
-        <p-progressSpinner strokeWidth="3" fill="transparent" animationDuration=".5s"></p-progressSpinner>
+        <app-skeleton-pagina [tarjetas]="0" alturaGrafico="220px" [filas]="4" />
       </div>
       
       <!-- Gráfico 1: Donut Avance Ejecución-->

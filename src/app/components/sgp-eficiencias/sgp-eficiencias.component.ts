@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ButtonModule } from 'primeng/button';
 import { Select, SelectChangeEvent } from 'primeng/select';
 import { FloatLabel } from 'primeng/floatlabel';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { SkeletonPaginaComponent } from '../shared/skeleton-pagina/skeleton-pagina.component';
 import { TableModule } from 'primeng/table';
 
 import { departamentos } from '../../data/departamentos';
@@ -29,7 +29,7 @@ import { ConfigService, FechaActualizacion } from '../../services/config.service
     ButtonModule,
     Select,
     FloatLabel,
-    ProgressSpinnerModule,
+    SkeletonPaginaComponent,
     TableModule,
     Breadcrumb
   ],

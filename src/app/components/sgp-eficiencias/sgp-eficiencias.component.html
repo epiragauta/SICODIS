@@ -400,8 +400,7 @@
 
   <!-- Loading Overlay -->
   <div *ngIf="isLoading" class="loading-overlay">
-    <p-progressSpinner strokeWidth="3" animationDuration="1s"></p-progressSpinner>
-    <p>Cargando datos...</p>
+    <app-skeleton-pagina [tarjetas]="3" [filas]="6" />
   </div>
 
 </div>
