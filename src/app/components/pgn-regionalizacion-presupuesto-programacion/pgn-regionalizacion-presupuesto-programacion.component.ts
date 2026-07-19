@@ -4,9 +4,6 @@ import { SicodisApiService } from '../../services/sicodis-api.service';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { MatGridListModule, MatGridTile } from '@angular/material/grid-list';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
 import { ChartModule } from 'primeng/chart';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Chart } from 'chart.js';
@@ -43,8 +40,6 @@ import { ChartData, ChartOptions } from 'chart.js';
     SkeletonPaginaComponent,
     TableModule,
     Breadcrumb,
-    MatGridTile,
-    MatGridListModule,
     ChartModule
 ],
   templateUrl: './pgn-regionalizacion-presupuesto-programacion.component.html',

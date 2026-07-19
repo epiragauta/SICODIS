@@ -2,9 +2,6 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SicodisApiService } from '../../services/sicodis-api.service';
 import type { DiccionarioItem, SiglasItem, FuncionamientoSiglasDiccionario } from '../../services/sicodis-api.service';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { ButtonModule } from 'primeng/button';
 import { ChartModule } from 'primeng/chart';
@@ -56,9 +53,6 @@ interface SelectOption {
   imports: [
     CommonModule,
     FormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatGridListModule,
     MatCardModule,
     ButtonModule,
     ChartModule,

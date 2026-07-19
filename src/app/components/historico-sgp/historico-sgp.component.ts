@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { MatGridListModule } from '@angular/material/grid-list';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
 import { HttpClientModule } from '@angular/common/http';
@@ -34,7 +33,6 @@ import { Breadcrumb } from 'primeng/breadcrumb';
   imports: [
     CommonModule,
     FormsModule,
-    MatGridListModule,
     HttpClientModule,
     TableModule,
     TreeTableModule,

@@ -1,8 +1,6 @@
 // src/app/components/header/header.component.ts
 
 import { Component, OnInit, OnDestroy, ElementRef, Renderer2, HostListener, Inject, PLATFORM_ID } from '@angular/core';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
@@ -14,7 +12,7 @@ import { DialogModule } from 'primeng/dialog';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatMenuModule, ButtonModule, Menubar, DialogModule],
+  imports: [CommonModule, ButtonModule, Menubar, DialogModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })

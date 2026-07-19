@@ -9,11 +9,9 @@ import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { TableModule } from 'primeng/table';
 import { ChartModule } from 'primeng/chart';
-import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 // Material Modules
 import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
 
 import { CarouselModule } from 'primeng/carousel';
 import { TagModule } from 'primeng/tag';
@@ -34,11 +32,9 @@ import { BannerAlertasCajaComponent } from './banner-alertas-caja.component';
     //ReportsTargetComponent,
     MatGridListModule,
     MatCardModule,
-    MatButtonModule,
     CardModule,
     ButtonModule,
     DividerModule,
-    MatIconModule,
     CarouselModule,
     TagModule,
     NumberFormatPipe,

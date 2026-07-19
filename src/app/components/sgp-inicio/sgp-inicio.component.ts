@@ -1,10 +1,6 @@
 import { Component, OnInit, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatSelectModule } from '@angular/material/select';
 import { ButtonModule } from 'primeng/button';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { PercentFormatPipe } from '../../utils/percentFormatPipe';
@@ -27,10 +23,6 @@ import { TreeTableModule } from 'primeng/treetable';
   standalone: true,
   imports: [CommonModule,
       FormsModule,
-      MatFormFieldModule,
-      MatSelectModule,
-      MatGridListModule,
-      MatCardModule,
       ButtonModule,
       NumberFormatPipe,
       PercentFormatPipe,

@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, Renderer2, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { MatGridListModule } from '@angular/material/grid-list';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
@@ -26,7 +25,6 @@ import { AccordionModule } from 'primeng/accordion';
   imports: [
     CommonModule,
     FormsModule,
-    MatGridListModule,
     TableModule,
     TreeTableModule,
     ButtonModule,

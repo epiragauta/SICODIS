@@ -2,10 +2,7 @@ import { Component, OnInit, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 
 import { CardModule } from 'primeng/card';
@@ -46,15 +43,12 @@ interface FinancialData {
   imports: [
     CommonModule,
     MatGridListModule,
-    MatCardModule,
     MatIconModule,
     CardModule,
     ChartModule,
     TreeTableModule,
     ButtonModule,
     SplitButtonModule,
-    MatFormFieldModule,
-    MatSelectModule,
     FormsModule,
     Select,
     FloatLabel,

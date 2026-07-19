@@ -1,11 +1,6 @@
 import { Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
 import {MatIconModule} from '@angular/material/icon';
-import { MatTooltip, MatTooltipModule } from '@angular/material/tooltip';
 import {MatTabChangeEvent, MatTabsModule} from '@angular/material/tabs';
 import { CommonModule } from '@angular/common';
 import { DetalleEntidadComponent } from '../detalle-entidad/detalle-entidad.component';
@@ -31,13 +26,8 @@ import { VariablesDistribucionComponent } from '../variables-distribucion/variab
     VisorRecursosComponent,
     VariablesDistribucionComponent,
     CommonModule,
-    MatSelectModule,
-    MatFormFieldModule,
-    MatGridListModule,
     MatCardModule,
-    MatTableModule,
     MatIconModule,
-    MatTooltipModule,
     MatTabsModule],
   templateUrl: './tools.component.html',
   styleUrl: './tools.component.scss'

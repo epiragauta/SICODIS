@@ -3,9 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Component, Renderer2, OnInit, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatTableModule } from '@angular/material/table';
 
 // PrimeNG imports
 import { TableModule } from 'primeng/table';
@@ -32,9 +29,6 @@ import { MenuItem } from 'primeng/api';
   imports: [
     CommonModule,
     FormsModule,
-    MatGridListModule,
-    MatCardModule,
-    MatTableModule,
     TableModule,
     TreeTableModule,
     ButtonModule,
