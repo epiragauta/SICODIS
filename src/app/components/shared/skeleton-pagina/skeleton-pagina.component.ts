@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SkeletonModule } from 'primeng/skeleton';
 
@@ -9,6 +9,7 @@ import { SkeletonModule } from 'primeng/skeleton';
  * reducir el salto de layout percibido mientras llegan los datos del API.
  */
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-skeleton-pagina',
   standalone: true,
   imports: [CommonModule, SkeletonModule],

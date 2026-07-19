@@ -1,10 +1,11 @@
-import { Component, Input, OnChanges, SimpleChanges, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, Inject, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-summary-panel',
   standalone: true,
   imports: [CommonModule, CardModule, ChartModule, NumberFormatPipe],
