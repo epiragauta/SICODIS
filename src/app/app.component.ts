@@ -4,9 +4,7 @@ import { Router, RouterOutlet, NavigationEnd, ActivatedRoute } from '@angular/ro
 import { Title } from '@angular/platform-browser';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
-import { HomeComponent } from './components/home/home.component';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { PrimeNG } from 'primeng/config';
 import { Toast } from 'primeng/toast';
 import { filter } from 'rxjs/operators';
@@ -21,9 +19,7 @@ declare let gtag: Function;
     RouterOutlet,
     HeaderComponent,
     FooterComponent,
-    HomeComponent,
     BreadcrumbComponent,
-    MatSlideToggleModule,
     Toast
   ],
   templateUrl: './app.component.html',
