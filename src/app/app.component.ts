@@ -77,13 +77,5 @@ export class AppComponent implements OnInit {
         this.titleService.setTitle(breadcrumb ? `${breadcrumb} | SICODIS` : 'SICODIS');
 
       });
-
-    /* ===============================
-       Recarga controlada (tu lógica)
-    =============================== */
-    if (!sessionStorage.getItem('appReloaded')) {
-      sessionStorage.setItem('appReloaded', 'true');
-      window.location.reload();
-    }
   }
 }

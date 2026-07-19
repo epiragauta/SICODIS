@@ -1,17 +1,11 @@
 // app.config.ts - VERSIÓN ACTUALIZADA
 import {
   ApplicationConfig,
-  importProvidersFrom,
   provideZoneChangeDetection,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import {
-  BrowserAnimationsModule,
-  provideAnimations,
-} from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
 import Lara from '@primeng/themes/lara';
@@ -47,8 +41,6 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(),
-    provideAnimations(),
-    importProvidersFrom(MatSlideToggleModule, BrowserAnimationsModule),
     provideAnimationsAsync(),
 
     // 🔐 HTTP Client con interceptor
