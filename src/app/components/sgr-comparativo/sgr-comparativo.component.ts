@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -39,6 +40,7 @@ import { TooltipModule } from 'primeng/tooltip';
   styleUrl: './sgr-comparativo.component.scss'
 })
 export class SgrComparativoComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
 
   items: MenuItem[] | undefined;
   home: MenuItem | undefined;
@@ -437,7 +439,7 @@ export class SgrComparativoComponent implements OnInit {
       codigoEntidad1,
       tipoConsulta2,
       codigoEntidad2
-    ).subscribe({
+    ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.processComparativeData(data);
       },
@@ -641,7 +643,7 @@ export class SgrComparativoComponent implements OnInit {
     }
 
     
-    this.sicodisApiService.getMunicipiosPorDepartamento(this.selectedDepartamento.codigo).subscribe({
+    this.sicodisApiService.getMunicipiosPorDepartamento(this.selectedDepartamento.codigo).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (municipios) => {
         this.municipios = municipios;
         this.updateMunicipios2List();
@@ -664,7 +666,7 @@ export class SgrComparativoComponent implements OnInit {
     }
 
     
-    this.sicodisApiService.getMunicipiosPorDepartamento(this.selectedDepartamento2.codigo).subscribe({
+    this.sicodisApiService.getMunicipiosPorDepartamento(this.selectedDepartamento2.codigo).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (municipios) => {
         this.municipios2 = municipios;
         this.updateMunicipios2List();

@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
+import { Component, OnInit, ViewChild, NgZone, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { SplitButtonModule } from 'primeng/splitbutton';
@@ -44,6 +45,7 @@ import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
   styleUrl: './sgr-plan-bienal-caja.component.scss',
 })
 export class SgrPlanBienalCajaComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
 
   @ViewChild('planBienalCajaTable') planBienalCajaTable: any;
 
@@ -247,7 +249,7 @@ export class SgrPlanBienalCajaComponent implements OnInit {
    * Carga las vigencias desde el servicio
    */
   private cargarVigencias(): void {
-    this.sicodisApiService.getSgrPlanBienalVigencias().subscribe({
+    this.sicodisApiService.getSgrPlanBienalVigencias().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.vigencias = data;
         // Seleccionar la primera vigencia por defecto (la más reciente)
@@ -265,7 +267,7 @@ export class SgrPlanBienalCajaComponent implements OnInit {
    * Carga los departamentos desde el servicio
    */
   private cargarDepartamentos(): void {
-    this.sicodisApiService.getSgrPlanBienalDepartamentos().subscribe({
+    this.sicodisApiService.getSgrPlanBienalDepartamentos().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.departamentosList = data;
       },
@@ -295,7 +297,7 @@ export class SgrPlanBienalCajaComponent implements OnInit {
   onDepartamentoChange(): void {
     if (this.selectedDepartamento && this.selectedDepartamento.codigo !== '0') {
       this.isLoadingMunicipios = true;
-      this.sicodisApiService.getSgrPlanBienalMunicipiosDepartamento(this.selectedDepartamento.codigo).subscribe({
+      this.sicodisApiService.getSgrPlanBienalMunicipiosDepartamento(this.selectedDepartamento.codigo).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (data) => {
           this.municipiosList = this.sortMunicipios(data);
           this.selectedMunicipio = null;
@@ -334,7 +336,7 @@ export class SgrPlanBienalCajaComponent implements OnInit {
       this.selectedVigencia.id_vigencia,
       codigoEntidad,
       codigoMunicipio
-    ).subscribe({
+    ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.procesarDatosTabla(data);
         this.actualizarGrafico(data, year1, year2);

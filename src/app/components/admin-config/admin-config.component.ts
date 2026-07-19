@@ -1,4 +1,5 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -48,6 +49,7 @@ import { ConfigFechasFormComponent } from './components/config-fechas-form/confi
   styleUrls: ['./admin-config.component.scss']
 })
 export class AdminConfigComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
 
   // Signals para reactividad
   isLoading = signal(false);
@@ -67,7 +69,7 @@ export class AdminConfigComponent implements OnInit {
 
   loadAllConfigs(): void {
     this.isLoading.set(true);
-    this.configService.getAllConfigs().subscribe({
+    this.configService.getAllConfigs().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (configs) => {
         this.allConfigs.set(configs);
         this.isLoading.set(false);

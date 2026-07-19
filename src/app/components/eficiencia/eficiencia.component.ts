@@ -1,4 +1,5 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SicodisApiService, MunicipioEficiencia, ResumenMunicipioEficiencia } from '../../services/sicodis-api.service';
@@ -32,6 +33,7 @@ import { TagModule } from 'primeng/tag';
   styleUrl: './eficiencia.component.scss'
 })
 export class EficienciaComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
   // Signals para estado reactivo
   municipios = signal<MunicipioEficiencia[]>([]);
   resumen = signal<ResumenMunicipioEficiencia | null>(null);
@@ -63,7 +65,7 @@ export class EficienciaComponent implements OnInit {
     this.isLoading.set(true);
     this.error.set(null);
 
-    this.apiService.getEficienciasMunicipios().subscribe({
+    this.apiService.getEficienciasMunicipios().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.municipios.set(data);
         this.isLoading.set(false);
@@ -84,7 +86,7 @@ export class EficienciaComponent implements OnInit {
     this.error.set(null);
     this.resumen.set(null);
 
-    this.apiService.getEficienciasResumenMunicipio(codigoDane).subscribe({
+    this.apiService.getEficienciasResumenMunicipio(codigoDane).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.resumen.set(data);
         this.isLoading.set(false);

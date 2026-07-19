@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
+import { Component, OnInit, ViewChild, NgZone, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { FloatLabel } from 'primeng/floatlabel';
@@ -41,6 +42,7 @@ import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
   styleUrl: './sgr-plan-bienal-recursos.component.scss'
 })
 export class SgrPlanBienalRecursosComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
 
   @ViewChild('planRecursosTable') planRecursosTable: any;
 
@@ -178,7 +180,7 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
   }
 
   private cargarVigencias(): void {
-    this.sicodisApiService.getSgrPlanRecursosVigencias().subscribe({
+    this.sicodisApiService.getSgrPlanRecursosVigencias().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.vigencias = data;
         if (data.length > 0) this.selectedVigencia = data[0];
@@ -188,7 +190,7 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
   }
 
   private cargarDepartamentos(): void {
-    this.sicodisApiService.getSgrPlanRecursosDepartamentos().subscribe({
+    this.sicodisApiService.getSgrPlanRecursosDepartamentos().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => { this.departamentosList = data; },
       error: (err) => console.error('Error cargando departamentos:', err)
     });
@@ -217,7 +219,7 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
       this.isLoadingMunicipios = true;
       this.sicodisApiService
         .getSgrPlanRecursosMunicipiosDepartamento(this.selectedDepartamento.codigo)
-        .subscribe({
+        .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
           next: (data) => { this.municipiosList = this.sortMunicipios(data); this.isLoadingMunicipios = false; },
           error: (err) => {
             console.error('Error cargando municipios:', err);
@@ -239,7 +241,7 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
     this.isLoading = true;
     this.sicodisApiService
       .getSgrPlanRecursosDetalle(this.selectedVigencia.id_vigencia, codigoEntidad, codigoMunicipio)
-      .subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (data) => {
           this.procesarDatosTabla(data);
           this.actualizarGrafico(data);

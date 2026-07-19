@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { CommonModule } from '@angular/common';
-import { Component, Renderer2, OnInit } from '@angular/core';
+import { Component, Renderer2, OnInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -49,6 +50,7 @@ import { MenuItem } from 'primeng/api';
   styleUrl: './reports-sgp.component.scss',
 })
 export class ReportsSgpComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
   
   items: MenuItem[] | undefined;
   home: MenuItem | undefined;
@@ -190,7 +192,9 @@ export class ReportsSgpComponent implements OnInit {
   distributionFiles: any = [];
 
 
-  constructor(private renderer: Renderer2, private sicodisApiService: SicodisApiService) {}
+  constructor(private renderer: Renderer2, private sicodisApiService: SicodisApiService) {
+    this.destroyRef.onDestroy(() => this.barChartInstance?.destroy());
+  }
 
   async ngOnInit(): Promise<void> {
     this.items = [
@@ -574,7 +578,7 @@ export class ReportsSgpComponent implements OnInit {
       codigoMunicipio: this.townSelected
     };
 
-    this.sicodisApiService.getSgpResumenHistoricoEntidad(params).subscribe({
+    this.sicodisApiService.getSgpResumenHistoricoEntidad(params).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (result: any[]) => {
         this.historicoApiData = result;
         if (result && result.length > 0) {
@@ -647,7 +651,7 @@ export class ReportsSgpComponent implements OnInit {
 
     const id_distribucion = parseInt(data.id_distribucion  );
     
-    this.sicodisApiService.getSgpResumenDistribucionesListaArchivos(id_distribucion).subscribe({
+    this.sicodisApiService.getSgpResumenDistribucionesListaArchivos(id_distribucion).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (result: any[]) => {
         this.distributionFiles = result.map(item => ({
           id_anexo: item.id_anexo,
@@ -671,7 +675,7 @@ export class ReportsSgpComponent implements OnInit {
    */
   downloadFiles(data: any): void {
 
-  this.sicodisApiService.getSgpDescargarArchivo(data.id_anexo).subscribe({
+  this.sicodisApiService.getSgpDescargarArchivo(data.id_anexo).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
     next: (response) => {
       const blob = response.body as Blob;
 
@@ -711,7 +715,7 @@ export class ReportsSgpComponent implements OnInit {
   loadSgpData(): void {
     //const aniosString = this.selected;
     const selectedYear = parseInt(this.selected );
-    this.sicodisApiService.getSgpResumenParticipaciones( selectedYear, this.departmentSelected, this.townSelected).subscribe({        
+    this.sicodisApiService.getSgpResumenParticipaciones( selectedYear, this.departmentSelected, this.townSelected).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({        
       next: (result: any) => {
         this.historicoApiData = result;
         if (result && result.length > 0) {
@@ -911,7 +915,7 @@ export class ReportsSgpComponent implements OnInit {
   loadDistributionData(): void {
     const selectedYear = parseInt(this.selected );
     
-    this.sicodisApiService.getSgpResumenDistribuciones(selectedYear).subscribe({
+    this.sicodisApiService.getSgpResumenDistribuciones(selectedYear).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (result: any[]) => {
         this.distributionData = result.map(item => ({
           id_distribucion: item.id_distribucion,

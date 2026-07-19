@@ -1,4 +1,5 @@
-import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -31,6 +32,7 @@ import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
   styleUrl: './sgr-inicio.component.scss'
 })
 export class SgrInicioComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
   platformId = inject(PLATFORM_ID);
 
   constructor(private router: Router, private sicodisApiService: SicodisApiService) {}
@@ -98,7 +100,7 @@ export class SgrInicioComponent implements OnInit {
   }
 
   loadVigencias(): void {
-    this.sicodisApiService.getSgrVigenciasQa().subscribe({
+    this.sicodisApiService.getSgrVigenciasQa().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (vigencias) => {
         this.vigencias = vigencias;
         if (vigencias.length > 0) {
@@ -121,7 +123,7 @@ export class SgrInicioComponent implements OnInit {
   loadData(): void {
     const idVigencia = this.selectedVigencia.id_vigencia;
 
-    this.sicodisApiService.getSGRFechasActualizacionCorteRecaudoIACVigencia(idVigencia).subscribe({
+    this.sicodisApiService.getSGRFechasActualizacionCorteRecaudoIACVigencia(idVigencia).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (fechas) => {
         if (fechas && fechas.length > 0) {
           this.fechaActualizacion = fechas[0].fecha_actualizacion;
@@ -131,7 +133,7 @@ export class SgrInicioComponent implements OnInit {
       error: () => {}
     });
 
-    this.sicodisApiService.getSgrResumenPtoRecaudoQA(idVigencia, '1', '0').subscribe({
+    this.sicodisApiService.getSgrResumenPtoRecaudoQA(idVigencia, '1', '0').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.buildTreeTableData(data);
       },

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReportsTargetComponent } from '../reports-target/reports-target.component';
 import { CommonModule  } from '@angular/common';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -51,6 +52,7 @@ import { BannerAlertasCajaComponent } from './banner-alertas-caja.component';
   styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
 
   cards: MyCard[] = [
     {
@@ -176,7 +178,7 @@ sgpItems = [
         }
         return 4;
       })
-    ).subscribe(cols => this.cols = cols);
+    ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(cols => this.cols = cols);
 
     this.breakpointObserver.observe([
       Breakpoints.XSmall,
@@ -194,7 +196,7 @@ sgpItems = [
         }
         return 2;
       })
-    ).subscribe(cols2 => this.cols2 = cols2);
+    ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(cols2 => this.cols2 = cols2);
 
     this.breakpointObserver.observe([
       Breakpoints.XSmall,
@@ -212,7 +214,7 @@ sgpItems = [
         }
         return 3;
       })
-    ).subscribe(cols3 => this.cols3 = cols3);
+    ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(cols3 => this.cols3 = cols3);
   }
 
   ngOnInit() {
@@ -520,7 +522,7 @@ sgpItems = [
   }
 
   loadSgpData() {
-    this.sicodisApiService.getSgpResumenParticipaciones(2026, '0', '0').subscribe({
+    this.sicodisApiService.getSgpResumenParticipaciones(2026, '0', '0').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response: any) => {
         if (Array.isArray(response)) {
           this.processSgpData(response);

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -32,6 +33,7 @@ import { MenuItem } from 'primeng/api';
   styleUrl: './sgp-detalle-presupuestal.component.scss'
 })
 export class SgpDetallePresupuestalComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
 
   items: MenuItem[] | undefined;
   home: MenuItem | undefined;
@@ -117,7 +119,7 @@ export class SgpDetallePresupuestalComponent implements OnInit {
   loadSgpData(): void {
     this.isLoading = true;
     const year = this.selectedVigencia;
-    this.sicodisApiService.getSgpResumenGeneralUltimaOnce(year, this.selectedDepartamento,this.selectedMunicipio).subscribe({
+    this.sicodisApiService.getSgpResumenGeneralUltimaOnce(year, this.selectedDepartamento,this.selectedMunicipio).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (result: any) => {
         let resumen = result[0];
         //this.fechaActualizacion = this.formatFecha(new Date(resumen.fecha_ultima_actualizacion));
@@ -287,7 +289,7 @@ export class SgpDetallePresupuestalComponent implements OnInit {
       idVigencia, 
       this.selectedDepartamento, 
       this.selectedMunicipio
-    ).subscribe({
+    ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (resumen: any) => {
         this.updateMetricsFromApi(resumen[0]);
       },
@@ -316,7 +318,7 @@ export class SgpDetallePresupuestalComponent implements OnInit {
   }
 
   private loadVigenciasFromAPI(): void {
-    this.sicodisApiService.getSgpVigenciasPresupuestoUltimaOnce().subscribe({
+    this.sicodisApiService.getSgpVigenciasPresupuestoUltimaOnce().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (vigencias: any[]) => {
         this.vigencias = vigencias.map(vigencia => ({
           label: vigencia.vigencia,
@@ -411,7 +413,7 @@ export class SgpDetallePresupuestalComponent implements OnInit {
     const idVigencia = parseInt(this.selectedVigencia);
     
     this.sicodisApiService.getSgpResumenParticipacionesUltimaOnce(idVigencia, this.selectedDepartamento,this.selectedMunicipio
-    ).subscribe({
+    ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data: any) => {
         this.buildTreeTableFromApi(data);
         this.isLoadingTable = false;

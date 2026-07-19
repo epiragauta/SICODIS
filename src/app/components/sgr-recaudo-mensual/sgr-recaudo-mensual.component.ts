@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { DatePicker, DatePickerYearChangeEvent } from 'primeng/datepicker';
@@ -39,6 +40,7 @@ import { ViewChild, ElementRef } from '@angular/core';
   styleUrl: './sgr-recaudo-mensual.component.scss'
 })
 export class SgrRecaudoMensualComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
 
   items: MenuItem[] | undefined;
   home: MenuItem | undefined;
@@ -122,7 +124,7 @@ constructor(private sicodisApiService: SicodisApiService,
     //this.tableData = [...this.tableDataBase];
     //this.detailedTableData = [...this.detailedTableDataBase];
 
-    this.sicodisApiService.getSGRFechasActualizacionCorteRecaudoIAC().subscribe({
+    this.sicodisApiService.getSGRFechasActualizacionCorteRecaudoIAC().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data: SGRFechaActualizacionCorte []) => {
         if (data && data.length > 0) {
           const registro = data[0];
@@ -151,7 +153,7 @@ constructor(private sicodisApiService: SicodisApiService,
 
   this.sicodisApiService
     .getSgrDetallePBCRecaudoMensual(idVigencia)
-    .subscribe({
+    .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response: SgrRecaudoMensualResponse) => {
 
 

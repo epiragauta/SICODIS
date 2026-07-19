@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
@@ -51,6 +52,7 @@ import { Breadcrumb } from 'primeng/breadcrumb';
   styleUrl: './historico-sgp.component.scss'
 })
 export class HistoricoSgpComponent implements OnInit, AfterViewInit {
+  private destroyRef = inject(DestroyRef);
   
   items: MenuItem[] | undefined;
   home: MenuItem | undefined;
@@ -149,7 +151,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
         }
         return 2;
       })
-    ).subscribe(cols => this.cols = cols);
+    ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(cols => this.cols = cols);
   }
 
   async ngOnInit(): Promise<void>  {
@@ -247,7 +249,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
 	  // Usar método histórico original
 	  const aniosString = this.selectedYears.join(',');
 
-    this.sicodisApiService.getSgpResumenHistoricoEntidad({anios: aniosString, codigoDepto: this.departmentSelected, codigoMunicipio: this.townSelected}).subscribe({     
+    this.sicodisApiService.getSgpResumenHistoricoEntidad({anios: aniosString, codigoDepto: this.departmentSelected, codigoMunicipio: this.townSelected}).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({     
       next: (result: any[]) => {
         this.historicoApiData = result;
         if (result && result.length > 0) {
@@ -337,7 +339,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
     );
 
     // Ejecutar todas las llamadas en paralelo
-    forkJoin(participacionesObservables).subscribe({
+    forkJoin(participacionesObservables).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (results: any[]) => {
         this.processParticipacionesData(results);
         // Desactivar indicadores de carga
@@ -370,7 +372,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
     );
 
     // Ejecutar todas las llamadas en paralelo
-    forkJoin(participacionesObservables).subscribe({
+    forkJoin(participacionesObservables).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (results: any[]) => {
         this.processParticipacionesData(results);
         // Desactivar indicadores de carga
@@ -535,7 +537,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
    * Carga las entidades territoriales desde el archivo JSON
    */
   loadTerritorialEntities(): void {
-    this.http.get('assets/data/territorial-entities-detail.json').subscribe({
+    this.http.get('assets/data/territorial-entities-detail.json').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data: any) => {
         this.territorialEntities = data;
       },
@@ -1272,7 +1274,7 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
   loadSgpHistoricoDataForEvolution(): void {
     const aniosString = this.yearsRange.join(',');
     
-    this.sicodisApiService.getSgpResumenHistorico({ anios: aniosString }).subscribe({
+    this.sicodisApiService.getSgpResumenHistorico({ anios: aniosString }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (result: any) => {
         this.initializeChartsWithHistoricoData(result);
       },

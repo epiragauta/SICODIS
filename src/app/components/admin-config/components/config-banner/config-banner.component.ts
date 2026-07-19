@@ -1,4 +1,5 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 
@@ -47,6 +48,7 @@ interface BannerTipo {
   styleUrls: ['./config-banner.component.scss']
 })
 export class ConfigBannerComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
 
   bannerForm!: FormGroup;
   isLoading = signal(false);
@@ -104,7 +106,7 @@ export class ConfigBannerComponent implements OnInit {
     });
 
     // Actualizar preview cuando cambian los valores
-    this.bannerForm.valueChanges.subscribe(() => {
+    this.bannerForm.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       if (this.showPreview()) {
         this.updatePreview();
       }
@@ -125,7 +127,7 @@ export class ConfigBannerComponent implements OnInit {
   private loadBannerConfig(): void {
     this.isLoading.set(true);
 
-    this.configService.getBannerConfig().subscribe({
+    this.configService.getBannerConfig().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (config) => {
         if (config) {
           this.bannerForm.patchValue({
@@ -186,7 +188,7 @@ export class ConfigBannerComponent implements OnInit {
     const formValue = this.bannerForm.value;
 
     // Obtener la configuración actual para incrementar la versión
-    this.configService.getBannerConfig().subscribe({
+    this.configService.getBannerConfig().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (currentConfig) => {
         const newVersion = (currentConfig?.version || 0) + 1;
 
@@ -216,7 +218,7 @@ export class ConfigBannerComponent implements OnInit {
           descripcion: 'Configuración del banner principal',
           activo: true,
           usuario_modificacion: 'admin'
-        }).subscribe({
+        }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
           next: () => {
             this.isSaving.set(false);
             this.messageService.add({

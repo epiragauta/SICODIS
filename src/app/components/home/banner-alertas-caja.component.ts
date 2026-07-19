@@ -1,4 +1,5 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { SicodisApiService, AlertasCajaResponse, AlertasCajaMonto, AlertasCajaEntidad } from '../../services/sicodis-api.service';
 
@@ -18,6 +19,7 @@ import { SicodisApiService, AlertasCajaResponse, AlertasCajaMonto, AlertasCajaEn
   styleUrls: ['./banner-alertas-caja.scss']
 })
 export class BannerAlertasCajaComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
 
   // Signals para los datos dinámicos
   isLoading = signal<boolean>(true);
@@ -54,7 +56,7 @@ export class BannerAlertasCajaComponent implements OnInit {
     this.isLoading.set(true);
     this.hasError.set(false);
 
-    this.sicodisApiService.getSgrInsumosBoletinAlertas().subscribe({
+    this.sicodisApiService.getSgrInsumosBoletinAlertas().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data: AlertasCajaResponse) => {
         this.processData(data);
         this.isLoading.set(false);

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
@@ -67,6 +68,7 @@ interface FinancialData {
   styleUrl: './presupuesto-y-recaudo.component.scss'
 })
 export class PresupuestoYRecaudoComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
   
   // Configuración de columnas responsivas
   //cols: number = 2;
@@ -224,7 +226,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
         }
         return 2;
       })
-    ).subscribe(cols => this.cardCols = cols);
+    ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(cols => this.cardCols = cols);
 
     // Configuración fija para las tarjetas: siempre 2 columnas
     this.cardCols = 2;
@@ -504,7 +506,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
         tipoConsulta,
         codigoEntidad
       )
-      .subscribe({
+      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (response) => {
           //  AQUÍ sí llegan los datos
           this.detailedData = response;
@@ -527,7 +529,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
           this.isLoading = false;
 
 
-          this.sicodisApiService.getSGRFechasActualizacionCorteRecaudoIACVigencia(idVigencia).subscribe({
+          this.sicodisApiService.getSGRFechasActualizacionCorteRecaudoIACVigencia(idVigencia).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: (data: SGRFechaActualizacionCorte []) => {
               if (data && data.length > 0) {
                 const registro = data[0];

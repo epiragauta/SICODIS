@@ -1,4 +1,5 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
@@ -50,6 +51,7 @@ interface FechaFormData {
   styleUrl: './config-fechas-form.component.scss'
 })
 export class ConfigFechasFormComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
   // Forms para cada sección
   sgrVigenciaForm!: FormGroup;
   sgrPlanBienalForm!: FormGroup;
@@ -271,7 +273,7 @@ export class ConfigFechasFormComponent implements OnInit {
       valor: JSON.stringify(fechaData),
       tipo_dato: 'json',
       descripcion: 'Fechas de actualización y corte de recaudo SGR vigencia 2025-2026'
-    }).subscribe({
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.isSaving.set(false);
         this.saveSuccess.set(true);
@@ -307,7 +309,7 @@ export class ConfigFechasFormComponent implements OnInit {
       valor: JSON.stringify(fechaData),
       tipo_dato: 'json',
       descripcion: 'Fechas de plan bienal SGR 2025-2026'
-    }).subscribe({
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.isSaving.set(false);
         this.saveSuccess.set(true);
@@ -343,7 +345,7 @@ export class ConfigFechasFormComponent implements OnInit {
       valor: JSON.stringify(fechaData),
       tipo_dato: 'json',
       descripcion: 'Fechas para reporte de eficiencias SGP'
-    }).subscribe({
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.isSaving.set(false);
         this.saveSuccess.set(true);
@@ -377,7 +379,7 @@ export class ConfigFechasFormComponent implements OnInit {
       valor: JSON.stringify(fechaData),
       tipo_dato: 'json',
       descripcion: 'Fecha de actualización para resguardos SGP'
-    }).subscribe({
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.isSaving.set(false);
         this.saveSuccess.set(true);
@@ -400,7 +402,7 @@ export class ConfigFechasFormComponent implements OnInit {
       valor: JSON.stringify(this.fechasReporteFuncionamiento),
       tipo_dato: 'json',
       descripcion: 'Diccionario completo de fechas para Reporte de Funcionamiento SGR por vigencia'
-    }).subscribe({
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.isSaving.set(false);
         this.saveSuccess.set(true);

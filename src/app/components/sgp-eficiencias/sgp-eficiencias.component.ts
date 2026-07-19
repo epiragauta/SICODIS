@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -36,6 +37,7 @@ import { ConfigService, FechaActualizacion } from '../../services/config.service
   styleUrl: './sgp-eficiencias.component.scss'
 })
 export class SgpEficienciasComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
 
   items: MenuItem[] | undefined;
   home: MenuItem | undefined;
@@ -176,7 +178,7 @@ export class SgpEficienciasComponent implements OnInit {
   private updateMunicipios(departamentoCode: string): void {
 
     // Cargar todos los municipios y filtrar por departamento
-    this.eficienciasService.getMunicipios().subscribe({
+    this.eficienciasService.getMunicipios().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (municipios) => {
         // Filtrar municipios por departamento (los primeros 2 dígitos del código DANE)
         this.municipios = municipios
@@ -219,7 +221,7 @@ export class SgpEficienciasComponent implements OnInit {
     this.errorMessage = null;
 
 
-    this.eficienciasService.getResumenMunicipio(codigoDane).subscribe({
+    this.eficienciasService.getResumenMunicipio(codigoDane).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.resumenMunicipio = data;
         this.procesarDatosAPI(data, vigencia);

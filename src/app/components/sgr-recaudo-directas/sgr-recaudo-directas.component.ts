@@ -1,4 +1,5 @@
-import { Component, NgZone, OnInit, ViewChild } from '@angular/core';
+import { Component, NgZone, OnInit, ViewChild, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -33,6 +34,7 @@ import { MenuItem } from 'primeng/api';
   styleUrl: './sgr-recaudo-directas.component.scss'
 })
 export class SgrRecaudoDirectasComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
 
   @ViewChild('comparativeTable') comparativeTable: any;
 
@@ -269,7 +271,7 @@ export class SgrRecaudoDirectasComponent implements OnInit {
       { label: 'Recaudo Directas' }
     ];
 
-    this.sicodisApiService.getSGRFechasActualizacionCorteRecaudoIAC().subscribe({
+    this.sicodisApiService.getSGRFechasActualizacionCorteRecaudoIAC().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data: SGRFechaActualizacionCorte[]) => {
         if (data && data.length > 0) {
           const registro = data[0];
@@ -457,7 +459,7 @@ export class SgrRecaudoDirectasComponent implements OnInit {
     // -----------------------------------
 
 
-    this.sicodisApiService.getSgrDetallePBCRecaudo(idVigencia, this.departmentSelected, this.townSelected).subscribe({
+    this.sicodisApiService.getSgrDetallePBCRecaudo(idVigencia, this.departmentSelected, this.townSelected).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data: SgrRecaudoItem[]) => {
         //this.dataRecaudo = data;
 

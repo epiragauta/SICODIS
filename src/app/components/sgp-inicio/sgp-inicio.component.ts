@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -46,6 +47,7 @@ import { TreeTableModule } from 'primeng/treetable';
   styleUrl: './sgp-inicio.component.scss'
 })
 export class SgpInicioComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
 
   constructor(private sicodisApiService: SicodisApiService, private router: Router) {}
 
@@ -172,7 +174,7 @@ export class SgpInicioComponent implements OnInit {
 
   loadSgpData(): void {
     const year = this.selectedVigencia?.value || 2026;
-    this.sicodisApiService.getSgpResumenGeneral(year).subscribe({
+    this.sicodisApiService.getSgpResumenGeneral(year).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (result: any) => {
         let resumen = result[0];
         this.fechaActualizacion = this.formatFecha(new Date(resumen.fecha_ultima_actualizacion));
@@ -200,7 +202,7 @@ export class SgpInicioComponent implements OnInit {
 
   loadSgpParticipaciones(): void {
     const year = this.selectedVigencia?.value || 2026;
-    this.sicodisApiService.getSgpResumenParticipacionesAvance(year).subscribe({
+    this.sicodisApiService.getSgpResumenParticipacionesAvance(year).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (result: any) => {
         this.historicoApiData = result;
         if (result && result.length > 0) {

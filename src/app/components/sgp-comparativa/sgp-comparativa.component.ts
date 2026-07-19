@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, Renderer2 } from '@angular/core';
+import { Component, Renderer2, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { ButtonModule } from 'primeng/button';
@@ -42,6 +43,7 @@ import { AccordionModule } from 'primeng/accordion';
   styleUrl: './sgp-comparativa.component.scss'
 })
 export class SgpComparativaComponent {
+  private destroyRef = inject(DestroyRef);
 
   items: MenuItem[] | undefined;
   home: MenuItem | undefined;
@@ -107,7 +109,12 @@ export class SgpComparativaComponent {
   variablesAsignacionesEspecialesData2: any[] = [];
   informeTrimestraData: any[] = [];
 
-  constructor(private renderer: Renderer2, private sicodisApiService: SicodisApiService) {}
+  constructor(private renderer: Renderer2, private sicodisApiService: SicodisApiService) {
+    this.destroyRef.onDestroy(() => {
+      this.barChartInstance?.destroy();
+      this.barChart2Instance?.destroy();
+    });
+  }
   
   ngOnInit(): void {
     this.items = [
@@ -172,7 +179,7 @@ export class SgpComparativaComponent {
    * Carga las vigencias disponibles desde la API
    */
   loadVigencias(): void {
-    this.sicodisApiService.getSgpVigenciasPresupuestoUltimaOnce().subscribe({
+    this.sicodisApiService.getSgpVigenciasPresupuestoUltimaOnce().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (vigencias) => {
         this.infoResume = vigencias;
         if (vigencias.length > 0) {
@@ -850,7 +857,7 @@ export class SgpComparativaComponent {
   loadSgpData(): void {
     const aniosString = this.selected.toString();
     
-    this.sicodisApiService.getSgpResumenHistorico({ anios: aniosString }).subscribe({
+    this.sicodisApiService.getSgpResumenHistorico({ anios: aniosString }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (result: any[]) => {
         this.historicoApiData = result;
         if (result && result.length > 0) {
@@ -939,7 +946,7 @@ export class SgpComparativaComponent {
     
     const selectedYear = parseInt(this.infoToResume.vigencia);
     
-    this.sicodisApiService.getSgpResumenDistribuciones(selectedYear).subscribe({
+    this.sicodisApiService.getSgpResumenDistribuciones(selectedYear).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (result: any[]) => {
         this.distributionData = result.map(item => ({
           id_distribucion: item.id_distribucion,
@@ -1207,7 +1214,7 @@ export class SgpComparativaComponent {
         this.townSelected,
         this.departmentSelected2,
         this.townSelected2
-      ).subscribe({
+      ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (data) => {
           this.fichaComparativaData = data;
           this.buildComparativeTreeData();
@@ -1495,7 +1502,7 @@ export class SgpComparativaComponent {
     const aniosString = this.selected.toString();
     
     // Por ahora usar los mismos datos pero crear una copia para el segundo municipio
-    this.sicodisApiService.getSgpResumenHistorico({ anios: aniosString }).subscribe({
+    this.sicodisApiService.getSgpResumenHistorico({ anios: aniosString }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (result: any[]) => {
         if (result && result.length > 0) {
           this.buildTreeTableData2(result);
