@@ -433,12 +433,6 @@ export class SgrPlanBienalCajaComponent implements OnInit {
   }
 
   applyFilters(): void {
-    console.log('Aplicando filtros...', {
-      vigencia: this.selectedVigencia,
-      beneficiario: this.selectedBeneficiario,
-      departamento: this.selectedDepartamento,
-      municipio: this.selectedMunicipio,
-    });
 
     this.cargarDatosPlanBienal();
   }
@@ -469,7 +463,6 @@ export class SgrPlanBienalCajaComponent implements OnInit {
   closeSiglasPopup(): void      { this.showSiglasPopup = false; }
 
   exportarExcel(): void {
-    console.log('Exportar Excel...');
   }
 
   async cargarSiglasDiccionario(): Promise<void> {

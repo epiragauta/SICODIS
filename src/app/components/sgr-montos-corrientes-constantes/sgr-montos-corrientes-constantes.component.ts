@@ -355,7 +355,6 @@ export class SgrMontosCorrientesConstantesComponent implements OnInit {
    * Mostrar popup del diccionario
    */
   showPopupDiccionario(): void {
-    console.log('Mostrando diccionario de datos');
     this.diccionarioContent = this.generarContenidoDiccionario();
     this.showDiccionarioPopup = true;
   }
@@ -364,7 +363,6 @@ export class SgrMontosCorrientesConstantesComponent implements OnInit {
    * Mostrar popup de siglas
    */
   showPopupSiglas(): void {
-    console.log('Mostrando siglas');
     this.siglasContent = this.generarContenidoSiglas();
     this.showSiglasPopup = true;
   }
@@ -387,7 +385,6 @@ export class SgrMontosCorrientesConstantesComponent implements OnInit {
    * Descargar reporte Excel
    */
   downloadExcel(): void {
-    console.log('Descargando reporte Excel de montos corrientes y constantes');
     // Aquí se implementaría la lógica de descarga del Excel
   }
 

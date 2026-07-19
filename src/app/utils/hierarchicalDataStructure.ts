@@ -117,7 +117,6 @@ const result = processArrayData([
   { categoria: "1.1", concepto: "Asignación para la Paz", ... },
   ...
 ]);
-console.log(result);
 */
 
 // Exportar las funciones para uso en otros módulos

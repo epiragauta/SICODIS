@@ -332,11 +332,9 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
   closeSiglasPopup(): void      { this.showSiglasPopup = false; }
 
   exportarExcel(): void {
-    console.log('Exportar excel...');
   }
 
   verInformesRecaudo(): void {
-    console.log('Ver informes de recaudo...');
   }
 
   async cargarSiglasDiccionario(): Promise<void> {

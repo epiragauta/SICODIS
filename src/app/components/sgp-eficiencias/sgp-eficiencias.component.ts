@@ -153,12 +153,10 @@ export class SgpEficienciasComponent implements OnInit {
   }
 
   onVigenciaChange(event: SelectChangeEvent): void {
-    console.log('Vigencia seleccionada:', this.selectedVigencia);
     // El valor ya está en this.selectedVigencia gracias a [(ngModel)] y optionValue
   }
 
   onDepartamentoChange(event: SelectChangeEvent): void {
-    console.log('Departamento seleccionado:', this.selectedDepartamento);
 
     // Update municipalities based on selected department
     if (this.selectedDepartamento) {
@@ -172,12 +170,10 @@ export class SgpEficienciasComponent implements OnInit {
   }
 
   onMunicipioChange(event: SelectChangeEvent): void {
-    console.log('Municipio seleccionado:', this.selectedMunicipio);
     // El valor ya está en this.selectedMunicipio gracias a [(ngModel)] y optionValue
   }
 
   private updateMunicipios(departamentoCode: string): void {
-    console.log('Cargando municipios para departamento:', departamentoCode);
 
     // Cargar todos los municipios y filtrar por departamento
     this.eficienciasService.getMunicipios().subscribe({
@@ -191,7 +187,6 @@ export class SgpEficienciasComponent implements OnInit {
           }))
           .sort((a, b) => a.label.localeCompare(b.label));
 
-        console.log('Municipios cargados:', this.municipios.length);
       },
       error: (err) => {
         console.error('Error cargando municipios:', err);
@@ -206,10 +201,6 @@ export class SgpEficienciasComponent implements OnInit {
   }
 
   onAplicar(): void {
-    console.log('Aplicando filtros...');
-    console.log('Vigencia:', this.selectedVigencia);
-    console.log('Departamento:', this.selectedDepartamento);
-    console.log('Municipio:', this.selectedMunicipio);
 
     if (!this.selectedMunicipio || !this.selectedVigencia) {
       console.warn('Seleccione municipio y vigencia');
@@ -227,21 +218,18 @@ export class SgpEficienciasComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = null;
 
-    console.log('Cargando datos para código DANE:', codigoDane, 'vigencia:', vigencia);
 
     this.eficienciasService.getResumenMunicipio(codigoDane).subscribe({
       next: (data) => {
         this.resumenMunicipio = data;
         this.procesarDatosAPI(data, vigencia);
         this.isLoading = false;
-        console.log('Datos cargados exitosamente:', data);
       },
       error: (err) => {
         console.error('Error cargando datos de eficiencias:', err);
         this.errorMessage = 'Error al cargar los datos: ' + err.message;
         this.isLoading = false;
         // Mantener datos mock si falla la API
-        console.log('Usando datos de ejemplo debido al error');
       }
     });
   }
@@ -252,7 +240,6 @@ export class SgpEficienciasComponent implements OnInit {
    * @param vigencia Año de vigencia SGP seleccionado
    */
   private procesarDatosAPI(data: ResumenMunicipioEficiencia, vigencia: number): void {
-    console.log('Procesando datos para vigencia:', vigencia);
 
     // ============================================================================
     // EFICIENCIA FISCAL - Tabla 1 (Vigencia Anterior)
@@ -541,7 +528,6 @@ export class SgpEficienciasComponent implements OnInit {
       ];
     }
 
-    console.log('Datos procesados y tablas actualizadas para vigencia:', vigencia);
   }
 
   /**
@@ -570,7 +556,6 @@ export class SgpEficienciasComponent implements OnInit {
     this.selectedDepartamento = null;
     this.selectedMunicipio = null;
     this.municipios = [];
-    console.log('Filtros limpiados');
   }
 
   formatCurrency(value: number | null): string {

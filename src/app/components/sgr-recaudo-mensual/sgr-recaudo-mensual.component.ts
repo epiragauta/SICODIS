@@ -148,25 +148,18 @@ constructor(private sicodisApiService: SicodisApiService,
 
   private loadSgrData() {
   const idVigencia = this.selectedVigencia.id;
-    console.log('1. idVigencia:', idVigencia);
 
   this.sicodisApiService
     .getSgrDetallePBCRecaudoMensual(idVigencia)
     .subscribe({
       next: (response: SgrRecaudoMensualResponse) => {
 
-      console.log('2. response completo:', response);
-      console.log('3. detalle:', response.detalle);
-      console.log('4. resumen:', response.resumen);
 
       
       this.behaviorTableData = response.resumen;
       this.detailedTableDataBase = response.detalle;
       this.tableDataBase = response.detallesector;
 
-      console.log('5. detailedTableDataBase:', this.detailedTableDataBase);
-      console.log('6. selectedPeriodoDesde:', this.selectedPeriodoDesde);
-      console.log('7. selectedPeriodoHasta:', this.selectedPeriodoHasta);
 
       this.updateTableData()
       this.updateDetailedTableData();
@@ -175,7 +168,6 @@ constructor(private sicodisApiService: SicodisApiService,
       this.initializeTrendChart();
       this.initializeConceptChart();
 
-      console.log('8. detailedTableData después de filtrar:', this.detailedTableData)
       },
       error: err => console.error('Error cargando datos', err)
     });
@@ -214,12 +206,6 @@ constructor(private sicodisApiService: SicodisApiService,
    * Aplicar filtros
    */
   applyFilters(): void {
-    console.log('Aplicando filtros...', {
-      vigencia: this.selectedVigencia.id,
-      desde: this.selectedPeriodoDesde,
-      hasta: this.selectedPeriodoHasta,
-      vista: this.showRecaudoView ? 'Recaudo' : 'Tipo de Recurso'
-    });
     
     // Aquí se puede agregar lógica para actualizar los gráficos basado en el rango de fechas
     //--this.updateChartsData();
@@ -236,7 +222,6 @@ constructor(private sicodisApiService: SicodisApiService,
    * Limpiar filtros
    */
   async clearFilters(): Promise<void> {
-    console.log('Limpiando filtros...');
     this.cargarVigencias();
     //this.setDefaultPeriods();
     this.updateChartsData();
@@ -248,10 +233,6 @@ constructor(private sicodisApiService: SicodisApiService,
   private updateChartsData(): void {
     // Por ahora mantiene los datos mock, pero aquí se implementaría la lógica
     // para filtrar datos basado en selectedPeriodoDesde y selectedPeriodoHasta
-    console.log('Actualizando gráficos para el período:', {
-      desde: this.selectedPeriodoDesde,
-      hasta: this.selectedPeriodoHasta
-    });
     this.updateTableData();
     this.updateDetailedTableData();
   }
@@ -368,7 +349,6 @@ constructor(private sicodisApiService: SicodisApiService,
    * Descargar datos de la tabla en formato Excel
    */
   downloadExcel(): void {
-    console.log('Descargando Excel con datos de la tabla...');
     
   
     this.descargarDatosPBCRecaudoMensual();
@@ -383,9 +363,7 @@ constructor(private sicodisApiService: SicodisApiService,
     try {
      
 	    // Usar método histórico original
-      console.log('Descargando  ');
   	  const idvigencia = parseInt(this.selectedVigencia.id );    
-      console.log('Vigencia seleccionada:', idvigencia);
 
       const archivo: Blob | undefined = await this.sicodisApiService.getSgrDescargaResumenPbcRecaudoMensual( idvigencia
                                                                                                              , this.selectedVigencia.label
@@ -405,7 +383,6 @@ constructor(private sicodisApiService: SicodisApiService,
       });
 
       const arrayBuffer = await excelBlob.arrayBuffer();
-      console.log('Tamaño de archivo:', arrayBuffer.byteLength);
 
       // Crear enlace temporal para descargar
       const url = window.URL.createObjectURL(excelBlob);
@@ -418,7 +395,6 @@ constructor(private sicodisApiService: SicodisApiService,
 
       window.URL.revokeObjectURL(url);
 
-      console.log('Archivo descargado exitosamente');
 
 
 
@@ -433,7 +409,6 @@ constructor(private sicodisApiService: SicodisApiService,
     try {
      
 	    // Usar método histórico original
-      console.log('Descargando  datos SGr recaudo mensual');
 
       const archivo: Blob | undefined = await this.sicodisApiService.getSgrDescargaDetallePBCRecaudoMensual().toPromise();
 
@@ -450,7 +425,6 @@ constructor(private sicodisApiService: SicodisApiService,
       });
 
       const arrayBuffer = await excelBlob.arrayBuffer();
-      console.log('Tamaño de archivo:', arrayBuffer.byteLength);
 
       // Crear enlace temporal para descargar
       const url = window.URL.createObjectURL(excelBlob);
@@ -463,7 +437,6 @@ constructor(private sicodisApiService: SicodisApiService,
 
       window.URL.revokeObjectURL(url);
 
-      console.log('Archivo descargado exitosamente');
 
 
 
@@ -500,14 +473,9 @@ constructor(private sicodisApiService: SicodisApiService,
     // const pbcMineria = [ 507182857652, 253591429312,211326191168,422652382500,253591429312,169060952916, 464917620452, 422652382500 ,169060952916, 507182858648, 464917620452,380387144060, 406554681320];
 
 
-    console.log('tableDataBase length:', this.tableDataBase.length);
-    console.log('tableDataBase:', this.tableDataBase);
     const periods = this.tableDataBase.map(row => row.periodo);
     const recaudoMineria = this.tableDataBase.map(row => row.recaudo_mineria);
     const pbcMineria = this.tableDataBase.map(row => row.pbc_mineria);
-    console.log('periods:', periods);
-    console.log('recaudoMineria:', recaudoMineria);
-    console.log('pbcMineria:', pbcMineria);
 
     this.miningChartData = null; // 👈 destruye el chart del DOM
 
@@ -959,7 +927,6 @@ setTimeout(() => {
    * Mostrar popup del diccionario
    */
   showPopupDiccionario(): void {
-    console.log('Mostrando diccionario de datos');
     this.diccionarioContent = this.generarContenidoDiccionario();
     this.showDiccionarioPopup = true;
   }
@@ -968,7 +935,6 @@ setTimeout(() => {
    * Mostrar popup de siglas
    */
   showPopupSiglas(): void {
-    console.log('Mostrando siglas');
     this.siglasContent = this.generarContenidoSiglas();
     this.showSiglasPopup = true;
   }
@@ -1173,7 +1139,6 @@ setTimeout(() => {
    * Evento cuando cambia la vigencia seleccionada
    */
   onVigenciaChange(event: SelectChangeEvent): void {
-    console.log('Vigencia seleccionada:', event.value);
     //this.clearFilters();
     this.selectedVigencia = event.value;  
     this.setPeriodsFromVigencia(event.value); // 👈 aquí estaba el error

@@ -362,7 +362,6 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
 
 
   exportarReporte(): void {
-    console.log('Exportando reporte...');
     alert('Funcionalidad de exportación en desarrollo');
   }
 
@@ -488,28 +487,23 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
 
   // Métodos para manejar cambios en valores de multiselect
   onValoresConceptoGastoChange(): void {
-    console.log('Concepto de Gasto cambiado:', this.valoresConceptoGasto);
     this.loadData();
   }
 
   onValoresRegionalChange(): void {
-    console.log('Regional cambiado:', this.valoresRegional);
     this.loadData();
   }
 
   onValoresAsignacionChange(): void {
-    console.log('Asignación cambiada:', this.valoresAsignacion);
     this.loadData();
   }
 
   onValoresGrupoInteresChange(): void {
-    console.log('Grupo de Interés cambiado:', this.valoresGrupoInteres);
     this.loadData();
   }
 
   // Método para manejar cambio en filtros de entidad (columna derecha)
   onEntidadChange(nuevaEntidad: string): void {
-    console.log('Cambio de entidad detectado:', nuevaEntidad);
     this.entidadSeleccionada = nuevaEntidad;
     this.loadData();
   }
@@ -568,13 +562,11 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
 
   // Métodos para manejar cambios en filtros de Presupuesto y Recaudo
   onPresupuestoSeleccionChange(nuevoValor: string): void {
-    console.log('Presupuesto seleccionado:', nuevoValor);
     this.presupuestoSeleccionado = nuevoValor;
     // Los KPIs se actualizan automáticamente mediante los getters
   }
 
   onRecaudoSeleccionChange(nuevoValor: string): void {
-    console.log('Recaudo seleccionado:', nuevoValor);
     this.recaudoSeleccionado = nuevoValor;
     // Los KPIs se actualizan automáticamente mediante los getters
   }

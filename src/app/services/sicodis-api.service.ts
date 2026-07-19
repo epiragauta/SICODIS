@@ -1052,14 +1052,7 @@ export class SicodisApiService {
    */
   getSgrResumenPtoRecaudo(idvigencia : number, tipoConsulta: string, CodigoEntidad: string): Observable<SgrPtoRecaudoItem[]> {
     const url = `${this.baseUrl}/sgr/resumen_pto_recaudo/${idvigencia }/${tipoConsulta}/${CodigoEntidad}`;
-    //return this.http.get<SgrPtoRecaudoItem[]>(url);
-    const response$ = this.http.get<SgrPtoRecaudoItem[]>(url);
-
-    response$.subscribe(data => {
-      console.log('🟢 Lo que trajo el servicio:', data);
-    });
-
-    return response$;    
+    return this.http.get<SgrPtoRecaudoItem[]>(url);
   }
 
   /**
@@ -1071,14 +1064,7 @@ export class SicodisApiService {
    */
   getSgrResumenPtoRecaudoQA(idvigencia : number, tipoConsulta: string, CodigoEntidad: string): Observable<SgrPtoRecaudoItem[]> {
     const url = `${this.baseUrl}/sgr/resumen_pto_recaudoqa/${idvigencia }/${tipoConsulta}/${CodigoEntidad}`;
-    //return this.http.get<SgrPtoRecaudoItem[]>(url);
-    const response$ = this.http.get<SgrPtoRecaudoItem[]>(url);
-
-    response$.subscribe(data => {
-      console.log('🟢 Lo que trajo el servicio:', data);
-    });
-
-    return response$;    
+    return this.http.get<SgrPtoRecaudoItem[]>(url);
   }
 
   /**
@@ -2046,7 +2032,6 @@ export class EficienciasService {
     private mockService: EficienciasMockService
   ) {
     const modo = USE_MOCK_EFICIENCIAS ? 'MOCK (datos estáticos)' : 'API REAL';
-    console.log(`🔧 EficienciasService inicializado en modo: ${modo}`);
   }
 
   /**

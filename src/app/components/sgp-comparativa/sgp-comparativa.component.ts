@@ -127,7 +127,6 @@ export class SgpComparativaComponent {
     this.loadVariablesAsignacionesEspecialesData();
 
     // Don't load any charts or data initially
-    console.log('Component initialized');
   }
 
 
@@ -145,10 +144,8 @@ export class SgpComparativaComponent {
       // Seleccionar la primera vigencia por defecto
       if (this.departments.length > 0) {
         this.departmentSelected = this.departments[0];
-        console.log('Departamento seleccionada por defecto:', this.departmentSelected);
       }
       
-      console.log('Departamento cargadas desde API:', this.departments);
     } catch (error) {
       console.warn('Error cargando departamentos desde API, se usarán datos locales como fallback:', error);
       this.departments = [];
@@ -169,7 +166,6 @@ export class SgpComparativaComponent {
       this.availableYears.push({ year: year.toString() });
     }
     
-    console.log('Available years generated:', this.availableYears);
   }
 
   /**
@@ -178,7 +174,6 @@ export class SgpComparativaComponent {
   loadVigencias(): void {
     this.sicodisApiService.getSgpVigenciasPresupuestoUltimaOnce().subscribe({
       next: (vigencias) => {
-        console.log('Vigencias cargadas:', vigencias);
         this.infoResume = vigencias;
         if (vigencias.length > 0) {
           this.selected = vigencias[0].id_vigencia;
@@ -205,7 +200,6 @@ export class SgpComparativaComponent {
 
       const mainConcepts = this.getMainConcepts();
       if (mainConcepts.length === 0) {
-        console.log('No hay conceptos principales para mostrar');
         return;
       }
 
@@ -323,7 +317,6 @@ export class SgpComparativaComponent {
 
       const mainConcepts = this.getMainConcepts2();
       if (mainConcepts.length === 0) {
-        console.log('No hay conceptos principales para mostrar en el segundo gráfico');
         return;
       }
 
@@ -540,7 +533,6 @@ export class SgpComparativaComponent {
       };
     }).filter(item => item.valor > 0); // Solo incluir conceptos con valores
 
-    console.log('Conceptos principales (1.1-1.4) Municipio 1:', result);
     return result;
   }
 
@@ -582,7 +574,6 @@ export class SgpComparativaComponent {
       };
     }).filter(item => item.valor > 0); // Solo incluir conceptos con valores
 
-    console.log('Conceptos principales (1.1-1.4) Municipio 2:', result);
     return result;
   }
 
@@ -748,7 +739,6 @@ export class SgpComparativaComponent {
    * Exporta los datos a Excel
    */
   exportToExcel(): void {
-    console.log('Exportando a Excel...');
     // Aquí iría la lógica para exportar a Excel
   }
 
@@ -756,7 +746,6 @@ export class SgpComparativaComponent {
    * Exporta los datos del segundo municipio a Excel
    */
   exportToExcel2(): void {
-    console.log('Exportando datos del segundo municipio a Excel...');
     // Aquí iría la lógica para exportar a Excel del segundo municipio
   }
 
@@ -815,7 +804,6 @@ export class SgpComparativaComponent {
    * Descarga los datos de detalle de recaudo
    */
   downloadDetalleRecaudo(): void {
-    console.log('Descargando datos de detalle de recaudo...');
     // Aquí iría la lógica para descargar el reporte de detalle de recaudo
     // Podría incluir las variables generales, educación, agua potable, etc.
   }
@@ -824,7 +812,6 @@ export class SgpComparativaComponent {
    * Descarga el informe trimestral
    */
   downloadInformeTrimestral(): void {
-    console.log('Descargando informe trimestral...');
     // Aquí iría la lógica para descargar el informe trimestral de gestión financiera
     // con los datos históricos de todos los municipios
   }
@@ -833,7 +820,6 @@ export class SgpComparativaComponent {
    * Evento cuando cambia la vigencia seleccionada
    */
   onVigenciaChange(event: SelectChangeEvent): void {
-    console.log('Vigencia seleccionada:', event.value);
     this.selected = event.value;
     this.infoToResume = this.infoResume.find(
       (item: any) => item.id_vigencia === event.value
@@ -866,19 +852,16 @@ export class SgpComparativaComponent {
     
     this.sicodisApiService.getSgpResumenHistorico({ anios: aniosString }).subscribe({
       next: (result: any[]) => {
-        console.log('Datos SGP del API:', result);
         this.historicoApiData = result;
         if (result && result.length > 0) {
           this.buildTreeTableData();
         } else {
-          console.log('No hay datos del API, creando datos de ejemplo');
           this.createSampleTreeData();
         }
       },
       error: (error) => {
         console.error('Error loading SGP data from API:', error);
         // Fallback con datos de ejemplo
-        console.log('Error en API, creando datos de ejemplo');
         this.createSampleTreeData();
       }
     });
@@ -888,7 +871,6 @@ export class SgpComparativaComponent {
    * Crea datos de ejemplo para probar la tabla
    */
   createSampleTreeData(): void {
-    console.log('Creando datos de ejemplo para TreeTable');
     
     this.treeTableData = [
       {
@@ -959,7 +941,6 @@ export class SgpComparativaComponent {
     
     this.sicodisApiService.getSgpResumenDistribuciones(selectedYear).subscribe({
       next: (result: any[]) => {
-        console.log('Datos de distribuciones del API:', result);
         this.distributionData = result.map(item => ({
           id_distribucion: item.id_distribucion,
           fecha_distribucion: item.fecha_distribucion,
@@ -981,7 +962,6 @@ export class SgpComparativaComponent {
    * Evento cuando cambia el departamento seleccionado
    */
   onDepartmentChange(event: SelectChangeEvent): void {
-    console.log('Departamento seleccionado:', event.value);
     this.departmentSelected = event.value;
     //this.townSelected = '';   
     this.loadTownsForDepartment();
@@ -997,7 +977,6 @@ export class SgpComparativaComponent {
    * Evento cuando cambia el segundo departamento seleccionado
    */
   onDepartment2Change(event: SelectChangeEvent): void {
-    console.log('Departamento 2 seleccionado:', event.value);
     this.departmentSelected2 = event.value;
     //this.townSelected2 = '';
     this.loadTownsForDepartment2();  
@@ -1008,7 +987,6 @@ export class SgpComparativaComponent {
    * Evento cuando cambia el municipio seleccionado
    */
   onTownChange(event: SelectChangeEvent): void {
-    console.log('Municipio seleccionado:', event.value);
     this.townSelected = event.value;
     this.filterDataByLocation();
     
@@ -1023,7 +1001,6 @@ export class SgpComparativaComponent {
    * Evento cuando cambia el segundo municipio seleccionado
    */
   onTown2Change(event: SelectChangeEvent): void {
-    console.log('Municipio 2 seleccionado:', event.value);
     this.townSelected2 = event.value;
     this.filterDataByLocation();
     
@@ -1035,11 +1012,6 @@ export class SgpComparativaComponent {
    * Actualiza los datos cuando se presiona el botón Actualizar
    */
   updateData(): void {
-    console.log('Actualizando datos...');
-    console.log('Vigencia:', this.selected);
-    console.log('Departamento:', this.departmentSelected);
-    console.log('Municipio:', this.townSelected);
-    console.log('Municipio 2:', this.townSelected2);
     
     // Aquí iría la lógica para actualizar los datos según los filtros seleccionados
     this.loadFilteredData();
@@ -1049,11 +1021,6 @@ export class SgpComparativaComponent {
    * Aplica los filtros seleccionados
    */
   applyFilters(): void {
-    console.log('Aplicando filtros...');
-    console.log('Vigencia:', this.selected);
-    console.log('Departamento:', this.departmentSelected);
-    console.log('Municipio:', this.townSelected);
-    console.log('Municipio 2:', this.townSelected2);
     
     //this.loadFilteredData();
     this.loadComparativeDataIfReady();
@@ -1063,7 +1030,6 @@ export class SgpComparativaComponent {
    * Limpia los filtros seleccionados y recarga los datos
    */
   clearFilters(): void {
-    console.log('Limpiando filtros...');
     this.selected = this.infoResume.length > 0 ? this.infoResume[0].id_vigencia : 0;
     this.departmentSelected = '';
     this.departmentSelected2 = '';
@@ -1083,7 +1049,6 @@ export class SgpComparativaComponent {
    * Carga los datos para el año seleccionado
    */
   private loadDataForYear(): void {
-    console.log('Cargando datos para el año:', this.selected);
     // Lógica para cargar datos específicos del año
   }
 
@@ -1096,7 +1061,6 @@ export class SgpComparativaComponent {
       this.townSelected = '0';
       return;
     }
-    console.log('Cargando municipios para departamento:', this.departmentSelected);
     const municipiosLista = await this.sicodisApiService.getMunicipiosDepartamentosSgp(this.departmentSelected).toPromise();
     this.towns = municipiosLista?.map((town: any) => ({
        id: town.codigo,
@@ -1107,7 +1071,6 @@ export class SgpComparativaComponent {
       // Seleccionar la primera vigencia por defecto
       if (this.towns.length > 0) {
         this.townSelected = this.towns[0].id;
-        console.log('Municipio seleccionada por defecto:', this.townSelected);
       }
 
   }
@@ -1121,7 +1084,6 @@ export class SgpComparativaComponent {
       this.townSelected2 = '0';
       return;
     }
-    console.log('Cargando municipios para departamento:', this.departmentSelected2);
     const municipiosLista = await this.sicodisApiService.getMunicipiosDepartamentosSgp(this.departmentSelected2).toPromise();
     this.towns2 = municipiosLista?.map((town: any) => ({
        id: town.codigo,
@@ -1132,7 +1094,6 @@ export class SgpComparativaComponent {
       // Seleccionar la primera vigencia por defecto
       if (this.towns.length > 0) {
         this.townSelected2 = this.towns[0].id;
-        console.log('Municipio seleccionada por defecto:', this.townSelected2);
       }
 
   }
@@ -1202,11 +1163,6 @@ export class SgpComparativaComponent {
    * Filtra los datos por ubicación (departamento/municipios)
    */
   private filterDataByLocation(): void {
-    console.log('Filtrando datos por ubicación');
-    console.log('Departamento 1:', this.departmentSelected);
-    console.log('Departamento 2:', this.departmentSelected2);
-    console.log('Municipio 1:', this.townSelected);
-    console.log('Municipio 2:', this.townSelected2);
     
     // Aquí se cargarían los datos específicos para cada municipio usando la API
     if (this.townSelected && this.departmentSelected) {
@@ -1222,7 +1178,6 @@ export class SgpComparativaComponent {
    * Carga datos SGP específicos para el primer municipio
    */
   private loadSgpDataForMunicipality1(): void {
-    console.log('Cargando datos SGP para municipio 1:', this.townSelected);
     // Aquí se implementaría la llamada específica al API para obtener
     // datos del municipio seleccionado cuando esté disponible
     this.loadSgpData();
@@ -1232,7 +1187,6 @@ export class SgpComparativaComponent {
    * Carga datos SGP específicos para el segundo municipio
    */
   private loadSgpDataForMunicipality2(): void {
-    console.log('Cargando datos SGP para municipio 2:', this.townSelected2);
     // Aquí se implementaría la llamada específica al API para obtener
     // datos del segundo municipio seleccionado cuando esté disponible
     this.loadSgpData2();
@@ -1243,11 +1197,6 @@ export class SgpComparativaComponent {
    */
   private loadComparativeDataIfReady(): void {
     if (this.selected && this.townSelected && this.townSelected2) {
-      console.log('Cargando datos comparativos:', {
-        vigencia: this.selected,
-        municipio1: this.townSelected,
-        municipio2: this.townSelected2
-      });
       
       // Mostrar indicador de carga
       this.isLoadingComparativeData = true;
@@ -1260,7 +1209,6 @@ export class SgpComparativaComponent {
         this.townSelected2
       ).subscribe({
         next: (data) => {
-          console.log('Datos comparativos cargados:', data);
           this.fichaComparativaData = data;
           this.buildComparativeTreeData();
           
@@ -1295,9 +1243,6 @@ export class SgpComparativaComponent {
     // Construir datos jerárquicos para el segundo municipio
     this.treeTableData2 = this.buildHierarchicalData(this.fichaComparativaData, 2);
 
-    console.log('Datos comparativos jerárquicos construidos para TreeTable');
-    console.log('TreeTable 1:', this.treeTableData);
-    console.log('TreeTable 2:', this.treeTableData2);
     
     // Actualizar gráficos
     setTimeout(() => {
@@ -1537,12 +1482,6 @@ export class SgpComparativaComponent {
    * Carga los datos filtrados según todos los criterios seleccionados
    */
   private loadFilteredData(): void {
-    console.log('Cargando datos filtrados');
-    console.log('Criterios de filtrado:');
-    console.log('- Vigencia:', this.selected);
-    console.log('- Departamento:', this.departmentSelected);
-    console.log('- Municipio 1:', this.townSelected);
-    console.log('- Municipio 2:', this.townSelected2);
     
     // Aquí iría la lógica principal para cargar y filtrar todos los datos
     // según vigencia, departamento y ambos municipios seleccionados
@@ -1558,18 +1497,15 @@ export class SgpComparativaComponent {
     // Por ahora usar los mismos datos pero crear una copia para el segundo municipio
     this.sicodisApiService.getSgpResumenHistorico({ anios: aniosString }).subscribe({
       next: (result: any[]) => {
-        console.log('Datos SGP del segundo municipio del API:', result);
         if (result && result.length > 0) {
           this.buildTreeTableData2(result);
         } else {
-          console.log('No hay datos del API para el segundo municipio, creando datos de ejemplo');
           this.createSampleTreeData2();
         }
       },
       error: (error) => {
         console.error('Error loading SGP data for second municipality from API:', error);
         // Fallback con datos de ejemplo
-        console.log('Error en API del segundo municipio, creando datos de ejemplo');
         this.createSampleTreeData2();
       }
     });
@@ -1579,7 +1515,6 @@ export class SgpComparativaComponent {
    * Crea datos de ejemplo para la segunda tabla
    */
   createSampleTreeData2(): void {
-    console.log('Creando datos de ejemplo para TreeTable del segundo municipio');
     
     this.treeTableData2 = [
       {
@@ -1734,7 +1669,6 @@ export class SgpComparativaComponent {
     });
 
     this.treeTableData2 = Array.from(conceptosMap.values());
-    console.log('Tree table data for second municipality:', this.treeTableData2);
   }
 
   /**
@@ -1825,7 +1759,6 @@ export class SgpComparativaComponent {
     });
 
     this.treeTableData = Array.from(conceptosMap.values());
-    console.log('Tree table data:', this.treeTableData);
     
     // Actualizar gráficos después de construir los datos
     setTimeout(() => {
@@ -2460,7 +2393,6 @@ export class SgpComparativaComponent {
    * Método legacy para compatibilidad (puede ser removido)
    */
   optionChange(evt: any): void {
-    console.log('Option change (legacy):', evt);
     this.infoToResume = this.infoResume.filter(
       (item: any) => item.year === evt.value
     )[0];

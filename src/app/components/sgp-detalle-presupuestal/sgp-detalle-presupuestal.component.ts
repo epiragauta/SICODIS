@@ -115,7 +115,6 @@ export class SgpDetallePresupuestalComponent implements OnInit {
 
 
   loadSgpData(): void {
-    console.log("loadSgpData...");
     this.isLoading = true;
     const year = this.selectedVigencia;
     this.sicodisApiService.getSgpResumenGeneralUltimaOnce(year, this.selectedDepartamento,this.selectedMunicipio).subscribe({
@@ -161,10 +160,8 @@ export class SgpDetallePresupuestalComponent implements OnInit {
       // Seleccionar la primera vigencia por defecto
       if (this.vigencias.length > 0) {
         this.selectedVigencia = this.vigencias[0];
-        console.log('Vigencia seleccionada por defecto:', this.selectedVigencia);
       }
       
-      console.log('Vigencias cargadas desde API:', this.vigencias);
     } catch (error) {
       console.warn('Error cargando vigencias desde API, se usarán datos locales como fallback:', error);
       this.vigencias = [];
@@ -185,10 +182,8 @@ export class SgpDetallePresupuestalComponent implements OnInit {
       // Seleccionar la primera vigencia por defecto
       if (this.departamentos.length > 0) {
         this.selectedDepartamento = this.departamentos[0];
-        console.log('Departamento seleccionada por defecto:', this.selectedDepartamento);
       }
       
-      console.log('Departamento cargadas desde API:', this.departamentos);
     } catch (error) {
       console.warn('Error cargando departamentos desde API, se usarán datos locales como fallback:', error);
       this.departamentos = [];
@@ -201,7 +196,6 @@ export class SgpDetallePresupuestalComponent implements OnInit {
       this.selectedMunicipio = '0';
       return;
     }
-    console.log('Cargando municipios para departamento:', this.selectedDepartamento);
     const municipiosLista = await this.sicodisApiService.getMunicipiosDepartamentosSgp(this.selectedDepartamento).toPromise();
     this.municipios = municipiosLista?.map((town: any) => ({
        id: town.codigo,
@@ -212,7 +206,6 @@ export class SgpDetallePresupuestalComponent implements OnInit {
       // Seleccionar la primera vigencia por defecto
       if (this.municipios.length > 0) {
         this.selectedMunicipio = this.municipios[0].id;
-        console.log('Municipio seleccionada por defecto:', this.selectedMunicipio);
       }
 
   }
@@ -227,7 +220,6 @@ export class SgpDetallePresupuestalComponent implements OnInit {
   // }
 
   onVigenciaChange(event: SelectChangeEvent): void {
-    console.log('Vigencia seleccionada:', event.value);
     this.loadSgpData();
     this.loadTableData();
     // this.yearUltimaDoceava = (parseInt(event.value.label  ) - 1).toString();
@@ -238,13 +230,11 @@ export class SgpDetallePresupuestalComponent implements OnInit {
   }
 
   onDepartamentoChange(event: SelectChangeEvent): void {
-    console.log('Departamento seleccionado:', event.value);
     // this.selectedMunicipio = null;
     // this.municipios = [];
     
     // Reset metrics to default values when department changes
     //this.resetMetricsToDefault();
-    console.log('Departamento seleccionado:', event.value);
     this.selectedDepartamento = event.value;
     //this.townSelected = '';
     this.loadTownsForDepartment();
@@ -279,9 +269,7 @@ export class SgpDetallePresupuestalComponent implements OnInit {
   }
 
   onMunicipioChange(event: SelectChangeEvent): void {
-    console.log('Municipio seleccionado:', event.value);
     // Reset metrics to default values when department changes
-    console.log('Departamento seleccionado:', event.value);
     this.selectedMunicipio = event.value;
     //this.townSelected = '';
     this.loadSgpData();
@@ -301,7 +289,6 @@ export class SgpDetallePresupuestalComponent implements OnInit {
       this.selectedMunicipio
     ).subscribe({
       next: (resumen: any) => {
-        console.log('Resumen cargado para municipio:', resumen);
         this.updateMetricsFromApi(resumen[0]);
       },
       error: (error) => {
@@ -324,10 +311,6 @@ export class SgpDetallePresupuestalComponent implements OnInit {
   }
 
   applyFilters(): void {
-    console.log('Aplicando filtros...');
-    console.log('Vigencia:', this.selectedVigencia);
-    console.log('Departamento:', this.selectedDepartamento);
-    console.log('Municipio:', this.selectedMunicipio);
     
     // Aquí se puede agregar lógica para aplicar los filtros y cargar datos
   }
@@ -335,7 +318,6 @@ export class SgpDetallePresupuestalComponent implements OnInit {
   private loadVigenciasFromAPI(): void {
     this.sicodisApiService.getSgpVigenciasPresupuestoUltimaOnce().subscribe({
       next: (vigencias: any[]) => {
-        console.log('Vigencias cargadas desde API:', vigencias);
         this.vigencias = vigencias.map(vigencia => ({
           label: vigencia.vigencia,
           value: vigencia.id_vigencia.toString()
@@ -366,7 +348,6 @@ export class SgpDetallePresupuestalComponent implements OnInit {
   }
 
   clearFilters(): void {
-    console.log('Limpiando filtros...');
     this.selectedVigencia = this.vigencias.length > 0 ? this.vigencias[0] : null;
     this.selectedDepartamento = null;
     this.selectedMunicipio = null;
@@ -432,7 +413,6 @@ export class SgpDetallePresupuestalComponent implements OnInit {
     this.sicodisApiService.getSgpResumenParticipacionesUltimaOnce(idVigencia, this.selectedDepartamento,this.selectedMunicipio
     ).subscribe({
       next: (data: any) => {
-        console.log('Datos de participaciones cargados:', data);
         this.buildTreeTableFromApi(data);
         this.isLoadingTable = false;
       },
@@ -583,9 +563,6 @@ export class SgpDetallePresupuestalComponent implements OnInit {
 
   // Métodos para descargas
   downloadData(): void {
-    console.log('Descargando datos completos...');
-    console.log('Exportando a Excel...');
-    console.log('Actualizando datos...');   
     this.descargarDatosDistribucionUltimayOnce();
   }
 
@@ -596,7 +573,6 @@ export class SgpDetallePresupuestalComponent implements OnInit {
     try {
      
 	    // Usar método histórico original
-      console.log('Descargando  datos ultima y once');
   	  const idvigencia = this.selectedVigencia;
       const vigencia = this.vigencias.find(d => d.id === idvigencia);
 	    
@@ -623,7 +599,6 @@ export class SgpDetallePresupuestalComponent implements OnInit {
       });
 
       const arrayBuffer = await excelBlob.arrayBuffer();
-      console.log('Tamaño de archivo:', arrayBuffer.byteLength);
 
       // Crear enlace temporal para descargar
       const url = window.URL.createObjectURL(excelBlob);
@@ -636,7 +611,6 @@ export class SgpDetallePresupuestalComponent implements OnInit {
 
       window.URL.revokeObjectURL(url);
 
-      console.log('Archivo descargado exitosamente');
 
 
 
@@ -649,12 +623,10 @@ export class SgpDetallePresupuestalComponent implements OnInit {
 
 
   downloadOnceDoceavas(): void {
-    console.log('Descargando Once Doceavas del año:', this.getOnceDoceavasYear());
     // Aquí se puede implementar la lógica de descarga de once doceavas
   }
 
   downloadUltimaDoceava(): void {
-    console.log('Descargando Última Doceava del año:', this.getUltimaDoceavaYear());
     // Aquí se puede implementar la lógica de descarga de última doceava
   }
 }

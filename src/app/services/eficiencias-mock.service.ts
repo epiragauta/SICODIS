@@ -23,7 +23,6 @@ export class EficienciasMockService {
   private readonly dataPath = '/assets/data/eficiencias/resumen-municipios.json';
 
   constructor(private http: HttpClient) {
-    console.log('📁 EficienciasMockService inicializado - usando datos estáticos');
   }
 
   /**
@@ -32,15 +31,12 @@ export class EficienciasMockService {
    */
   private loadData(): Observable<any> {
     if (this.datosCache) {
-      console.log('📦 Usando datos cacheados');
       return of(this.datosCache);
     }
 
-    console.log('📥 Cargando datos desde:', this.dataPath);
     return this.http.get(this.dataPath).pipe(
       map(data => {
         this.datosCache = data;
-        console.log('✅ Datos cargados y cacheados:', Object.keys(data).length, 'municipios');
         return data;
       }),
       catchError(error => {
@@ -58,7 +54,6 @@ export class EficienciasMockService {
     return this.loadData().pipe(
       map(data => {
         const municipios = Object.values(data).map((item: any) => item.municipio);
-        console.log('📋 Municipios disponibles:', municipios.length);
         return municipios;
       })
     );
@@ -79,7 +74,6 @@ export class EficienciasMockService {
           throw new Error(`Municipio ${codigoDane} no encontrado en datos mock`);
         }
 
-        console.log('✅ Resumen del municipio obtenido:', municipioData.municipio.municipio);
         return municipioData as ResumenMunicipioEficiencia;
       })
     );

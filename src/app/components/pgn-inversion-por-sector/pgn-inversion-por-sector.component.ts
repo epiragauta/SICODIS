@@ -189,10 +189,8 @@ export class PgnInversionPorSectorComponent implements OnInit {
       // Seleccionar la primera vigencia por defecto
       if (this.vigencias.length > 0) {
         this.selectedVigencia = this.vigencias[0];
-        console.log('Vigencia seleccionada por defecto:', this.selectedVigencia);
       }
       
-      console.log('Vigencias cargadas desde API:', this.vigencias);
     } catch (error) {
       console.warn('Error cargando vigencias desde API, se usarán datos locales como fallback:', error);
       this.vigencias = [];
@@ -204,7 +202,6 @@ export class PgnInversionPorSectorComponent implements OnInit {
    */
   private async cargarPeriodos(): Promise<void> {
     try {
-      console.log('Vigencia seleccionado por defecto:', this.selectedVigencia);
       const periodos = await this.sicodisApiService.getPgnPeriodoPorVigencia(this.selectedVigencia.id).toPromise();
       this.periodos = periodos?.map((periodo: any) => ({
         id: periodo.id_periodo,
@@ -214,10 +211,8 @@ export class PgnInversionPorSectorComponent implements OnInit {
       // Seleccionar el primer periodo por defecto
       if (this.periodos.length > 0) {
         this.selectedPeriodo = this.periodos[0];
-        console.log('Periodo seleccionado por defecto:', this.selectedPeriodo);
       }
       
-      console.log('Periodos cargadas desde API:', this.periodos);
     } catch (error) {
       console.warn('Error cargando periodos desde API, se usarán datos locales como fallback:', error);
       this.periodos = [];
@@ -230,8 +225,6 @@ export class PgnInversionPorSectorComponent implements OnInit {
    */
   private async cargarSectores(): Promise<void> {
     try {
-      console.log('Vigencia seleccionada por defecto:', this.selectedVigencia);
-      console.log('Periodo seleccionado por defecto:', this.selectedPeriodo);
 
       const sectores = await this.sicodisApiService.getPgnSectoresPorVigenciaPeriodo(this.selectedVigencia.id, this.selectedPeriodo.id).toPromise();
 
@@ -247,8 +240,6 @@ export class PgnInversionPorSectorComponent implements OnInit {
       // Seleccionamos "Todos" por defecto
       this.selectedSector = this.sectores[0];
 
-      console.log('Sectores cargados desde API:', this.sectores);
-      console.log('Sectores seleccionado por defecto:', this.selectedSector);
 
     } catch (error) {
       console.warn('Error sectores  desde API, se usarán datos locales como fallback:', error);
@@ -264,9 +255,6 @@ export class PgnInversionPorSectorComponent implements OnInit {
    */
   private async cargarEntidades(): Promise<void> {
     try {
-      console.log('Vigencia seleccionada por defecto:', this.selectedVigencia);
-      console.log('Periodo seleccionado por defecto:', this.selectedPeriodo);
-      console.log('Sector seleccionado por defecto:', this.selectedSector);
 
       const entidades = await this.sicodisApiService.getPgnEntidadesPorVigenciaPeriodoSector(this.selectedVigencia.id
                                                                                              , this.selectedPeriodo.id
@@ -284,8 +272,6 @@ export class PgnInversionPorSectorComponent implements OnInit {
       // Seleccionamos "Todos" por defecto
       this.selectedEntidad = this.entidades[0];
 
-      console.log('Entidades cargados desde API:', this.entidades);
-      console.log('Entidad seleccionado por defecto:', this.selectedEntidad);
 
     } catch (error) {
       console.warn('Error cargando entidades desde API, se usarán datos locales como fallback:', error);
@@ -300,10 +286,6 @@ export class PgnInversionPorSectorComponent implements OnInit {
    */
   private async cargarProyectos(): Promise<void> {
     try {
-      console.log('Vigencia seleccionada por defecto:', this.selectedVigencia);
-      console.log('Periodo seleccionado por defecto:', this.selectedPeriodo);
-      console.log('Sector seleccionado por defecto:', this.selectedSector);
-      console.log('Entidad seleccionada por defecto:', this.selectedEntidad);
 
       const proyectos = await this.sicodisApiService.getPgnProyectosEntidadPorVigenciaPeriodoSector(this.selectedVigencia.id
                                                                                                     , this.selectedPeriodo.id
@@ -322,8 +304,6 @@ export class PgnInversionPorSectorComponent implements OnInit {
       // Seleccionamos "Todos" por defecto
       this.selectedProyecto = this.proyectos[0];
 
-      console.log('Proyectos cargados desde API:', this.proyectos);
-      console.log('Proyectos seleccionado por defecto:', this.selectedProyecto);
 
     } catch (error) {
       console.warn('Error cargando proyectos desde API, se usarán datos locales como fallback:', error);
@@ -340,8 +320,6 @@ export class PgnInversionPorSectorComponent implements OnInit {
    */
   private async cargarFuentes(): Promise<void> {
     try {
-      console.log('Vigencia seleccionada por defecto:', this.selectedVigencia);
-      console.log('Periodo seleccionado por defecto:', this.selectedPeriodo);
 
       const fuentes = await this.sicodisApiService.getPgnFuentesPorVigenciaPeriodo(this.selectedVigencia.id, this.selectedPeriodo.id).toPromise();
 
@@ -357,8 +335,6 @@ export class PgnInversionPorSectorComponent implements OnInit {
       // Seleccionamos "Todos" por defecto
       this.selectedFuente = this.fuentes[0];
 
-      console.log('Fuentes cargados desde API:', this.fuentes);
-      console.log('Fuentes seleccionado por defecto:', this.selectedFuente);
 
     } catch (error) {
       console.warn('Error cargando fuentes desde API, se usarán datos locales como fallback:', error);
@@ -374,12 +350,6 @@ export class PgnInversionPorSectorComponent implements OnInit {
    */
   private async cargarDatosInversion(): Promise<void> {
     try {
-      console.log('Vigencia seleccionada por defecto:', this.selectedVigencia);
-      console.log('Periodo seleccionado por defecto:', this.selectedPeriodo);
-      console.log('Sector seleccionado por defecto:', this.selectedSector);
-      console.log('Entidad seleccionada por defecto:', this.selectedEntidad);
-      console.log('Proyecto seleccionado por defecto:', this.selectedProyecto);
-      console.log('Fuente seleccionada por defecto:', this.selectedFuente);
 
 
     const response = await this.sicodisApiService.getPgnDatosInversionFuenteProyectosEntidadPorVigenciaPeriodoSector( this.selectedVigencia.id,
@@ -432,8 +402,6 @@ export class PgnInversionPorSectorComponent implements OnInit {
 
     
 
-    console.log('Resumen recibido:', this.resumen);
-    console.log('Detalle recibido:', this.detalle);
 
 
     } catch (error) {
@@ -476,12 +444,6 @@ export class PgnInversionPorSectorComponent implements OnInit {
    */
   private async descargarDatosInversion(): Promise<void> {
     try {
-      console.log('Vigencia seleccionada por defecto:', this.selectedVigencia);
-      console.log('Periodo seleccionado por defecto:', this.selectedPeriodo);
-      console.log('Sector seleccionado por defecto:', this.selectedSector);
-      console.log('Entidad seleccionada por defecto:', this.selectedEntidad);
-      console.log('Proyecto seleccionado por defecto:', this.selectedProyecto);
-      console.log('Fuente seleccionada por defecto:', this.selectedFuente);
 
 
           // Puede ser Blob o undefined
@@ -507,7 +469,6 @@ export class PgnInversionPorSectorComponent implements OnInit {
       });
 
       const arrayBuffer = await excelBlob.arrayBuffer();
-      console.log('Tamaño de archivo:', arrayBuffer.byteLength);
 
       // Crear enlace temporal para descargar
       const url = window.URL.createObjectURL(excelBlob);
@@ -520,7 +481,6 @@ export class PgnInversionPorSectorComponent implements OnInit {
 
       window.URL.revokeObjectURL(url);
 
-      console.log('Archivo descargado exitosamente');
 
     } catch (error) {
       console.warn('Error descargando el archivo:', error);
@@ -528,7 +488,6 @@ export class PgnInversionPorSectorComponent implements OnInit {
   }
 
   onVigenciaChange(event: SelectChangeEvent): void {
-    console.log('Vigencia seleccionada:', event.value);
     this.selectedVigencia = event.value;
 
     this.cargarPeriodos();
@@ -538,41 +497,31 @@ export class PgnInversionPorSectorComponent implements OnInit {
   }
 
   onPeriodoChange(event: SelectChangeEvent): void {
-    console.log('Periodo seleccionado:', event.value);
     this.selectedPeriodo = event.value;
     this.cargarEntidades();
     this.cargarFuentes();    
   }
 
   onEntidadChange(event: SelectChangeEvent): void {
-    console.log('Entidad seleccionada:', event.value);
     this.selectedEntidad = event.value;   
     this.cargarProyectos();
   }
 
   onProyectoChange(event: SelectChangeEvent): void {
-    console.log('Proyecto seleccionado:', event.value);
     this.selectedProyecto = event.value;   
   }
   
 
   onFuenteChange(event: SelectChangeEvent): void {
-    console.log('Fuente seleccionada:', event.value);
     this.selectedFuente = event.value;
   }
 
   onSectorChange(event: SelectChangeEvent): void {
-    console.log('Sector seleccionado:', event.value);
     this.selectedSector = event.value;
     this.cargarEntidades();
   }
 
   onActualizar(): void {
-    console.log('Actualizando datos...');
-    console.log('Vigencia:', this.selectedVigencia);
-    console.log('Periodo:', this.selectedPeriodo);
-    console.log('Entidad:', this.selectedEntidad);
-    console.log('Fuente:', this.selectedFuente);
     this.cargarDatosInversion();
 
     this.isLoading = true;
@@ -580,7 +529,6 @@ export class PgnInversionPorSectorComponent implements OnInit {
     // Simulate API call
     setTimeout(() => {
       this.isLoading = false;
-      console.log('Datos actualizados');
     }, 2000);
   }
 
@@ -593,7 +541,6 @@ export class PgnInversionPorSectorComponent implements OnInit {
     this.selectedFuente = this.fuentes[0];
     //this.cargarDatosInversion();    
 
-    console.log('Filtros limpiados');
   }
 
 
@@ -637,12 +584,6 @@ export class PgnInversionPorSectorComponent implements OnInit {
   }
 
   exportToExcel(): void {
-    console.log('Exportando a Excel...');
-    console.log('Actualizando datos...');
-    console.log('Vigencia:', this.selectedVigencia);
-    console.log('Periodo:', this.selectedPeriodo);
-    console.log('Entidad:', this.selectedEntidad);
-    console.log('Fuente:', this.selectedFuente);
     this.descargarDatosInversion();
   }
 }

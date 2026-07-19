@@ -9,19 +9,15 @@ import { catchError, map } from 'rxjs/operators';
  */
 export function initializeAuth(authService: AuthService) {
   return (): Observable<boolean> => {
-    console.log('🚀 Inicializando autenticación SICODIS...');
     
     // Si ya hay un token válido, no hacer nada
     if (authService.hasValidToken()) {
-      console.log('✅ Token válido encontrado en localStorage');
       return of(true);
     }
 
     // Si no hay token, obtener uno automáticamente
-    console.log('🔄 Obteniendo token inicial...');
     return authService.autoLogin().pipe(
       map(() => {
-        console.log('✅ Aplicación lista con token');
         return true;
       }),
       catchError((error) => {

@@ -440,14 +440,8 @@ export class SgrProgramacionComponent implements OnInit {
   applyFilters(): void {
     if (this.selectedBienio && this.selectedBeneficiario && this.selectedDepartamento) {
       this.filtersApplied = true;
-      console.log('Filtros aplicados:', {
-        bienio: this.selectedBienio.label,
-        beneficiario: this.selectedBeneficiario.nombre,
-        departamento: this.selectedDepartamento.nombre
-      });
       // Aquí se implementaría la lógica de carga de datos
     } else {
-      console.log('Debe seleccionar todos los filtros requeridos');
     }
   }
 
@@ -459,14 +453,12 @@ export class SgrProgramacionComponent implements OnInit {
     this.selectedBeneficiario = null;
     this.selectedDepartamento = null;
     this.filtersApplied = false;
-    console.log('Filtros limpiados');
   }
 
   /**
    * Mostrar popup del diccionario
    */
   showPopupDiccionario(): void {
-    console.log('Mostrando diccionario de datos');
     this.diccionarioContent = this.generarContenidoDiccionario();
     this.showDiccionarioPopup = true;
   }
@@ -475,7 +467,6 @@ export class SgrProgramacionComponent implements OnInit {
    * Mostrar popup de siglas
    */
   showPopupSiglas(): void {
-    console.log('Mostrando siglas');
     this.siglasContent = this.generarContenidoSiglas();
     this.showSiglasPopup = true;
   }

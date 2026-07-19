@@ -231,7 +231,6 @@ export class ReportsSgpComponent implements OnInit {
     this.loadSgpData();
     this.loadDistributionData(); 
 
-    console.log('Component initialized');
   }
 
 
@@ -249,10 +248,8 @@ export class ReportsSgpComponent implements OnInit {
       // Seleccionar la primera vigencia por defecto
       if (this.vigencias.length > 0) {
         this.selected = this.vigencias[0];
-        console.log('Vigencia seleccionada por defecto:', this.selected);
       }
       
-      console.log('Vigencias cargadas desde API:', this.vigencias);
     } catch (error) {
       console.warn('Error cargando vigencias desde API, se usarán datos locales como fallback:', error);
       this.vigencias = [];
@@ -274,10 +271,8 @@ export class ReportsSgpComponent implements OnInit {
       // Seleccionar la primera vigencia por defecto
       if (this.departments.length > 0) {
         this.departmentSelected = this.departments[0];
-        console.log('Departamento seleccionada por defecto:', this.departmentSelected);
       }
       
-      console.log('Departamento cargadas desde API:', this.departments);
     } catch (error) {
       console.warn('Error cargando departamentos desde API, se usarán datos locales como fallback:', error);
       this.departments = [];
@@ -293,7 +288,6 @@ export class ReportsSgpComponent implements OnInit {
       this.townSelected = '0';
       return;
     }
-    console.log('Cargando municipios para departamento:', this.departmentSelected);
     const municipiosLista = await this.sicodisApiService.getMunicipiosDepartamentosSgp(this.departmentSelected).toPromise();
     this.towns = municipiosLista?.map((town: any) => ({
        id: town.codigo,
@@ -304,7 +298,6 @@ export class ReportsSgpComponent implements OnInit {
       // Seleccionar la primera vigencia por defecto
       if (this.towns.length > 0) {
         this.townSelected = this.towns[0].id;
-        console.log('Municipio seleccionada por defecto:', this.townSelected);
       }
 
   }
@@ -324,7 +317,6 @@ export class ReportsSgpComponent implements OnInit {
 
       const mainConcepts = this.getMainConcepts();
       if (mainConcepts.length === 0) {
-        console.log('No hay conceptos principales para mostrar');
         return;
       }
 
@@ -480,7 +472,6 @@ export class ReportsSgpComponent implements OnInit {
    * Evento cuando cambia la vigencia seleccionada
    */
   onVigenciaChange(event: SelectChangeEvent): void {
-    console.log('Vigencia seleccionada:', event.value);
     this.selected = event.value;
     
     // this.infoToResume = this.infoResume.filter(
@@ -502,7 +493,6 @@ export class ReportsSgpComponent implements OnInit {
    * Evento cuando cambia el departamento seleccionado
    */
   onDepartmentChange(event: SelectChangeEvent): void {
-    console.log('Departamento seleccionado:', event.value);
     this.departmentSelected = event.value;
     //this.townSelected = '';
     this.loadTownsForDepartment();
@@ -513,7 +503,6 @@ export class ReportsSgpComponent implements OnInit {
    * Evento cuando cambia el municipio seleccionado
    */
   onTownChange(event: SelectChangeEvent): void {
-    console.log('Municipio seleccionado:', event.value);
     this.townSelected = event.value;
     //this.filterDataByLocation();
     //this.loadSgpDataForMunicipality();
@@ -524,10 +513,6 @@ export class ReportsSgpComponent implements OnInit {
    * Actualiza los datos cuando se presiona el botón Actualizar
    */
   updateData(): void {
-    console.log('Actualizando datos...');
-    console.log('Vigencia:', this.selected);
-    console.log('Departamento:', this.departmentSelected);
-    console.log('Municipio:', this.townSelected);
     
     // Si hay municipio seleccionado, cargar datos específicos
     if (this.townSelected && this.departmentSelected) {
@@ -545,7 +530,6 @@ export class ReportsSgpComponent implements OnInit {
    * Limpia los filtros seleccionados y recarga los datos
    */
   clearFilters(): void {
-    console.log('Limpiando filtros...');
     this.selected = '2025';
     this.departmentSelected = '0';
     this.townSelected = '0';
@@ -563,7 +547,6 @@ export class ReportsSgpComponent implements OnInit {
    * Carga los datos para el año seleccionado
    */
   private loadDataForYear(): void {
-    console.log('Cargando datos para el año:', this.selected);
     // Lógica para cargar datos específicos del año
   }
 
@@ -573,7 +556,6 @@ export class ReportsSgpComponent implements OnInit {
    * Filtra los datos por ubicación (departamento/municipio)
    */
   private filterDataByLocation(): void {
-    console.log('Filtrando datos por ubicación');
     // Lógica para filtrar datos según departamento y municipio
   }
 
@@ -582,12 +564,9 @@ export class ReportsSgpComponent implements OnInit {
    */
   private loadSgpDataForMunicipality(): void {
     if (!this.townSelected || !this.departmentSelected) {
-      console.log('No hay municipio o departamento seleccionado');
       return;
     }
 
-    console.log('Cargando datos SGP para municipio:', this.townSelected);
-    console.log('Departamento:', this.departmentSelected);
     
     const params = {
       anios: this.selected,
@@ -597,19 +576,16 @@ export class ReportsSgpComponent implements OnInit {
 
     this.sicodisApiService.getSgpResumenHistoricoEntidad(params).subscribe({
       next: (result: any[]) => {
-        console.log('Datos SGP del municipio desde API:', result);
         this.historicoApiData = result;
         if (result && result.length > 0) {
           this.buildTreeTableData();
         } else {
-          console.log('No hay datos del API para el municipio, usando datos generales');
           this.loadSgpData();
         }
       },
       error: (error) => {
         console.error('Error loading SGP data for municipality from API:', error);
         // Fallback con datos generales
-        console.log('Error en API del municipio, cargando datos generales');
         this.loadSgpData();
       }
     });
@@ -619,7 +595,6 @@ export class ReportsSgpComponent implements OnInit {
    * Carga los datos filtrados según todos los criterios seleccionados
    */
   private loadFilteredData(): void {
-    console.log('Cargando datos filtrados');
     // Aquí iría la lógica principal para cargar y filtrar todos los datos
     // según vigencia, departamento y municipio seleccionados
   }
@@ -628,7 +603,6 @@ export class ReportsSgpComponent implements OnInit {
    * Método legacy para compatibilidad (puede ser removido)
    */
   optionChange(evt: any): void {
-    console.log('Option change (legacy):', evt);
     this.infoToResume = this.infoResume.filter(
       (item: any) => item.year === evt.value
     )[0];
@@ -644,7 +618,6 @@ export class ReportsSgpComponent implements OnInit {
    * Muestra el diálogo de detalles
    */
   showDetails(data: any): void {
-    console.log("show Details", data);
     this.showDialogDetail();
   }
 
@@ -652,7 +625,6 @@ export class ReportsSgpComponent implements OnInit {
    * Muestra el diálogo de archivos
    */
   showFiles(data: any): void {
-    console.log("show Files", data);
     this.showDialogFiles(data);
   }
 
@@ -677,7 +649,6 @@ export class ReportsSgpComponent implements OnInit {
     
     this.sicodisApiService.getSgpResumenDistribucionesListaArchivos(id_distribucion).subscribe({
       next: (result: any[]) => {
-        console.log('Archivos de la distribución del API:', result);
         this.distributionFiles = result.map(item => ({
           id_anexo: item.id_anexo,
           nombre_documento: item.nombre_documento,
@@ -699,7 +670,6 @@ export class ReportsSgpComponent implements OnInit {
    * Descarga archivos
    */
   downloadFiles(data: any): void {
-    console.log("downloadFiles", data);
 
   this.sicodisApiService.getSgpDescargarArchivo(data.id_anexo).subscribe({
     next: (response) => {
@@ -743,19 +713,16 @@ export class ReportsSgpComponent implements OnInit {
     const selectedYear = parseInt(this.selected );
     this.sicodisApiService.getSgpResumenParticipaciones( selectedYear, this.departmentSelected, this.townSelected).subscribe({        
       next: (result: any) => {
-        console.log('Datos SGP del API:', result);
         this.historicoApiData = result;
         if (result && result.length > 0) {
           this.buildTreeTableData();
         } else {
-          console.log('No hay datos del API, creando datos de ejemplo');
           this.createSampleTreeData();
         }
       },
       error: (error) => {
         console.error('Error loading SGP data from API:', error);
         // Fallback con datos de ejemplo
-        console.log('Error en API, creando datos de ejemplo');
         this.createSampleTreeData();
       }
     });
@@ -849,7 +816,6 @@ export class ReportsSgpComponent implements OnInit {
     });
 
     this.treeTableData = Array.from(conceptosMap.values());
-    console.log('Tree table data:', this.treeTableData);
     
     // Actualizar gráfico después de construir los datos
     setTimeout(() => {
@@ -869,7 +835,6 @@ export class ReportsSgpComponent implements OnInit {
    * Crea datos de ejemplo para probar la tabla
    */
   createSampleTreeData(): void {
-    console.log('Creando datos de ejemplo para TreeTable');
     
     this.treeTableData = [
       {
@@ -948,7 +913,6 @@ export class ReportsSgpComponent implements OnInit {
     
     this.sicodisApiService.getSgpResumenDistribuciones(selectedYear).subscribe({
       next: (result: any[]) => {
-        console.log('Datos de distribuciones del API:', result);
         this.distributionData = result.map(item => ({
           id_distribucion: item.id_distribucion,
           fecha_distribucion: item.fecha_distribucion,
@@ -990,7 +954,6 @@ export class ReportsSgpComponent implements OnInit {
       }))
       .sort((a, b) => b.valor - a.valor); // Ordenar de mayor a menor
 
-    console.log('Conceptos principales (>2%):', mainConcepts);
     return mainConcepts;
   }
 
@@ -1051,8 +1014,6 @@ export class ReportsSgpComponent implements OnInit {
 
 
   exportToExcelReporte(): void {
-    console.log('Exportando a Excel...');
-    console.log('Actualizando datos...');   
     this.descargarDatosDistribucion();
   }  
 
@@ -1065,9 +1026,6 @@ export class ReportsSgpComponent implements OnInit {
       const selectedDepartamento = this.departments.find(d => d.id === this.departmentSelected);
       const selectedMunicipio = this.towns.find(d => d.id === this.townSelected);
       
-      console.log('Vigencia seleccionada:', this.selected);
-      console.log('Código Departamento  seleccionado:',  selectedDepartamento);
-      console.log('Código Municipio seleccionado por defecto:', selectedMunicipio);
       const selectedYear = parseInt(this.selected );
       const archivo: Blob | undefined = await this.sicodisApiService
                                             .getSgpDescargaDatosSgpResumenParticipaciones( selectedYear
@@ -1091,7 +1049,6 @@ export class ReportsSgpComponent implements OnInit {
       });
 
       const arrayBuffer = await excelBlob.arrayBuffer();
-      console.log('Tamaño de archivo:', arrayBuffer.byteLength);
 
       // Crear enlace temporal para descargar
       const url = window.URL.createObjectURL(excelBlob);
@@ -1104,7 +1061,6 @@ export class ReportsSgpComponent implements OnInit {
 
       window.URL.revokeObjectURL(url);
 
-      console.log('Archivo descargado exitosamente');
 
 
 

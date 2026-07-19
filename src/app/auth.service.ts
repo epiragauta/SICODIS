@@ -47,7 +47,6 @@ export class AuthService {
         // Programar renovación automática
         this.scheduleTokenRenewal(response.expires_in);
         
-        console.log('✅ Token obtenido:', response.access_token.substring(0, 20) + '...');
       }),
       catchError(error => {
         console.error('❌ Error al obtener token:', error);
@@ -113,9 +112,7 @@ export class AuthService {
    */
   private checkAndRenewToken(): void {
     if (!this.hasValidToken()) {
-      console.log('🔄 Token inválido o expirado. Obteniendo nuevo token...');
       this.autoLogin().subscribe({
-        next: () => console.log('✅ Token renovado automáticamente'),
         error: (err) => console.error('❌ Error al renovar token:', err)
       });
     }
@@ -134,12 +131,9 @@ export class AuthService {
     // Renovar 2 minutos antes de expirar
     const renewalTime = Math.max((expiresIn - 120), 60) * 1000;
     
-    console.log(`⏰ Token se renovará en ${renewalTime / 1000} segundos`);
 
     this.autoRenewTimer = setTimeout(() => {
-      console.log('🔄 Renovando token automáticamente...');
       this.autoLogin().subscribe({
-        next: () => console.log('✅ Token renovado exitosamente'),
         error: (err) => console.error('❌ Error al renovar token:', err)
       });
     }, renewalTime);
@@ -163,7 +157,6 @@ export class AuthService {
    * 🆕 Fuerza la renovación del token (opcional)
    */
   forceRenewToken(): Observable<LoginResponse> {
-    console.log('🔄 Forzando renovación de token...');
     return this.autoLogin();
   }
 }

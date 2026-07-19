@@ -188,7 +188,6 @@ export class SgpResguardosComponent implements OnInit {
   }
 
   exportarExcel(): void {
-    console.log('Exportando a Excel...');
     // Implementar exportación de datos
     alert('Funcionalidad de exportación en desarrollo');
   }

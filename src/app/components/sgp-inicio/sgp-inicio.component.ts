@@ -171,7 +171,6 @@ export class SgpInicioComponent implements OnInit {
   }
 
   loadSgpData(): void {
-    console.log("loadSgpData...");
     const year = this.selectedVigencia?.value || 2026;
     this.sicodisApiService.getSgpResumenGeneral(year).subscribe({
       next: (result: any) => {
@@ -200,7 +199,6 @@ export class SgpInicioComponent implements OnInit {
   }
 
   loadSgpParticipaciones(): void {
-    console.log("loadSgpParticipaciones...");
     const year = this.selectedVigencia?.value || 2026;
     this.sicodisApiService.getSgpResumenParticipacionesAvance(year).subscribe({
       next: (result: any) => {
@@ -208,7 +206,6 @@ export class SgpInicioComponent implements OnInit {
         if (result && result.length > 0) {
           this.buildTreeTableData();
         } else {
-          console.log('No hay datos del API');
           this.treeTableData = [];
         }
       },
@@ -336,7 +333,6 @@ export class SgpInicioComponent implements OnInit {
     });
 
     this.treeTableData = Array.from(conceptosMap.values());
-    console.log('Tree table data construida:', this.treeTableData);
   }
 
   getTreeTableTotal(field: 'presupuesto' | 'distribuido' | 'pendiente'): number {
@@ -366,14 +362,12 @@ export class SgpInicioComponent implements OnInit {
   }
 
   onVigenciaChange(event: SelectChangeEvent): void {
-    console.log('Vigencia changed:', event.value);
     this.selectedVigencia = event.value;
     // Reload data for the selected year
     this.loadSgpData();
   }
 
   navigateToResource(link: string): void {
-    console.log('Navigating to:', link);
     this.router.navigate([link]).then(() => {
       // Scroll to top after successful navigation
       setTimeout(() => {

@@ -216,7 +216,6 @@ sgpItems = [
   }
 
   ngOnInit() {
-    console.log('HomeComponent initialized... 202606101200');
 
     // Verificar si se debe mostrar el banner usando el nuevo ConfigService
     this.initializeBanner();
@@ -282,7 +281,6 @@ sgpItems = [
     this.showBanner = this.configService.shouldShowBanner();
 
     if (this.showBanner && this.bannerConfig) {
-      console.log('Banner activado:', this.bannerConfig.titulo);
     }
   }
 
@@ -292,7 +290,6 @@ sgpItems = [
     // Registrar que el banner fue mostrado
     this.configService.recordBannerShown();
 
-    console.log('Banner cerrado y tracking actualizado');
   }
 
   onBannerButtonClick(): void {

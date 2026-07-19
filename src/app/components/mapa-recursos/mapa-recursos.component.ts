@@ -304,7 +304,6 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
       const nombre: string = feature.properties.nombre ?? '';
       const centroid = this.capitalesMap.get(codigoDepto) ?? this.computeCentroid(feature);
 
-      console.log(`[API] ${nombre}: cod="${cod}" → codigoDepto="${codigoDepto}"`);
 
       return this.sicodisApi.getGeovisorResumen(this.vigenciaSeleccionada, codigoDepto, 0).pipe(
         map(data => ({ codigoDepto, nombre, centroid, data } as DeptResult)),
@@ -321,14 +320,6 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
           const antioquia = results.find(r => r.nombre?.toLowerCase().includes('antioquia'));
           if (antioquia) {
             console.group('[DEBUG Antioquia] DeptResult almacenado');
-            console.log('codigoDepto:', antioquia.codigoDepto);
-            console.log('data es null?:', antioquia.data === null);
-            console.log('data.sgr (tipo, longitud):', typeof antioquia.data?.sgr, Array.isArray(antioquia.data?.sgr) ? antioquia.data!.sgr.length : 'no es array');
-            console.log('data.sgr item cat=-2:', antioquia.data?.sgr?.find?.((d: any) => d.categoria === '-2'));
-            console.log('data.sgp item id=99:', antioquia.data?.sgp?.find?.((d: any) => d.id_concepto === '99'));
-            console.log('data.pgn[0]:', antioquia.data?.pgn?.[0]);
-            console.log('extractTotalValue:', antioquia.data ? this.extractTotalValue(antioquia.data) : 'data null');
-            console.log('extraerSegmentosPie:', antioquia.data ? this.extraerSegmentosPie(antioquia.data) : 'data null');
             console.groupEnd();
           } else {
             console.warn('[DEBUG] No se encontró Antioquia en results. Nombres disponibles:', results.map(r => r.nombre));
@@ -521,16 +512,6 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     const pgn = Array.isArray(data.pgn) ? data.pgn[0] : undefined;
 
     console.group(`[Popup] ${nombre}`);
-    console.log('data.sgr (array?):', Array.isArray(data.sgr), '| item cat=-2:', sgr);
-    console.log('  presupuesto_total_vigente:', sgr?.presupuesto_total_vigente, typeof sgr?.presupuesto_total_vigente);
-    console.log('  caja_total:', sgr?.caja_total, typeof sgr?.caja_total);
-    console.log('  avance_iac_presupuesto:', sgr?.avance_iac_presupuesto, typeof sgr?.avance_iac_presupuesto);
-    console.log('data.sgp (array?):', Array.isArray(data.sgp), '| item id=99:', sgp);
-    console.log('  total:', sgp?.total, typeof sgp?.total);
-    console.log('data.pgn (array?):', Array.isArray(data.pgn), '| pgn[0]:', pgn);
-    console.log('  total_apropiacion_vigente:', pgn?.total_apropiacion_vigente, typeof pgn?.total_apropiacion_vigente);
-    console.log('  porcentaje_total_compromisos:', pgn?.porcentaje_total_compromisos, typeof pgn?.porcentaje_total_compromisos);
-    console.log('  porcentaje_total_pagos:', pgn?.porcentaje_total_pagos, typeof pgn?.porcentaje_total_pagos);
     console.groupEnd();
 
     const fmt = (v: unknown) => { const n = Number(v); return Number.isFinite(n) ? '$' + this.formatearValor(n) : 'N/D'; };
@@ -606,7 +587,6 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
   }
 
   navegarResguardos(): void {
-    console.log('Navegando a Resguardos Indígenas');
   }
 
   abrirAyuda(): void {

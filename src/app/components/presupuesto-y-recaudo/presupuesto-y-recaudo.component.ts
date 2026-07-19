@@ -347,10 +347,8 @@ export class PresupuestoYRecaudoComponent implements OnInit {
       // Seleccionar la primera vigencia por defecto
       if (this.vigencias.length > 0) {
         this.selectedVigencia = this.vigencias[0];
-        console.log('Vigencia seleccionada por defecto:', this.selectedVigencia);
       }
       
-      console.log('Vigencias cargadas desde API:', this.vigencias);
     } catch (error) {
       console.warn('No se pudieron cargar las vigencias desde la API debido a restricciones CORS en desarrollo:', error);
       console.info('Usando vigencias por defecto. En producción, este endpoint debería funcionar correctamente.');
@@ -362,9 +360,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
         { id: 3, label: "2025 - 2026" }
       ];
       this.selectedVigencia = this.vigencias[2]; // Seleccionar la más reciente por defecto
-      console.log('Vigencia seleccionada por defecto (fallback):', this.selectedVigencia);
       
-      console.log('Vigencias por defecto configuradas:', this.vigencias);
     }
   }
 
@@ -384,10 +380,8 @@ export class PresupuestoYRecaudoComponent implements OnInit {
       // Seleccionar la primera vigencia por defecto
       if (this.departments.length > 0) {
         //this.departmentSelected = this.departments[0];
-        console.log('Departamento seleccionada por defecto:', this.departmentSelected);
       }
       
-      console.log('Departamento cargadas desde API:', this.departments);
       this.loadSgrData();
     } catch (error) {
       console.warn('Error cargando departamentos desde API, se usarán datos locales como fallback:', error);
@@ -397,7 +391,6 @@ export class PresupuestoYRecaudoComponent implements OnInit {
 
 
   onDepartmentChange(event: SelectChangeEvent): void {
-    console.log('Departamento seleccionado:', event.value);
     this.departmentSelected = event.value;
     this.loadTownsForDepartment();
   }
@@ -411,7 +404,6 @@ export class PresupuestoYRecaudoComponent implements OnInit {
       this.townSelected = '0';
       return;
     }
-    console.log('Cargando municipios para departamento:', this.departmentSelected);
     const municipiosLista = await this.sicodisApiService.getMunicipiosDepartamentosSgr(this.departmentSelected).toPromise();
     this.towns = municipiosLista?.map((town: any) => ({
        id: town.codigo,
@@ -422,7 +414,6 @@ export class PresupuestoYRecaudoComponent implements OnInit {
       // Seleccionar la primera vigencia por defecto
       if (this.towns.length > 0) {
         this.townSelected = this.towns[0].id;
-        console.log('Municipio seleccionada por defecto:', this.townSelected);
       }
 
   }
@@ -506,7 +497,6 @@ export class PresupuestoYRecaudoComponent implements OnInit {
 
 
 
-    console.log('Loading base data...');
 
     this.sicodisApiService
       .getSgrResumenPtoRecaudoQA(
@@ -535,13 +525,10 @@ export class PresupuestoYRecaudoComponent implements OnInit {
           this.initializeChart();
           this.initializeDonutCharts();
           this.isLoading = false;
-          console.log('Base data loaded successfully.');
 
 
           this.sicodisApiService.getSGRFechasActualizacionCorteRecaudoIACVigencia(idVigencia).subscribe({
             next: (data: SGRFechaActualizacionCorte []) => {
-              console.log('Vigencia seleccionada...', idVigencia);
-              console.log('Fechas cargadas...', data);
               if (data && data.length > 0) {
                 const registro = data[0];
                 this.fechaActualizacion = registro.fecha_actualizacion;
@@ -559,17 +546,14 @@ export class PresupuestoYRecaudoComponent implements OnInit {
         }
       });
 
-      console.log('Datos cargados...');     
   }
 
 
   async loadData(): Promise<void> {
-    console.log('Loading base data...');
     try {
       const response = await fetch(this.detailedDataUrl);
       this.detailedData = await response.json();
       this.data = organizeCategoryData(this.detailedData);
-      console.log('Base data loaded successfully.');      
     } catch (error) {
       console.error('Error fetching base data:', error);
       this.detailedData = []; // Ensure detailedData is an array in case of error      
@@ -798,7 +782,6 @@ private formatCurrency(value: number): string {
         centerText: {
           display: true,
           text: () => {
-            console.log('Calculating center text for Recaudo Corriente');
             const recaudo = this.financialData.caja_corriente_informada;
             const presupuesto = this.financialData.presupuesto_corriente;
             if (presupuesto === 0) return '0.00%';
@@ -851,7 +834,6 @@ private formatCurrency(value: number): string {
 
 
   updateSelectedSearchType(event: any) {
-    console.log('Selected search type:', event.value);
     this.selectedSearchType = event.value; // event.value already contains the selected object {id, label}
 
     // Reset dependent filters
@@ -865,14 +847,12 @@ private formatCurrency(value: number): string {
   }
 
   updateSelectedDpto(event: any) {
-    console.log('Selected department:', event.value);
     this.selectedDpto = event.value;
     // Do not automatically query data here
     // this.queryData();
   }
 
   updateSelectedEntity(event: any) {
-    console.log('Selected entity:', event.value);
     this.selectedEntity = event.value;
     this.selectedDetailEntity = undefined; // Reset detail entity when main entity changes
     this.detailEntitiesFiltered = [];
@@ -886,7 +866,6 @@ private formatCurrency(value: number): string {
             this.detailEntities = data;
             this.detailEntitiesFiltered = this.detailEntities.filter((entity: any) => entity.codPadre === this.selectedEntity.codigo);
 
-            console.log('Detail entities filtered:', this.detailEntitiesFiltered);
           })
           .catch(error => console.error('Error fetching detail entities:', error));
       } else {
@@ -899,23 +878,12 @@ private formatCurrency(value: number): string {
   }
 
   updateSelectedDetailEntity(event: any) {
-    console.log('Selected detail entity:', event.value);
     this.selectedDetailEntity = event.value;
     // Do not automatically query data here
     // this.queryData();
   }
 
   applyFilters() {
-    console.log('Applying filters...');
-    console.log('Selected filters:', {
-      vigencia: this.selectedVigencia,
-      tipoIngreso: this.selectedTipoIngreso,
-      asignaciones: this.selectedAsignaciones,
-      searchType: this.selectedSearchType,
-      dpto: this.selectedDpto,
-      entity: this.selectedEntity,
-      detailEntity: this.selectedDetailEntity
-    });
     
     // Call the query data method with current filters
     //this.queryData();
@@ -923,7 +891,6 @@ private formatCurrency(value: number): string {
   }
 
   clearFilters() {
-    console.log('Clearing filters...');
     this.selectedVigencia = this.vigencia[0]; // Reset to first vigencia
     this.selectedTipoIngreso = this.tiposIngreso[0]; // Reset to first tipo ingreso
     this.selectedAsignaciones = []; // Reset asignaciones selection
@@ -1000,12 +967,10 @@ private formatCurrency(value: number): string {
   }
 
   exportData(format: 'excel' | 'pdf') {
-    console.log(`Exportando datos en formato: ${format}`);
     // Implementar lógica de exportación
   }
 
   async queryData() {
-    console.log('Consultando datos...');
     this.queryDataFake(); // Usar datos falsos para pruebas
     //await this.testImproved();
     // Implementar lógica de consulta
@@ -1019,7 +984,6 @@ private formatCurrency(value: number): string {
   }
 
   queryDataFake() {
-    console.log('Consultando datos (falso)...');
     const randomNumber = this.generateRandomPercentage(2.5, 4.5) / 100;    
     let filteredData = this.detailedData.map((row: any) => {
       const newRow = { ...row };
@@ -1082,7 +1046,6 @@ private formatCurrency(value: number): string {
    * Manejar click principal del split button histórico
    */
   handleHistoricClick(): void {
-    console.log('Histórico button clicked');
     this.showHistoric();
   }
 
@@ -1090,7 +1053,6 @@ private formatCurrency(value: number): string {
    * Mostrar histórico
    */
   private showHistoric(): void {
-    console.log('Mostrando histórico...');
     // Aquí se implementaría la lógica para mostrar datos históricos
     //alert('Funcionalidad de histórico pendiente de implementación');
     window.open(this.urlSgrInformesRecaudo, '_blank');
@@ -1100,7 +1062,6 @@ private formatCurrency(value: number): string {
    * Descargar datos en Excel
    */
   downloadExcel(): void {
-    console.log('Descargando Excel con datos de recaudo directas:');
     // Aquí se implementaría la lógica de descarga del Excel
     this.descargarDatosPtoRecaudo();
   }
@@ -1168,7 +1129,6 @@ private formatCurrency(value: number): string {
       });
 
       const arrayBuffer = await excelBlob.arrayBuffer();
-      console.log('Tamaño de archivo:', arrayBuffer.byteLength);
 
       // Crear enlace temporal para descargar
       const url = window.URL.createObjectURL(excelBlob);
@@ -1181,7 +1141,6 @@ private formatCurrency(value: number): string {
 
       window.URL.revokeObjectURL(url);
 
-      console.log('Archivo descargado exitosamente');
       this.isLoading = false;
 
 
@@ -1248,7 +1207,6 @@ private formatCurrency(value: number): string {
       const idVigencia = parseInt(this.selectedVigencia.value);
       
       this.fuentesAsignacionesAPI = await this.sicodisApiService.getFuentesAsignaciones(idVigencia).toPromise() || [];
-      console.log('Fuentes API cargadas:', this.fuentesAsignacionesAPI);
       this.inicializarAsignaciones();
     } catch (error) {
       console.warn('Error cargando fuentes desde API:', error);
@@ -1272,7 +1230,6 @@ private formatCurrency(value: number): string {
           }))
         ];
         
-        console.log('Asignaciones inicializadas desde API (ordenadas):', this.asignaciones);
       } else {
         console.warn('No hay fuentes disponibles desde la API');
         this.asignaciones = [];
@@ -1287,7 +1244,6 @@ private formatCurrency(value: number): string {
    * Evento cuando cambian las asignaciones seleccionadas
    */
   onAsignacionesChange(event: any): void {
-    console.log('Asignaciones seleccionadas:', event.value);
     this.selectedAsignaciones = event.value || [];
     
     // Aquí podrías agregar lógica adicional si es necesaria
@@ -1298,7 +1254,6 @@ private formatCurrency(value: number): string {
    * Mostrar popup del diccionario
    */
   showPopupDiccionario(): void {
-    console.log('Mostrando diccionario de datos');
     this.diccionarioContent = this.generarContenidoDiccionario();
     this.showDiccionarioPopup = true;
   }
@@ -1307,7 +1262,6 @@ private formatCurrency(value: number): string {
    * Mostrar popup de siglas
    */
   showPopupSiglas(): void {
-    console.log('Mostrando siglas');
     this.siglasContent = this.generarContenidoSiglas();
     this.showSiglasPopup = true;
   }

@@ -183,7 +183,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
     this.initializeStackedBarChart();
     this.initializeBarChartsOptions();
     this.loadSgpHistoricoDataForEvolution();
-    console.log('Historico SGP Component initialized');
   }
 
   ngAfterViewInit(): void {
@@ -207,10 +206,8 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
       // Seleccionar la primera vigencia por defecto
       if (this.departments.length > 0) {
         this.departmentSelected = this.departments[0].id;
-        console.log('Departamento seleccionada por defecto:', this.departmentSelected);
       }
       
-      console.log('Departamento cargadas desde API:', this.departments);
     } catch (error) {
       console.warn('Error cargando departamentos desde API, se usarán datos locales como fallback:', error);
       this.departments = [];
@@ -228,7 +225,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
       this.availableYears.push({ year: year.toString() });
     }
     
-    console.log('Available years generated:', this.availableYears);
   }
 
   /**
@@ -244,23 +240,19 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
    */
   loadSgpHistoricoFromApi(): void {
     if (this.selectedYears.length === 0) {
-      console.log('No hay años seleccionados para cargar datos');
       // Crear datos de ejemplo para pruebas
       this.createSampleTreeData();
       return;
     }
 	  // Usar método histórico original
 	  const aniosString = this.selectedYears.join(',');
-	  console.log('Cargando datos históricos para años:', aniosString);
 
     this.sicodisApiService.getSgpResumenHistoricoEntidad({anios: aniosString, codigoDepto: this.departmentSelected, codigoMunicipio: this.townSelected}).subscribe({     
       next: (result: any[]) => {
-        console.log('Datos históricos del API:', result);
         this.historicoApiData = result;
         if (result && result.length > 0) {
         this.buildTreeTableData();
         } else {
-        console.log('No hay datos del API, creando datos de ejemplo');
         this.createSampleTreeData();
         }
         // Desactivar indicadores de carga
@@ -270,7 +262,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
       error: (error) => {
         console.error('Error loading SGP historico from API:', error);
         // Fallback con datos de ejemplo
-        console.log('Error en API, creando datos de ejemplo');
         this.createSampleTreeData();
         // Desactivar indicadores de carga
         this.isLoadingChart = false;
@@ -335,7 +326,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
    * Carga datos del SGP por departamento usando getSgpResumenParticipaciones
    */
   loadSgpParticipacionesByDepartment(): void {
-    console.log('Cargando participaciones por departamento:', this.departmentSelected);
     
     // Crear array de observables para cada año seleccionado
     const participacionesObservables = this.selectedYears.map(year => 
@@ -349,7 +339,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
     // Ejecutar todas las llamadas en paralelo
     forkJoin(participacionesObservables).subscribe({
       next: (results: any[]) => {
-        console.log('Datos de participaciones por departamento:', results);
         this.processParticipacionesData(results);
         // Desactivar indicadores de carga
         this.isLoadingChart = false;
@@ -358,7 +347,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
       error: (error) => {
         console.error('Error loading SGP participaciones by department:', error);
         // Fallback con datos de ejemplo
-        console.log('Error en API participaciones, creando datos de ejemplo');
         this.createSampleTreeData();
         // Desactivar indicadores de carga
         this.isLoadingChart = false;
@@ -371,8 +359,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
    * Carga datos del SGP por municipio usando getSgpResumenParticipaciones
    */
   loadSgpParticipacionesByMunicipality(): void {
-    console.log('Cargando participaciones por municipio:', this.townSelected);
-    console.log('Departamento padre:', this.departmentSelected);
     
     // Crear array de observables para cada año seleccionado
     const participacionesObservables = this.selectedYears.map(year => 
@@ -386,7 +372,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
     // Ejecutar todas las llamadas en paralelo
     forkJoin(participacionesObservables).subscribe({
       next: (results: any[]) => {
-        console.log('Datos de participaciones por municipio:', results);
         this.processParticipacionesData(results);
         // Desactivar indicadores de carga
         this.isLoadingChart = false;
@@ -395,7 +380,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
       error: (error) => {
         console.error('Error loading SGP participaciones by municipality:', error);
         // Fallback con datos de ejemplo
-        console.log('Error en API participaciones municipio, creando datos de ejemplo');
         this.createSampleTreeData();
         // Desactivar indicadores de carga
         this.isLoadingChart = false;
@@ -408,7 +392,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
    * Crea datos de ejemplo para probar la tabla mientras no hay conexión al API
    */
   createSampleTreeData(): void {
-    console.log('Creando datos de ejemplo para TreeTable');
     
     this.treeTableData = [];
     
@@ -493,7 +476,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
     ];
 
     this.treeTableData = sampleData;
-    console.log('Datos de ejemplo creados:', this.treeTableData);
     this.calculateTreeTableTotal();
     
     // Actualizar gráfico con datos de ejemplo
@@ -508,7 +490,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
    * Procesa los datos de participaciones del departamento y los organiza en estructura de árbol
    */
   processParticipacionesData(results: any[]): void {
-    console.log('Procesando datos de participaciones:', results);
     
     // Crear un array plano con todos los conceptos de todas las vigencias
     this.historicoApiData = [];
@@ -539,12 +520,10 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
       }
     });
     
-    console.log('Datos históricos procesados:', this.historicoApiData);
     
     if (this.historicoApiData.length > 0) {
       this.buildTreeTableData();
     } else {
-      console.log('No se pudieron procesar los datos, usando datos de ejemplo');
       this.createSampleTreeData();
     }
     
@@ -579,7 +558,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
     
     this.selectedYears = defaultYears;
     this.infoResume = this.availableYears;
-    console.log('Años seleccionados por defecto:', this.selectedYears);
   }
 
   /**
@@ -720,7 +698,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
       datasets: adjustedDatasets
     };
 
-    console.log('Gráfico de barras apiladas actualizado:', this.stackedBarChartData);
   }
 
   /**
@@ -758,7 +735,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
    * Evento cuando cambian las vigencias seleccionadas
    */
   onVigenciaChange(event: MultiSelectChangeEvent): void {
-    console.log('Vigencias seleccionadas:', event.value);
     this.selectedYears = event.value;
     
     // Activar indicadores de carga
@@ -777,7 +753,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
    * Evento cuando cambia el departamento seleccionado
    */
   onDepartmentChange(event: SelectChangeEvent): void {
-    console.log('Departamento seleccionado:', event.value);
     this.departmentSelected = event.value;
     
     // Activar indicadores de carga
@@ -792,7 +767,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
    * Evento cuando cambia el municipio seleccionado
    */
   onTownChange(event: SelectChangeEvent): void {
-    console.log('Municipio seleccionado:', event.value);
     this.townSelected = event.value;
     
     // Activar indicadores de carga
@@ -807,10 +781,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
    * Aplica los filtros seleccionados
    */
   applyFilters(): void {
-    console.log('Aplicando filtros...');
-    console.log('Vigencias:', this.selectedYears);
-    console.log('Departamento:', this.departmentSelected);
-    console.log('Municipio:', this.townSelected);
     
     // Activar indicadores de carga
     this.isLoadingChart = true;
@@ -824,7 +794,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
    * Limpia todos los filtros
    */
   async clearFilters(): Promise<void> {
-    console.log('Limpiando filtros...');
     this.selectedYears = [];
     this.departmentSelected = '';
     this.townSelected = '';
@@ -853,8 +822,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
    * Exporta los datos a Excel
    */
   exportToExcel(): void {
-    console.log('Exportando a Excel...');
-    console.log('Actualizando datos...');   
     this.descargarDatosDistribucion();
   } 
 
@@ -866,7 +833,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
      
 	    // Usar método histórico original
   	  const aniosString = this.selectedYears.join(',');
-	    console.log('Cargando datos históricos para años:', aniosString);
       const selectedDepartamento = this.departments.find(d => d.id === this.departmentSelected);
       const selectedMunicipio = this.towns.find(d => d.id === this.townSelected);
 
@@ -890,7 +856,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
       });
 
       const arrayBuffer = await excelBlob.arrayBuffer();
-      console.log('Tamaño de archivo:', arrayBuffer.byteLength);
 
       // Crear enlace temporal para descargar
       const url = window.URL.createObjectURL(excelBlob);
@@ -903,7 +868,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
 
       window.URL.revokeObjectURL(url);
 
-      console.log('Archivo descargado exitosamente');
 
 
 
@@ -919,7 +883,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
    * Exporta los datos a PDF
    */
   exportToPDF(): void {
-    console.log('Exportando a PDF...');
     // Aquí iría la lógica para exportar a PDF
   }
 
@@ -1076,7 +1039,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
     });
 
     this.treeTableData = Array.from(conceptosMap.values());
-    console.log('Tree table data:', this.treeTableData);
     this.calculateTreeTableTotal();
     
     // Actualizar gráfico con los nuevos datos
@@ -1115,7 +1077,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
    * Actualiza los gráficos según los filtros
    */
   private updateCharts(): void {
-    console.log('Actualizando gráfico para años:', this.selectedYears);
     this.updateStackedBarChart();
   }
 
@@ -1128,7 +1089,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
       this.townSelected = '0';
       return;
     }
-    console.log('Cargando municipios para departamento:', this.departmentSelected);
   
     const municipiosLista = await this.sicodisApiService.getMunicipiosDepartamentosSgp(this.departmentSelected).toPromise();
     this.towns = municipiosLista?.map((town: any) => ({
@@ -1140,7 +1100,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
     // Seleccionar la primera vigencia por defecto
     if (this.towns.length > 0) {
       this.townSelected = this.towns[0].id;
-      console.log('Municipio seleccionada por defecto:', this.townSelected);
     }
 
   }
@@ -1201,7 +1160,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
       scrollableView.style.width = `${totalWidth}px`;
     }
 
-    console.log(`Table width updated: ${scrollableView.style.width} for ${this.selectedYears.length} vigencias`);
   }
 
   /**
@@ -1312,12 +1270,10 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
    * Carga datos históricos para las gráficas evolutivas
    */
   loadSgpHistoricoDataForEvolution(): void {
-    console.log("loadSgpHistoricoDataForEvolution...");
     const aniosString = this.yearsRange.join(',');
     
     this.sicodisApiService.getSgpResumenHistorico({ anios: aniosString }).subscribe({
       next: (result: any) => {
-        console.log('Historico data for evolution:', result);
         this.initializeChartsWithHistoricoData(result);
       },
       error: (error) => {
@@ -1389,8 +1345,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
     // Calcular la variación anual basada en los datos reales
     const variationDataCorrientes = this.calculateVariationData(sgpDataCorrientes);
 
-    console.log('SGP Data Corrientes:', sgpDataCorrientes);
-    console.log('Variation Data Corrientes:', variationDataCorrientes);
 
     this.chartData1 = {
       labels: this.yearsRange,
@@ -1452,8 +1406,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
     // Calcular la variación anual basada en los datos reales de precios constantes
     const variationData = this.calculateVariationData(sgpData);
 
-    console.log('SGP Data Constantes:', sgpData);
-    console.log('Variation Data Constantes:', variationData);
 
     this.chartData3 = {
       labels: this.yearsRange,

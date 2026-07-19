@@ -340,12 +340,10 @@ export class SgrRecaudoDirectasComponent implements OnInit {
       // Seleccionar la primera vigencia por defecto
       if (this.vigencias.length > 0) {
         this.selectedVigencia = this.vigencias[0];
-        console.log('Vigencia seleccionada por defecto:', this.selectedVigencia);
         this.updateShowAnticipadas();
         this.loadSgrData();
       }
 
-      console.log('Vigencias cargadas desde API:', this.vigencias);
     } catch (error) {
       console.warn('No se pudieron cargar las vigencias desde la API debido a restricciones CORS en desarrollo:', error);
       console.info('Usando vigencias por defecto. En producción, este endpoint debería funcionar correctamente.');
@@ -357,11 +355,9 @@ export class SgrRecaudoDirectasComponent implements OnInit {
         { id: 3, label: "2025 - 2026" }
       ];
       this.selectedVigencia = this.vigencias[2]; // Seleccionar la más reciente por defecto
-      console.log('Vigencia seleccionada por defecto (fallback):', this.selectedVigencia);
       this.updateShowAnticipadas();
       this.loadSgrData();
 
-      console.log('Vigencias por defecto configuradas:', this.vigencias);
     }
   }
 
@@ -381,10 +377,8 @@ export class SgrRecaudoDirectasComponent implements OnInit {
       // Seleccionar la primera vigencia por defecto
       if (this.departments.length > 0) {
         //this.departmentSelected = this.departments[0];
-        console.log('Departamento seleccionada por defecto:', this.departmentSelected);
       }
 
-      console.log('Departamento cargadas desde API:', this.departments);
     } catch (error) {
       console.warn('Error cargando departamentos desde API, se usarán datos locales como fallback:', error);
       this.departments = [];
@@ -392,7 +386,6 @@ export class SgrRecaudoDirectasComponent implements OnInit {
   }
 
   onDepartmentChange(event: SelectChangeEvent): void {
-    console.log('Departamento seleccionado:', event.value);
     this.departmentSelected = event.value;
     this.loadTownsForDepartment();
   }
@@ -420,7 +413,6 @@ export class SgrRecaudoDirectasComponent implements OnInit {
       this.townSelected = '0';
       return;
     }
-    console.log('Cargando municipios para departamento:', this.departmentSelected);
     const municipiosLista = await this.sicodisApiService.getMunicipiosDepartamentosSgr(this.departmentSelected).toPromise();
     this.towns = municipiosLista?.map((town: any) => ({
       id: town.codigo,
@@ -431,7 +423,6 @@ export class SgrRecaudoDirectasComponent implements OnInit {
     // Seleccionar la primera vigencia por defecto
     if (this.towns.length > 0) {
       this.townSelected = this.towns[0].id;
-      console.log('Municipio seleccionada por defecto:', this.townSelected);
     }
 
   }
@@ -1104,16 +1095,10 @@ export class SgrRecaudoDirectasComponent implements OnInit {
   applyFilters(): void {
     if (this.selectedVigencia && this.departmentSelected && this.townSelected) {
       this.filtersApplied = true;
-      console.log('Filtros aplicados:', {
-        bienio: this.selectedVigencia.id,
-        beneficiario: this.departmentSelected,
-        departamento: this.townSelected
-      });
 
       // Aquí se implementaría la lógica de carga de datos para recaudo directas
       this.loadSgrData();
     } else {
-      console.log('Debe seleccionar todos los filtros requeridos');
     }
   }
 
@@ -1125,14 +1110,12 @@ export class SgrRecaudoDirectasComponent implements OnInit {
     this.selectedBeneficiario = null;
     this.selectedDepartamento = null;
     this.filtersApplied = false;
-    console.log('Filtros limpiados');
   }
 
   /**
    * Descargar datos en Excel
    */
   downloadExcel(): void {
-    console.log('Descargando Excel con datos de recaudo directas:');
     // Aquí se implementaría la lógica de descarga del Excel
     this.descargarDatosPBCRecaudo();
   }
@@ -1145,15 +1128,11 @@ export class SgrRecaudoDirectasComponent implements OnInit {
     try {
 
       // Usar método histórico original
-      console.log('Descargando  datos ultima y once');
       const idvigencia = parseInt(this.selectedVigencia.id);
 
 
       const selectedDepartamento = this.departments.find(d => d.id === this.departmentSelected);
       const selectedMunicipio = this.towns.find(d => d.id === this.townSelected);
-      console.log('Vigencia seleccionada:', idvigencia);
-      console.log('Código Departamento  seleccionado:', selectedDepartamento);
-      console.log('Código Municipio seleccionado por defecto:', selectedMunicipio);
 
 
 
@@ -1179,7 +1158,6 @@ export class SgrRecaudoDirectasComponent implements OnInit {
       });
 
       const arrayBuffer = await excelBlob.arrayBuffer();
-      console.log('Tamaño de archivo:', arrayBuffer.byteLength);
 
       // Crear enlace temporal para descargar
       const url = window.URL.createObjectURL(excelBlob);
@@ -1192,7 +1170,6 @@ export class SgrRecaudoDirectasComponent implements OnInit {
 
       window.URL.revokeObjectURL(url);
 
-      console.log('Archivo descargado exitosamente');
 
 
 
@@ -1206,7 +1183,6 @@ export class SgrRecaudoDirectasComponent implements OnInit {
    * Mostrar popup del diccionario
    */
   showPopupDiccionario1(): void {
-    console.log('Mostrando diccionario de datos');
     this.diccionarioContent = this.generarContenidoDiccionario();
     this.showDiccionarioPopup = true;
   }
@@ -1215,7 +1191,6 @@ export class SgrRecaudoDirectasComponent implements OnInit {
    * Mostrar popup de siglas
    */
   showPopupSiglas1(): void {
-    console.log('Mostrando siglas');
     this.siglasContent = this.generarContenidoSiglas();
     this.showSiglasPopup = true;
   }
@@ -1225,7 +1200,6 @@ export class SgrRecaudoDirectasComponent implements OnInit {
  * Mostrar popup del diccionario
  */
   showPopupDiccionario(): void {
-    console.log('Mostrando diccionario de datos');
     this.diccionarioContent = this.generarContenidoDiccionario();
     this.showDiccionarioPopup = true;
   }
@@ -1234,7 +1208,6 @@ export class SgrRecaudoDirectasComponent implements OnInit {
    * Mostrar popup de siglas
    */
   showPopupSiglas(): void {
-    console.log('Mostrando siglas');
     this.siglasContent = this.generarContenidoSiglas();
     this.showSiglasPopup = true;
   }

@@ -67,7 +67,6 @@ export class EficienciaComponent implements OnInit {
       next: (data) => {
         this.municipios.set(data);
         this.isLoading.set(false);
-        console.log('Municipios cargados:', data.length);
       },
       error: (err) => {
         console.error('Error cargando municipios:', err);
@@ -89,7 +88,6 @@ export class EficienciaComponent implements OnInit {
       next: (data) => {
         this.resumen.set(data);
         this.isLoading.set(false);
-        console.log('Resumen cargado para:', data.municipio.municipio);
       },
       error: (err) => {
         console.error('Error cargando resumen:', err);

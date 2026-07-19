@@ -195,10 +195,8 @@ export class PgnRegionalizacionPresupuestoSeguimientoComponent implements OnInit
       // Seleccionar la primera vigencia por defecto
       if (this.vigencias.length > 0) {
         this.selectedVigencia = this.vigencias[0];
-        console.log('Vigencia seleccionada por defecto:', this.selectedVigencia);
       }
       
-      console.log('Vigencias cargadas desde API:', this.vigencias);
     } catch (error) {
       console.warn('Error cargando vigencias desde API, se usarán datos locales como fallback:', error);
       this.vigencias = [];
@@ -210,7 +208,6 @@ export class PgnRegionalizacionPresupuestoSeguimientoComponent implements OnInit
    */
   private async cargarPeriodos(): Promise<void> {
     try {
-      console.log('Vigencia seleccionado por defecto:', this.selectedVigencia);
       const periodos = await this.sicodisApiService.getPgnPeriodoPorVigencia(this.selectedVigencia.id).toPromise();
       this.periodos = periodos?.map((periodo: any) => ({
         id: periodo.id_periodo,
@@ -220,10 +217,8 @@ export class PgnRegionalizacionPresupuestoSeguimientoComponent implements OnInit
       // Seleccionar el primer periodo por defecto
       if (this.periodos.length > 0) {
         this.selectedPeriodo = this.periodos[0];
-        console.log('Periodo seleccionado por defecto:', this.selectedPeriodo);
       }
       
-      console.log('Periodos cargadas desde API:', this.periodos);
     } catch (error) {
       console.warn('Error cargando periodos desde API, se usarán datos locales como fallback:', error);
       this.periodos = [];
@@ -236,8 +231,6 @@ export class PgnRegionalizacionPresupuestoSeguimientoComponent implements OnInit
    */
   private async cargarRegiones(): Promise<void> {
     try {
-      console.log('Vigencia seleccionada por defecto:', this.selectedVigencia);
-      console.log('Periodo seleccionado por defecto:', this.selectedPeriodo);
 
       const regiones = await this.sicodisApiService.getPgnRegionesPorVigenciaPeriodo(this.selectedVigencia.id, this.selectedPeriodo.id).toPromise();
 
@@ -253,8 +246,6 @@ export class PgnRegionalizacionPresupuestoSeguimientoComponent implements OnInit
       // Seleccionamos "Todas" por defecto
       this.selectedRegion = this.regiones[0];
 
-      console.log('Regiones cargados desde API:', this.regiones);
-      console.log('Regiones seleccionado por defecto:', this.selectedRegion);
 
     } catch (error) {
       console.warn('Error cargando regiones desde API, se usarán datos locales como fallback:', error);
@@ -270,9 +261,6 @@ export class PgnRegionalizacionPresupuestoSeguimientoComponent implements OnInit
    */
   private async cargarDepartamentos(): Promise<void> {
     try {
-      console.log('Vigencia seleccionada por defecto:', this.selectedVigencia);
-      console.log('Periodo seleccionado por defecto:', this.selectedPeriodo);
-      console.log('Región seleccionada por defecto:', this.selectedRegion);
 
       const departamentos = await this.sicodisApiService.getPgnDepartamentosPorVigenciaPeriodoRegion(this.selectedVigencia.id, this.selectedPeriodo.id, this.selectedRegion.id).toPromise();
 
@@ -288,8 +276,6 @@ export class PgnRegionalizacionPresupuestoSeguimientoComponent implements OnInit
       // Seleccionamos "Todos" por defecto
       this.selectedDepartamento = this.departamentos[0];
 
-      console.log('Departamentos cargados desde API:', this.departamentos);
-      console.log('Departamento seleccionado por defecto:', this.selectedDepartamento);
 
     } catch (error) {
       console.warn('Error cargando departamentos desde API, se usarán datos locales como fallback:', error);
@@ -305,8 +291,6 @@ export class PgnRegionalizacionPresupuestoSeguimientoComponent implements OnInit
    */
   private async cargarFuentes(): Promise<void> {
     try {
-      console.log('Vigencia seleccionada por defecto:', this.selectedVigencia);
-      console.log('Periodo seleccionado por defecto:', this.selectedPeriodo);
 
       const fuentes = await this.sicodisApiService.getPgnFuentesPorVigenciaPeriodo(this.selectedVigencia.id, this.selectedPeriodo.id).toPromise();
 
@@ -322,8 +306,6 @@ export class PgnRegionalizacionPresupuestoSeguimientoComponent implements OnInit
       // Seleccionamos "Todos" por defecto
       this.selectedFuente = this.fuentes[0];
 
-      console.log('Fuentes cargados desde API:', this.fuentes);
-      console.log('Fuentes seleccionado por defecto:', this.selectedFuente);
 
     } catch (error) {
       console.warn('Error cargando fuentes desde API, se usarán datos locales como fallback:', error);
@@ -339,11 +321,6 @@ export class PgnRegionalizacionPresupuestoSeguimientoComponent implements OnInit
    */
   private async cargarDatosSeguimiento(): Promise<void> {
     try {
-      console.log('Vigencia seleccionada por defecto:', this.selectedVigencia);
-      console.log('Periodo seleccionado por defecto:', this.selectedPeriodo);
-      console.log('Region seleccionado por defecto:', this.selectedRegion);
-      console.log('Código Departamento  seleccionado por defecto:', this.selectedDepartamento);
-      console.log('Fuente seleccionada por defecto:', this.selectedFuente);
 
     const response = await this.sicodisApiService.getPgnDatosSeguimientoPorVigenciaPeriodo( this.selectedVigencia.id,
                                                                                                 this.selectedPeriodo.id,
@@ -392,8 +369,6 @@ export class PgnRegionalizacionPresupuestoSeguimientoComponent implements OnInit
     ];
     
 
-    console.log('Resumen recibido:', this.resumen);
-    console.log('Detalle recibido:', this.detalle);
 
 
     } catch (error) {
@@ -437,11 +412,6 @@ export class PgnRegionalizacionPresupuestoSeguimientoComponent implements OnInit
    */
   private async descargarDatosSeguimiento(): Promise<void> {
     try {
-      console.log('Vigencia seleccionada por defecto:', this.selectedVigencia);
-      console.log('Periodo seleccionado por defecto:', this.selectedPeriodo);
-      console.log('Region seleccionado por defecto:', this.selectedRegion);
-      console.log('Código Departamento  seleccionado por defecto:', this.selectedDepartamento);
-      console.log('Fuente seleccionada por defecto:', this.selectedFuente);
 
 
 
@@ -467,7 +437,6 @@ export class PgnRegionalizacionPresupuestoSeguimientoComponent implements OnInit
       });
 
       const arrayBuffer = await excelBlob.arrayBuffer();
-      console.log('Tamaño de archivo:', arrayBuffer.byteLength);
 
       // Crear enlace temporal para descargar
       const url = window.URL.createObjectURL(excelBlob);
@@ -480,7 +449,6 @@ export class PgnRegionalizacionPresupuestoSeguimientoComponent implements OnInit
 
       window.URL.revokeObjectURL(url);
 
-      console.log('Archivo descargado exitosamente');
 
 
 
@@ -495,10 +463,6 @@ export class PgnRegionalizacionPresupuestoSeguimientoComponent implements OnInit
    */
   private async descargarDatosRegionalizados(): Promise<void> {
     try {
-      console.log('Vigencia seleccionada:', this.selectedVigencia);
-      console.log('Periodo seleccionado:', this.selectedPeriodo);
-      console.log('Código Departamento:', this.selectedDepartamento);
-      console.log('Fuente:', this.selectedFuente);
 
       // Puede ser Blob o undefined
       const archivo: Blob | undefined = await this.sicodisApiService.getPgnDescargaDatosRegionalizacionPorVigenciaPeriodo(this.selectedVigencia.id,
@@ -521,7 +485,6 @@ export class PgnRegionalizacionPresupuestoSeguimientoComponent implements OnInit
       });
 
       const arrayBuffer = await excelBlob.arrayBuffer();
-      console.log('Tamaño de archivo:', arrayBuffer.byteLength);
 
       // Crear enlace temporal para descargar
       const url = window.URL.createObjectURL(excelBlob);
@@ -534,7 +497,6 @@ export class PgnRegionalizacionPresupuestoSeguimientoComponent implements OnInit
 
       window.URL.revokeObjectURL(url);
 
-      console.log('Archivo descargado exitosamente');
 
     } catch (error) {
       console.warn('Error descargando el archivo:', error);
@@ -542,7 +504,6 @@ export class PgnRegionalizacionPresupuestoSeguimientoComponent implements OnInit
   }
 
   onVigenciaChange(event: SelectChangeEvent): void {
-    console.log('Vigencia seleccionada:', event.value);
     this.selectedVigencia = event.value;
 
     this.cargarPeriodos();
@@ -552,35 +513,26 @@ export class PgnRegionalizacionPresupuestoSeguimientoComponent implements OnInit
   }
 
   onPeriodoChange(event: SelectChangeEvent): void {
-    console.log('Periodo seleccionado:', event.value);
     this.selectedPeriodo = event.value;
     this.cargarDepartamentos();
     this.cargarFuentes();    
   }
 
   onRegionChange(event: SelectChangeEvent): void {
-    console.log('Región seleccionada:', event.value);
     this.selectedRegion = event.value;
     this.cargarDepartamentos();
     this.cargarFuentes();    
   }
 
   onDepartamentoChange(event: SelectChangeEvent): void {
-    console.log('Departamento seleccionado:', event.value);
     this.selectedDepartamento = event.value;   
   }
 
   onFuenteChange(event: SelectChangeEvent): void {
-    console.log('Fuente seleccionada:', event.value);
     this.selectedFuente = event.value;
   }
 
   onActualizar(): void {
-    console.log('Actualizando datos...');
-    console.log('Vigencia:', this.selectedVigencia);
-    console.log('Periodo:', this.selectedPeriodo);
-    console.log('Departamento:', this.selectedDepartamento);
-    console.log('Fuente:', this.selectedFuente);
     this.cargarDatosSeguimiento();
 
     this.isLoading = true;
@@ -588,7 +540,6 @@ export class PgnRegionalizacionPresupuestoSeguimientoComponent implements OnInit
     // Simulate API call
     setTimeout(() => {
       this.isLoading = false;
-      console.log('Datos actualizados');
     }, 2000);
   }
 
@@ -597,7 +548,6 @@ export class PgnRegionalizacionPresupuestoSeguimientoComponent implements OnInit
     this.selectedPeriodo = this.periodos[0];
     this.selectedDepartamento = null;
     this.selectedFuente = null;
-    console.log('Filtros limpiados');
   }
 
   private initializeDepartamentosData(): void {
@@ -677,12 +627,6 @@ export class PgnRegionalizacionPresupuestoSeguimientoComponent implements OnInit
   }
 
   exportToExcel(): void {
-    console.log('Exportando a Excel...');
-    console.log('Actualizando datos...');
-    console.log('Vigencia:', this.selectedVigencia);
-    console.log('Periodo:', this.selectedPeriodo);
-    console.log('Departamento:', this.selectedDepartamento);
-    console.log('Fuente:', this.selectedFuente);
     this.descargarDatosSeguimiento();
   }
 }

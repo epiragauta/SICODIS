@@ -383,7 +383,6 @@ export class SgrComparativoComponent implements OnInit {
     this.selectedMunicipio = null;
     this.selectedDepartamento2 = null;
     this.selectedMunicipio2 = null;
-    console.log('Filtros limpiados');
   }
 
   /**
@@ -392,14 +391,12 @@ export class SgrComparativoComponent implements OnInit {
   onDepartmentChange(event: any): void {
     this.selectedMunicipio = null; // Limpiar municipio seleccionado
     this.loadTownsForDepartment(); // Cargar municipios del departamento seleccionado
-    console.log('Departamento 1 seleccionado:', event.value);
   }
 
   /**
    * Manejar cambio de municipio 1
    */
   onMunicipioChange(event: any): void {
-    console.log('Municipio 1 seleccionado:', event.value);
     this.updateMunicipios2List(); // Actualizar lista de municipios 2
     this.loadComparativeData();
   }
@@ -410,14 +407,12 @@ export class SgrComparativoComponent implements OnInit {
   onDepartment2Change(event: any): void {
     this.selectedMunicipio2 = null; // Limpiar municipio seleccionado
     this.loadTownsForDepartment2(); // Cargar municipios del departamento seleccionado
-    console.log('Departamento 2 seleccionado:', event.value);
   }
 
   /**
    * Manejar cambio de municipio 2
    */
   onMunicipio2Change(event: any): void {
-    console.log('Municipio 2 seleccionado:', event.value);
     this.loadComparativeData();
   }
 
@@ -426,7 +421,6 @@ export class SgrComparativoComponent implements OnInit {
    */
   private loadComparativeData(): void {
     if (!this.selectedBienio || !this.selectedMunicipio || !this.selectedMunicipio2) {
-      console.log('Filtros incompletos, no se puede cargar datos comparativos');
       return;
     }
 
@@ -436,13 +430,6 @@ export class SgrComparativoComponent implements OnInit {
     const tipoConsulta2 = 7;
     const codigoEntidad2 = this.selectedMunicipio2.codigo_municipio;
 
-    console.log('Cargando datos comparativos:', {
-      idVigencia,
-      tipoConsulta1,
-      codigoEntidad1,
-      tipoConsulta2,
-      codigoEntidad2
-    });
 
     this.sicodisApiService.getSgrResumenPtoRecaudoComparador(
       idVigencia,
@@ -452,7 +439,6 @@ export class SgrComparativoComponent implements OnInit {
       codigoEntidad2
     ).subscribe({
       next: (data) => {
-        console.log('Datos comparativos recibidos:', data);
         this.processComparativeData(data);
       },
       error: (error) => {
@@ -654,11 +640,9 @@ export class SgrComparativoComponent implements OnInit {
       return;
     }
 
-    console.log('Cargando municipios para departamento:', this.selectedDepartamento.codigo);
     
     this.sicodisApiService.getMunicipiosPorDepartamento(this.selectedDepartamento.codigo).subscribe({
       next: (municipios) => {
-        console.log('Municipios cargados:', municipios);
         this.municipios = municipios;
         this.updateMunicipios2List();
       },
@@ -679,11 +663,9 @@ export class SgrComparativoComponent implements OnInit {
       return;
     }
 
-    console.log('Cargando municipios para departamento 2:', this.selectedDepartamento2.codigo);
     
     this.sicodisApiService.getMunicipiosPorDepartamento(this.selectedDepartamento2.codigo).subscribe({
       next: (municipios) => {
-        console.log('Municipios 2 cargados:', municipios);
         this.municipios2 = municipios;
         this.updateMunicipios2List();
       },
@@ -708,7 +690,6 @@ export class SgrComparativoComponent implements OnInit {
    * Mostrar popup del diccionario
    */
   showPopupDiccionario(): void {
-    console.log('Mostrando diccionario de datos');
     this.diccionarioContent = this.generarContenidoDiccionario();
     this.showDiccionarioPopup = true;
   }
@@ -717,7 +698,6 @@ export class SgrComparativoComponent implements OnInit {
    * Mostrar popup de siglas
    */
   showPopupSiglas(): void {
-    console.log('Mostrando siglas');
     this.siglasContent = this.generarContenidoSiglas();
     this.showSiglasPopup = true;
   }

@@ -215,27 +215,21 @@ export class PgnComparativaRegionalizacionComponent implements OnInit {
   }
 
   onDepartamentoChange(event: SelectChangeEvent): void {
-    console.log('Departamento seleccionado:', event.value);
     this.selectedDepartamento = event.value;
   }
 
   onVigenciasChange(event: MultiSelectChangeEvent): void {
-    console.log('Vigencias seleccionadas:', event.value);
     this.selectedVigencias = event.value;
     this.updateComparativaData();
   }
 
   onActualizar(): void {
-    console.log('Actualizando datos...');
-    console.log('Departamento:', this.selectedDepartamento);
-    console.log('Vigencias:', this.selectedVigencias);
 
     this.isLoading = true;
 
     // Simulate API call
     setTimeout(() => {
       this.isLoading = false;
-      console.log('Datos actualizados');
       this.updateCharts();
     }, 2000);
   }
@@ -244,7 +238,6 @@ export class PgnComparativaRegionalizacionComponent implements OnInit {
     this.selectedDepartamento = null;
     this.selectedVigencias = [this.vigencias[0], this.vigencias[1]];
     this.updateComparativaData();
-    console.log('Filtros limpiados');
   }
 
   private updateCharts(): void {
@@ -342,7 +335,6 @@ export class PgnComparativaRegionalizacionComponent implements OnInit {
   }
 
   exportToExcel(): void {
-    console.log('Exportando a Excel...');
     // Export logic would be implemented here
   }
 
