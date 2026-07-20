@@ -162,12 +162,8 @@
 .main-content {
   margin-bottom: 2rem;
 
-  .mat-grid-tile {
-    .mat-grid-tile-content {
-      padding: 1rem;
-      width: 100%;
-      height: 100%;
-    }
+  .md-grid-tile {
+    padding: 1rem;
   }
 }
 
@@ -186,18 +182,10 @@
     text-align: left;
   }
 
-  .mat-grid-list {
+  .md-grid {
     flex: 1;
   }
 
-  // Forzar siempre 2 columnas en pantallas grandes
-  .cards-grid {
-    :host ::ng-deep .mat-grid-list {
-      .mat-grid-tile {
-        width: calc(50% - 6px) !important; // 50% menos la mitad del gutter
-      }
-    }
-  }
 }
 
 // Tarjetas financieras
@@ -659,13 +647,6 @@ clear-filters{
 
   // En dispositivos móviles, cambiar a 1 columna para las tarjetas
   .cards-section {
-    .cards-grid {
-      :host ::ng-deep .mat-grid-list {
-        .mat-grid-tile {
-          width: 100% !important;
-        }
-      }
-    }
   }
 
   .financial-card {
@@ -725,13 +706,6 @@ clear-filters{
 @media (max-width: 480px) {
   // Asegurar 1 columna en móviles muy pequeños
   .cards-section {
-    .cards-grid {
-      :host ::ng-deep .mat-grid-list {
-        .mat-grid-tile {
-          width: 100% !important;
-        }
-      }
-    }
   }
 
   .financial-card {
@@ -767,4 +741,29 @@ clear-filters{
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+}
+
+
+/* Grids CSS que reemplazan a mat-grid-list */
+.md-grid {
+  display: grid;
+  gap: 16px;
+}
+.md-grid > .md-grid-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.md-grid-main {
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 435px;
+}
+@media (max-width: 959.98px) {
+  .md-grid-main { grid-template-columns: 1fr; }
+}
+.md-grid-cards {
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 120px;
+  gap: 12px;
 }

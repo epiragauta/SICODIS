@@ -2,8 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
 
 // PrimeNG imports
 import { ButtonModule } from 'primeng/button';
@@ -24,8 +22,6 @@ import { ConfigService, FechaActualizacion } from '../../services/config.service
   imports: [
     CommonModule,
     FormsModule,
-    MatCardModule,
-    MatIconModule,
     ButtonModule,
     Select,
     FloatLabel,

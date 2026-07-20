@@ -2,7 +2,6 @@ import { Component, OnInit, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReportsTargetComponent } from '../reports-target/reports-target.component';
 import { CommonModule  } from '@angular/common';
-import { MatGridListModule } from '@angular/material/grid-list';
 import { Router } from '@angular/router';
 import { Card, CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
@@ -11,12 +10,9 @@ import { TableModule } from 'primeng/table';
 import { ChartModule } from 'primeng/chart';
 import { RouterModule } from '@angular/router';
 // Material Modules
-import { MatCardModule } from '@angular/material/card';
 
 import { CarouselModule } from 'primeng/carousel';
 import { TagModule } from 'primeng/tag';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { map } from 'rxjs/operators';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { SicodisApiService } from '../../services/sicodis-api.service';
 import Chart from 'chart.js/auto';
@@ -30,8 +26,6 @@ import { BannerAlertasCajaComponent } from './banner-alertas-caja.component';
   imports: [
     CommonModule,
     //ReportsTargetComponent,
-    MatGridListModule,
-    MatCardModule,
     CardModule,
     ButtonModule,
     DividerModule,
@@ -105,9 +99,6 @@ export class HomeComponent implements OnInit {
 
   responsiveOptions: any[] | undefined;
 
-  cols: number = 4;
-  cols2: number = 2;
-  cols3: number = 3;
 
   // Banner inteligente con ConfigService
   showBanner: boolean = true;  // Mostrar por defecto
@@ -154,63 +145,11 @@ sgpItems = [
   showPlayer = false;
 
   constructor(private route: Router,
-    private breakpointObserver: BreakpointObserver,
     private sicodisApiService: SicodisApiService,
     private configService: ConfigService
   ) {
-    this.breakpointObserver.observe([
-      Breakpoints.XSmall,
-      Breakpoints.Small,
-      Breakpoints.Medium,
-      Breakpoints.Large
-    ]).pipe(
-      map(result => {
-        if (result.breakpoints[Breakpoints.XSmall]) {
-          return 1;
-        } else if (result.breakpoints[Breakpoints.Small]) {
-          return 2;
-        } else if (result.breakpoints[Breakpoints.Medium]) {
-          return 3;
-        }
-        return 4;
-      })
-    ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(cols => this.cols = cols);
 
-    this.breakpointObserver.observe([
-      Breakpoints.XSmall,
-      Breakpoints.Small,
-      Breakpoints.Medium,
-      Breakpoints.Large
-    ]).pipe(
-      map(result => {
-        if (result.breakpoints[Breakpoints.XSmall]) {
-          return 1;
-        } else if (result.breakpoints[Breakpoints.Small]) {
-          return 1;
-        } else if (result.breakpoints[Breakpoints.Medium]) {
-          return 2;
-        }
-        return 2;
-      })
-    ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(cols2 => this.cols2 = cols2);
 
-    this.breakpointObserver.observe([
-      Breakpoints.XSmall,
-      Breakpoints.Small,
-      Breakpoints.Medium,
-      Breakpoints.Large
-    ]).pipe(
-      map(result => {
-        if (result.breakpoints[Breakpoints.XSmall]) {
-          return 1;
-        } else if (result.breakpoints[Breakpoints.Small]) {
-          return 1;
-        } else if (result.breakpoints[Breakpoints.Medium]) {
-          return 2;
-        }
-        return 3;
-      })
-    ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(cols3 => this.cols3 = cols3);
   }
 
   ngOnInit() {

@@ -109,14 +109,14 @@
     
     <!-- Eficiencia Fiscal Card -->
     <div class="efficiency-card">
-      <mat-card>
-        <mat-card-header>
+      <div class="md-card">
+        <div class="md-card-header">
           <div class="card-header-content">
-            <mat-icon class="card-icon fiscal-icon">account_balance</mat-icon>
-            <mat-card-title>Eficiencia Fiscal</mat-card-title>
+            <span class="material-icons card-icon fiscal-icon">account_balance</span>
+            <div class="md-card-title">Eficiencia Fiscal</div>
           </div>
-        </mat-card-header>
-        <mat-card-content>
+        </div>
+        <div class="md-card-content">
           <!-- Horizontal Tables Container -->
           <div class="horizontal-tables-container">
             <!-- Left Table -->
@@ -171,20 +171,20 @@
               </p-table>
             </div>
           </div>
-        </mat-card-content>
-      </mat-card>
+        </div>
+      </div>
     </div>
 
     <!-- Eficiencia Administrativa Card -->
     <div class="efficiency-card">
-      <mat-card>
-        <mat-card-header>
+      <div class="md-card">
+        <div class="md-card-header">
           <div class="card-header-content">
-            <mat-icon class="card-icon admin-icon">business</mat-icon>
-            <mat-card-title>Eficiencia Administrativa</mat-card-title>
+            <span class="material-icons card-icon admin-icon">business</span>
+            <div class="md-card-title">Eficiencia Administrativa</div>
           </div>
-        </mat-card-header>
-        <mat-card-content>
+        </div>
+        <div class="md-card-content">
           <!-- Tablas originales de Eficiencia Administrativa -->
           <div class="horizontal-tables-container">
             <!-- Left Table -->
@@ -245,7 +245,7 @@
           <div class="sub-card">
             <div class="sub-card-header" (click)="toggleSubCard('onceDoceavas')">
               <div class="sub-card-title">
-                <mat-icon class="toggle-icon">{{subCardStates.onceDoceavas ? 'remove' : 'add'}}</mat-icon>
+                <span class="material-icons toggle-icon">{{subCardStates.onceDoceavas ? 'remove' : 'add'}}</span>
                 <span>Once Doceavas (Bolsa 83%)</span>
               </div>
             </div>
@@ -296,7 +296,7 @@
           <div class="sub-card">
             <div class="sub-card-header" (click)="toggleSubCard('restriccion50')">
               <div class="sub-card-title">
-                <mat-icon class="toggle-icon">{{subCardStates.restriccion50 ? 'remove' : 'add'}}</mat-icon>
+                <span class="material-icons toggle-icon">{{subCardStates.restriccion50 ? 'remove' : 'add'}}</span>
                 <span>Restricción del 50%</span>
               </div>
             </div>
@@ -347,7 +347,7 @@
           <div class="sub-card">
             <div class="sub-card-header" (click)="toggleSubCard('variablesCensales')">
               <div class="sub-card-title">
-                <mat-icon class="toggle-icon">{{subCardStates.variablesCensales ? 'remove' : 'add'}}</mat-icon>
+                <span class="material-icons toggle-icon">{{subCardStates.variablesCensales ? 'remove' : 'add'}}</span>
                 <span>Variables Censales</span>
               </div>
             </div>
@@ -393,8 +393,8 @@
               </div>
             </div>
           </div>
-        </mat-card-content>
-      </mat-card>
+        </div>
+      </div>
     </div>
   </div>
 

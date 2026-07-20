@@ -603,14 +603,14 @@
     }
   }
 
-  .mat-mdc-card {
+  .md-card {
     --mdc-elevated-card-container-elevation: 0 2px 8px rgba(0, 0, 0, 0.1);
     height: 200px;
     display: flex;
     flex-direction: column;
   }
 
-  .mat-mdc-card.info-card-recaudo {
+  .md-card.info-card-recaudo {
     height: 200px;
     min-height: 200px;
     max-height: 200px;
@@ -618,12 +618,12 @@
     width: 100%;
   }
 
-  .mat-mdc-card-header {
+  .md-card-header {
     padding-bottom: 0.5rem;
     flex-shrink: 0;
   }
 
-  .mat-mdc-card-content {
+  .md-card-content {
     padding-top: 0.5rem;
     padding: 0 6px;
     flex-grow: 1;
@@ -642,7 +642,7 @@
     }
   }
 
-  .mat-mdc-card-header-text{
+  .md-card-header{
     width: 100% !important;
   }
   

@@ -92,7 +92,7 @@
     font-weight: bold;
     max-width: 1200px;
     
-    mat-icon {
+    .material-icons {
       font-size: 1.1rem;
       color: #1976d2;
     }
@@ -158,11 +158,11 @@
   .efficiency-card {
     margin-bottom: 2rem;
 
-    mat-card {
+    .md-card {
       border-radius: 8px;
       border: 1px solid #dee2e6;
 
-      mat-card-header {
+      .md-card-header {
         background: #cfeefd;
         border-bottom: 2px solid #dee2e6;
         padding: 1rem;
@@ -194,7 +194,7 @@
             }
           }
 
-          mat-card-title {
+          .md-card-title {
             color: #0b1c3f;
             font-weight: bold;
             font-size: 1.7 llama5rem;
@@ -204,7 +204,7 @@
         }
       }
 
-      mat-card-content {
+      .md-card-content {
         padding: 0;
 
         .horizontal-tables-container {
@@ -470,7 +470,7 @@
     }
   }
 
-  .cards-section .efficiency-card mat-card mat-card-content {
+  .cards-section .efficiency-card .md-card .md-card-content {
     .horizontal-tables-container {
       display: flex !important;
       flex-direction: column !important;
@@ -504,7 +504,7 @@
     padding: 1rem;
     
     .efficiency-card {      
-      mat-card mat-card-header {
+      .md-card .md-card-header {
         padding: 1rem;
         
         .card-header-content {
@@ -516,7 +516,7 @@
             font-size: 1.5rem;
           }
           
-          mat-card-title {
+          .md-card-title {
             font-size: 1.2rem;
           }
         }
@@ -528,7 +528,7 @@
 
 // Desktop media query to ensure horizontal layout on larger screens
 @media (min-width: 769px) {
-  .cards-section .efficiency-card mat-card mat-card-content {
+  .cards-section .efficiency-card .md-card .md-card-content {
     .horizontal-tables-container {
       display: flex !important;
       flex-direction: row !important;

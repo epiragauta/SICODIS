@@ -13,8 +13,8 @@
     <section aria-label="Sistemas de información disponibles">
     <div class="reports">
         <div class="grid-container">
-          <mat-grid-list [cols]="cols2" rowHeight="500" gutterSize="16">
-            <mat-grid-tile>
+          <div class="md-grid md-grid-sistemas">
+            <div class="md-grid-tile">
               <p-card class="card-container sgp-card">
                 <div class="card-header">
                   <img class="img-icon" src="/assets/img/icon-sgp.png" alt="Icono del Sistema General de Participaciones">
@@ -46,8 +46,8 @@
                   </div>
                 </ng-template>
               </p-card>
-            </mat-grid-tile>
-            <mat-grid-tile>
+            </div>
+            <div class="md-grid-tile">
               <p-card class="card-container sgr-card">
                 <div class="card-header">
                   <img class="img-icon" src="/assets/img/icon-sgr.png" alt="Icono del Sistema General de Regalías">
@@ -79,8 +79,8 @@
                   </div>
                 </ng-template>
               </p-card>
-            </mat-grid-tile>
-          </mat-grid-list>
+            </div>
+          </div>
         </div>
 
         <div class="grid-container" style="margin-top: 16px;">          
@@ -109,9 +109,9 @@
     <p class="sicodis-p">Cifras en pesos corrientes</p>
 
     <div class="assignment-cards">
-      <mat-grid-list [cols]="2" rowHeight="870px" gutterSize="8">
-        <mat-grid-tile style="align-items: flex-start;">
-          <mat-card class="card-container" style="height: 98%; display: flex; flex-direction: column;">
+      <div class="md-grid md-grid-cifras">
+        <div class="md-grid-tile" style="align-items: flex-start;">
+          <div class="md-card card-container" style="height: 98%; display: flex; flex-direction: column;">
             <h3 class="sicodis-subtitle">SGP</h3>
             <p-table [value]="sgpItems" 
                      [tableStyle]="{ 'min-width': '100%' }"
@@ -162,10 +162,10 @@
               </div>
             </div>            
             
-          </mat-card>
-        </mat-grid-tile>
-        <mat-grid-tile style="align-items: flex-start;">
-          <mat-card class="card-container" style="height: 98%; display: flex; flex-direction: column;">
+          </div>
+        </div>
+        <div class="md-grid-tile" style="align-items: flex-start;">
+          <div class="md-card card-container" style="height: 98%; display: flex; flex-direction: column;">
             <h3 class="sicodis-subtitle">SGR</h3>
             <p-table [value]="sgrItems" 
                      [tableStyle]="{ 'min-width': '100%' }"
@@ -235,9 +235,9 @@
                 </div>
               </div>
             </div>
-          </mat-card>
-        </mat-grid-tile>
-      </mat-grid-list>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="grid-container geovisor-section" style="cursor: pointer;">
@@ -266,19 +266,19 @@
     <h2 id="titulo-interes" class="reports-title">Información de Interés</h2>
 
     <div class="grid-container" style="margin-bottom: 2.5rem;">
-      <mat-grid-list [cols]="cols" rowHeight="300px" gutterSize="16">
-        <mat-grid-tile *ngFor="let card of cards">
+      <div class="md-grid md-grid-interes">
+        <div class="md-grid-tile" *ngFor="let card of cards">
           <a [href]="card.link" target="_blank" rel="noopener" class="link-wrapper">
-            <mat-card class="card-container">
-              <img mat-card-image [src]="card.imageUrl" [alt]="card.title + ' - Imagen ilustrativa'">
+            <div class="md-card card-container">
+              <img class="md-card-image" [src]="card.imageUrl" [alt]="card.title + ' - Imagen ilustrativa'">
               <p class="description">{{card.description}}</p>
-              <mat-card-header>
+              <div class="md-card-header">
                 <h3 class="sicodis-title">{{card.title}}</h3>
-              </mat-card-header>                
-            </mat-card>
+              </div>                
+            </div>
           </a>
-        </mat-grid-tile>
-      </mat-grid-list>
+        </div>
+      </div>
     </div>
 
 

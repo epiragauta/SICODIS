@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
-import {MatIconModule} from '@angular/material/icon';
-import {MatTabChangeEvent, MatTabsModule} from '@angular/material/tabs';
 import { CommonModule } from '@angular/common';
+import { TabsModule } from 'primeng/tabs';
+import { ButtonModule } from 'primeng/button';
 import { DetalleEntidadComponent } from '../detalle-entidad/detalle-entidad.component';
 import { DetalleHistoricoComponent } from '../detalle-historico/detalle-historico.component';
 import { HistoricoFiscalComponent } from '../historico-fiscal/historico-fiscal.component';
@@ -26,9 +25,8 @@ import { VariablesDistribucionComponent } from '../variables-distribucion/variab
     VisorRecursosComponent,
     VariablesDistribucionComponent,
     CommonModule,
-    MatCardModule,
-    MatIconModule,
-    MatTabsModule],
+    TabsModule,
+    ButtonModule],
   templateUrl: './tools.component.html',
   styleUrl: './tools.component.scss'
 })
@@ -98,8 +96,8 @@ export class ToolsComponent {
     // Implementar carga inicial de datos
   }
 
-  onTabChange(event: MatTabChangeEvent): void {
-    this.activeTab = event.index;
+  onTabChange(value: string | number): void {
+    this.activeTab = Number(value);
     this.loadTabData(this.activeTab);
   }
 

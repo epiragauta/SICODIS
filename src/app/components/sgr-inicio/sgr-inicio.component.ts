@@ -2,8 +2,6 @@ import { Component, OnInit, PLATFORM_ID, inject, DestroyRef } from '@angular/cor
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
 import { ButtonModule } from 'primeng/button';
 import { Select, SelectChangeEvent } from 'primeng/select';
 import { TreeTableModule } from 'primeng/treetable';
@@ -20,8 +18,6 @@ import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
   imports: [
     CommonModule,
     FormsModule,
-    MatCardModule,
-    MatIconModule,
     ButtonModule,
     Select,
     TreeTableModule,

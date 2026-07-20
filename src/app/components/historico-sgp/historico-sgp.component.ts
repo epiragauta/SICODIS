@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -64,7 +63,6 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
   })(); 
 
   // Configuración responsiva para gráficos
-  cols: number = 2;
   
   // Variables para filtros
   selectedYears: string[] = [];
@@ -130,26 +128,9 @@ export class HistoricoSgpComponent implements OnInit, AfterViewInit {
   //years2005to2025 = ['2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025',];
   //yearsRange = ['2002', '2003', '2004','2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'];
 
-  constructor(private breakpointObserver: BreakpointObserver, private http: HttpClient, private sicodisApiService: SicodisApiService) {
+  constructor(private http: HttpClient, private sicodisApiService: SicodisApiService) {
     //Chart.register(...registerables, ChartDataLabels);
     // Configuración responsiva
-    this.breakpointObserver.observe([
-      Breakpoints.XSmall,
-      Breakpoints.Small,
-      Breakpoints.Medium,
-      Breakpoints.Large
-    ]).pipe(
-      map(result => {
-        if (result.breakpoints[Breakpoints.XSmall]) {
-          return 1;
-        } else if (result.breakpoints[Breakpoints.Small]) {
-          return 1;
-        } else if (result.breakpoints[Breakpoints.Medium]) {
-          return 2;
-        }
-        return 2;
-      })
-    ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(cols => this.cols = cols);
   }
 
   async ngOnInit(): Promise<void>  {

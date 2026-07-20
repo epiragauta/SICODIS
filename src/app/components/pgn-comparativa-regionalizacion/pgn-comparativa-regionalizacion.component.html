@@ -77,12 +77,12 @@
       
       <!-- Gráfico 1 -->
       <div class="chart-card">
-        <mat-card>
-          <mat-card-header>
-            <mat-card-title>Gráfico 1</mat-card-title>
-            <mat-card-subtitle>Avance Porcentual - 76.9%</mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
+        <div class="md-card">
+          <div class="md-card-header">
+            <div class="md-card-title">Gráfico 1</div>
+            <div class="md-card-subtitle">Avance Porcentual - 76.9%</div>
+          </div>
+          <div class="md-card-content">
             <div class="chart-container">
               <p-chart 
                 type="doughnut" 
@@ -101,18 +101,18 @@
               </p-chart>
               <div class="chart-percentage">76.9%</div>
             </div>
-          </mat-card-content>
-        </mat-card>
+          </div>
+        </div>
       </div>
 
       <!-- Gráfico 2 -->
       <div class="chart-card">
-        <mat-card>
-          <mat-card-header>
-            <mat-card-title>Gráfico 2</mat-card-title>
-            <mat-card-subtitle>Avance Porcentual - 68.4%</mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
+        <div class="md-card">
+          <div class="md-card-header">
+            <div class="md-card-title">Gráfico 2</div>
+            <div class="md-card-subtitle">Avance Porcentual - 68.4%</div>
+          </div>
+          <div class="md-card-content">
             <div class="chart-container">
               <p-chart 
                 type="doughnut" 
@@ -131,8 +131,8 @@
               </p-chart>
               <div class="chart-percentage">68.4%</div>
             </div>
-          </mat-card-content>
-        </mat-card>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -143,12 +143,12 @@
       
       <!-- Bar Chart Column -->
       <div class="bar-chart-column">
-        <mat-card>
-          <mat-card-header>
-            <mat-card-title>{{ getBarChartTitle() }}</mat-card-title>
-            <mat-card-subtitle>Avance por Departamentos</mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
+        <div class="md-card">
+          <div class="md-card-header">
+            <div class="md-card-title">{{ getBarChartTitle() }}</div>
+            <div class="md-card-subtitle">Avance por Departamentos</div>
+          </div>
+          <div class="md-card-content">
             <div class="bar-chart-container">
               <p-chart 
                 type="bar" 
@@ -156,18 +156,18 @@
                 [options]="barChartOptions">
               </p-chart>
             </div>
-          </mat-card-content>
-        </mat-card>
+          </div>
+        </div>
       </div>
 
       <!-- Table Column -->
       <div class="table-column">
-        <mat-card>
-          <mat-card-header>
+        <div class="md-card">
+          <div class="md-card-header">
             <div class="table-header">
               <div>
-                <mat-card-title>Tabla Comparativa por Vigencias</mat-card-title>
-                <mat-card-subtitle>Comparación de presupuesto y variación porcentual</mat-card-subtitle>
+                <div class="md-card-title">Tabla Comparativa por Vigencias</div>
+                <div class="md-card-subtitle">Comparación de presupuesto y variación porcentual</div>
               </div>
               <p-button 
                 label="Exportar Excel" 
@@ -176,8 +176,8 @@
                 class="primary-button">
               </p-button>
             </div>
-          </mat-card-header>
-          <mat-card-content>
+          </div>
+          <div class="md-card-content">
             <!-- Scroll horizontal indicator -->
             <div *ngIf="getTotalColumns() > 4 && comparativaData.length > 0" 
                  style="padding: 0.5rem; background: #e3f2fd; border-radius: 4px; margin-bottom: 0.5rem; text-align: center;">
@@ -198,7 +198,7 @@
                   <tr>
                     <th pFrozenColumn class="concept-header" style="min-width: 180px;">
                       <div class="flex align-items-center">
-                        <mat-icon>location_on</mat-icon>
+                        <span class="material-icons">location_on</span>
                         <span class="ml-2">Departamento</span>
                       </div>
                     </th>
@@ -207,7 +207,7 @@
                     <ng-container *ngFor="let year of getSelectedYearsColumns(); let i = index">
                       <th class="vigencia-header" style="min-width: 140px; text-align: right;">
                         <div class="flex align-items-center justify-content-end">
-                          <mat-icon>calendar_today</mat-icon>
+                          <span class="material-icons">calendar_today</span>
                           <span class="ml-2">{{ year }}</span>
                         </div>
                       </th>
@@ -217,7 +217,7 @@
                           class="variation-header"
                           style="min-width: 140px; text-align: right;">
                         <div class="flex align-items-center justify-content-end">
-                          <mat-icon>trending_up</mat-icon>
+                          <span class="material-icons">trending_up</span>
                           <span class="ml-2">Variación</span>
                         </div>
                       </th>
@@ -261,7 +261,7 @@
                   <tr>
                     <td [attr.colspan]="3 + getSelectedYearsColumns().length">
                       <div class="empty-message">
-                        <mat-icon>info</mat-icon>
+                        <span class="material-icons">info</span>
                         <span>No hay datos disponibles para mostrar</span>
                       </div>
                     </td>
@@ -269,8 +269,8 @@
                 </ng-template>
               </p-table>
             </div>
-          </mat-card-content>
-        </mat-card>
+          </div>
+        </div>
       </div>
 
     </div>

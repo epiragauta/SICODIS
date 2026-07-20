@@ -1,8 +1,6 @@
 import { Component, OnInit, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 
 import { CardModule } from 'primeng/card';
@@ -14,7 +12,6 @@ import { Select, SelectChangeEvent } from 'primeng/select';
 import { FloatLabel } from 'primeng/floatlabel';
 import { TreeNode, MenuItem } from 'primeng/api';
 
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { departamentos } from '../../data/departamentos';
 import { territorialEntities } from '../../data/territorial-entities';
 import { map } from 'rxjs/operators';
@@ -42,8 +39,6 @@ interface FinancialData {
   standalone: true,
   imports: [
     CommonModule,
-    MatGridListModule,
-    MatIconModule,
     CardModule,
     ChartModule,
     TreeTableModule,
@@ -66,7 +61,6 @@ export class PresupuestoYRecaudoComponent implements OnInit {
   
   // Configuración de columnas responsivas
   //cols: number = 2;
-  cardCols: number = 2;
   recaudo_otros: number = 38493545665718.3;
 
   // Popups
@@ -200,30 +194,10 @@ export class PresupuestoYRecaudoComponent implements OnInit {
 
   urlSgrInformesRecaudo: string = "https://www.dnp.gov.co/LaEntidad_/subdireccion-general-inversiones-seguimiento-evaluacion/direccion-programacion-inversiones-publicas/Paginas/sistema-general-de-regalias.aspx#veinticincoseis"
 
-  constructor(private breakpointObserver: BreakpointObserver,
-              private sicodisApiService: SicodisApiService,
+  constructor(              private sicodisApiService: SicodisApiService,
   ) {
     
-    this.breakpointObserver.observe([
-      Breakpoints.XSmall,
-      Breakpoints.Small,
-      Breakpoints.Medium,
-      Breakpoints.Large
-    ]).pipe(
-      map(result => {
-        if (result.breakpoints[Breakpoints.XSmall]) {
-          return 1;
-        } else if (result.breakpoints[Breakpoints.Small]) {
-          return 1;
-        } else if (result.breakpoints[Breakpoints.Medium]) {
-          return 2;
-        }
-        return 2;
-      })
-    ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(cols => this.cardCols = cols);
 
-    // Configuración fija para las tarjetas: siempre 2 columnas
-    this.cardCols = 2;
     
   }
 

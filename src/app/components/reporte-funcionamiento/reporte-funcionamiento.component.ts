@@ -2,7 +2,6 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SicodisApiService } from '../../services/sicodis-api.service';
 import type { DiccionarioItem, SiglasItem, FuncionamientoSiglasDiccionario } from '../../services/sicodis-api.service';
-import { MatCardModule } from '@angular/material/card';
 import { ButtonModule } from 'primeng/button';
 import { ChartModule } from 'primeng/chart';
 import { SkeletonPaginaComponent } from '../shared/skeleton-pagina/skeleton-pagina.component';
@@ -16,7 +15,6 @@ import {
 } from '../../utils/sgr-functions';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { PercentFormatPipe } from '../../utils/percentFormatPipe';
-import { MatIconModule } from '@angular/material/icon';
 import { FloatLabel } from 'primeng/floatlabel';
 import { Select, SelectChangeEvent } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
@@ -53,13 +51,11 @@ interface SelectOption {
   imports: [
     CommonModule,
     FormsModule,
-    MatCardModule,
     ButtonModule,
     ChartModule,
     SkeletonPaginaComponent,
     NumberFormatPipe,
     PercentFormatPipe,
-    MatIconModule,
     FloatLabel,
     Select,
     MultiSelect,

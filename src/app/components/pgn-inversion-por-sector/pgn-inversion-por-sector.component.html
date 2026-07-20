@@ -133,16 +133,16 @@
 
   <!-- Mensaje cuando no hay datos seleccionados -->
   <div *ngIf="!selectedVigencia || !selectedPeriodo" class="no-data-message">
-    <mat-card class="info-card">
-      <mat-card-content>
+    <div class="md-card info-card">
+      <div class="md-card-content">
         <div class="no-data-content">
-          <mat-icon class="no-data-icon">info</mat-icon>
+          <span class="material-icons no-data-icon">info</span>
           <h3>Seleccione los filtros para ver la información</h3>
           <p>Para visualizar los datos de regionalización del presupuesto, complete la selección de 
             Vigencia y Periodo en el panel superior.</p>
         </div>
-      </mat-card-content>
-    </mat-card>
+      </div>
+    </div>
   </div>
 
   <!-- Loading overlay -->
@@ -155,11 +155,11 @@
     <div class="data-sections">
       <!-- Left section - Summary -->
       <div class="left-section">
-        <mat-card class="summary-card">
-          <mat-card-header>
-            <mat-card-title class="card-title">Resumen de la distribución PGN Inversión</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
+        <div class="md-card summary-card">
+          <div class="md-card-header">
+            <div class="md-card-title card-title">Resumen de la distribución PGN Inversión</div>
+          </div>
+          <div class="md-card-content">
             <!-- Single column items -->
             <!-- <div class="summary-item">
               <div class="summary-title">Vigencia</div>
@@ -239,17 +239,17 @@
               </ng-template>
             </p-table>
 
-          </mat-card-content>
-        </mat-card>
+          </div>
+        </div>
       </div>
 
       <!-- Right section - Table -->
       <div class="right-section">
-        <mat-card class="table-card">
-          <mat-card-header>
-            <mat-card-title class="card-title">Distribución por Departamento</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
+        <div class="md-card table-card">
+          <div class="md-card-header">
+            <div class="md-card-title card-title">Distribución por Departamento</div>
+          </div>
+          <div class="md-card-content">
             <p-table [value]="detalle" [scrollable]="true" scrollHeight="615px">
               <ng-template pTemplate="header">
                 <tr>
@@ -285,8 +285,8 @@
                 class="p-button-primary" (click)="exportToExcel()">
               </button>
             </div>
-          </mat-card-content>
-        </mat-card>
+          </div>
+        </div>
       </div>
     </div>
   </div>

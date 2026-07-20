@@ -12,7 +12,7 @@
       color: #1976d2;
       font-size: 24px;
 
-      mat-icon {
+      .material-icons {
         font-size: 32px;
         width: 32px;
         height: 32px;
@@ -20,43 +20,39 @@
     }
   }
 
-  .mat-tab-group {
-    .mat-tab-label {
-      min-width: 160px;
-      padding: 0 24px;
+  .p-tab {
+    min-width: 160px;
+    gap: 8px;
 
-      mat-icon {
-        margin-right: 8px;
-      }
+    .material-icons {
+      margin-right: 8px;
     }
   }
 
   .tab-content {
     padding: 24px 0;
 
-    mat-card {
+    .md-card {
       margin-bottom: 24px;
 
-      mat-card-header {
+      .md-card-header {
         margin-bottom: 16px;
       }
 
-      mat-card-title {
+      .md-card-title {
         font-size: 20px;
         color: #2c3e50;
       }
 
-      mat-card-content {
+      .md-card-content {
         min-height: 400px;
       }
 
-      mat-card-actions {
+      .md-card-actions {
         padding: 16px;
 
-        button {
-          mat-icon {
-            margin-right: 8px;
-          }
+        .material-icons {
+          margin-right: 8px;
         }
       }
     }
@@ -72,9 +68,8 @@
       font-size: 20px;
     }
 
-    .mat-tab-label {
+    .p-tab {
       min-width: 120px;
-      padding: 0 16px;
     }
 
     .tab-content {

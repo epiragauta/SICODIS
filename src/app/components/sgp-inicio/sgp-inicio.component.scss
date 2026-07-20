@@ -455,7 +455,7 @@
     }
   }
 
-  mat-icon {
+  .material-icons {
     color: #ffffff;
     font-size: 32px;
     width: 32px;
@@ -465,7 +465,7 @@
     transition: all 0.3s ease;
   }
 
-  &:hover mat-icon {
+  &:hover .material-icons {
     color: #0943b5;
     transform: translateX(4px);
   }

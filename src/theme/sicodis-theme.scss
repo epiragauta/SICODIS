@@ -1,10 +1,6 @@
 /* src/theme/sicodis-theme.scss */
 
-// Los estilos de Angular Material provienen del tema prebuilt indigo-pink.css
-// registrado en angular.json. El theming Sass que existía aquí (paletas M2,
-// tipografía, densidades de select/button y ajustes de mat-form-field) se
-// retiró porque esos módulos ya no se usan en la aplicación y las APIs M2
-// fueron renombradas en Angular Material 18.
-//
-// El tema visual principal de la aplicación es el preset de PrimeNG definido
-// en src/app/app.config.ts.
+// Angular Material fue retirado del proyecto: las tarjetas usan las clases
+// .md-card definidas en src/styles.scss y los íconos la fuente Material Icons
+// (clase .material-icons). El tema visual principal de la aplicación es el
+// preset de PrimeNG definido en src/app/app.config.ts.

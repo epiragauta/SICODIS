@@ -109,16 +109,16 @@
 
   <!-- Mensaje cuando no hay datos seleccionados -->
   <div *ngIf="!registroActual" class="no-data-message">
-    <mat-card class="info-card">
-      <mat-card-content>
+    <div class="md-card info-card">
+      <div class="md-card-content">
         <div class="no-data-content">
-          <mat-icon class="no-data-icon">info</mat-icon>
+          <span class="material-icons no-data-icon">info</span>
           <h3>Seleccione los filtros para ver la información</h3>
           <p>Para visualizar los datos de funcionamiento, complete la selección de Fuente, Concepto y Beneficiario en el
             panel superior.</p>
         </div>
-      </mat-card-content>
-    </mat-card>
+      </div>
+    </div>
   </div>
 
   <div class="dates-buttons-container">
@@ -147,11 +147,11 @@
       </div>
       
       <!-- Tarjeta 1: Presupuesto -->
-      <mat-card class="info-card" [class.loading]="isLoadingData">
-        <mat-card-header>
-          <mat-card-title class="card-title card-main">Presupuesto</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
+      <div class="md-card info-card" [class.loading]="isLoadingData">
+        <div class="md-card-header">
+          <div class="md-card-title card-title card-main">Presupuesto</div>
+        </div>
+        <div class="md-card-content">
           <div class="metrics-row">
             <div class="metric-item">
               <div class="metric-value">{{formatMillions2(presupuestoData.presupuestoAsignado)}}</div>
@@ -170,15 +170,15 @@
               <div class="metric-label">Presupuesto Disponible</div>
             </div>
           </div>
-        </mat-card-content>
-      </mat-card>
+        </div>
+      </div>
 
       <!-- Tarjeta 2: Ejecución Presupuestal -->
-      <mat-card class="info-card" [class.loading]="isLoadingData">
-        <mat-card-header>
-          <mat-card-title class="card-title card-main">Ejecución Presupuestal</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
+      <div class="md-card info-card" [class.loading]="isLoadingData">
+        <div class="md-card-header">
+          <div class="md-card-title card-title card-main">Ejecución Presupuestal</div>
+        </div>
+        <div class="md-card-content">
           <div class="metrics-row">
             <div class="metric-item">
               <div class="metric-value">{{formatMillions2(ejecucionData.cdp)}}</div>
@@ -201,15 +201,15 @@
               <div class="metric-label">Saldo sin afectación</div>
             </div>
           </div>
-        </mat-card-content>
-      </mat-card>
+        </div>
+      </div>
 
       <!-- Tarjeta 3: Situación de Caja *ngIf="!isEntidadCRSelected"-->
-      <mat-card class="info-card" [class.loading]="isLoadingData" >
-        <mat-card-header>
-          <mat-card-title class="card-title card-main">Situación de Caja</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
+      <div class="md-card info-card" [class.loading]="isLoadingData" >
+        <div class="md-card-header">
+          <div class="md-card-title card-title card-main">Situación de Caja</div>
+        </div>
+        <div class="md-card-content">
           <div class="metrics-row">
             <div class="metric-item">
               <div class="metric-value">{{formatMillions2(situacionCajaData.disponibilidadInicial)}}</div>
@@ -228,16 +228,16 @@
               <div class="metric-label">Caja Disponible</div>
             </div>
           </div>
-        </mat-card-content>
-      </mat-card>
+        </div>
+      </div>
 
       <!-- Tarjeta 4: Avance de Recaudo *ngIf="!isEntidadCRSelected"-->
       <div style="display: flex;gap: 0.25rem" >
-        <mat-card class="info-card info-card-recaudo" [class.loading]="isLoadingData">
-          <mat-card-header class="card-header-avance-recaudo">
-            <mat-card-title class="card-title card-main">Avance del recaudo de ingresos corrientes</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
+        <div class="md-card info-card info-card-recaudo" [class.loading]="isLoadingData">
+          <div class="md-card-header card-header-avance-recaudo">
+            <div class="md-card-title card-title card-main">Avance del recaudo de ingresos corrientes</div>
+          </div>
+          <div class="md-card-content">
             <div class="metrics-row metrics-row-recaudo">
               <div class="metric-item" [class.highlighted-metric]="highlightedMetric === 'presupuesto_corriente'">
                 <div class="metric-value">{{formatMillions2(avanceRecaudoData.presupuestoCorriente)}}</div>
@@ -254,8 +254,8 @@
                 <div class="metric-label">Avance</div>
               </div>
             </div>
-          </mat-card-content>
-        </mat-card>        
+          </div>
+        </div>        
       </div>
     </div>
 
@@ -314,11 +314,11 @@
 
   <!-- Información adicional del registro seleccionado -->
   <div class="registro-detalle" *ngIf="showDetailInfo && selectedBeneficiario.length > 0">
-    <mat-card class="info-card" style="height: auto;">
-      <mat-card-header>
-        <mat-card-title class="card-title card-main">Detalle del Registro Seleccionado</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
+    <div class="md-card info-card" style="height: auto;">
+      <div class="md-card-header">
+        <div class="md-card-title card-title card-main">Detalle del Registro Seleccionado</div>
+      </div>
+      <div class="md-card-content">
         <div style="display: table-row;width: 100%;;">
           <div *ngFor="let registro of (selectedBeneficiario.length > 0 ? distribucionTotalMultiple : distribucionTotal); let i = index">
             <div class="detail-grid">
@@ -360,8 +360,8 @@
           </div>
         </div>
 
-      </mat-card-content>
+      </div>
     
-    </mat-card>
+    </div>
   </div>  
 </div>

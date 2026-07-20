@@ -12,13 +12,8 @@ body {
 html {
   font-family: "Work Sans", sans-serif;
   font-size: 0.95rem !important;
-  --mat-menu-item-label-text-size: 0.8rem !important;
-  --mat-menu-item-label-text-font: "Work Sans", sans-serif;
-  --mat-select-trigger-text-size: 0.75rem !important;
   --p-form-field-sm-font-size: 0.75rem !important;
   --p-form-field-lg-font-size: 0.85rem !important;
-  --mat-option-label-text-size: 0.75rem !important;
-  --mdc-filled-text-field-label-text-size: 0.8rem !important;
   --p-breadcrumb-padding: 0.5rem !important;
 }
 
@@ -62,26 +57,6 @@ body {
   --select-height: 40px;               /* Altura del select */
 }
 
-// Aplicar la fuente a los elementos de Angular Material
-.mat-typography,
-.mat-mdc-button,
-.mat-mdc-card,
-.mat-card-title,
-.mat-card-subtitle,
-.mat-mdc-form-field,
-.mat-mdc-menu-item,
-.mat-mdc-select,
-.mat-mdc-table,
-.mat-mdc-paginator,
-.mat-mdc-dialog-container,
-.mat-calendar,
-.mat-h1, .mat-headline, .mat-typography h1,
-.mat-h2, .mat-title, .mat-typography h2,
-.mat-h3, .mat-subheading-2, .mat-typography h3,
-.mat-h4, .mat-subheading-1, .mat-typography h4 {
-  font-family: var(--app-font-family) !important;
-}
-
 // Aplicar también a elementos HTML básicos para consistencia
 body,
 button,
@@ -92,19 +67,8 @@ p, div, span, h1, h2, h3, h4, h5, h6 {
   font-family: var(--app-font-family);
 }
 
-// Estilos específicos para los encabezados en tu dashboard
-.mat-h1, .mat-headline, .mat-typography h1 {
-  font-weight: var(--app-heading-weight);
-  margin-bottom: 16px;
-}
-
-.mat-h2, .mat-title, .mat-typography h2 {
-  font-weight: var(--app-heading-weight);
-  color: #455a64;
-}
-
 // Estilos para las tarjetas que has definido en tu dashboard
-.dashboard-card mat-card-title {
+.dashboard-card .md-card-title {
   font-family: var(--app-font-family) !important;
   font-weight: var(--app-heading-weight);
 }
@@ -114,34 +78,12 @@ p, div, span, h1, h2, h3, h4, h5, h6 {
   font-family: var(--app-font-family) !important;
 }
 
-// Ajustes para los botones y menús de Material
-.mat-button-base,
-.mat-mdc-button-base,
-.mat-mdc-menu-item {
-  font-family: var(--app-font-family) !important;
-  font-weight: 500;
-}
-
-.mat-mdc-select-value-text{
-  font-size: 1rem !important;
-}
-
-.mat-mdc-option.mdc-list-item {
-  font-size: 1rem !important;
-}
-
-.mdc-floating-label {
-  font-size: 1rem !important;
-}
 
 // Ajustes para los selectores de PrimeNG
 .p-selectbutton .p-button {
   font-family: var(--app-font-family) !important;
 }
 
-.mat-mdc-option {
-  min-height: 32px !important;
-}
 
 /* Personalización completa de componentes PrimeNG */
 :host ::ng-deep {
@@ -352,7 +294,7 @@ html, body {
   // Evitar cortes de página dentro de tablas y tarjetas
   table,
   .p-card,
-  mat-card {
+  .md-card {
     page-break-inside: avoid;
   }
 
@@ -367,4 +309,56 @@ html, body {
     backdrop-filter: blur(10px);
     background-color: rgba(255, 255, 255, 0.95);
   }
+}
+
+/* ==========================================================================
+   Tarjetas .md-card — reemplazo ligero de mat-card tras retirar
+   Angular Material. Replican la elevación y estructura del diseño MDC.
+   ========================================================================== */
+.md-card {
+  display: block;
+  position: relative;
+  background: var(--p-surface-0, #fff);
+  color: rgba(0, 0, 0, 0.87);
+  border-radius: 4px;
+  box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2),
+              0 1px 1px 0 rgba(0, 0, 0, 0.14),
+              0 1px 3px 0 rgba(0, 0, 0, 0.12);
+}
+.md-card-header {
+  display: flex;
+  align-items: center;
+  padding: 16px 16px 0;
+}
+.md-card-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+.md-card-subtitle {
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 0.875rem;
+}
+.md-card-content {
+  display: block;
+  padding: 16px;
+}
+.md-card-actions {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+}
+.md-card-actions-end {
+  justify-content: flex-end;
+}
+img.md-card-image {
+  width: 100%;
+  object-fit: cover;
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+}
+
+/* Alineación de los íconos de fuente Material Icons (antes mat-icon) */
+.material-icons {
+  vertical-align: middle;
+  flex-shrink: 0;
 }

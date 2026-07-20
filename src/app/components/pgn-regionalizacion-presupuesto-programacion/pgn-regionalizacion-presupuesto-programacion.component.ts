@@ -2,8 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { SicodisApiService } from '../../services/sicodis-api.service';
 import { FormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
 import { ChartModule } from 'primeng/chart';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Chart } from 'chart.js';
@@ -32,8 +30,6 @@ import { ChartData, ChartOptions } from 'chart.js';
   imports: [
     CommonModule,
     FormsModule,
-    MatCardModule,
-    MatIconModule,
     ButtonModule,
     Select,
     FloatLabel,

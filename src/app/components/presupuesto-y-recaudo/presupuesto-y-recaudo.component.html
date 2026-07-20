@@ -173,65 +173,65 @@
 
   <!-- Sección principal con dos columnas -->
   <div class="main-content">
-    <mat-grid-list [cols]="cardCols" rowHeight="435px" gutterSize="16">
+    <div class="md-grid md-grid-main">
       
       <!-- Columna izquierda: Tarjetas financieras -->
-      <mat-grid-tile>
+      <div class="md-grid-tile">
         <div class="cards-section">
           <h2 class="section-title">Resumen Presupuesto y Recaudo</h2>
           
           <!-- Grid de tarjetas 3x2 (3 filas, 2 columnas) -->
-          <mat-grid-list cols="2" rowHeight="120px" gutterSize="12" class="cards-grid">
+          <div class="md-grid md-grid-cards cards-grid">
             
             <!-- Primera fila -->
-            <mat-grid-tile>
+            <div class="md-grid-tile">
               <div class="financial-card">
                 <h4 class="card-title">Presupuesto Total</h4>
                 <div class="card-value">
                   {{ formatMillions2(financialData.presupuesto_total_vigente) }}
                 </div>
               </div>
-            </mat-grid-tile>
+            </div>
             
-            <mat-grid-tile>
+            <div class="md-grid-tile">
               <div class="financial-card">
                 <h4 class="card-title">Recaudo Total</h4>
                 <div class="card-value">
                   {{ formatMillions2(financialData.caja_total) }}
                 </div>
               </div>
-            </mat-grid-tile>
+            </div>
             
             <!-- Segunda fila -->
-            <mat-grid-tile>
+            <div class="md-grid-tile">
               <div class="financial-card">
                 <h4 class="card-title">Presupuesto Corriente</h4>
                 <div class="card-value">
                   {{ formatMillions2(financialData.presupuesto_corriente) }}
                 </div>
               </div>
-            </mat-grid-tile>
+            </div>
             
-            <mat-grid-tile>
+            <div class="md-grid-tile">
               <div class="financial-card">
                 <h4 class="card-title">Recaudo Corriente Informado</h4>
                 <div class="card-value">
                   {{ formatMillions2(financialData.caja_corriente_informada) }}
                 </div>
               </div>
-            </mat-grid-tile>
+            </div>
             
             <!-- Tercera fila -->
-            <mat-grid-tile>
+            <div class="md-grid-tile">
               <div class="financial-card">
                 <h4 class="card-title">Presupuesto Otros</h4>
                 <div class="card-value">
                   {{ formatMillions2(financialData.presupuesto_otros) }}
                 </div>
               </div>
-            </mat-grid-tile>
+            </div>
             
-            <mat-grid-tile>
+            <div class="md-grid-tile">
               <div class="financial-card">
                 <h4 class="card-title">Recaudo Otros</h4>
                 <div class="card-value">
@@ -239,14 +239,14 @@
                     
                 </div>
               </div>
-            </mat-grid-tile>
+            </div>
             
-          </mat-grid-list>          
+          </div>          
         </div>        
-      </mat-grid-tile>
+      </div>
       
       <!-- Columna derecha: Gráfico de barras horizontales -->
-      <mat-grid-tile>
+      <div class="md-grid-tile">
         <div class="chart-section">
           <h2 class="section-title">Recaudo Frente al Presupuesto</h2>
           <div class="chart-container">
@@ -258,9 +258,9 @@
             </p-chart>
           </div>
         </div>
-      </mat-grid-tile>
+      </div>
       
-    </mat-grid-list>
+    </div>
   </div>
 
   <!-- Sección de gráficos de dona -->
@@ -331,7 +331,7 @@
                     <!-- AQUÍ ESTÁ EL CAMBIO -->
                   <span [innerHTML]="col.header"></span>
                   <span *ngIf="col.field === 'presupuesto_otros1'" class="toggle-icon" style="padding-left: 3px;padding-right: 3px;color: #fff;">
-                      <mat-icon style="color: #fff;background-color: #566cbb;" class="mr-2 sgp-icon">pinch</mat-icon>
+                      <span style="color: #fff;background-color: #566cbb;" class="material-icons mr-2 sgp-icon">pinch</span>
                   </span>
                 </th>
               </tr>

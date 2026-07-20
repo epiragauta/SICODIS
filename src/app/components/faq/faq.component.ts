@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { AccordionModule } from 'primeng/accordion';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { MatIconModule } from '@angular/material/icon';
 import { FaqItem, FaqItemComponent } from '../faq-item/faq-item.component';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { MenuItem } from 'primeng/api';
@@ -23,7 +22,6 @@ interface FaqSection {
     AccordionModule,
     ButtonModule,
     CardModule,
-    MatIconModule,
     Breadcrumb
   ],
   templateUrl: './faq.component.html',

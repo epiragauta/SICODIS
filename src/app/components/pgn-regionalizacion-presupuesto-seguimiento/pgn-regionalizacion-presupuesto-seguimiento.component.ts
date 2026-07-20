@@ -2,8 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { SicodisApiService } from '../../services/sicodis-api.service';
 import { FormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
 
 // PrimeNG imports
 import { ButtonModule } from 'primeng/button';
@@ -30,8 +28,6 @@ import { ChartData, ChartOptions } from 'chart.js';
   imports: [
     CommonModule,
     FormsModule,
-    MatCardModule,
-    MatIconModule,
     ButtonModule,
     Select,
     FloatLabel,

@@ -1,8 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
 
 // PrimeNG imports
 import { ButtonModule } from 'primeng/button';
@@ -24,8 +22,6 @@ import { MenuItem } from 'primeng/api';
   imports: [
     CommonModule,
     FormsModule,
-    MatCardModule,
-    MatIconModule,
     ButtonModule,
     Select,
     FloatLabel,

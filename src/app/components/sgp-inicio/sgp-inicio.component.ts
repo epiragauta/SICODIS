@@ -5,7 +5,6 @@ import { ButtonModule } from 'primeng/button';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { PercentFormatPipe } from '../../utils/percentFormatPipe';
 import { BillonesFormatPipe } from '../../utils/billonesFormatPipe';
-import { MatIconModule } from '@angular/material/icon';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { SplitButtonModule } from 'primeng/splitbutton';
@@ -27,7 +26,6 @@ import { TreeTableModule } from 'primeng/treetable';
       NumberFormatPipe,
       PercentFormatPipe,
       BillonesFormatPipe,
-      MatIconModule,
       FloatLabel,
       InfoPopupComponent,
       SplitButtonModule,
