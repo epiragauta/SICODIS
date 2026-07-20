@@ -29,6 +29,7 @@
               "src/assets"
             ],
             "styles": [
+              "src/fonts/fonts.css",
               "src/theme/sicodis-theme.scss",
               "src/styles.scss",
               "src/assets/styles/global.scss"
