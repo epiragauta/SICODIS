@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, signal, inject, DestroyRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, signal, computed, inject, DestroyRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -13,16 +13,21 @@ import { map, catchError } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import * as L from 'leaflet';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
+import { RadioButtonModule } from 'primeng/radiobutton';
 import {
   SicodisApiService,
-  ResumenGeovisor,
-  GeovisorPgnItem
+  ResumenGeovisor
 } from '../../services/sicodis-api.service';
 
-const COBERTURA_FALLBACK: Record<string, { lineaSuperior: string; lineaInferior: string }> = {
-  SGR: { lineaSuperior: '1001 municipios (96% del país)', lineaInferior: '32 departamentos beneficiarios (100% del país)' },
-  SGP: { lineaSuperior: '908 municipios (87% del país)', lineaInferior: '32 departamentos beneficiarios (100% del país)' },
-  PGN: { lineaSuperior: '32 Departamentos (100% del país)', lineaInferior: '32 departamentos beneficiarios (100% del país)' }
+const COBERTURA_FALLBACK: Record<string, string[]> = {
+  SGR: [
+    '32 departamentos - asignaciones directas (100%)',
+    '32 departamentos - regional (100% del país)',
+    '1001 municipios - asignaciones directas (96% del país)',
+    '1001 municipios - local (96% del país)'
+  ],
+  SGP: ['32 departamentos beneficiarios (100% del país)', '908 municipios (87% del país)'],
+  PGN: ['32 Departamentos (100% del país)', '32 departamentos beneficiarios (100% del país)']
 };
 
 interface RecursosSistema {
@@ -38,8 +43,7 @@ interface RecursosSistema {
 
 interface CoberturaSistema {
   sigla: string;
-  lineaSuperior: string;
-  lineaInferior: string;
+  lineas: string[];
   color: string;
 }
 
@@ -75,6 +79,7 @@ const SISTEMA_COLORES: Record<string, string> = {
     ButtonModule,
     ProgressBarModule,
     InputSwitchModule,
+    RadioButtonModule,
     NumberFormatPipe
   ],
   templateUrl: './mapa-recursos.component.html',
@@ -84,6 +89,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
   private readonly sicodisApi = inject(SicodisApiService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly http = inject(HttpClient);
+  private readonly ngZone = inject(NgZone);
 
   vigenciaSeleccionada = 2026;
   vigencias: number[] = [];
@@ -104,7 +110,35 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
 
   isLoading = signal(false);
   isLoadingMapa = signal(false);
+  isLoadingDetalle = signal(false);
+  sinMunicipiosGeoJSON = signal(false);
   hasGeoData = false;
+
+  // ── Modo detalle ──────────────────────────────────────────────────────────────
+  readonly sistemaColores = SISTEMA_COLORES;
+  readonly sistemasDetalle: Array<'SGR' | 'SGP' | 'PGN'> = ['SGR', 'SGP', 'PGN'];
+
+  modoDetalle = false;
+  detalleDepto: { nombre: string; codigoDepto: string } | null = null;
+  sistemaDetalle: 'SGR' | 'SGP' | 'PGN' = 'SGR';
+
+  detalleData: ResumenGeovisor | null = null;
+  municipioSeleccionado: { nombre: string; codigoMunicipio: string } | null = null;
+  municipioData: ResumenGeovisor | null = null;
+  isLoadingMunicipio = signal(false);
+  readonly isLoadingPanel = computed(() => this.isLoadingDetalle() || this.isLoadingMunicipio());
+  private municipioLayerActivo: any = null;
+
+  categoriaSeleccionadaSGR: any = null;
+  participacionSeleccionadaSGP: any = null;
+
+  get activeData(): ResumenGeovisor | null {
+    return this.municipioSeleccionado ? this.municipioData : this.detalleData;
+  }
+
+  opacidadMunicipios = 70;
+  private municipiosGeoJSON: any = null;
+  private municipiosLayer: L.GeoJSON | null = null;
 
   private map!: L.Map;
   private geoJsonLayer: L.GeoJSON | null = null;
@@ -114,6 +148,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
   private capitalesMap = new Map<string, L.LatLngExpression>();
 
   ngOnInit(): void {
+    this.sicodisApi.limpiarCacheGeovisor();
     this.generarVigencias();
     this.cargarResumenNacional();
   }
@@ -150,7 +185,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
   private mapearRecursosNacionales(data: ResumenGeovisor): RecursosSistema[] {
     const sgrTotal = data.sgr.find(d => d.categoria === '-2');
     const sgpTotal = data.sgp.find(d => d.id_concepto === '99');
-    const pgn: GeovisorPgnItem | undefined = data.pgn[0];
+    const pgn = data.pgn?.[0];
 
     return [
       {
@@ -202,9 +237,9 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
 
   private buildCoberturas(): CoberturaSistema[] {
     return [
-      { sigla: 'SGR', ...COBERTURA_FALLBACK['SGR'], color: SISTEMA_COLORES['SGR'] },
-      { sigla: 'SGP', ...COBERTURA_FALLBACK['SGP'], color: SISTEMA_COLORES['SGP'] },
-      { sigla: 'PGN', ...COBERTURA_FALLBACK['PGN'], color: SISTEMA_COLORES['PGN'] }
+      { sigla: 'SGR', lineas: COBERTURA_FALLBACK['SGR'], color: SISTEMA_COLORES['SGR'] },
+      { sigla: 'SGP', lineas: COBERTURA_FALLBACK['SGP'], color: SISTEMA_COLORES['SGP'] },
+      { sigla: 'PGN', lineas: COBERTURA_FALLBACK['PGN'], color: SISTEMA_COLORES['PGN'] }
     ];
   }
 
@@ -216,20 +251,28 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     return [
       {
         sigla: 'SGR',
-        lineaSuperior: sgr?.dato_general_adirectas_municipio || COBERTURA_FALLBACK['SGR'].lineaSuperior,
-        lineaInferior: sgr?.dato_general_regional_depto || COBERTURA_FALLBACK['SGR'].lineaInferior,
+        lineas: [
+          sgr?.dato_general_adirectas_depto     || COBERTURA_FALLBACK['SGR'][0],
+          sgr?.dato_general_regional_depto      || COBERTURA_FALLBACK['SGR'][1],
+          sgr?.dato_general_adirectas_municipio || COBERTURA_FALLBACK['SGR'][2],
+          sgr?.dato_general_local_municipio     || COBERTURA_FALLBACK['SGR'][3],
+        ],
         color: SISTEMA_COLORES['SGR']
       },
       {
         sigla: 'SGP',
-        lineaSuperior: sgp?.dato_general_municipio || COBERTURA_FALLBACK['SGP'].lineaSuperior,
-        lineaInferior: sgp?.dato_general_depto || COBERTURA_FALLBACK['SGP'].lineaInferior,
+        lineas: [
+          sgp?.dato_general_depto     || COBERTURA_FALLBACK['SGP'][0],
+          sgp?.dato_general_municipio || COBERTURA_FALLBACK['SGP'][1],
+        ],
         color: SISTEMA_COLORES['SGP']
       },
       {
         sigla: 'PGN',
-        lineaSuperior: pgn?.dato_general_municipio || COBERTURA_FALLBACK['PGN'].lineaSuperior,
-        lineaInferior: pgn?.dato_general_depto || COBERTURA_FALLBACK['PGN'].lineaInferior,
+        lineas: [
+          pgn?.dato_general_depto     || COBERTURA_FALLBACK['PGN'][0],
+          pgn?.dato_general_municipio || COBERTURA_FALLBACK['PGN'][1],
+        ],
         color: SISTEMA_COLORES['PGN']
       }
     ];
@@ -287,9 +330,11 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
       onEachFeature: (feature, layer) => {
         layer.on({
           mouseover: (e: any) => {
+            if (this.modoDetalle) return;
             e.target.setStyle({ weight: 2, color: '#475569', fillOpacity: Math.min(0.75, (this.getDeptFillOpacity(feature) + 0.15)) });
           },
           mouseout: () => {
+            if (this.modoDetalle) return;
             this.geoJsonLayer?.resetStyle(layer);
           }
         });
@@ -509,9 +554,20 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
   // ── Popup ────────────────────────────────────────────────────────────────────
 
   private mostrarPopupDepartamento(latLng: L.LatLng, nombre: string, codigoDepto: string, data: ResumenGeovisor): void {
-    L.popup({ maxWidth: 320, className: 'popup-geovisor' })
+    const container = document.createElement('div');
+    container.innerHTML = this.crearPopupHtml(nombre, data);
+
+    container.querySelectorAll<HTMLButtonElement>('.btn-ver-detalle').forEach(btn => {
+      const sistema = (btn.dataset['sistema'] ?? 'SGR') as 'SGR' | 'SGP' | 'PGN';
+      btn.addEventListener('click', () => {
+        this.map.closePopup();
+        this.ngZone.run(() => this.abrirDetalle(nombre, codigoDepto, data, sistema));
+      });
+    });
+
+    L.popup({ maxWidth: 320, className: 'popup-geovisor', keepInView: true, autoPanPadding: L.point(10, 100) })
       .setLatLng(latLng)
-      .setContent(this.crearPopupHtml(nombre, data))
+      .setContent(container)
       .openOn(this.map);
   }
 
@@ -520,25 +576,16 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     const sgp = Array.isArray(data.sgp) ? data.sgp.find(d => d.id_concepto === '99') : undefined;
     const pgn = Array.isArray(data.pgn) ? data.pgn[0] : undefined;
 
-    console.group(`[Popup] ${nombre}`);
-    console.log('data.sgr (array?):', Array.isArray(data.sgr), '| item cat=-2:', sgr);
-    console.log('  presupuesto_total_vigente:', sgr?.presupuesto_total_vigente, typeof sgr?.presupuesto_total_vigente);
-    console.log('  caja_total:', sgr?.caja_total, typeof sgr?.caja_total);
-    console.log('  avance_iac_presupuesto:', sgr?.avance_iac_presupuesto, typeof sgr?.avance_iac_presupuesto);
-    console.log('data.sgp (array?):', Array.isArray(data.sgp), '| item id=99:', sgp);
-    console.log('  total:', sgp?.total, typeof sgp?.total);
-    console.log('data.pgn (array?):', Array.isArray(data.pgn), '| pgn[0]:', pgn);
-    console.log('  total_apropiacion_vigente:', pgn?.total_apropiacion_vigente, typeof pgn?.total_apropiacion_vigente);
-    console.log('  porcentaje_total_compromisos:', pgn?.porcentaje_total_compromisos, typeof pgn?.porcentaje_total_compromisos);
-    console.log('  porcentaje_total_pagos:', pgn?.porcentaje_total_pagos, typeof pgn?.porcentaje_total_pagos);
-    console.groupEnd();
-
     const fmt = (v: unknown) => { const n = Number(v); return Number.isFinite(n) ? '$' + this.formatearValor(n) : 'N/D'; };
     const pct = (v: unknown) => `${(Number(v) * 100).toFixed(1)}%`;
+    const btnStyle = 'float:right;padding:2px 8px;border:none;border-radius:4px;font-size:10px;font-weight:600;cursor:pointer;color:white;white-space:nowrap;';
 
     const sgrHtml = this.capas.find(c => c.sistema === 'SGR')?.visible ? `
       <div class="popup-sistema-bloque popup-sgr">
-        <div class="popup-sistema-titulo"><span class="popup-badge sgr">SGR</span></div>
+        <div class="popup-sistema-titulo" style="display:flex;justify-content:space-between;align-items:center;">
+          <span class="popup-badge sgr">SGR</span>
+          <button class="btn-ver-detalle" data-sistema="SGR" style="${btnStyle}background:#3b82f6;">Ver detalle →</button>
+        </div>
         <div class="popup-fila"><span>Presupuesto</span><strong>${fmt(sgr?.presupuesto_total_vigente)}</strong></div>
         <div class="popup-fila"><span>Caja</span><strong>${fmt(sgr?.caja_total)}</strong></div>
         <div class="popup-fila"><span>Avance IAC</span><strong>${pct(sgr?.avance_iac_presupuesto ?? 0)}</strong></div>
@@ -546,13 +593,19 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
 
     const sgpHtml = this.capas.find(c => c.sistema === 'SGP')?.visible ? `
       <div class="popup-sistema-bloque popup-sgp">
-        <div class="popup-sistema-titulo"><span class="popup-badge sgp">SGP</span></div>
+        <div class="popup-sistema-titulo" style="display:flex;justify-content:space-between;align-items:center;">
+          <span class="popup-badge sgp">SGP</span>
+          <button class="btn-ver-detalle" data-sistema="SGP" style="${btnStyle}background:#10b981;">Ver detalle →</button>
+        </div>
         <div class="popup-fila"><span>Total distribución</span><strong>${fmt(sgp?.total)}</strong></div>
       </div>` : '';
 
     const pgnHtml = this.capas.find(c => c.sistema === 'PGN')?.visible ? `
       <div class="popup-sistema-bloque popup-pgn">
-        <div class="popup-sistema-titulo"><span class="popup-badge pgn">PGN</span></div>
+        <div class="popup-sistema-titulo" style="display:flex;justify-content:space-between;align-items:center;">
+          <span class="popup-badge pgn">PGN</span>
+          <button class="btn-ver-detalle" data-sistema="PGN" style="${btnStyle}background:#f59e0b;">Ver detalle →</button>
+        </div>
         <div class="popup-fila"><span>Apropiación</span><strong>${fmt(pgn?.total_apropiacion_vigente)}</strong></div>
         <div class="popup-fila"><span>Compromisos</span><strong>${Number(pgn?.porcentaje_total_compromisos ?? 0).toFixed(1)}%</strong></div>
         <div class="popup-fila"><span>Pagos</span><strong>${Number(pgn?.porcentaje_total_pagos ?? 0).toFixed(1)}%</strong></div>
@@ -564,6 +617,258 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
         <div class="popup-vigencia">Vigencia ${this.vigenciaSeleccionada}</div>
         ${sgrHtml}${sgpHtml}${pgnHtml}
       </div>`;
+  }
+
+  // ── Modo detalle ─────────────────────────────────────────────────────────────
+
+  // SGR: categorías excluyendo totales (negativas)
+  get sgrCategorias(): any[] {
+    return (this.activeData?.sgr ?? []).filter((d: any) => !String(d.categoria).startsWith('-'));
+  }
+  get sgrTotal(): any {
+    return (this.activeData?.sgr ?? []).find((d: any) => d.categoria === '-2') ?? null;
+  }
+  get sgrDetalle(): any {
+    return this.categoriaSeleccionadaSGR ?? this.sgrTotal;
+  }
+  sgrIndent(categoria: string): number {
+    return (categoria.match(/\./g)?.length ?? 0) * 12;
+  }
+
+  // SGP: participaciones top-level (id_concepto 4 dígitos, sin total '99')
+  get sgpTopLevel(): any[] {
+    return (this.activeData?.sgp ?? []).filter((d: any) => d.id_concepto !== '99' && d.id_concepto.length === 4);
+  }
+  // Subcategorías de la participación seleccionada (o top-level si no hay selección)
+  get sgpCategorias(): any[] {
+    const all = this.activeData?.sgp ?? [];
+    if (this.participacionSeleccionadaSGP) {
+      const pfx = this.participacionSeleccionadaSGP.id_concepto;
+      return all.filter((d: any) => d.id_concepto !== '99' && d.id_concepto !== pfx && d.id_concepto.startsWith(pfx));
+    }
+    return all.filter((d: any) => d.id_concepto !== '99' && d.id_concepto.length === 4);
+  }
+  get sgpTotal(): any {
+    return (this.activeData?.sgp ?? []).find((d: any) => d.id_concepto === '99') ?? null;
+  }
+  get sgpDetalle(): any {
+    return this.participacionSeleccionadaSGP ?? this.sgpTotal;
+  }
+
+  // PGN
+  get pgnDetalle(): any { return this.activeData?.pgn?.[0] ?? null; }
+
+  abrirDetalle(nombre: string, codigoDepto: string, _data: ResumenGeovisor, sistema: 'SGR' | 'SGP' | 'PGN' = 'SGR'): void {
+    this.modoDetalle = true;
+    this.detalleDepto = { nombre, codigoDepto };
+    this.sistemaDetalle = sistema;
+    this.detalleData = null;
+    this.municipioSeleccionado = null;
+    this.municipioData = null;
+    this.municipioLayerActivo = null;
+    this.categoriaSeleccionadaSGR = null;
+    this.participacionSeleccionadaSGP = null;
+
+    this.circleMarkers.forEach(m => (m as L.Marker).remove());
+    this.circleMarkers = [];
+    this.geoJsonLayer?.setStyle(() => ({ fillOpacity: 0, color: 'transparent', weight: 0 }));
+
+    // Diferir un tick para que Angular renderice el layout de detalle antes de
+    // que Leaflet recalcule bounds y agregue la capa de municipios
+    setTimeout(() => {
+      this.map.invalidateSize();
+      this.cargarMunicipiosDetalle();
+    }, 0);
+    this.cargarDatosSistemaDetalle();
+  }
+
+  cerrarDetalle(): void {
+    this.modoDetalle = false;
+    this.detalleDepto = null;
+    this.municipioSeleccionado = null;
+    this.municipioData = null;
+    this.municipioLayerActivo = null;
+    this.sinMunicipiosGeoJSON.set(false);
+
+    if (this.municipiosLayer) { this.municipiosLayer.remove(); this.municipiosLayer = null; }
+
+    this.geoJsonLayer?.setStyle((f) => this.getDeptStyle(f));
+    this.actualizarVisualizacion();
+    this.centrarMapa();
+  }
+
+  cambiarSistemaDetalle(sistema: 'SGR' | 'SGP' | 'PGN'): void {
+    this.sistemaDetalle = sistema;
+    this.categoriaSeleccionadaSGR = null;
+    this.participacionSeleccionadaSGP = null;
+    this.municipiosLayer?.setStyle(() => ({
+      fillColor: SISTEMA_COLORES[sistema] ?? '#7c3aed',
+      fillOpacity: this.opacidadMunicipios / 100 * 0.6,
+      color: '#64748b',
+      weight: 0.7
+    }));
+  }
+
+  cargarDatosSistemaDetalle(): void {
+    if (!this.detalleDepto) return;
+    this.isLoadingDetalle.set(true);
+    const deptCode = this.detalleDepto.codigoDepto.substring(0, 2).padStart(2, '0') + '000';
+    this.sicodisApi.getGeovisorResumen(this.vigenciaSeleccionada, deptCode, 0)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => { this.detalleData = data; this.isLoadingDetalle.set(false); },
+        error: () => this.isLoadingDetalle.set(false)
+      });
+  }
+
+  cargarDatosMunicipio(nombre: string, codigoMunicipio: string): void {
+    if (!this.detalleDepto) return;
+    // Resetear selección anterior
+    if (this.municipioLayerActivo) {
+      this.municipiosLayer?.resetStyle(this.municipioLayerActivo);
+      this.municipioLayerActivo = null;
+    }
+    this.municipioSeleccionado = { nombre, codigoMunicipio };
+    this.municipioData = null;
+    this.categoriaSeleccionadaSGR = null;
+    this.participacionSeleccionadaSGP = null;
+    this.isLoadingMunicipio.set(true);
+
+    const deptCode = this.detalleDepto.codigoDepto.substring(0, 2).padStart(2, '0') + '000';
+    this.sicodisApi.getGeovisorResumen(this.vigenciaSeleccionada, deptCode, codigoMunicipio)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => { this.municipioData = data; this.isLoadingMunicipio.set(false); },
+        error: () => this.isLoadingMunicipio.set(false)
+      });
+  }
+
+  deseleccionarMunicipio(): void {
+    if (this.municipioLayerActivo) {
+      this.municipiosLayer?.resetStyle(this.municipioLayerActivo);
+      this.municipioLayerActivo = null;
+    }
+    this.municipioSeleccionado = null;
+    this.municipioData = null;
+    this.categoriaSeleccionadaSGR = null;
+    this.participacionSeleccionadaSGP = null;
+  }
+
+  onOpacidadMunicipiosChange(): void {
+    this.municipiosLayer?.setStyle(() => ({
+      fillColor: SISTEMA_COLORES[this.sistemaDetalle] ?? '#7c3aed',
+      fillOpacity: this.opacidadMunicipios / 100 * 0.6,
+      color: '#64748b',
+      weight: 0.7
+    }));
+  }
+
+  totalPresupuestoDetalle(): number {
+    if (this.sistemaDetalle === 'SGR') return this.sgrDetalle?.presupuesto_total_vigente ?? 0;
+    if (this.sistemaDetalle === 'SGP') return this.sgpDetalle?.total ?? 0;
+    return this.pgnDetalle?.total_apropiacion_vigente ?? 0;
+  }
+
+  totalRecaudoDetalle(): number {
+    if (this.sistemaDetalle === 'SGR') return this.sgrDetalle?.caja_total ?? 0;
+    if (this.sistemaDetalle === 'SGP') return 0;
+    return this.pgnDetalle?.total_pagos ?? 0;
+  }
+
+  avanceDetalle(): number {
+    if (this.sistemaDetalle === 'SGR') return (this.sgrDetalle?.avance_iac_presupuesto ?? 0) * 100;
+    // PGN: porcentaje_total_pagos ya viene en escala 0-100
+    if (this.sistemaDetalle === 'PGN') return this.pgnDetalle?.porcentaje_total_pagos ?? 0;
+    return 0;
+  }
+
+  etiquetaRecaudoDetalle(): string {
+    if (this.sistemaDetalle === 'SGR') return 'Caja total';
+    if (this.sistemaDetalle === 'SGP') return 'Distribución';
+    return 'Pagos';
+  }
+
+  descargarArchivo(): void {
+    if (this.sistemaDetalle !== 'SGP' || !this.detalleDepto) return;
+    const deptCode = this.detalleDepto.codigoDepto.substring(0, 2).padStart(2, '0');
+    this.sicodisApi.getSgpDescargaDatosSgpResumenParticipaciones(
+      this.vigenciaSeleccionada, deptCode, '0', this.detalleDepto.nombre, ''
+    ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `sgp_${this.detalleDepto!.nombre}_${this.vigenciaSeleccionada}.xlsx`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    });
+  }
+
+  private cargarMunicipiosDetalle(): void {
+    // Obtener código de 2 dígitos con cero a la izquierda ("05", "11", "76"…)
+    // codigoDepto tiene formato "05000" → tomar primeros 2 chars y asegurar zero-padding
+    const dept2 = this.detalleDepto!.codigoDepto.substring(0, 2).padStart(2, '0');
+    this.sinMunicipiosGeoJSON.set(false);
+
+    const renderizar = () => {
+      if (this.municipiosLayer) { this.municipiosLayer.remove(); this.municipiosLayer = null; }
+
+      const features = this.municipiosGeoJSON.features.filter((f: any) => {
+        // d puede ser "05", "5", 5 — normalizar a 2 dígitos string
+        const fDept = String(f.properties.d ?? '').padStart(2, '0');
+        return fDept === dept2;
+      });
+
+      if (features.length === 0) {
+        this.sinMunicipiosGeoJSON.set(true);
+        return;
+      }
+      const fc = { type: 'FeatureCollection', features };
+
+      this.municipiosLayer = L.geoJSON(fc as any, {
+        style: () => ({
+          fillColor: SISTEMA_COLORES[this.sistemaDetalle] ?? '#7c3aed',
+          fillOpacity: this.opacidadMunicipios / 100 * 0.6,
+          color: '#64748b',
+          weight: 0.7
+        }),
+        onEachFeature: (feature, layer) => {
+          layer.on({
+            mouseover: (e: any) => {
+              if (this.municipioLayerActivo === layer) return;
+              e.target.setStyle({ weight: 2, fillOpacity: 0.75 });
+            },
+            mouseout: () => {
+              if (this.municipioLayerActivo === layer) return;
+              this.municipiosLayer?.resetStyle(layer);
+            },
+            click: () => {
+              // Quitar highlight anterior
+              if (this.municipioLayerActivo && this.municipioLayerActivo !== layer) {
+                this.municipiosLayer?.resetStyle(this.municipioLayerActivo);
+              }
+              // Highlight del municipio seleccionado
+              this.municipioLayerActivo = layer;
+              (layer as any).setStyle({ weight: 2.5, color: '#1e3a5f', fillOpacity: 0.85 });
+              // Cargar datos en Angular zone
+              this.ngZone.run(() => this.cargarDatosMunicipio(feature.properties.n, feature.properties.m));
+            }
+          });
+        }
+      }).addTo(this.map);
+
+      const bounds = this.municipiosLayer.getBounds();
+      if (bounds.isValid()) this.map.fitBounds(bounds, { padding: [30, 30] });
+    };
+
+    if (this.municipiosGeoJSON) {
+      renderizar();
+    } else {
+      this.http.get('/assets/data/municipios.geojson')
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({ next: (g) => { this.municipiosGeoJSON = g; renderizar(); } });
+    }
   }
 
   // ── Filters ──────────────────────────────────────────────────────────────────

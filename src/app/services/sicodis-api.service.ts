@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-import { Observable, forkJoin } from 'rxjs';
+import { Observable, forkJoin, of } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 import { HttpResponse } from '@angular/common/http';
 import { EficienciasMockService } from './eficiencias-mock.service';
@@ -1368,9 +1368,9 @@ getSgrDescargaResumenPbcRecaudoMensual( idvigencia: number
    * @param codigoMunicipio - Código del municipio
    * @returns Observable con el resumen de participaciones de distribución
    */
-  getSgpResumenParticipacionesDistribucion(idDistribucion: number, codigoDepto: string, codigoMunicipio: string): Observable<ResumenParticipaciones> {
+  getSgpResumenParticipacionesDistribucion(idDistribucion: number, codigoDepto: string, codigoMunicipio: string): Observable<ResumenParticipaciones[]> {
     const url = `${this.baseUrl}/sgp/resumen_participaciones_distribucion/${idDistribucion}/${codigoDepto}/${codigoMunicipio}`;
-    return this.http.get<ResumenParticipaciones>(url);
+    return this.http.get<ResumenParticipaciones[]>(url);
   }
 
   /**
@@ -1788,9 +1788,56 @@ getSgrDescargaResumenPbcRecaudoMensual( idvigencia: number
 
   // ========== Geovisor Methods ==========
 
+  private readonly CACHE_PREFIX = 'sicodis_geo_v';
+  private readonly TTL_VIGENCIA_ACTIVA  = 60 * 60 * 1000;          // 1 hora
+  private readonly TTL_VIGENCIA_CERRADA = 30 * 24 * 60 * 60 * 1000; // 30 días
+
+  private geoCacheTtl(annio: number): number {
+    return annio < new Date().getFullYear()
+      ? this.TTL_VIGENCIA_CERRADA
+      : this.TTL_VIGENCIA_ACTIVA;
+  }
+
   getGeovisorResumen(annio: number, codigoDepto: string | number = 0, codigoEntidad: string | number = 0): Observable<ResumenGeovisor> {
+    const cacheKey = `${this.CACHE_PREFIX}${annio}_${codigoDepto}`;
+    const ttl = this.geoCacheTtl(annio);
+
+    try {
+      const raw = localStorage.getItem(cacheKey);
+      if (raw) {
+        const { ts, data } = JSON.parse(raw);
+        if (Date.now() - ts < ttl) return of(data as ResumenGeovisor);
+        localStorage.removeItem(cacheKey);
+      }
+    } catch { /* localStorage no disponible */ }
+
     const url = `${this.baseUrl}/geovisor/resumen_geovisor/${annio}/${codigoDepto}/${codigoEntidad}`;
-    return this.http.get<ResumenGeovisor>(url);
+    return this.http.get<ResumenGeovisor>(url).pipe(
+      tap(data => {
+        try {
+          localStorage.setItem(cacheKey, JSON.stringify({ ts: Date.now(), data }));
+        } catch { /* cuota excedida — silencioso */ }
+      })
+    );
+  }
+
+  limpiarCacheGeovisor(): void {
+    const ahora = Date.now();
+    const aEliminar: string[] = [];
+
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key?.startsWith(this.CACHE_PREFIX)) continue;
+      try {
+        const { ts } = JSON.parse(localStorage.getItem(key)!);
+        const annio = parseInt(key.replace(this.CACHE_PREFIX, '').split('_')[0]);
+        if (ahora - ts > this.geoCacheTtl(annio)) aEliminar.push(key);
+      } catch {
+        aEliminar.push(key!);
+      }
+    }
+
+    aEliminar.forEach(k => localStorage.removeItem(k));
   }
 
   // ============================================================================
