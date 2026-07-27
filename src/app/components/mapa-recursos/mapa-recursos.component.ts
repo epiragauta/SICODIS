@@ -8,6 +8,8 @@ import { SliderModule } from 'primeng/slider';
 import { ButtonModule } from 'primeng/button';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { ChartModule } from 'primeng/chart';
+import { ChartData, ChartOptions } from 'chart.js';
 import { forkJoin, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -67,6 +69,16 @@ const SISTEMA_COLORES: Record<string, string> = {
   PGN: '#f59e0b'
 };
 
+// Paleta cálida tomada del componente reporte-funcionamiento, usada en las tortas
+const COLORES_REPORTE = {
+  naranja: '#E07800',
+  naranjaOscuro: '#D9520A',
+  ambar: '#F0A500',
+  rojo: '#D74641',
+  rojoOscuro: '#8F2B2B',
+  restante: '#eae1e1'
+};
+
 @Component({
   selector: 'app-mapa-recursos',
   standalone: true,
@@ -80,6 +92,7 @@ const SISTEMA_COLORES: Record<string, string> = {
     ProgressBarModule,
     InputSwitchModule,
     RadioButtonModule,
+    ChartModule,
     NumberFormatPipe
   ],
   templateUrl: './mapa-recursos.component.html',
@@ -132,6 +145,16 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
   categoriaSeleccionadaSGR: any = null;
   participacionSeleccionadaSGP: any = null;
 
+  // ── Gráfica de torta (panel derecho) ───────────────────────────────────────────
+  pieData: ChartData<'pie'> = { labels: [], datasets: [] };
+  pieOptions: ChartOptions<'pie'> = {};
+  tienePieData = false;
+  private readonly paletaSectores = [
+    COLORES_REPORTE.naranjaOscuro, COLORES_REPORTE.naranja, COLORES_REPORTE.ambar,
+    COLORES_REPORTE.rojo, COLORES_REPORTE.rojoOscuro,
+    '#B45309', '#7C2D12', '#C2410C', '#A16207', '#9A3412'
+  ];
+
   get activeData(): ResumenGeovisor | null {
     return this.municipioSeleccionado ? this.municipioData : this.detalleData;
   }
@@ -151,6 +174,47 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     this.sicodisApi.limpiarCacheGeovisor();
     this.generarVigencias();
     this.cargarResumenNacional();
+    this.configurarPieOptions();
+  }
+
+  private configurarPieOptions(): void {
+    this.pieOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { boxWidth: 12, padding: 8, font: { size: 11 } }
+        },
+        tooltip: {
+          callbacks: {
+            label: (ctx: any) => {
+              const val = Number(ctx.parsed) || 0;
+              const ds = (ctx.dataset?.data ?? []) as number[];
+              const total = ds.reduce((s, v) => s + (Number(v) || 0), 0);
+              const pct = total > 0 ? (val / total) * 100 : 0;
+              return `${ctx.label}: $${this.formatearMilesMillones(val)} mm (${pct.toFixed(1)}%)`;
+            }
+          }
+        },
+        // El plugin datalabels está registrado globalmente (main.ts) y por defecto
+        // pinta el valor crudo sobre cada porción; mostramos el porcentaje en su lugar.
+        datalabels: {
+          // Texto oscuro sobre la porción gris clara "restante"; blanco en el resto
+          color: (ctx: any) => {
+            const bg = ctx.dataset?.backgroundColor?.[ctx.dataIndex];
+            return bg === COLORES_REPORTE.restante ? '#6b5e5e' : '#ffffff';
+          },
+          font: { weight: 'bold', size: 11 },
+          formatter: (value: number, ctx: any) => {
+            const ds = (ctx.dataset?.data ?? []) as number[];
+            const total = ds.reduce((s, v) => s + (Number(v) || 0), 0);
+            const pct = total > 0 ? (Number(value) / total) * 100 : 0;
+            return pct >= 5 ? `${pct.toFixed(0)}%` : '';
+          }
+        }
+      } as any
+    };
   }
 
   ngAfterViewInit(): void {
@@ -689,6 +753,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     this.municipioData = null;
     this.municipioLayerActivo = null;
     this.sinMunicipiosGeoJSON.set(false);
+    this.tienePieData = false;
 
     if (this.municipiosLayer) { this.municipiosLayer.remove(); this.municipiosLayer = null; }
 
@@ -707,6 +772,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
       color: '#64748b',
       weight: 0.7
     }));
+    this.refrescarGrafica();
   }
 
   cargarDatosSistemaDetalle(): void {
@@ -716,7 +782,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     this.sicodisApi.getGeovisorResumen(this.vigenciaSeleccionada, deptCode, 0)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (data) => { this.detalleData = data; this.isLoadingDetalle.set(false); },
+        next: (data) => { this.detalleData = data; this.refrescarGrafica(); this.isLoadingDetalle.set(false); },
         error: () => this.isLoadingDetalle.set(false)
       });
   }
@@ -738,7 +804,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     this.sicodisApi.getGeovisorResumen(this.vigenciaSeleccionada, deptCode, codigoMunicipio)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (data) => { this.municipioData = data; this.isLoadingMunicipio.set(false); },
+        next: (data) => { this.municipioData = data; this.refrescarGrafica(); this.isLoadingMunicipio.set(false); },
         error: () => this.isLoadingMunicipio.set(false)
       });
   }
@@ -752,6 +818,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     this.municipioData = null;
     this.categoriaSeleccionadaSGR = null;
     this.participacionSeleccionadaSGP = null;
+    this.refrescarGrafica();
   }
 
   onOpacidadMunicipiosChange(): void {
@@ -786,6 +853,65 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     if (this.sistemaDetalle === 'SGR') return 'Caja total';
     if (this.sistemaDetalle === 'SGP') return 'Distribución';
     return 'Pagos';
+  }
+
+  etiquetaAvanceDetalle(): string {
+    if (this.sistemaDetalle === 'SGR') return 'Porcentaje de recaudo vs presupuesto';
+    if (this.sistemaDetalle === 'PGN') return 'Porcentaje de pagos vs apropiación';
+    return 'Avance';
+  }
+
+  toggleCategoriaSGR(cat: any): void {
+    this.categoriaSeleccionadaSGR =
+      this.categoriaSeleccionadaSGR?.categoria === cat.categoria ? null : cat;
+    this.refrescarGrafica();
+  }
+
+  // Reconstruye la torta del panel derecho según el sistema activo y los datos vigentes
+  private refrescarGrafica(): void {
+    if (!this.activeData) { this.tienePieData = false; return; }
+
+    if (this.sistemaDetalle === 'SGR') {
+      const d = this.sgrDetalle;
+      const caja = Number(d?.caja_total) || 0;
+      const presupuesto = Number(d?.presupuesto_total_vigente) || 0;
+      const pendiente = Math.max(0, presupuesto - caja);
+      this.pieData = {
+        labels: ['Caja recaudada', 'Pendiente por recaudar'],
+        datasets: [{ data: [caja, pendiente], backgroundColor: [COLORES_REPORTE.naranja, COLORES_REPORTE.restante], borderWidth: 0 }]
+      };
+      this.tienePieData = (caja + pendiente) > 0;
+    } else if (this.sistemaDetalle === 'SGP') {
+      const sectores = this.sgpTopLevel;
+      const labels = sectores.map((s: any) => s.concepto);
+      const data = sectores.map((s: any) => Number(s.total) || 0);
+      this.pieData = {
+        labels,
+        datasets: [{ data, backgroundColor: this.paletaSectores.slice(0, labels.length), borderWidth: 0 }]
+      };
+      this.tienePieData = data.some((v: number) => v > 0);
+    } else {
+      const p = this.pgnDetalle;
+      const pagos = Number(p?.total_pagos) || 0;
+      const obligaciones = Number(p?.total_obligaciones) || 0;
+      const apropiacion = Number(p?.total_apropiacion_vigente) || 0;
+      const obligSinPagar = Math.max(0, obligaciones - pagos);
+      const sinEjecutar = Math.max(0, apropiacion - obligaciones);
+      this.pieData = {
+        labels: ['Pagos', 'Obligaciones sin pagar', 'Sin ejecutar'],
+        datasets: [{ data: [pagos, obligSinPagar, sinEjecutar], backgroundColor: [COLORES_REPORTE.naranjaOscuro, COLORES_REPORTE.ambar, COLORES_REPORTE.restante], borderWidth: 0 }]
+      };
+      this.tienePieData = (pagos + obligSinPagar + sinEjecutar) > 0;
+    }
+  }
+
+  formatearMilesMillones(valor: number | string | null | undefined): string {
+    const n = Number(valor);
+    if (!Number.isFinite(n)) return 'N/D';
+    return new Intl.NumberFormat('es-CO', {
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 1
+    }).format(n / 1e9);
   }
 
   descargarArchivo(): void {

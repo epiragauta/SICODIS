@@ -95,7 +95,7 @@
              class="categoria-item"
              [class.seleccionado]="categoriaSeleccionadaSGR?.categoria === cat.categoria"
              [style.padding-left.px]="sgrIndent(cat.categoria) + 8"
-             (click)="categoriaSeleccionadaSGR = (categoriaSeleccionadaSGR?.categoria === cat.categoria ? null : cat)">
+             (click)="toggleCategoriaSGR(cat)">
           <span class="cat-concepto">{{ cat.concepto }}</span>
           <span class="cat-valor">${{ formatearValor(cat.presupuesto_total_vigente) }}</span>
         </div>
@@ -229,29 +229,27 @@
     <!-- ── Tarjetas resumen MODO DETALLE ──────────────────────── -->
     <div class="tarjetas-resumen tarjetas-detalle" *ngIf="modoDetalle" [class.tarjetas-cargando]="isLoadingPanel()">
       <div class="tarjeta-recurso tarjeta-detalle-item" [style.--color-sistema]="sistemaColores[sistemaDetalle]">
-        <div class="tarjeta-header">
-          <span class="tarjeta-sigla">{{ sistemaDetalle }}</span>
-          <span class="tarjeta-nombre">{{ detalleDepto?.nombre }}</span>
+        <div class="tarjeta-detalle-head">
+          <span class="tarjeta-detalle-eyebrow">{{ sistemaDetalle }}</span>
+          <span class="tarjeta-detalle-label">Presupuesto total</span>
         </div>
         <div class="tarjeta-total-row">
-          <span class="tarjeta-total">${{ formatearValor(totalPresupuestoDetalle()) }}</span>
-          <span class="tarjeta-cobertura-badge">Presupuesto total</span>
+          <span class="tarjeta-total">${{ formatearMilesMillones(totalPresupuestoDetalle()) }}<small class="tarjeta-unidad">mm</small></span>
         </div>
       </div>
       <div class="tarjeta-recurso tarjeta-detalle-item" [style.--color-sistema]="sistemaColores[sistemaDetalle]">
-        <div class="tarjeta-header">
-          <span class="tarjeta-sigla">{{ sistemaDetalle }}</span>
-          <span class="tarjeta-nombre">{{ etiquetaRecaudoDetalle() }}</span>
+        <div class="tarjeta-detalle-head">
+          <span class="tarjeta-detalle-eyebrow">{{ sistemaDetalle }}</span>
+          <span class="tarjeta-detalle-label">{{ etiquetaRecaudoDetalle() }}</span>
         </div>
         <div class="tarjeta-total-row">
-          <span class="tarjeta-total">${{ formatearValor(totalRecaudoDetalle()) }}</span>
-          <span class="tarjeta-cobertura-badge">{{ etiquetaRecaudoDetalle() }}</span>
+          <span class="tarjeta-total">${{ formatearMilesMillones(totalRecaudoDetalle()) }}<small class="tarjeta-unidad">mm</small></span>
         </div>
       </div>
       <div class="tarjeta-recurso tarjeta-detalle-item" [style.--color-sistema]="sistemaColores[sistemaDetalle]">
-        <div class="tarjeta-header">
-          <span class="tarjeta-sigla">Avance</span>
-          <span class="tarjeta-nombre">Recaudo vs presupuesto</span>
+        <div class="tarjeta-detalle-head">
+          <span class="tarjeta-detalle-eyebrow">{{ sistemaDetalle }}</span>
+          <span class="tarjeta-detalle-label">{{ etiquetaAvanceDetalle() }}</span>
         </div>
         <div class="tarjeta-total-row">
           <span class="tarjeta-total">{{ avanceDetalle().toFixed(1) }}%</span>
@@ -323,6 +321,11 @@
   ════════════════════════════════════════════════════════════════ -->
   <div class="panel-derecho" *ngIf="modoDetalle">
     <h3 class="titulo-seccion">Detalle {{ sistemaDetalle }}</h3>
+
+    <!-- Torta: distribución del sistema activo -->
+    <div class="grafica-torta" *ngIf="!isLoadingPanel() && tienePieData">
+      <p-chart type="pie" [data]="pieData" [options]="pieOptions"></p-chart>
+    </div>
 
     <!-- SGR -->
     <ng-container *ngIf="sistemaDetalle === 'SGR'">

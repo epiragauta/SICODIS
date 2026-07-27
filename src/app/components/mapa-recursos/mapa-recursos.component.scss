@@ -867,6 +867,35 @@
   min-height: unset;
 }
 
+.tarjeta-detalle-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.tarjeta-detalle-eyebrow {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-sistema, #64748b);
+}
+
+.tarjeta-detalle-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #334155;
+  line-height: 1.2;
+}
+
+.tarjeta-unidad {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+  margin-left: 0.25rem;
+}
+
 // Panel izquierdo en modo detalle
 .distribuciones-list {
   display: flex;
@@ -964,6 +993,21 @@
   display: block;
   text-align: right;
   margin-top: 0.25rem;
+}
+
+// Panel derecho — torta de distribución
+.grafica-torta {
+  height: 200px;
+  position: relative;
+  margin-bottom: 0.5rem;
+
+  ::ng-deep {
+    .p-chart,
+    canvas {
+      height: 100% !important;
+      width: 100% !important;
+    }
+  }
 }
 
 // Panel derecho — detalles
