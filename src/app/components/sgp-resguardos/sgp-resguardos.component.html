@@ -5,7 +5,7 @@
     <div class="gradient-banner">
       <div class="gradient-overlay"></div>
       <div class="banner-content">
-        <h1>RESGUARDOS INDÍGENAS</h1>
+        <h1>Resguardos Indígenas</h1>
         <p>Consulte el detalle de la información de la AESGPRI</p>
       </div>
     </div>
@@ -68,14 +68,18 @@
 
       <div class="filter-item">
         <p-floatlabel>
-          <input
-            pInputText
-            id="search"
-            [(ngModel)]="searchText"
-            class="search-input"
-            placeholder="Buscar resguardo indígena"
+          <p-select
+            inputId="resguardo"
+            [(ngModel)]="selectedResguardo"
+            [options]="resguardos"
+            optionLabel="label"
+            optionValue="id"
+            [filter]="true"
+            filterBy="label"
+            (onChange)="onResguardoChange()"
+            styleClass="filter-select"
           />
-          <label for="search">Buscar resguardo indígena</label>
+          <label for="resguardo">Resguardo indígena</label>
         </p-floatlabel>
       </div>
     </div>
@@ -122,10 +126,12 @@
             <p class="card-subtitle">Vigencia seleccionada: {{ selectedVigencia }}</p>
           </div>
         </div>
-        <div class="card-note">
-          <i class="pi pi-info-circle"></i>
-          <p>Este resguardo tiene jurisdicción en múltiples territorios: Amazonas (Leticia) - Vaupés (Mitú). El presupuesto no refleja el total consolidado.</p>
-        </div>
+        @if (observacionPresupuesto) {
+          <div class="card-note">
+            <i class="pi pi-info-circle"></i>
+            <p>{{ observacionPresupuesto }}</p>
+          </div>
+        }
 
         <!-- Últimas Tres Vigencias - Presupuesto -->
         <div class="vigencias-dentro-card">
@@ -154,10 +160,12 @@
             <p class="card-subtitle">Vigencia seleccionada: {{ selectedVigencia }}</p>
           </div>
         </div>
-        <div class="card-note">
-          <i class="pi pi-info-circle"></i>
-          <p>Población distribuida entre los municipios: Leticia (Amazonas) 2.105 hab. - Mitú (Vaupés) 1.356 hab.</p>
-        </div>
+        @if (observacionPoblacion) {
+          <div class="card-note">
+            <i class="pi pi-info-circle"></i>
+            <p>{{ observacionPoblacion }}</p>
+          </div>
+        }
 
         <!-- Últimas Tres Vigencias - Población -->
         <div class="vigencias-dentro-card">
@@ -241,7 +249,7 @@
 
         <div class="comparativo-stats">
           <div class="stat-box">
-            <p class="stat-label">Variación <span class="stat-label-bold">personas</span></p>
+            <p class="stat-label">Variación personas</p>
             <p class="stat-value stat-value-large">{{ diferenciaPoblacion | numberFormat }} personas</p>
           </div>
           <div class="stat-box">
@@ -300,7 +308,7 @@
 
       <!-- Enlaces de Interés -->
       <div class="chart-card enlaces-card">
-        <h3>Enlaces de interés</h3>
+        <h3>ENLACES DE INTERÉS</h3>
         <div class="enlaces-list">
           @for (enlace of enlacesInteres; track enlace.titulo) {
             <div class="enlace-item">

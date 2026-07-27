@@ -713,6 +713,74 @@ export interface ResumenGeovisor {
   pgn_beneficiados?: GeovisorBeneficiados[];
 }
 
+// ========== SGP Indígenas Interfaces ==========
+
+export interface VigenciaSgpIndigena {
+  id_vigencia: number;
+  vigencia: string;
+}
+
+/** Elemento genérico de filtro (departamento, municipio o resguardo) de SGP Indígenas */
+export interface EntidadSgpIndigena {
+  codigo: string;
+  nombre: string;
+  orden: number;
+}
+
+/** Valor puntual (presupuesto o población) con su observación asociada */
+export interface ResumenSgpIndigenaValor {
+  PresupuestoDistribuido?: number;
+  PoblacionCertificada?: number;
+  Observacion: string;
+}
+
+export interface HistoricoPresupuestoSgpIndigena {
+  Vigencia: number;
+  PresupuestoDistribuido: number;
+}
+
+export interface HistoricoPoblacionSgpIndigena {
+  Vigencia: number;
+  PoblacionCertificada: number;
+}
+
+export interface ComparativoPresupuestoSgpIndigena {
+  VigenciaActual: number;
+  VigenciaAnterior: number;
+  PresupuestoVigenciaActual: number;
+  PresupuestoVigenciaAnterior: number;
+  VariacionPesos: number;
+  VariacionPorcentaje: number;
+}
+
+export interface ComparativoPoblacionSgpIndigena {
+  VigenciaActual: number;
+  VigenciaAnterior: number;
+  PoblacionVigenciaActual: number;
+  PoblacionVigenciaAnterior: number;
+  VariacionPoblacion: number;
+  VariacionPorcentaje: number;
+}
+
+export interface ResumenGeneralSgpIndigenas {
+  presupuesto: ResumenSgpIndigenaValor[];
+  poblacion: ResumenSgpIndigenaValor[];
+  historicoPresupuesto: HistoricoPresupuestoSgpIndigena[];
+  historicoPoblacion: HistoricoPoblacionSgpIndigena[];
+  comparativoPresupuesto: ComparativoPresupuestoSgpIndigena[];
+  comparativoPoblacion: ComparativoPoblacionSgpIndigena[];
+}
+
+export interface DescargaDetalleSgpIndigenasParams {
+  vigencias: string;
+  codigoDepto?: string;
+  departamento?: string;
+  codigoMunicipio?: string;
+  municipio?: string;
+  codigoResguardo?: string;
+  resguardo?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -1485,6 +1553,112 @@ getSgrDescargaResumenPbcRecaudoMensual( idvigencia: number
   getSgpResumenGeneralUltimaOnce(idVigencia: number, codigoDepto: string, codigoMunicipio: string): Observable<ResumenUltimaOnce> {
     const url = `${this.baseUrl}/sgp/resumen_general_ultima_once/${idVigencia}/${codigoDepto}/${codigoMunicipio}`;
     return this.http.get<ResumenUltimaOnce>(url);
+  }
+
+  // ========== SGP Indígenas Methods (Resguardos - AESGPRI) ==========
+
+  /**
+   * Obtiene el listado de vigencias registradas para SGP Indígenas
+   * @returns Observable con el array de vigencias
+   */
+  getSgpIndigenasVigencias(): Observable<VigenciaSgpIndigena[]> {
+    const url = `${this.baseUrl}/sgpindigenas/vigencias`;
+    return this.http.get<VigenciaSgpIndigena[]>(url, { headers: this.getNoCacheHeaders() });
+  }
+
+  /**
+   * Obtiene el listado de departamentos registrados para SGP Indígenas
+   * @param vigencias - Vigencias separadas por coma (opcional)
+   * @returns Observable con el array de departamentos (incluye la opción "Todos" con código "0")
+   */
+  getSgpIndigenasDepartamentos(vigencias?: string): Observable<EntidadSgpIndigena[]> {
+    const url = `${this.baseUrl}/sgpindigenas/departamentos`;
+    let httpParams = new HttpParams();
+    if (vigencias) {
+      httpParams = httpParams.set('vigencias', vigencias);
+    }
+    return this.http.get<EntidadSgpIndigena[]>(url, { params: httpParams, headers: this.getNoCacheHeaders() });
+  }
+
+  /**
+   * Obtiene el listado de municipios registrados para SGP Indígenas
+   * @param vigencias - Vigencias separadas por coma (opcional)
+   * @param codigoDepto - Código de departamento de 5 dígitos, ej. "91000" (opcional)
+   * @returns Observable con el array de municipios (incluye la opción "Todos" con código "0")
+   */
+  getSgpIndigenasMunicipios(vigencias?: string, codigoDepto?: string): Observable<EntidadSgpIndigena[]> {
+    const url = `${this.baseUrl}/sgpindigenas/municipios`;
+    let httpParams = new HttpParams();
+    if (vigencias) {
+      httpParams = httpParams.set('vigencias', vigencias);
+    }
+    if (codigoDepto) {
+      httpParams = httpParams.set('codigoDepto', codigoDepto);
+    }
+    return this.http.get<EntidadSgpIndigena[]>(url, { params: httpParams, headers: this.getNoCacheHeaders() });
+  }
+
+  /**
+   * Obtiene el listado de resguardos indígenas
+   * @param vigencias - Vigencias separadas por coma (opcional)
+   * @param codigoDepto - Código de departamento de 5 dígitos (opcional)
+   * @param codigoMunicipio - Código de municipio de 5 dígitos, ej. "91001" (opcional)
+   * @returns Observable con el array de resguardos (incluye la opción "Todos" con código "0")
+   */
+  getSgpIndigenasResguardos(vigencias?: string, codigoDepto?: string, codigoMunicipio?: string): Observable<EntidadSgpIndigena[]> {
+    const url = `${this.baseUrl}/sgpindigenas/resguardos`;
+    let httpParams = new HttpParams();
+    if (vigencias) {
+      httpParams = httpParams.set('vigencias', vigencias);
+    }
+    if (codigoDepto) {
+      httpParams = httpParams.set('codigoDepto', codigoDepto);
+    }
+    if (codigoMunicipio) {
+      httpParams = httpParams.set('codigoMunicipio', codigoMunicipio);
+    }
+    return this.http.get<EntidadSgpIndigena[]>(url, { params: httpParams, headers: this.getNoCacheHeaders() });
+  }
+
+  /**
+   * Obtiene el consolidado de SGP Indígenas: presupuesto y población distribuidos,
+   * con su histórico y comparativo de vigencias
+   * @param vigencias - Vigencias separadas por coma (REQUERIDO por el backend)
+   * @param codigoDepto - Código de departamento (default "0" = Todos)
+   * @param codigoMunicipio - Código de municipio (default "0" = Todos)
+   * @param codigoResguardo - Código de resguardo (default "0" = Todos)
+   * @returns Observable con el resumen general
+   */
+  getSgpIndigenasResumenGeneral(
+    vigencias: string,
+    codigoDepto: string = '0',
+    codigoMunicipio: string = '0',
+    codigoResguardo: string = '0'
+  ): Observable<ResumenGeneralSgpIndigenas> {
+    const url = `${this.baseUrl}/sgpindigenas/resumen_general`;
+    const httpParams = new HttpParams()
+      .set('vigencias', vigencias)
+      .set('codigoDepto', codigoDepto)
+      .set('codigoMunicipio', codigoMunicipio)
+      .set('codigoResguardo', codigoResguardo);
+    return this.http.get<ResumenGeneralSgpIndigenas>(url, { params: httpParams, headers: this.getNoCacheHeaders() });
+  }
+
+  /**
+   * Genera y descarga en Excel el detalle de registros de SGP Indígenas
+   * @param params - Filtros de la consulta (vigencias es requerido; codigoDepto debe ser distinto de "0")
+   * @returns Observable con la respuesta HTTP que contiene el Blob del archivo .xlsx
+   */
+  getSgpIndigenasDescargarDetalle(params: DescargaDetalleSgpIndigenasParams): Observable<HttpResponse<Blob>> {
+    const url = `${this.baseUrl}/sgpindigenas/descargar-detalle`;
+    let httpParams = new HttpParams().set('vigencias', params.vigencias);
+    if (params.codigoDepto) httpParams = httpParams.set('codigoDepto', params.codigoDepto);
+    if (params.departamento) httpParams = httpParams.set('departamento', params.departamento);
+    if (params.codigoMunicipio) httpParams = httpParams.set('codigoMunicipio', params.codigoMunicipio);
+    if (params.municipio) httpParams = httpParams.set('municipio', params.municipio);
+    if (params.codigoResguardo) httpParams = httpParams.set('codigoResguardo', params.codigoResguardo);
+    if (params.resguardo) httpParams = httpParams.set('resguardo', params.resguardo);
+    return this.http.get(url, { params: httpParams, responseType: 'blob', observe: 'response' });
   }
 
   /**
