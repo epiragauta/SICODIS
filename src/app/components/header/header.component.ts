@@ -77,6 +77,23 @@ export class HeaderComponent implements OnInit, OnDestroy {
           {
             label: 'Eficiencias',
             command: () => this.redirectUrl("sgp-eficiencias")
+          },
+          {
+            label: 'Proyecciones',
+            command: () => this.downloadFile('https://colaboracion.dnp.gov.co/CDT/Inversiones%20y%20finanzas%20pblicas/Documentos%20GFT/Documentos_SGP/Ficha%20Proyecciones%20SGP%202026.xlsx')
+          },
+          {
+            label: 'Situado Fiscal',
+            items: [
+              {
+                label: 'Resumen',
+                command: () => this.openExternal('https://sicodispr.dnp.gov.co/ReportesSGP/SGP_Historico_1994_2001.aspx')
+              },
+              {
+                label: 'Histórico',
+                command: () => this.openExternal('https://sicodispr.dnp.gov.co/ReportesSGP/SGP_SF_HistoricoEntidadyFuente.aspx')
+              }
+            ]
           }
         ]
       },
@@ -268,6 +285,10 @@ downloadFile(path: string) {
   link.target = '_blank';
   link.download = '';
   link.click();
+}
+
+openExternal(url: string) {
+  window.open(url, '_blank');
 }
 
 

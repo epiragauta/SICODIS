@@ -104,12 +104,20 @@
     <div class="results-section">
     <div class="results-header">
       <h2>RESULTADOS DE LA CONSULTA</h2>
-      <p-button
-        label="Exportar Excel"
-        icon="pi pi-download"
-        (onClick)="exportarExcel()"
-        styleClass="p-button-success"
-      />
+      <div class="results-actions">
+        <p-button
+          label="Detalle antes de 2015"
+          icon="pi pi-history"
+          (onClick)="descargarHistoricoConpes()"
+          styleClass="p-button-outlined"
+        />
+        <p-button
+          label="Exportar Excel"
+          icon="pi pi-download"
+          (onClick)="exportarExcel()"
+          styleClass="p-button-success"
+        />
+      </div>
     </div>
 
     <!-- Tarjetas Principales -->

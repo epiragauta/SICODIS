@@ -84,6 +84,12 @@ export class SgpResguardosComponent implements OnInit {
   // Población total de resguardos certificados (desde resumen_general)
   poblacionTotalHistorica: number = 0;
 
+  /**
+   * Excel con el detalle de SGP Indígenas de vigencias anteriores a 2015
+   * (información basada en documentos CONPES), alojado en el sitio de colaboración del DNP.
+   */
+  readonly urlHistoricoConpes = 'https://colaboracion.dnp.gov.co/CDT/Inversiones%20y%20finanzas%20pblicas/Documentos%20GFT/Documentos_SGP/resguardos/detalle_sgp_indigenas_conpes.xlsx';
+
   // Enlaces de interés
   enlacesInteres = [
     {
@@ -327,6 +333,13 @@ export class SgpResguardosComponent implements OnInit {
           this.isLoading.set(false);
         }
       });
+  }
+
+  /**
+   * Abre/descarga el Excel de resguardos de vigencias anteriores a 2015 (CONPES).
+   */
+  descargarHistoricoConpes(): void {
+    window.open(this.urlHistoricoConpes, '_blank');
   }
 
   private getNombreOpcion(opciones: OpcionFiltro[], id: string): string {
