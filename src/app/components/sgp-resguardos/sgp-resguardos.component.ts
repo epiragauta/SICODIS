@@ -76,29 +76,13 @@ export class SgpResguardosComponent implements OnInit {
   poblacionActual: number = 0;
   observacionPresupuesto: string = '';
   observacionPoblacion: string = '';
+  observacionResguardos: string = '';
 
-  // Datos históricos (desde resumen_general; cantidadResguardos permanece mock)
-  datosHistoricos: ResguardoData[] = [
-    { vigencia: 2026, presupuesto: 0, poblacion: 0, cantidadResguardos: 913 },
-    { vigencia: 2025, presupuesto: 0, poblacion: 0, cantidadResguardos: 900 },
-    { vigencia: 2024, presupuesto: 0, poblacion: 0, cantidadResguardos: 885 }
-  ];
+  // Datos históricos (desde resumen_general)
+  datosHistoricos: ResguardoData[] = [];
 
-  /**
-   * Cantidad de resguardos certificados por vigencia.
-   * MOCK: el API de SGP Indígenas no expone este conteo (ver /resumen_general).
-   */
-  private readonly mockCantidadResguardos: { [vigencia: number]: number } = {
-    2026: 913,
-    2025: 900,
-    2024: 885
-  };
-
-  /**
-   * Población indígena total en Colombia (censo).
-   * MOCK: el API solo expone población certificada, no la cifra censal.
-   */
-  poblacionTotalHistorica: number = 1905617;
+  // Población total de resguardos certificados (desde resumen_general)
+  poblacionTotalHistorica: number = 0;
 
   // Enlaces de interés
   enlacesInteres = [
@@ -265,11 +249,17 @@ export class SgpResguardosComponent implements OnInit {
     this.poblacionActual = resumen?.poblacion?.[0]?.PoblacionCertificada ?? 0;
     this.observacionPresupuesto = resumen?.presupuesto?.[0]?.Observacion ?? '';
     this.observacionPoblacion = resumen?.poblacion?.[0]?.Observacion ?? '';
+    this.observacionResguardos = resumen?.cantidadResguardos?.[0]?.Observacion ?? '';
+    this.poblacionTotalHistorica = resumen?.poblacionIndigena?.[0]?.PoblacionTotalResguardosCertificados ?? 0;
 
     const historicoPresupuesto = resumen?.historicoPresupuesto ?? [];
     const historicoPoblacion = resumen?.historicoPoblacion ?? [];
+    const cantidadResguardos = resumen?.cantidadResguardos ?? [];
     const poblacionPorVigencia = new Map(
       historicoPoblacion.map(h => [h.Vigencia, h.PoblacionCertificada])
+    );
+    const resguardosPorVigencia = new Map(
+      cantidadResguardos.map(c => [c.Vigencia, c.CantidadResguardosCertificados])
     );
 
     if (historicoPresupuesto.length > 0) {
@@ -277,7 +267,7 @@ export class SgpResguardosComponent implements OnInit {
         vigencia: h.Vigencia,
         presupuesto: h.PresupuestoDistribuido,
         poblacion: poblacionPorVigencia.get(h.Vigencia) ?? 0,
-        cantidadResguardos: this.mockCantidadResguardos[h.Vigencia] ?? 0
+        cantidadResguardos: resguardosPorVigencia.get(h.Vigencia) ?? 0
       }));
     }
   }

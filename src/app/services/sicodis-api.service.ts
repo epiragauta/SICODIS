@@ -762,6 +762,17 @@ export interface ComparativoPoblacionSgpIndigena {
   VariacionPorcentaje: number;
 }
 
+export interface CantidadResguardosSgpIndigena {
+  Vigencia: number;
+  CantidadResguardosCertificados: number;
+  Observacion: string;
+}
+
+export interface PoblacionIndigenaSgpIndigena {
+  Vigencia: number;
+  PoblacionTotalResguardosCertificados: number;
+}
+
 export interface ResumenGeneralSgpIndigenas {
   presupuesto: ResumenSgpIndigenaValor[];
   poblacion: ResumenSgpIndigenaValor[];
@@ -769,6 +780,8 @@ export interface ResumenGeneralSgpIndigenas {
   historicoPoblacion: HistoricoPoblacionSgpIndigena[];
   comparativoPresupuesto: ComparativoPresupuestoSgpIndigena[];
   comparativoPoblacion: ComparativoPoblacionSgpIndigena[];
+  cantidadResguardos: CantidadResguardosSgpIndigena[];
+  poblacionIndigena: PoblacionIndigenaSgpIndigena[];
 }
 
 export interface DescargaDetalleSgpIndigenasParams {

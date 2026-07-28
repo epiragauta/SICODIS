@@ -184,6 +184,7 @@
     </div>
 
     <!-- Comparativo Últimas Dos Vigencias -->
+    @if (datosHistoricos.length >= 2) {
     <h2 class="section-title">COMPARATIVO ÚLTIMAS DOS VIGENCIAS</h2>
 
     <div class="comparativo-grid">
@@ -259,6 +260,7 @@
         </div>
       </div>
     </div>
+    }
 
     <!-- Gráficas y Datos Adicionales -->
     <div class="charts-grid">
@@ -266,6 +268,7 @@
       <div class="chart-card resguardos-card">
         <h3>CANTIDAD DE RESGUARDOS CERTIFICADOS</h3>
 
+        @if (datosHistoricos.length > 0) {
         <div class="resguardos-content">
           <!-- Círculo con número principal -->
           <div class="resguardos-circle">
@@ -289,11 +292,14 @@
             }
           </div>
         </div>
+        }
 
         <!-- Nota de crecimiento -->
-        <div class="chart-note positive">
-          <p>+ {{ diferenciaResguardos }} nuevos resguardos en {{ datosHistoricos[0].vigencia }} vs {{ datosHistoricos[1].vigencia }}</p>
-        </div>
+        @if (observacionResguardos) {
+          <div class="chart-note positive">
+            <p>{{ observacionResguardos }}</p>
+          </div>
+        }
       </div>
 
       <!-- Población Total -->
