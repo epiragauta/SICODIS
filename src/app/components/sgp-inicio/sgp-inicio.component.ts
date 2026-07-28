@@ -111,9 +111,8 @@ export class SgpInicioComponent implements OnInit {
       descripcion: 'AESGPRI desagregada por entidad territorial y población certificada.',
       boton: 'Consultar',
       link: 'sgp-resguardos',
-      icon: 'assets/img/sgp/indigenous.png',
-      download: 'assets/data/sgp/sgp_resguardos_datos.xlsx'
-    },      
+      icon: 'assets/img/sgp/indigenous.png'
+    },
     {
       titulo: 'Variables Certificadas',
       descripcion: 'Disponibles desde 2002 por entidad territorial.',

@@ -64,7 +64,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
           },
           {
             label: 'Resguardos Indígenas',
-            command: () => this.downloadFile('assets/data/sgp/sgp_resguardos_datos.xlsx')
+            command: () => this.redirectUrl("sgp-resguardos")
           },
           {
             label: 'Variables Certificadas',
