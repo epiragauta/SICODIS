@@ -232,14 +232,11 @@
 
     <!-- Botones de accion -->
     <div class="action-buttons">
+      <!-- Obs. 2: descarga pendiente de endpoint backend; deshabilitada mientras tanto -->
       <p-button label="Exportar Excel" icon="pi pi-file-excel" class="detail-button"
+        [disabled]="true"
         (click)="exportarExcel()">
       </p-button>
-      <p-splitButton label="Informes de recaudo"
-                     icon="pi pi-money-bill"
-                     class="detail-button"
-                     [model]="menuItems">
-      </p-splitButton>
     </div>
 
     <!-- Notas -->
@@ -248,6 +245,7 @@
       <div class="notes-content">
         <p class="note-item">(1) Cifras en pesos corrientes.</p>
         <p class="note-item">(2) Ley 2441 de 2024 - Decretos 379 y 380 del 2025</p>
+        <p class="note-item">(3) La vigencia 2012 no cuenta con Plan Bienal de Caja, por lo que no se incluye en el filtro.</p>
       </div>
     </div>
   </div>

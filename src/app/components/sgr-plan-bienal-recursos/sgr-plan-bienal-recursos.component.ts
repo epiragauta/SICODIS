@@ -189,7 +189,12 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
 
   private cargarDepartamentos(): void {
     this.sicodisApiService.getSgrPlanRecursosDepartamentos().subscribe({
-      next: (data) => { this.departamentosList = data; },
+      next: (data) => {
+        this.departamentosList = data;
+        // Obs. 2: seleccionar "Todos" por defecto para estandarizar con los demás
+        // reportes y evitar que el selector quede en blanco (placeholder vacío).
+        this.selectedDepartamento = data.find(d => d.codigo === '0') ?? null;
+      },
       error: (err) => console.error('Error cargando departamentos:', err)
     });
   }
@@ -202,9 +207,13 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
   }
 
   private sortMunicipios(data: MunicipioPlanBienal[]): MunicipioPlanBienal[] {
-    const todos       = data.filter(m => m.codigo === '0');
-    const gobernacion = data.filter(m => m.nombre.startsWith('Gobernación de'));
-    const rest        = data.filter(m => m.codigo !== '0' && !m.nombre.startsWith('Gobernación de'));
+    // Obs. 5: excluir las Áreas No Municipalizadas (ANM) de Amazonas, Guainía y
+    // Vaupés (código *ANM, nombre "… Areas No Municipalizadas"). No son entidades
+    // beneficiarias de los recursos del SGR, así que no deben aparecer en el filtro.
+    const municipios  = data.filter(m => !/ANM/i.test(m.codigo));
+    const todos       = municipios.filter(m => m.codigo === '0');
+    const gobernacion = municipios.filter(m => m.nombre.startsWith('Gobernación de'));
+    const rest        = municipios.filter(m => m.codigo !== '0' && !m.nombre.startsWith('Gobernación de'));
     return [...todos, ...gobernacion, ...rest];
   }
 
@@ -291,13 +300,22 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
     const subItems = data.filter(item =>
       Number.isInteger(item.Orden) &&
       item.Orden > inversionOrd &&
-      item.Orden < ahorroOrd
+      item.Orden < ahorroOrd &&
+      item.IdConcepto !== '99'          // nunca graficar la fila de Total
+    );
+
+    // Obs. 3: solo graficar las asignaciones/fondos que traen recursos en algún año.
+    // Así se ocultan de la leyenda las que no aplican al beneficiario consultado
+    // (p. ej. los municipios no reciben FAE ni CTeI) ni a la vigencia
+    // (p. ej. la Asignación para la Paz no existía en el PR 2013-2022).
+    const itemsConDatos = subItems.filter(item =>
+      this.years.some(y => (item[y] || 0) !== 0)
     );
 
     this.categoryMap = {};
-    subItems.forEach(item => { this.categoryMap[item.Concepto] = String(item.Orden); });
+    itemsConDatos.forEach(item => { this.categoryMap[item.Concepto] = String(item.Orden); });
 
-    const datasets = subItems.map((item, i) => ({
+    const datasets = itemsConDatos.map((item, i) => ({
       label: item.Concepto,
       data: this.years.map(y => item[y] || 0),
       backgroundColor: this.chartColors[i % this.chartColors.length],
@@ -333,10 +351,6 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
 
   exportarExcel(): void {
     console.log('Exportar excel...');
-  }
-
-  verInformesRecaudo(): void {
-    console.log('Ver informes de recaudo...');
   }
 
   async cargarSiglasDiccionario(): Promise<void> {

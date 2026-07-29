@@ -1,14 +1,13 @@
 import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
-import { SplitButtonModule } from 'primeng/splitbutton';
 import { FloatLabel } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
 import { ChartModule } from 'primeng/chart';
 import { TableModule } from 'primeng/table';
 import { TreeTableModule } from 'primeng/treetable';
 import { Select } from 'primeng/select';
-import { MenuItem, TreeNode } from 'primeng/api';
+import { TreeNode } from 'primeng/api';
 
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
@@ -30,7 +29,6 @@ import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
   imports: [
     CommonModule,
     ButtonModule,
-    SplitButtonModule,
     FloatLabel,
     FormsModule,
     ChartModule,
@@ -88,9 +86,6 @@ export class SgrPlanBienalCajaComponent implements OnInit {
   barChartData: any;
   barChartOptions: any;
 
-  // Menu del split button "Informes de recaudo"
-  menuItems: MenuItem[] = [];
-
   constructor(
     private sicodisApiService: SicodisApiService,
     private ngZone: NgZone
@@ -100,7 +95,6 @@ export class SgrPlanBienalCajaComponent implements OnInit {
     this.buildPeriods();
     this.initializeTableColumns();
     this.initializeChart();
-    this.initializeMenuItems();
     this.cargarSiglasDiccionario();
     this.cargarVigencias();
     this.cargarDepartamentos();
@@ -186,7 +180,7 @@ export class SgrPlanBienalCajaComponent implements OnInit {
         tooltip: {
           callbacks: {
             label: (ctx: any) =>
-              `${ctx.dataset.label}: ${this.formatCurrency(ctx.parsed.y)}`,
+              `Total ${ctx.dataset.label}: ${this.formatCurrency(ctx.parsed.y)}`,
           },
         },
       },
@@ -225,14 +219,6 @@ export class SgrPlanBienalCajaComponent implements OnInit {
     };
   }
 
-  private initializeMenuItems(): void {
-    this.menuItems = [
-      { label: 'Recaudo mensual', icon: 'pi pi-calendar' },
-      { label: 'Recaudo por vigencia', icon: 'pi pi-chart-bar' },
-      { label: 'Comparativo vs presupuesto', icon: 'pi pi-chart-line' },
-    ];
-  }
-
   private formatCurrency(value: number): string {
     if (!value && value !== 0) return '';
     return new Intl.NumberFormat('es-CO', {
@@ -249,7 +235,9 @@ export class SgrPlanBienalCajaComponent implements OnInit {
   private cargarVigencias(): void {
     this.sicodisApiService.getSgrPlanBienalVigencias().subscribe({
       next: (data) => {
-        this.vigencias = data;
+        // Obs. 5: excluir vigencias que no son bienios (p. ej. "2012"), que no
+        // cuentan con Plan Bienal de Caja. Ver nota al pie del reporte.
+        this.vigencias = data.filter(v => v.vigencia.includes(' - '));
         // Seleccionar la primera vigencia por defecto (la más reciente)
         if (this.vigencias.length > 0) {
           this.selectedVigencia = this.vigencias[0];
@@ -396,28 +384,26 @@ export class SgrPlanBienalCajaComponent implements OnInit {
    * Actualiza el gráfico con los nuevos datos
    */
   private actualizarGrafico(data: DetallePlanBienal[], year1: number, year2: number): void {
-    const inversionRow = data.find(r => r.IdConcepto === '1000');
-
-    if (!inversionRow) {
-      console.warn('No se encontró registro de INVERSIÓN para el gráfico');
-      return;
-    }
+    // Obs. 1: la gráfica muestra el TOTAL mensual del PBC (inversión + ahorro +
+    // administración) por año. El desglose por concepto se consulta en la tabla inferior.
+    const totalRow = data.find(r => r.IdConcepto === '99');
 
     const monthNames = [
       'Enero','Febrero','Marzo','Abril','Mayo','Junio',
       'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre',
     ];
 
-    const data1 = monthNames.map((_, i) => {
-      const m = String(i + 1).padStart(2, '0');
-      return inversionRow[`${year1}-${m}`] ?? 0;
-    });
+    const valoresPorMes = (year: number): number[] =>
+      monthNames.map((_, i) => {
+        const m = String(i + 1).padStart(2, '0');
+        return (totalRow?.[`${year}-${m}`] as number) ?? 0;
+      });
 
-    const data2 = monthNames.map((_, i) => {
-      const m = String(i + 1).padStart(2, '0');
-      return inversionRow[`${year2}-${m}`] ?? 0;
-    });
+    const data1 = valoresPorMes(year1);
+    const data2 = valoresPorMes(year2);
 
+    // Obs. 5: actualizar SIEMPRE las etiquetas de año según la vigencia seleccionada,
+    // aunque no haya datos, para que la gráfica sea consistente con el filtro.
     this.barChartData.datasets[0].label = String(year1);
     this.barChartData.datasets[1].label = String(year2);
     this.barChartData.datasets[0].data = [...data1, ...Array(12).fill(null)];

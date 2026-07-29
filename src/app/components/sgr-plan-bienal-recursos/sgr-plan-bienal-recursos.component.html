@@ -104,11 +104,7 @@
   </div>
 
   <!-- Seccion de fechas y botones Diccionario/Siglas -->
-  <div class="info-strip">
-    <div class="info-strip-left">
-      <p class="date-update">Fecha de actualización: febrero 12 de 2026</p>
-      <p class="date-update">Fecha de corte de recaudo: enero 31 de 2026</p>
-    </div>
+  <div class="info-strip">    
     <div class="info-strip-right">
       <button pButton type="button" label="Diccionario" class="p-button-secondary"
           (click)="showPopupDiccionario()">
@@ -216,11 +212,10 @@
 
     <!-- Botones de acción -->
     <div class="action-buttons">
+      <!-- Obs. 2: descarga pendiente de endpoint backend; deshabilitada mientras tanto -->
       <p-button label="Exportar excel" icon="pi pi-file-excel" class="detail-button"
+        [disabled]="true"
         (click)="exportarExcel()">
-      </p-button>
-      <p-button label="Informes de recaudo" icon="pi pi-money-bill" class="detail-button"
-        (click)="verInformesRecaudo()">
       </p-button>
     </div>
 
