@@ -183,6 +183,62 @@
   color: #64748b;
 }
 
+// Acerca del visor
+.acerca-seccion {
+  gap: 0.75rem;
+}
+
+.acerca-texto {
+  font-size: 0.78rem;
+  color: #475569;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.acerca-sistemas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    color: #1e293b;
+  }
+
+  .sistema-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+}
+
+.acerca-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0.5rem 0.6rem;
+  background: #f8fafc;
+  border-left: 3px solid #94a3b8;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  color: #64748b;
+  line-height: 1.4;
+
+  i {
+    color: #64748b;
+    font-size: 0.85rem;
+    margin-top: 0.1rem;
+  }
+}
+
 // Notas
 .notas-seccion {
   margin-top: auto;
