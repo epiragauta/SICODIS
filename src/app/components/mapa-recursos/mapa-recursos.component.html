@@ -113,8 +113,14 @@
         <div *ngIf="sgpCategorias.length === 0" class="sin-datos">Sin subcategorías</div>
       </div>
 
+      <!-- PGN sin datos a nivel de municipio -->
+      <div *ngIf="!isLoadingPanel() && sistemaDetalle === 'PGN' && pgnSinDatosMunicipio" class="sin-datos-municipio">
+        <i class="pi pi-info-circle"></i>
+        <span>Sin información a nivel de municipio</span>
+      </div>
+
       <!-- PGN -->
-      <div *ngIf="!isLoadingPanel() && sistemaDetalle === 'PGN' && pgnDetalle">
+      <div *ngIf="!isLoadingPanel() && sistemaDetalle === 'PGN' && !pgnSinDatosMunicipio && pgnDetalle">
         <div class="categoria-item">
           <span class="cat-concepto">Apropiación vigente</span>
           <span class="cat-valor">${{ formatearValor(pgnDetalle.total_apropiacion_vigente) }}</span>
@@ -228,34 +234,50 @@
 
     <!-- ── Tarjetas resumen MODO DETALLE ──────────────────────── -->
     <div class="tarjetas-resumen tarjetas-detalle" *ngIf="modoDetalle" [class.tarjetas-cargando]="isLoadingPanel()">
-      <div class="tarjeta-recurso tarjeta-detalle-item" [style.--color-sistema]="sistemaColores[sistemaDetalle]">
+
+      <!-- PGN sin información a nivel de municipio -->
+      <div *ngIf="pgnSinDatosMunicipio" class="tarjeta-recurso tarjeta-detalle-item tarjeta-na-municipio" [style.--color-sistema]="sistemaColores['PGN']">
         <div class="tarjeta-detalle-head">
-          <span class="tarjeta-detalle-eyebrow">{{ sistemaDetalle }}</span>
-          <span class="tarjeta-detalle-label">Presupuesto total</span>
+          <span class="tarjeta-detalle-eyebrow">PGN</span>
+          <span class="tarjeta-detalle-label">Presupuesto General de la Nación</span>
         </div>
         <div class="tarjeta-total-row">
-          <span class="tarjeta-total">${{ formatearMilesMillones(totalPresupuestoDetalle()) }}<small class="tarjeta-unidad">mm</small></span>
+          <span class="tarjeta-total tarjeta-na">N/A</span>
+          <span class="tarjeta-na-nota">Sin información a nivel de municipio</span>
         </div>
       </div>
-      <div class="tarjeta-recurso tarjeta-detalle-item" [style.--color-sistema]="sistemaColores[sistemaDetalle]">
-        <div class="tarjeta-detalle-head">
-          <span class="tarjeta-detalle-eyebrow">{{ sistemaDetalle }}</span>
-          <span class="tarjeta-detalle-label">{{ etiquetaRecaudoDetalle() }}</span>
+
+      <!-- Tarjetas normales -->
+      <ng-container *ngIf="!pgnSinDatosMunicipio">
+        <div class="tarjeta-recurso tarjeta-detalle-item" [style.--color-sistema]="sistemaColores[sistemaDetalle]">
+          <div class="tarjeta-detalle-head">
+            <span class="tarjeta-detalle-eyebrow">{{ sistemaDetalle }}</span>
+            <span class="tarjeta-detalle-label">Presupuesto total</span>
+          </div>
+          <div class="tarjeta-total-row">
+            <span class="tarjeta-total">${{ formatearMilesMillones(totalPresupuestoDetalle()) }}<small class="tarjeta-unidad">mm</small></span>
+          </div>
         </div>
-        <div class="tarjeta-total-row">
-          <span class="tarjeta-total">${{ formatearMilesMillones(totalRecaudoDetalle()) }}<small class="tarjeta-unidad">mm</small></span>
+        <div class="tarjeta-recurso tarjeta-detalle-item" [style.--color-sistema]="sistemaColores[sistemaDetalle]">
+          <div class="tarjeta-detalle-head">
+            <span class="tarjeta-detalle-eyebrow">{{ sistemaDetalle }}</span>
+            <span class="tarjeta-detalle-label">{{ etiquetaRecaudoDetalle() }}</span>
+          </div>
+          <div class="tarjeta-total-row">
+            <span class="tarjeta-total">${{ formatearMilesMillones(totalRecaudoDetalle()) }}<small class="tarjeta-unidad">mm</small></span>
+          </div>
         </div>
-      </div>
-      <div class="tarjeta-recurso tarjeta-detalle-item" [style.--color-sistema]="sistemaColores[sistemaDetalle]">
-        <div class="tarjeta-detalle-head">
-          <span class="tarjeta-detalle-eyebrow">{{ sistemaDetalle }}</span>
-          <span class="tarjeta-detalle-label">{{ etiquetaAvanceDetalle() }}</span>
+        <div class="tarjeta-recurso tarjeta-detalle-item" [style.--color-sistema]="sistemaColores[sistemaDetalle]">
+          <div class="tarjeta-detalle-head">
+            <span class="tarjeta-detalle-eyebrow">{{ sistemaDetalle }}</span>
+            <span class="tarjeta-detalle-label">{{ etiquetaAvanceDetalle() }}</span>
+          </div>
+          <div class="tarjeta-total-row">
+            <span class="tarjeta-total">{{ avanceDetalle().toFixed(1) }}%</span>
+          </div>
+          <p-progressBar [value]="avanceDetalle()" [showValue]="false" [style]="{'height': '6px', 'margin-top': '4px'}" />
         </div>
-        <div class="tarjeta-total-row">
-          <span class="tarjeta-total">{{ avanceDetalle().toFixed(1) }}%</span>
-        </div>
-        <p-progressBar [value]="avanceDetalle()" [showValue]="false" [style]="{'height': '6px', 'margin-top': '4px'}" />
-      </div>
+      </ng-container>
     </div>
 
     <!-- ── Tarjetas de cobertura (solo modo principal) ───────── -->
@@ -382,7 +404,11 @@
     <!-- PGN -->
     <ng-container *ngIf="sistemaDetalle === 'PGN'">
       <div *ngIf="isLoadingPanel()" class="cargando-inline"><i class="pi pi-spin pi-spinner"></i></div>
-      <ng-container *ngIf="!isLoadingPanel() && pgnDetalle">
+      <div *ngIf="!isLoadingPanel() && pgnSinDatosMunicipio" class="sin-datos-municipio">
+        <i class="pi pi-info-circle"></i>
+        <span>Sin información a nivel de municipio</span>
+      </div>
+      <ng-container *ngIf="!isLoadingPanel() && !pgnSinDatosMunicipio && pgnDetalle">
         <div class="detalle-fila">
           <span>Apropiación vigente</span>
           <strong>${{ formatearValor(pgnDetalle.total_apropiacion_vigente) }}</strong>

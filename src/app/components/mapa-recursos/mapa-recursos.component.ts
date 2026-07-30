@@ -683,6 +683,56 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
       </div>`;
   }
 
+  // Popup del municipio seleccionado (sin botones; PGN sin datos a nivel municipal)
+  private mostrarPopupMunicipio(latLng: L.LatLng, nombre: string, data: ResumenGeovisor): void {
+    const container = document.createElement('div');
+    container.innerHTML = this.crearPopupMunicipioHtml(nombre, data);
+
+    L.popup({ maxWidth: 300, className: 'popup-geovisor', keepInView: true, autoPanPadding: L.point(10, 100) })
+      .setLatLng(latLng)
+      .setContent(container)
+      .openOn(this.map);
+  }
+
+  private crearPopupMunicipioHtml(nombre: string, data: ResumenGeovisor): string {
+    const sgr = Array.isArray(data.sgr) ? data.sgr.find(d => d.categoria === '-2') : undefined;
+    const sgp = Array.isArray(data.sgp) ? data.sgp.find(d => d.id_concepto === '99') : undefined;
+
+    const fmt = (v: unknown) => { const n = Number(v); return Number.isFinite(n) ? '$' + this.formatearValor(n) : 'N/D'; };
+    const pct = (v: unknown) => `${(Number(v) * 100).toFixed(1)}%`;
+
+    const sgrHtml = this.capas.find(c => c.sistema === 'SGR')?.visible ? `
+      <div class="popup-sistema-bloque popup-sgr">
+        <div class="popup-sistema-titulo"><span class="popup-badge sgr">SGR</span></div>
+        <div class="popup-fila"><span>Presupuesto</span><strong>${fmt(sgr?.presupuesto_total_vigente)}</strong></div>
+        <div class="popup-fila"><span>Caja</span><strong>${fmt(sgr?.caja_total)}</strong></div>
+        <div class="popup-fila"><span>Avance IAC</span><strong>${pct(sgr?.avance_iac_presupuesto ?? 0)}</strong></div>
+      </div>` : '';
+
+    const sgpHtml = this.capas.find(c => c.sistema === 'SGP')?.visible ? `
+      <div class="popup-sistema-bloque popup-sgp">
+        <div class="popup-sistema-titulo"><span class="popup-badge sgp">SGP</span></div>
+        <div class="popup-fila"><span>Total distribución</span><strong>${fmt(sgp?.total)}</strong></div>
+      </div>` : '';
+
+    // PGN no dispone de detalle a nivel de municipio: bloque en gris con N/A
+    const pgnHtml = this.capas.find(c => c.sistema === 'PGN')?.visible ? `
+      <div class="popup-sistema-bloque popup-pgn popup-sin-datos">
+        <div class="popup-sistema-titulo" style="display:flex;justify-content:space-between;align-items:center;">
+          <span class="popup-badge pgn">PGN</span>
+          <strong class="popup-na">N/A</strong>
+        </div>
+        <div class="popup-nota-sindatos">Sin información a nivel de municipio</div>
+      </div>` : '';
+
+    return `
+      <div class="popup-geovisor-content">
+        <h4 class="popup-titulo">${nombre}</h4>
+        <div class="popup-vigencia">Vigencia ${this.vigenciaSeleccionada}</div>
+        ${sgrHtml}${sgpHtml}${pgnHtml}
+      </div>`;
+  }
+
   // ── Modo detalle ─────────────────────────────────────────────────────────────
 
   // SGR: categorías excluyendo totales (negativas)
@@ -722,6 +772,11 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
   // PGN
   get pgnDetalle(): any { return this.activeData?.pgn?.[0] ?? null; }
 
+  // PGN no tiene desagregación a nivel de municipio: mostrar N/A cuando hay municipio seleccionado
+  get pgnSinDatosMunicipio(): boolean {
+    return this.sistemaDetalle === 'PGN' && !!this.municipioSeleccionado;
+  }
+
   abrirDetalle(nombre: string, codigoDepto: string, _data: ResumenGeovisor, sistema: 'SGR' | 'SGP' | 'PGN' = 'SGR'): void {
     this.modoDetalle = true;
     this.detalleDepto = { nombre, codigoDepto };
@@ -754,6 +809,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     this.municipioLayerActivo = null;
     this.sinMunicipiosGeoJSON.set(false);
     this.tienePieData = false;
+    this.map?.closePopup();
 
     if (this.municipiosLayer) { this.municipiosLayer.remove(); this.municipiosLayer = null; }
 
@@ -787,13 +843,9 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
       });
   }
 
-  cargarDatosMunicipio(nombre: string, codigoMunicipio: string): void {
+  cargarDatosMunicipio(nombre: string, codigoMunicipio: string, latLng?: L.LatLng): void {
     if (!this.detalleDepto) return;
-    // Resetear selección anterior
-    if (this.municipioLayerActivo) {
-      this.municipiosLayer?.resetStyle(this.municipioLayerActivo);
-      this.municipioLayerActivo = null;
-    }
+    // El resaltado del polígono lo gestiona el handler de clic; aquí solo cargamos datos.
     this.municipioSeleccionado = { nombre, codigoMunicipio };
     this.municipioData = null;
     this.categoriaSeleccionadaSGR = null;
@@ -804,7 +856,12 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     this.sicodisApi.getGeovisorResumen(this.vigenciaSeleccionada, deptCode, codigoMunicipio)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (data) => { this.municipioData = data; this.refrescarGrafica(); this.isLoadingMunicipio.set(false); },
+        next: (data) => {
+          this.municipioData = data;
+          this.refrescarGrafica();
+          this.isLoadingMunicipio.set(false);
+          if (latLng) this.mostrarPopupMunicipio(latLng, nombre, data);
+        },
         error: () => this.isLoadingMunicipio.set(false)
       });
   }
@@ -814,6 +871,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
       this.municipiosLayer?.resetStyle(this.municipioLayerActivo);
       this.municipioLayerActivo = null;
     }
+    this.map?.closePopup();
     this.municipioSeleccionado = null;
     this.municipioData = null;
     this.categoriaSeleccionadaSGR = null;
@@ -890,6 +948,10 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
         datasets: [{ data, backgroundColor: this.paletaSectores.slice(0, labels.length), borderWidth: 0 }]
       };
       this.tienePieData = data.some((v: number) => v > 0);
+    } else if (this.pgnSinDatosMunicipio) {
+      // Sin torta de PGN a nivel de municipio
+      this.tienePieData = false;
+      return;
     } else {
       const p = this.pgnDetalle;
       const pagos = Number(p?.total_pagos) || 0;
@@ -969,7 +1031,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
               if (this.municipioLayerActivo === layer) return;
               this.municipiosLayer?.resetStyle(layer);
             },
-            click: () => {
+            click: (e: any) => {
               // Quitar highlight anterior
               if (this.municipioLayerActivo && this.municipioLayerActivo !== layer) {
                 this.municipiosLayer?.resetStyle(this.municipioLayerActivo);
@@ -977,8 +1039,10 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
               // Highlight del municipio seleccionado
               this.municipioLayerActivo = layer;
               (layer as any).setStyle({ weight: 2.5, color: '#1e3a5f', fillOpacity: 0.85 });
+              // Ubicación del clic para posicionar el popup del municipio
+              const latLng = e?.latlng ?? (layer as any).getBounds?.().getCenter?.();
               // Cargar datos en Angular zone
-              this.ngZone.run(() => this.cargarDatosMunicipio(feature.properties.n, feature.properties.m));
+              this.ngZone.run(() => this.cargarDatosMunicipio(feature.properties.n, feature.properties.m, latLng));
             }
           });
         }

@@ -1986,7 +1986,7 @@ getSgrDescargaResumenPbcRecaudoMensual( idvigencia: number
   }
 
   getGeovisorResumen(annio: number, codigoDepto: string | number = 0, codigoEntidad: string | number = 0): Observable<ResumenGeovisor> {
-    const cacheKey = `${this.CACHE_PREFIX}${annio}_${codigoDepto}`;
+    const cacheKey = `${this.CACHE_PREFIX}${annio}_${codigoDepto}_${codigoEntidad}`;
     const ttl = this.geoCacheTtl(annio);
 
     try {

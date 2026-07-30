@@ -647,6 +647,26 @@
         font-size: 11px;
       }
     }
+
+    // PGN sin datos a nivel de municipio: bloque atenuado
+    .popup-sistema-bloque.popup-sin-datos {
+      background: #f1f5f9;
+      opacity: 0.75;
+
+      .popup-badge.pgn { background: #e2e8f0; color: #94a3b8; }
+
+      .popup-na {
+        font-size: 11px;
+        font-weight: 700;
+        color: #94a3b8;
+      }
+
+      .popup-nota-sindatos {
+        font-size: 10.5px;
+        font-style: italic;
+        color: #94a3b8;
+      }
+    }
   }
 
   // Marcadores SVG de pie
@@ -894,6 +914,39 @@
   font-weight: 600;
   color: #64748b;
   margin-left: 0.25rem;
+}
+
+// PGN sin información a nivel de municipio (tarjeta superior)
+.tarjeta-na-municipio {
+  grid-column: 1 / -1;
+  background: #f8fafc;
+  border-left-color: #cbd5e1 !important;
+
+  .tarjeta-detalle-label { color: #64748b; }
+
+  .tarjeta-na {
+    color: #94a3b8;
+    font-weight: 700;
+  }
+
+  .tarjeta-na-nota {
+    font-size: 0.72rem;
+    font-style: italic;
+    color: #94a3b8;
+  }
+}
+
+// Mensaje "sin datos" en los paneles laterales
+.sin-datos-municipio {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 0.5rem;
+  font-size: 0.75rem;
+  font-style: italic;
+  color: #94a3b8;
+
+  i { font-size: 0.9rem; }
 }
 
 // Panel izquierdo en modo detalle
