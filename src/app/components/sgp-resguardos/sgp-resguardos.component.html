@@ -129,7 +129,11 @@
             <img src="assets/img/sgp/resguardos/financial-profit.png" alt="Presupuesto" />
           </div>
           <div class="card-info">
-            <h3>Presupuesto distribuido</h3>
+            <h3>Presupuesto distribuido
+              <i class="pi pi-info-circle info-icon"
+                 pTooltip="Monto del SGP distribuido a los resguardos indígenas para la vigencia y la selección consultada."
+                 tooltipPosition="top"></i>
+            </h3>
             <p class="card-value">${{ presupuestoActual | numberFormat }}</p>
             <p class="card-subtitle">Vigencia seleccionada: {{ selectedVigencia }}</p>
           </div>
@@ -149,6 +153,11 @@
               <div class="vigencia-item">
                 <span class="vigencia-dot" [style.background-color]="dato.vigencia === 2026 ? '#1e3a8a' : dato.vigencia === 2025 ? '#3b82f6' : '#93c5fd'"></span>
                 <span class="vigencia-year">{{ dato.vigencia }}</span>
+                <div class="vigencia-bar-container">
+                  <div class="vigencia-bar-fill"
+                       [style.width.%]="(dato.presupuesto / maxPresupuesto) * 100"
+                       [style.background-color]="dato.vigencia === 2026 ? '#1e3a8a' : dato.vigencia === 2025 ? '#3b82f6' : '#93c5fd'"></div>
+                </div>
                 <span class="vigencia-value">${{ dato.presupuesto | numberFormat }}</span>
               </div>
             }
@@ -163,7 +172,11 @@
             <img src="assets/img/sgp/resguardos/indigenous.png" alt="Población" />
           </div>
           <div class="card-info">
-            <h3>Población certificada</h3>
+            <h3>Población certificada
+              <i class="pi pi-info-circle info-icon"
+                 pTooltip="Número de personas certificadas por el DANE en los resguardos indígenas de la selección consultada."
+                 tooltipPosition="top"></i>
+            </h3>
             <p class="card-value">{{ poblacionActual | numberFormat }} personas</p>
             <p class="card-subtitle">Vigencia seleccionada: {{ selectedVigencia }}</p>
           </div>
@@ -183,6 +196,11 @@
               <div class="vigencia-item">
                 <span class="vigencia-dot" [style.background-color]="dato.vigencia === 2026 ? '#1e3a8a' : dato.vigencia === 2025 ? '#3b82f6' : '#93c5fd'"></span>
                 <span class="vigencia-year">{{ dato.vigencia }}</span>
+                <div class="vigencia-bar-container">
+                  <div class="vigencia-bar-fill"
+                       [style.width.%]="(dato.poblacion / maxPoblacion) * 100"
+                       [style.background-color]="dato.vigencia === 2026 ? '#1e3a8a' : dato.vigencia === 2025 ? '#3b82f6' : '#93c5fd'"></div>
+                </div>
                 <span class="vigencia-value">{{ dato.poblacion | numberFormat }} personas</span>
               </div>
             }
@@ -221,18 +239,29 @@
           </div>
         </div>
 
-        <div class="comparativo-difference">
-          <p>Diferencia: ${{ diferenciaPresupuesto | numberFormat }}</p>
+        <div class="comparativo-indicador"
+             [class.variacion-positiva]="variacionPresupuestoPositiva"
+             [class.variacion-negativa]="!variacionPresupuestoPositiva">
+          <i class="pi" [class.pi-arrow-up]="variacionPresupuestoPositiva" [class.pi-arrow-down]="!variacionPresupuestoPositiva"></i>
+          <span>{{ variacionPresupuestoPositiva ? 'Incrementó' : 'Disminuyó' }} frente a la vigencia anterior</span>
         </div>
 
         <div class="comparativo-stats">
           <div class="stat-box">
             <p class="stat-label">Variación $</p>
-            <p class="stat-value">+${{ diferenciaPresupuesto | numberFormat }}</p>
+            <p class="stat-value"
+               [class.variacion-positiva]="variacionPresupuestoPositiva"
+               [class.variacion-negativa]="!variacionPresupuestoPositiva">
+              {{ variacionPresupuestoPositiva ? '+' : '' }}${{ diferenciaPresupuesto | numberFormat }}
+            </p>
           </div>
           <div class="stat-box">
             <p class="stat-label">Variación %</p>
-            <p class="stat-value">+{{ porcentajeVariacionPresupuesto | number:'1.1-1' }}%</p>
+            <p class="stat-value"
+               [class.variacion-positiva]="variacionPresupuestoPositiva"
+               [class.variacion-negativa]="!variacionPresupuestoPositiva">
+              {{ variacionPresupuestoPositiva ? '+' : '' }}{{ porcentajeVariacionPresupuesto | number:'1.1-1' }}%
+            </p>
           </div>
         </div>
       </div>
@@ -242,28 +271,27 @@
         <h3>Población certificada</h3>
         <p class="comparativo-subtitle">Personas por vigencia</p>
 
-        <div class="poblacion-comparativo">
-          <div class="poblacion-box">
-            <p class="poblacion-label">Vigencia {{ datosHistoricos[1].vigencia }}</p>
-            <p class="poblacion-number">{{ datosHistoricos[1].poblacion | numberFormat }}</p>
-            <p class="poblacion-text">personas certificadas</p>
+        <div class="poblacion-resumen">
+          <div class="pob-vigencia">
+            <span class="pob-vig-label">Vigencia {{ datosHistoricos[1].vigencia }}</span>
+            <span class="pob-vig-number">{{ datosHistoricos[1].poblacion | numberFormat }}</span>
+            <span class="pob-vig-text">personas</span>
           </div>
 
-          <div class="poblacion-box">
-            <p class="poblacion-label">Vigencia {{ datosHistoricos[0].vigencia }}</p>
-            <p class="poblacion-number">{{ datosHistoricos[0].poblacion | numberFormat }}</p>
-            <p class="poblacion-text">personas certificadas</p>
-          </div>
-        </div>
+          <i class="pi pi-arrow-right pob-flecha"></i>
 
-        <div class="comparativo-stats">
-          <div class="stat-box">
-            <p class="stat-label">Variación personas</p>
-            <p class="stat-value stat-value-large">{{ diferenciaPoblacion | numberFormat }} personas</p>
+          <div class="pob-vigencia">
+            <span class="pob-vig-label">Vigencia {{ datosHistoricos[0].vigencia }}</span>
+            <span class="pob-vig-number">{{ datosHistoricos[0].poblacion | numberFormat }}</span>
+            <span class="pob-vig-text">personas</span>
           </div>
-          <div class="stat-box">
-            <p class="stat-label">Variación %</p>
-            <p class="stat-value">+{{ porcentajeVariacionPoblacion | number:'1.1-1' }}%</p>
+
+          <div class="pob-variacion"
+               [class.variacion-positiva]="variacionPoblacionPositiva"
+               [class.variacion-negativa]="!variacionPoblacionPositiva">
+            <i class="pi" [class.pi-arrow-up]="variacionPoblacionPositiva" [class.pi-arrow-down]="!variacionPoblacionPositiva"></i>
+            <span class="pob-var-number">{{ variacionPoblacionPositiva ? '+' : '' }}{{ diferenciaPoblacion | numberFormat }}</span>
+            <span class="pob-var-pct">({{ variacionPoblacionPositiva ? '+' : '' }}{{ porcentajeVariacionPoblacion | number:'1.1-1' }}%)</span>
           </div>
         </div>
       </div>
@@ -274,7 +302,11 @@
     <div class="charts-grid">
       <!-- Cantidad de Resguardos -->
       <div class="chart-card resguardos-card">
-        <h3>CANTIDAD DE RESGUARDOS CERTIFICADOS</h3>
+        <h3>CANTIDAD DE RESGUARDOS CERTIFICADOS
+          <i class="pi pi-info-circle info-icon"
+             pTooltip="Número de resguardos indígenas con población certificada por el DANE en cada vigencia."
+             tooltipPosition="top"></i>
+        </h3>
 
         @if (datosHistoricos.length > 0) {
         <div class="resguardos-content">
@@ -312,7 +344,11 @@
 
       <!-- Población Total -->
       <div class="chart-card poblacion-card">
-        <h3>POBLACIÓN INDÍGENA EN COLOMBIA</h3>
+        <h3>POBLACIÓN INDÍGENA EN COLOMBIA
+          <i class="pi pi-info-circle info-icon"
+             pTooltip="Población total certificada en los resguardos indígenas del país para la vigencia actual."
+             tooltipPosition="top"></i>
+        </h3>
         <div class="poblacion-box">
           <div class="poblacion-label-top">Total población certificada</div>
           <div class="poblacion-number-large">{{ poblacionTotalHistorica | numberFormat }}</div>

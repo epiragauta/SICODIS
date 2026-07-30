@@ -10,6 +10,7 @@ import { SelectModule } from 'primeng/select';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { AccordionModule } from 'primeng/accordion';
+import { TooltipModule } from 'primeng/tooltip';
 
 // Services & Pipes
 import {
@@ -44,6 +45,7 @@ interface OpcionFiltro {
     FloatLabel,
     InputTextModule,
     AccordionModule,
+    TooltipModule,
     NumberFormatPipe
   ],
   templateUrl: './sgp-resguardos.component.html',
@@ -381,5 +383,23 @@ export class SgpResguardosComponent implements OnInit {
   get diferenciaResguardos(): number {
     if (this.datosHistoricos.length < 2) return 0;
     return this.datosHistoricos[0].cantidadResguardos - this.datosHistoricos[1].cantidadResguardos;
+  }
+
+  // Máximos para escalar las barras de "últimas tres vigencias"
+  get maxPresupuesto(): number {
+    return this.datosHistoricos.reduce((max, d) => Math.max(max, d.presupuesto), 0) || 1;
+  }
+
+  get maxPoblacion(): number {
+    return this.datosHistoricos.reduce((max, d) => Math.max(max, d.poblacion), 0) || 1;
+  }
+
+  // Signo de la variación (para colorear verde/rojo y elegir el ícono ▲/▼)
+  get variacionPresupuestoPositiva(): boolean {
+    return this.diferenciaPresupuesto >= 0;
+  }
+
+  get variacionPoblacionPositiva(): boolean {
+    return this.diferenciaPoblacion >= 0;
   }
 }
