@@ -11,6 +11,7 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { AccordionModule } from 'primeng/accordion';
 import { TooltipModule } from 'primeng/tooltip';
+import { DialogModule } from 'primeng/dialog';
 
 // Services & Pipes
 import {
@@ -33,6 +34,28 @@ interface OpcionFiltro {
   label: string;
 }
 
+interface EnlacePopupItem {
+  icon: string;
+  titulo?: string;
+  texto: string;
+}
+
+interface EnlacePopup {
+  entidad: string;        // Título del encabezado
+  subtitulo: string;      // Subtítulo bajo el título
+  tema: 'azul' | 'dane';  // Tema de color del popup
+  iconoEntidad: string;   // Ícono/logo de la entidad
+  items: EnlacePopupItem[];
+  enlaceUrl?: string;     // Enlace destacado (opcional)
+  footer?: string;        // Aviso informativo al pie (opcional)
+}
+
+interface EnlaceInteres {
+  titulo: string;
+  url: string;
+  popup: EnlacePopup;
+}
+
 @Component({
   selector: 'app-sgp-resguardos',
   standalone: true,
@@ -46,6 +69,7 @@ interface OpcionFiltro {
     InputTextModule,
     AccordionModule,
     TooltipModule,
+    DialogModule,
     NumberFormatPipe
   ],
   templateUrl: './sgp-resguardos.component.html',
@@ -92,21 +116,88 @@ export class SgpResguardosComponent implements OnInit {
    */
   readonly urlHistoricoConpes = 'https://colaboracion.dnp.gov.co/CDT/Inversiones%20y%20finanzas%20pblicas/Documentos%20GFT/Documentos_SGP/resguardos/detalle_sgp_indigenas_conpes.xlsx';
 
-  // Enlaces de interés
-  enlacesInteres = [
+  // Enlaces de interés (cada uno abre un popup con información ampliada)
+  enlacesInteres: EnlaceInteres[] = [
     {
       titulo: 'Ministerio de Hacienda y Crédito Público',
-      url: 'https://www.minhacienda.gov.co'
+      url: 'https://www.minhacienda.gov.co',
+      popup: {
+        entidad: 'Ministerio de Hacienda y Crédito Público',
+        subtitulo: 'Información oficial del SGP',
+        tema: 'azul',
+        iconoEntidad: 'pi pi-building-columns',
+        items: [
+          {
+            icon: 'pi pi-info-circle',
+            texto: 'Una vez publicada la distribución de los recursos, el giro es responsabilidad del Ministerio de Hacienda. Para consultar o descargar el detalle completo, visite el siguiente enlace:'
+          }
+        ],
+        enlaceUrl: 'https://sgp.minhacienda.gov.co/consultasexternas'
+      }
     },
     {
       titulo: 'Departamento Nacional de Planeación',
-      url: 'https://www.dnp.gov.co'
+      url: 'https://www.dnp.gov.co',
+      popup: {
+        entidad: 'Departamento Nacional de Planeación',
+        subtitulo: 'Asistencia técnica AESGPRI',
+        tema: 'azul',
+        iconoEntidad: 'pi pi-comments',
+        items: [
+          {
+            icon: 'pi pi-users',
+            texto: 'La Subdirección de Descentralización ofrece un espacio virtual de asistencia técnica sobre el régimen de la AESGPRI y sus lineamientos aplicables.'
+          },
+          {
+            icon: 'pi pi-envelope',
+            texto: 'Para solicitarlo, envíe un correo a sgpresguardos@dnp.gov.co indicando su nombre y datos de contacto.'
+          },
+          {
+            icon: 'pi pi-calendar-clock',
+            texto: 'Desde allí se coordinará la fecha y hora de la sesión.'
+          }
+        ],
+        footer: 'Este espacio está dirigido a entidades territoriales, comunidades indígenas y demás actores interesados en la AESGPRI.'
+      }
     },
     {
       titulo: 'Departamento Administrativo Nacional de Estadística',
-      url: 'https://www.dane.gov.co'
+      url: 'https://www.dane.gov.co',
+      popup: {
+        entidad: 'Departamento Administrativo Nacional de Estadística (DANE)',
+        subtitulo: 'Información oficial',
+        tema: 'dane',
+        iconoEntidad: 'pi pi-chart-bar',
+        items: [
+          {
+            icon: 'pi pi-folder',
+            titulo: 'Fuente de información',
+            texto: 'La distribución de recursos se realiza con base en la información poblacional certificada por el DANE, única fuente válida para estos efectos.'
+          },
+          {
+            icon: 'pi pi-file',
+            titulo: 'Insumos del DNP',
+            texto: 'Corresponden exclusivamente a la información suministrada por las entidades competentes, conforme al mecanismo institucional establecido en la normatividad vigente.'
+          },
+          {
+            icon: 'pi pi-envelope',
+            titulo: '¿Más preguntas?',
+            texto: 'Dirección de Censos y Demografía del DANE: contacto@dane.gov.co'
+          }
+        ],
+        footer: 'La información suministrada por el DANE es oficial, confiable y utilizada por el Estado para la toma de decisiones sobre la asignación de recursos.'
+      }
     }
   ];
+
+  // Control del popup de enlaces de interés
+  popupVisible = false;
+  popupSeleccionado: EnlacePopup | null = null;
+
+  abrirPopupEnlace(enlace: EnlaceInteres): void {
+    this.popupSeleccionado = enlace.popup;
+    this.popupVisible = true;
+  }
 
   constructor(
     private sicodisApiService: SicodisApiService,

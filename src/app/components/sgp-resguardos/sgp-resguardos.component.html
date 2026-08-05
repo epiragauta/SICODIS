@@ -361,13 +361,11 @@
         <h3>ENLACES DE INTERÉS</h3>
         <div class="enlaces-list">
           @for (enlace of enlacesInteres; track enlace.titulo) {
-            <div class="enlace-item">
+            <button type="button" class="enlace-item" (click)="abrirPopupEnlace(enlace)">
               <i class="pi pi-chevron-right"></i>
-              <a [href]="enlace.url" target="_blank" rel="noopener noreferrer">
-                {{ enlace.titulo }}
-              </a>
-              <i class="pi pi-external-link enlace-external"></i>
-            </div>
+              <span class="enlace-titulo">{{ enlace.titulo }}</span>
+              <i class="pi pi-info-circle enlace-external"></i>
+            </button>
           }
         </div>
       </div>
@@ -382,4 +380,75 @@
       </p>
     </div>
   </div><!-- /container -->
+
+  <!-- Popup de Enlaces de Interés -->
+  <p-dialog
+    [(visible)]="popupVisible"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    [dismissableMask]="true"
+    [showHeader]="false"
+    [closable]="false"
+    [focusOnShow]="false"
+    appendTo="body"
+    [style]="{ width: '46rem', maxWidth: '95vw' }"
+    styleClass="enlace-popup"
+    [contentStyle]="{ padding: '0' }">
+    @if (popupSeleccionado; as p) {
+      <div class="enlace-popup-body" [class.tema-dane]="p.tema === 'dane'">
+        <!-- Encabezado -->
+        <div class="popup-header">
+          <div class="popup-header-logo">
+            <i [class]="p.iconoEntidad"></i>
+          </div>
+          <div class="popup-header-text">
+            <h2>{{ p.entidad }}</h2>
+            <p>{{ p.subtitulo }}</p>
+            <div class="popup-header-accent"></div>
+          </div>
+          <button type="button" class="popup-close" (click)="popupVisible = false" aria-label="Cerrar">
+            <i class="pi pi-times"></i>
+          </button>
+        </div>
+
+        <!-- Cuerpo -->
+        <div class="popup-content">
+          <div class="popup-illustration">
+            <i [class]="p.iconoEntidad"></i>
+          </div>
+          <div class="popup-items">
+            @for (item of p.items; track item.texto) {
+              <div class="popup-item">
+                <div class="popup-item-icon">
+                  <i [class]="item.icon"></i>
+                </div>
+                <div class="popup-item-text">
+                  @if (item.titulo) {
+                    <strong>{{ item.titulo }}</strong>
+                  }
+                  <span>{{ item.texto }}</span>
+                </div>
+              </div>
+            }
+            @if (p.enlaceUrl) {
+              <a class="popup-link" [href]="p.enlaceUrl" target="_blank" rel="noopener noreferrer">
+                <i class="pi pi-globe"></i>
+                <span>{{ p.enlaceUrl }}</span>
+                <i class="pi pi-external-link"></i>
+              </a>
+            }
+          </div>
+        </div>
+
+        <!-- Aviso al pie -->
+        @if (p.footer) {
+          <div class="popup-footer">
+            <i class="pi pi-info-circle"></i>
+            <span>{{ p.footer }}</span>
+          </div>
+        }
+      </div>
+    }
+  </p-dialog>
 </div><!-- /sgp-resguardos-container -->
