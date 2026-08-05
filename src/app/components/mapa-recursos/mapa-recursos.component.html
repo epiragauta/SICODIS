@@ -50,8 +50,7 @@
     <div class="seccion-panel acerca-seccion">
       <h3 class="titulo-seccion">Acerca del visor</h3>
       <p class="acerca-texto">
-        Consulta geográfica de los recursos que la Nación transfiere y ejecuta en
-        los territorios, por departamento y municipio.
+        Visualice y consulte la distribución territorial de los recursos del Sistema General de Regalías (SGR), Sistema General de Participaciones (SGP) y Presupuesto General de la Nación (PGN) mediante un mapa interactivo con información a nivel departamental y municipal.
       </p>
       <ul class="acerca-sistemas">
         <li><span class="sistema-dot" [style.background-color]="sistemaColores['SGR']"></span><strong>SGR</strong></li>
@@ -164,12 +163,10 @@
       <span class="opacidad-valor">{{ opacidadMunicipios }}%</span>
     </div>
 
-    <!-- Notas -->
+    <!-- Notas (dinámicas según el sistema seleccionado) -->
     <div class="seccion-panel notas-seccion">
       <h4 class="notas-titulo">NOTAS</h4>
-      <p class="notas-texto">(1) Cifras en pesos corrientes.</p>
-      <p class="notas-texto">(2) Ley 2441 de 2024 – Decretos 379 y 380 del 2025</p>
-      <p class="notas-texto">(3) Fecha de recaudo Diciembre de 2025</p>
+      <p class="notas-texto" *ngFor="let nota of notasDetalle">{{ nota }}</p>
     </div>
   </div>
 

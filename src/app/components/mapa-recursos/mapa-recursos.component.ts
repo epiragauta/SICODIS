@@ -14,7 +14,6 @@ import { forkJoin, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import * as L from 'leaflet';
-import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import {
   SicodisApiService,
@@ -92,8 +91,7 @@ const COLORES_REPORTE = {
     ProgressBarModule,
     InputSwitchModule,
     RadioButtonModule,
-    ChartModule,
-    NumberFormatPipe
+    ChartModule
   ],
   templateUrl: './mapa-recursos.component.html',
   styleUrl: './mapa-recursos.component.scss'
@@ -135,12 +133,34 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
   detalleDepto: { nombre: string; codigoDepto: string } | null = null;
   sistemaDetalle: 'SGR' | 'SGP' | 'PGN' = 'SGR';
 
+  // Notas del panel de detalle, tomadas de los componentes sgr-inicio y sgp-inicio.
+  // Se muestran según el sistema seleccionado. (PGN pendiente de contenido definitivo.)
+  readonly notasPorSistema: Record<'SGR' | 'SGP' | 'PGN', string[]> = {
+    SGR: [
+      '(1) Cifras en pesos corrientes.',
+      '(2) Ley 2441 de 2024 - Decretos 379 y 380 del 2025'
+    ],
+    SGP: [
+      '(1) Cifras en pesos corrientes.',
+      '(2) Los recursos pendientes por distribuir corresponden a una parte de las doce doceavas de la participación para educación ($ 18.644 miles de millones) y las once doceavas de la asignación especial para el FONPET ($ 2.731 miles de millones).'
+    ],
+    PGN: [
+      '(1) Cifras en pesos corrientes.',
+      '(2) Fuente: DNP - DPIP - SDRT a partir del Presupuesto General de la Nación y reportes de regionalización presupuestal.'
+    ]
+  };
+
+  get notasDetalle(): string[] {
+    return this.notasPorSistema[this.sistemaDetalle] ?? [];
+  }
+
   detalleData: ResumenGeovisor | null = null;
   municipioSeleccionado: { nombre: string; codigoMunicipio: string } | null = null;
   municipioData: ResumenGeovisor | null = null;
   isLoadingMunicipio = signal(false);
   readonly isLoadingPanel = computed(() => this.isLoadingDetalle() || this.isLoadingMunicipio());
   private municipioLayerActivo: any = null;
+  private municipioPopup: L.Popup | null = null;
 
   categoriaSeleccionadaSGR: any = null;
   participacionSeleccionadaSGP: any = null;
@@ -688,7 +708,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     const container = document.createElement('div');
     container.innerHTML = this.crearPopupMunicipioHtml(nombre, data);
 
-    L.popup({ maxWidth: 300, className: 'popup-geovisor', keepInView: true, autoPanPadding: L.point(10, 100) })
+    this.municipioPopup = L.popup({ maxWidth: 300, className: 'popup-geovisor', keepInView: true, autoPanPadding: L.point(10, 100) })
       .setLatLng(latLng)
       .setContent(container)
       .openOn(this.map);
@@ -701,35 +721,40 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     const fmt = (v: unknown) => { const n = Number(v); return Number.isFinite(n) ? '$' + this.formatearValor(n) : 'N/D'; };
     const pct = (v: unknown) => `${(Number(v) * 100).toFixed(1)}%`;
 
-    const sgrHtml = this.capas.find(c => c.sistema === 'SGR')?.visible ? `
+    // En modo detalle el popup del municipio muestra únicamente el sistema
+    // seleccionado desde el departamento, para dar continuidad a la información.
+    let bloqueHtml = '';
+    if (this.sistemaDetalle === 'SGR') {
+      bloqueHtml = `
       <div class="popup-sistema-bloque popup-sgr">
         <div class="popup-sistema-titulo"><span class="popup-badge sgr">SGR</span></div>
         <div class="popup-fila"><span>Presupuesto</span><strong>${fmt(sgr?.presupuesto_total_vigente)}</strong></div>
         <div class="popup-fila"><span>Caja</span><strong>${fmt(sgr?.caja_total)}</strong></div>
         <div class="popup-fila"><span>Avance IAC</span><strong>${pct(sgr?.avance_iac_presupuesto ?? 0)}</strong></div>
-      </div>` : '';
-
-    const sgpHtml = this.capas.find(c => c.sistema === 'SGP')?.visible ? `
+      </div>`;
+    } else if (this.sistemaDetalle === 'SGP') {
+      bloqueHtml = `
       <div class="popup-sistema-bloque popup-sgp">
         <div class="popup-sistema-titulo"><span class="popup-badge sgp">SGP</span></div>
         <div class="popup-fila"><span>Total distribución</span><strong>${fmt(sgp?.total)}</strong></div>
-      </div>` : '';
-
-    // PGN no dispone de detalle a nivel de municipio: bloque en gris con N/A
-    const pgnHtml = this.capas.find(c => c.sistema === 'PGN')?.visible ? `
+      </div>`;
+    } else {
+      // PGN no dispone de detalle a nivel de municipio: bloque en gris con N/A
+      bloqueHtml = `
       <div class="popup-sistema-bloque popup-pgn popup-sin-datos">
         <div class="popup-sistema-titulo" style="display:flex;justify-content:space-between;align-items:center;">
           <span class="popup-badge pgn">PGN</span>
           <strong class="popup-na">N/A</strong>
         </div>
         <div class="popup-nota-sindatos">Sin información a nivel de municipio</div>
-      </div>` : '';
+      </div>`;
+    }
 
     return `
       <div class="popup-geovisor-content">
         <h4 class="popup-titulo">${nombre}</h4>
         <div class="popup-vigencia">Vigencia ${this.vigenciaSeleccionada}</div>
-        ${sgrHtml}${sgpHtml}${pgnHtml}
+        ${bloqueHtml}
       </div>`;
   }
 
@@ -809,6 +834,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     this.municipioLayerActivo = null;
     this.sinMunicipiosGeoJSON.set(false);
     this.tienePieData = false;
+    this.municipioPopup = null;
     this.map?.closePopup();
 
     if (this.municipiosLayer) { this.municipiosLayer.remove(); this.municipiosLayer = null; }
@@ -822,12 +848,32 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     this.sistemaDetalle = sistema;
     this.categoriaSeleccionadaSGR = null;
     this.participacionSeleccionadaSGP = null;
-    this.municipiosLayer?.setStyle(() => ({
-      fillColor: SISTEMA_COLORES[sistema] ?? '#7c3aed',
-      fillOpacity: this.opacidadMunicipios / 100 * 0.6,
-      color: '#64748b',
-      weight: 0.7
-    }));
+    // Actualiza el color de todos los municipios al nuevo sistema; el municipio
+    // seleccionado adopta el color pero conserva su resaltado (contorno y énfasis).
+    this.municipiosLayer?.eachLayer((layer: any) => {
+      if (layer === this.municipioLayerActivo) {
+        layer.setStyle({
+          fillColor: SISTEMA_COLORES[sistema] ?? '#7c3aed',
+          fillOpacity: 0.85,
+          color: '#1e3a5f',
+          weight: 2.5
+        });
+        return;
+      }
+      layer.setStyle({
+        fillColor: SISTEMA_COLORES[sistema] ?? '#7c3aed',
+        fillOpacity: this.opacidadMunicipios / 100 * 0.6,
+        color: '#64748b',
+        weight: 0.7
+      });
+    });
+    // Si hay un municipio seleccionado con popup abierto, refrescar su contenido
+    // con la información del sistema recién elegido (mantiene la continuidad).
+    if (this.municipioSeleccionado && this.municipioData && this.municipioPopup?.isOpen()) {
+      const container = document.createElement('div');
+      container.innerHTML = this.crearPopupMunicipioHtml(this.municipioSeleccionado.nombre, this.municipioData);
+      this.municipioPopup.setContent(container);
+    }
     this.refrescarGrafica();
   }
 
@@ -872,6 +918,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
       this.municipioLayerActivo = null;
     }
     this.map?.closePopup();
+    this.municipioPopup = null;
     this.municipioSeleccionado = null;
     this.municipioData = null;
     this.categoriaSeleccionadaSGR = null;
@@ -880,12 +927,17 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
   }
 
   onOpacidadMunicipiosChange(): void {
-    this.municipiosLayer?.setStyle(() => ({
-      fillColor: SISTEMA_COLORES[this.sistemaDetalle] ?? '#7c3aed',
-      fillOpacity: this.opacidadMunicipios / 100 * 0.6,
-      color: '#64748b',
-      weight: 0.7
-    }));
+    // La opacidad se aplica a todos los municipios excepto al seleccionado,
+    // que conserva su resaltado (contorno y color de énfasis) para no perderlo.
+    this.municipiosLayer?.eachLayer((layer: any) => {
+      if (layer === this.municipioLayerActivo) return;
+      layer.setStyle({
+        fillColor: SISTEMA_COLORES[this.sistemaDetalle] ?? '#7c3aed',
+        fillOpacity: this.opacidadMunicipios / 100 * 0.6,
+        color: '#64748b',
+        weight: 0.7
+      });
+    });
   }
 
   totalPresupuestoDetalle(): number {
