@@ -96,12 +96,20 @@
   margin-top: 0.5rem;
 }
 
-// Sistema rows (checkbox + dot + label + slider fusionados)
+// Sistema rows (checkbox + dot + label) + fila de opacidad debajo
+.sistema-bloque {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.35rem 0.4rem;
+  border-radius: 6px;
+  background: #f8fafc;
+}
+
 .sistema-row {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding-left: 0.25rem;
 }
 
 .sistema-dot {
@@ -117,6 +125,41 @@
   color: #334155;
   cursor: pointer;
   flex-shrink: 0;
+}
+
+.sistema-opacidad-val {
+  margin-left: auto;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #475569;
+  font-variant-numeric: tabular-nums;
+}
+
+// Obs. 3: etiqueta "Opacidad" + % sobre cada slider
+.sistema-opacidad-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-left: 0.1rem;
+}
+
+.opacidad-cap {
+  font-size: 0.65rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+.opacidad-mini-valor {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #475569;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  min-width: 2.2em;
+  text-align: right;
 }
 
 .sistema-slider {
@@ -382,25 +425,28 @@
   }
 }
 
+// Obs. 1: banda compacta para dar más protagonismo al mapa
 .tarjeta-cobertura {
   background: white;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   border-radius: 6px;
-  padding: 0.5rem 1rem;
+  padding: 0.3rem 0.75rem;
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  gap: 0;
   border-left: 4px solid var(--color-sistema, #94a3b8);
 }
 
 .cobertura-linea-superior {
-  font-size: 0.78rem;
+  font-size: 0.68rem;
+  line-height: 1.25;
   color: #1e293b;
 }
 
 .cobertura-linea-inferior {
-  font-size: 0.7rem;
-  font-weight: bold;
+  font-size: 0.64rem;
+  line-height: 1.25;
+  font-weight: 600;
   color: #64748b;
 }
 
@@ -678,6 +724,19 @@
       margin-bottom: 5px;
     }
 
+    // Bloque por asignación/participación seleccionada (Obs. 6)
+    .popup-sistema-bloque.popup-asignacion {
+      background: #f8fafc;
+    }
+
+    .popup-asignacion-titulo {
+      font-size: 11px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 4px;
+      line-height: 1.2;
+    }
+
     .popup-badge {
       display: inline-block;
       padding: 1px 8px;
@@ -833,10 +892,11 @@
   }
 }
 
-// Header del detalle
+// Header del detalle (Obs. 4: izquierda = Volver + territorio, derecha = tabs + vigencia)
 .detalle-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.75rem;
   background: white;
   border-radius: 6px;
@@ -845,6 +905,21 @@
   flex-shrink: 0;
   flex-wrap: wrap;
   min-height: 44px;
+}
+
+.detalle-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.detalle-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
 }
 
 .btn-volver {
@@ -1052,42 +1127,88 @@
   overflow-y: auto;
 }
 
-.categoria-item {
+// Obs. 5: árbol desplegable de asignaciones / participaciones (con checkboxes)
+.arbol-lista {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 0.5rem;
-  padding: 0.3rem 0.5rem;
-  border-bottom: 1px solid #f1f5f9;
-  border-radius: 3px;
-  font-size: 0.75rem;
-  cursor: pointer;
+  flex-direction: column;
+}
+
+.arbol-nodo {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.28rem 0.4rem;
+  border-radius: 4px;
   transition: background 0.12s;
 
-  &:last-child { border-bottom: none; }
   &:hover { background: #f8fafc; }
 
   &.seleccionado {
     background: #eff6ff;
-    border-left: 3px solid #3b82f6;
-    .cat-concepto { color: #1d4ed8; font-weight: 600; }
+  }
+}
+
+.arbol-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #94a3b8;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  &:hover { color: #475569; }
+  &.invisible { visibility: hidden; cursor: default; }
+
+  i { font-size: 0.65rem; }
+}
+
+// Checkbox visual (sin PrimeNG, para evitar bucles de ValueAccessor)
+.arbol-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 3px;
+  background: #fff;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.12s, border-color 0.12s;
+
+  &.checked {
+    background: var(--c, #3b82f6);
+    border-color: var(--c, #3b82f6);
   }
 
-  .cat-concepto {
-    color: #475569;
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  i {
+    font-size: 0.55rem;
+    color: #fff;
+    font-weight: 700;
   }
+}
 
-  .cat-valor {
-    font-weight: 600;
-    color: #0f172a;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
+.arbol-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.arbol-label {
+  font-size: 0.76rem;
+  color: #334155;
+  line-height: 1.25;
+  cursor: pointer;
+  flex: 1;
+  min-width: 0;
+
+  .arbol-nodo.seleccionado & { color: #1d4ed8; font-weight: 600; }
 }
 
 .sin-datos {
@@ -1105,19 +1226,63 @@
   margin-top: 0.25rem;
 }
 
-// Panel derecho — torta de distribución
+// Panel derecho — donut de distribución.
+// Contenedor de tamaño fijo; se deja que Chart.js dimensione el canvas (no forzar
+// el tamaño del <canvas> con !important, pues genera un bucle de resize al actualizar).
 .grafica-torta {
   height: 200px;
   position: relative;
   margin-bottom: 0.5rem;
+  overflow: hidden;
 
-  ::ng-deep {
-    .p-chart,
-    canvas {
-      height: 100% !important;
-      width: 100% !important;
-    }
+  ::ng-deep .p-chart {
+    position: relative;
+    height: 100%;
+    width: 100%;
   }
+}
+
+// Panel derecho — título del donut de distribución (Obs. 7)
+.titulo-distribucion {
+  text-align: center;
+  font-size: 0.82rem;
+  color: #1e40af;
+  border-bottom: none;
+  padding-bottom: 0.25rem;
+}
+
+.panel-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-style: italic;
+  background: #f8fafc;
+  border-radius: 6px;
+  padding: 0.6rem;
+  margin: 0;
+
+  i { margin-top: 0.1rem; }
+}
+
+// Tarjeta por asignación/participación seleccionada
+.asignacion-card {
+  border-left: 4px solid var(--c, #94a3b8);
+  background: #f8fafc;
+  border-radius: 6px;
+  padding: 0.5rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+}
+
+.asignacion-nombre {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
+  line-height: 1.2;
 }
 
 // Panel derecho — detalles

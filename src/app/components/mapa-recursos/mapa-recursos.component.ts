@@ -78,6 +78,26 @@ const COLORES_REPORTE = {
   restante: '#eae1e1'
 };
 
+// Paleta oficial SICODIS por participación SGP (tomada de reports-sgp.component.ts)
+// Se asigna por coincidencia del nombre del concepto de nivel superior.
+const COLORES_SGP_PARTICIPACION: Array<{ match: string; color: string }> = [
+  { match: 'educaci', color: '#156082' },
+  { match: 'salud', color: '#e97132' },
+  { match: 'agua', color: '#0c9bd3' },
+  { match: 'prop', color: '#196b24' },
+  { match: 'especial', color: '#a02b93' }
+];
+
+// Nodo del árbol desplegable de asignaciones (SGR) / participaciones (SGP)
+interface NodoArbol {
+  key: string;        // categoria (SGR) o id_concepto (SGP)
+  concepto: string;
+  nivel: number;      // 0 = raíz
+  color: string;      // color SICODIS heredado del nodo raíz
+  hijos: NodoArbol[];
+  raw: any;           // registro original del API
+}
+
 @Component({
   selector: 'app-mapa-recursos',
   standalone: true,
@@ -162,12 +182,16 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
   private municipioLayerActivo: any = null;
   private municipioPopup: L.Popup | null = null;
 
-  categoriaSeleccionadaSGR: any = null;
-  participacionSeleccionadaSGP: any = null;
+  // Selección múltiple funcional: los checks del árbol filtran qué asignaciones
+  // se muestran en el pop-up del municipio y en el panel derecho.
+  seleccionSGR = new Set<string>();
+  seleccionSGP = new Set<string>();
+  // Nodos expandidos del árbol desplegable (por key)
+  expandidos = new Set<string>();
 
   // ── Gráfica de torta (panel derecho) ───────────────────────────────────────────
-  pieData: ChartData<'pie'> = { labels: [], datasets: [] };
-  pieOptions: ChartOptions<'pie'> = {};
+  pieData: ChartData<'doughnut'> = { labels: [], datasets: [] };
+  pieOptions: ChartOptions<'doughnut'> = {};
   tienePieData = false;
   private readonly paletaSectores = [
     COLORES_REPORTE.naranjaOscuro, COLORES_REPORTE.naranja, COLORES_REPORTE.ambar,
@@ -201,6 +225,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     this.pieOptions = {
       responsive: true,
       maintainAspectRatio: false,
+      cutout: '55%',
       plugins: {
         legend: {
           position: 'bottom',
@@ -433,8 +458,6 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
       const nombre: string = feature.properties.nombre ?? '';
       const centroid = this.capitalesMap.get(codigoDepto) ?? this.computeCentroid(feature);
 
-      console.log(`[API] ${nombre}: cod="${cod}" → codigoDepto="${codigoDepto}"`);
-
       return this.sicodisApi.getGeovisorResumen(this.vigenciaSeleccionada, codigoDepto, 0).pipe(
         map(data => ({ codigoDepto, nombre, centroid, data } as DeptResult)),
         catchError(() => of({ codigoDepto, nombre, centroid, data: null } as DeptResult))
@@ -446,23 +469,6 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
       .subscribe({
         next: (results) => {
           this.deptResults = results;
-
-          const antioquia = results.find(r => r.nombre?.toLowerCase().includes('antioquia'));
-          if (antioquia) {
-            console.group('[DEBUG Antioquia] DeptResult almacenado');
-            console.log('codigoDepto:', antioquia.codigoDepto);
-            console.log('data es null?:', antioquia.data === null);
-            console.log('data.sgr (tipo, longitud):', typeof antioquia.data?.sgr, Array.isArray(antioquia.data?.sgr) ? antioquia.data!.sgr.length : 'no es array');
-            console.log('data.sgr item cat=-2:', antioquia.data?.sgr?.find?.((d: any) => d.categoria === '-2'));
-            console.log('data.sgp item id=99:', antioquia.data?.sgp?.find?.((d: any) => d.id_concepto === '99'));
-            console.log('data.pgn[0]:', antioquia.data?.pgn?.[0]);
-            console.log('extractTotalValue:', antioquia.data ? this.extractTotalValue(antioquia.data) : 'data null');
-            console.log('extraerSegmentosPie:', antioquia.data ? this.extraerSegmentosPie(antioquia.data) : 'data null');
-            console.groupEnd();
-          } else {
-            console.warn('[DEBUG] No se encontró Antioquia en results. Nombres disponibles:', results.map(r => r.nombre));
-          }
-
           this.actualizarVisualizacion();
           this.isLoadingMapa.set(false);
         },
@@ -721,23 +727,43 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     const fmt = (v: unknown) => { const n = Number(v); return Number.isFinite(n) ? '$' + this.formatearValor(n) : 'N/D'; };
     const pct = (v: unknown) => `${(Number(v) * 100).toFixed(1)}%`;
 
-    // En modo detalle el popup del municipio muestra únicamente el sistema
-    // seleccionado desde el departamento, para dar continuidad a la información.
+    // Obs. 6: el popup del municipio muestra el detalle de las asignaciones /
+    // participaciones seleccionadas en el árbol (o el total del sistema si no hay
+    // selección), para no duplicar información en los paneles laterales.
     let bloqueHtml = '';
     if (this.sistemaDetalle === 'SGR') {
-      bloqueHtml = `
+      const sel = this.detalleSeleccion;
+      if (sel.length > 0) {
+        bloqueHtml = sel.map(n => `
+      <div class="popup-sistema-bloque popup-asignacion" style="border-left:4px solid ${n.color};">
+        <div class="popup-asignacion-titulo">${n.concepto}</div>
+        <div class="popup-fila"><span>Presupuesto total</span><strong>${fmt(n.raw?.presupuesto_total_vigente)}</strong></div>
+        <div class="popup-fila"><span>Recaudo total</span><strong>${fmt(n.raw?.caja_total)}</strong></div>
+      </div>`).join('');
+      } else {
+        bloqueHtml = `
       <div class="popup-sistema-bloque popup-sgr">
         <div class="popup-sistema-titulo"><span class="popup-badge sgr">SGR</span></div>
         <div class="popup-fila"><span>Presupuesto</span><strong>${fmt(sgr?.presupuesto_total_vigente)}</strong></div>
         <div class="popup-fila"><span>Caja</span><strong>${fmt(sgr?.caja_total)}</strong></div>
         <div class="popup-fila"><span>Avance IAC</span><strong>${pct(sgr?.avance_iac_presupuesto ?? 0)}</strong></div>
       </div>`;
+      }
     } else if (this.sistemaDetalle === 'SGP') {
-      bloqueHtml = `
+      const sel = this.detalleSeleccion;
+      if (sel.length > 0) {
+        bloqueHtml = sel.map(n => `
+      <div class="popup-sistema-bloque popup-asignacion" style="border-left:4px solid ${n.color};">
+        <div class="popup-asignacion-titulo">${n.concepto}</div>
+        <div class="popup-fila"><span>Distribución</span><strong>${fmt(n.raw?.total)}</strong></div>
+      </div>`).join('');
+      } else {
+        bloqueHtml = `
       <div class="popup-sistema-bloque popup-sgp">
         <div class="popup-sistema-titulo"><span class="popup-badge sgp">SGP</span></div>
         <div class="popup-fila"><span>Total distribución</span><strong>${fmt(sgp?.total)}</strong></div>
       </div>`;
+      }
     } else {
       // PGN no dispone de detalle a nivel de municipio: bloque en gris con N/A
       bloqueHtml = `
@@ -760,46 +786,132 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
 
   // ── Modo detalle ─────────────────────────────────────────────────────────────
 
-  // SGR: categorías excluyendo totales (negativas)
-  get sgrCategorias(): any[] {
-    return (this.activeData?.sgr ?? []).filter((d: any) => !String(d.categoria).startsWith('-'));
-  }
+  // Totales del territorio (alimentan los KPIs superiores)
   get sgrTotal(): any {
     return (this.activeData?.sgr ?? []).find((d: any) => d.categoria === '-2') ?? null;
-  }
-  get sgrDetalle(): any {
-    return this.categoriaSeleccionadaSGR ?? this.sgrTotal;
-  }
-  sgrIndent(categoria: string): number {
-    return (categoria.match(/\./g)?.length ?? 0) * 12;
-  }
-
-  // SGP: participaciones top-level (id_concepto 4 dígitos, sin total '99')
-  get sgpTopLevel(): any[] {
-    return (this.activeData?.sgp ?? []).filter((d: any) => d.id_concepto !== '99' && d.id_concepto.length === 4);
-  }
-  // Subcategorías de la participación seleccionada (o top-level si no hay selección)
-  get sgpCategorias(): any[] {
-    const all = this.activeData?.sgp ?? [];
-    if (this.participacionSeleccionadaSGP) {
-      const pfx = this.participacionSeleccionadaSGP.id_concepto;
-      return all.filter((d: any) => d.id_concepto !== '99' && d.id_concepto !== pfx && d.id_concepto.startsWith(pfx));
-    }
-    return all.filter((d: any) => d.id_concepto !== '99' && d.id_concepto.length === 4);
   }
   get sgpTotal(): any {
     return (this.activeData?.sgp ?? []).find((d: any) => d.id_concepto === '99') ?? null;
   }
-  get sgpDetalle(): any {
-    return this.participacionSeleccionadaSGP ?? this.sgpTotal;
-  }
-
-  // PGN
   get pgnDetalle(): any { return this.activeData?.pgn?.[0] ?? null; }
 
   // PGN no tiene desagregación a nivel de municipio: mostrar N/A cuando hay municipio seleccionado
   get pgnSinDatosMunicipio(): boolean {
     return this.sistemaDetalle === 'PGN' && !!this.municipioSeleccionado;
+  }
+
+  // ── Árbol desplegable de asignaciones / participaciones ────────────────────────
+
+  private get seleccionActual(): Set<string> {
+    return this.sistemaDetalle === 'SGP' ? this.seleccionSGP : this.seleccionSGR;
+  }
+
+  // Color SICODIS por concepto de participación SGP; paleta cálida por índice para SGR
+  private colorRaizSGP(concepto: string, idx: number): string {
+    const c = (concepto ?? '').toLowerCase();
+    const m = COLORES_SGP_PARTICIPACION.find(p => c.includes(p.match));
+    return m ? m.color : this.paletaSectores[idx % this.paletaSectores.length];
+  }
+
+  // Construye el árbol SGR anidando por el código `categoria` ("1", "1.1", …)
+  private construirArbolSGR(): NodoArbol[] {
+    const items = (this.activeData?.sgr ?? []).filter((d: any) => !String(d.categoria).startsWith('-'));
+    const map = new Map<string, NodoArbol>();
+    const roots: NodoArbol[] = [];
+    const sorted = [...items].sort((a: any, b: any) => String(a.categoria).localeCompare(String(b.categoria), undefined, { numeric: true }));
+    for (const it of sorted) {
+      const key = String(it.categoria);
+      const nivel = key.split('.').length - 1;
+      const node: NodoArbol = { key, concepto: it.concepto, nivel, color: '', hijos: [], raw: it };
+      map.set(key, node);
+      const parentKey = key.includes('.') ? key.substring(0, key.lastIndexOf('.')) : null;
+      if (parentKey && map.has(parentKey)) map.get(parentKey)!.hijos.push(node);
+      else roots.push(node);
+    }
+    roots.forEach((r, i) => this.pintarNodo(r, this.paletaSectores[i % this.paletaSectores.length]));
+    return roots;
+  }
+
+  // Construye el árbol SGP: id_concepto de 4 dígitos = raíz, más largos = hijos
+  private construirArbolSGP(): NodoArbol[] {
+    const all = (this.activeData?.sgp ?? []).filter((d: any) => d.id_concepto !== '99');
+    const tops = all.filter((d: any) => d.id_concepto.length === 4);
+    return tops.map((t: any, i: number) => {
+      const color = this.colorRaizSGP(t.concepto, i);
+      const hijos: NodoArbol[] = all
+        .filter((d: any) => d.id_concepto !== t.id_concepto && d.id_concepto.startsWith(t.id_concepto))
+        .map((h: any) => ({ key: h.id_concepto, concepto: h.concepto, nivel: 1, color, hijos: [], raw: h } as NodoArbol));
+      return { key: t.id_concepto, concepto: t.concepto, nivel: 0, color, hijos, raw: t } as NodoArbol;
+    });
+  }
+
+  private pintarNodo(node: NodoArbol, color: string): void {
+    node.color = color;
+    node.hijos.forEach(h => this.pintarNodo(h, color));
+  }
+
+  // El árbol se memoiza: se reconstruye solo cuando cambian los datos o el sistema,
+  // no en cada ciclo de detección de cambios (evita trabajo redundante y referencias nuevas).
+  private arbolCache: NodoArbol[] = [];
+
+  // Vistas derivadas del árbol, memoizadas en campos (no getters) para no reconstruirlas
+  // en cada ciclo de detección de cambios ni generar referencias nuevas por CD.
+  arbolVisible: Array<{ node: NodoArbol; tieneHijos: boolean; expandido: boolean }> = [];
+  detalleSeleccion: NodoArbol[] = [];
+
+  private reconstruirArbol(): void {
+    this.arbolCache = this.sistemaDetalle === 'SGR' ? this.construirArbolSGR()
+      : this.sistemaDetalle === 'SGP' ? this.construirArbolSGP()
+      : [];
+    this.actualizarVistaArbol();
+  }
+
+  get arbolRaiz(): NodoArbol[] {
+    return this.arbolCache;
+  }
+
+  // Recalcula la lista visible (según expansión) y la selección actual
+  private actualizarVistaArbol(): void {
+    const visible: Array<{ node: NodoArbol; tieneHijos: boolean; expandido: boolean }> = [];
+    const sel = this.seleccionActual;
+    const seleccionados: NodoArbol[] = [];
+    const walk = (nodos: NodoArbol[]) => {
+      for (const n of nodos) {
+        if (sel.has(n.key)) seleccionados.push(n);
+        const tieneHijos = n.hijos.length > 0;
+        const expandido = this.expandidos.has(n.key);
+        visible.push({ node: n, tieneHijos, expandido });
+        if (tieneHijos && expandido) walk(n.hijos);
+      }
+    };
+    walk(this.arbolCache);
+    this.arbolVisible = visible;
+    this.detalleSeleccion = seleccionados;
+  }
+
+  toggleExpandido(node: NodoArbol): void {
+    if (this.expandidos.has(node.key)) this.expandidos.delete(node.key);
+    else this.expandidos.add(node.key);
+    this.actualizarVistaArbol();
+  }
+
+  estaSeleccionado(node: NodoArbol): boolean {
+    return this.seleccionActual.has(node.key);
+  }
+
+  toggleSeleccion(node: NodoArbol): void {
+    const sel = this.seleccionActual;
+    if (sel.has(node.key)) sel.delete(node.key);
+    else sel.add(node.key);
+    this.actualizarVistaArbol();
+    this.refrescarGrafica();
+    this.refrescarPopupMunicipio();
+  }
+
+  // Valor monetario de un nodo según el sistema (presupuesto para SGR, distribución para SGP)
+  valorNodo(node: NodoArbol): number {
+    if (this.sistemaDetalle === 'SGR') return Number(node.raw?.presupuesto_total_vigente) || 0;
+    return Number(node.raw?.total) || 0;
   }
 
   abrirDetalle(nombre: string, codigoDepto: string, _data: ResumenGeovisor, sistema: 'SGR' | 'SGP' | 'PGN' = 'SGR'): void {
@@ -810,8 +922,12 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     this.municipioSeleccionado = null;
     this.municipioData = null;
     this.municipioLayerActivo = null;
-    this.categoriaSeleccionadaSGR = null;
-    this.participacionSeleccionadaSGP = null;
+    this.seleccionSGR.clear();
+    this.seleccionSGP.clear();
+    this.expandidos.clear();
+    this.arbolCache = [];
+    this.arbolVisible = [];
+    this.detalleSeleccion = [];
 
     this.circleMarkers.forEach(m => (m as L.Marker).remove());
     this.circleMarkers = [];
@@ -845,9 +961,14 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
   }
 
   cambiarSistemaDetalle(sistema: 'SGR' | 'SGP' | 'PGN'): void {
+    // Obs. 10: PGN no tiene datos a nivel de municipio. Si el usuario está en la
+    // vista municipal y elige PGN, se regresa a la vista departamental.
+    if (sistema === 'PGN' && this.municipioSeleccionado) {
+      this.deseleccionarMunicipio();
+    }
     this.sistemaDetalle = sistema;
-    this.categoriaSeleccionadaSGR = null;
-    this.participacionSeleccionadaSGP = null;
+    this.seleccionSGR.clear();
+    this.seleccionSGP.clear();
     // Actualiza el color de todos los municipios al nuevo sistema; el municipio
     // seleccionado adopta el color pero conserva su resaltado (contorno y énfasis).
     this.municipiosLayer?.eachLayer((layer: any) => {
@@ -867,14 +988,19 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
         weight: 0.7
       });
     });
-    // Si hay un municipio seleccionado con popup abierto, refrescar su contenido
-    // con la información del sistema recién elegido (mantiene la continuidad).
+    this.reconstruirArbol();
+    this.refrescarPopupMunicipio();
+    this.refrescarGrafica();
+  }
+
+  // Si hay un municipio seleccionado con popup abierto, refresca su contenido con
+  // la selección/sistema vigente (mantiene la continuidad de la información).
+  private refrescarPopupMunicipio(): void {
     if (this.municipioSeleccionado && this.municipioData && this.municipioPopup?.isOpen()) {
       const container = document.createElement('div');
       container.innerHTML = this.crearPopupMunicipioHtml(this.municipioSeleccionado.nombre, this.municipioData);
       this.municipioPopup.setContent(container);
     }
-    this.refrescarGrafica();
   }
 
   cargarDatosSistemaDetalle(): void {
@@ -884,7 +1010,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     this.sicodisApi.getGeovisorResumen(this.vigenciaSeleccionada, deptCode, 0)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (data) => { this.detalleData = data; this.refrescarGrafica(); this.isLoadingDetalle.set(false); },
+        next: (data) => { this.detalleData = data; this.reconstruirArbol(); this.refrescarGrafica(); this.isLoadingDetalle.set(false); },
         error: () => this.isLoadingDetalle.set(false)
       });
   }
@@ -894,8 +1020,8 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     // El resaltado del polígono lo gestiona el handler de clic; aquí solo cargamos datos.
     this.municipioSeleccionado = { nombre, codigoMunicipio };
     this.municipioData = null;
-    this.categoriaSeleccionadaSGR = null;
-    this.participacionSeleccionadaSGP = null;
+    this.seleccionSGR.clear();
+    this.seleccionSGP.clear();
     this.isLoadingMunicipio.set(true);
 
     const deptCode = this.detalleDepto.codigoDepto.substring(0, 2).padStart(2, '0') + '000';
@@ -904,6 +1030,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
       .subscribe({
         next: (data) => {
           this.municipioData = data;
+          this.reconstruirArbol();
           this.refrescarGrafica();
           this.isLoadingMunicipio.set(false);
           if (latLng) this.mostrarPopupMunicipio(latLng, nombre, data);
@@ -921,8 +1048,9 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     this.municipioPopup = null;
     this.municipioSeleccionado = null;
     this.municipioData = null;
-    this.categoriaSeleccionadaSGR = null;
-    this.participacionSeleccionadaSGP = null;
+    this.seleccionSGR.clear();
+    this.seleccionSGP.clear();
+    this.reconstruirArbol();
     this.refrescarGrafica();
   }
 
@@ -940,23 +1068,26 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     });
   }
 
+  // Los KPIs superiores muestran el total del territorio (departamento o municipio)
   totalPresupuestoDetalle(): number {
-    if (this.sistemaDetalle === 'SGR') return this.sgrDetalle?.presupuesto_total_vigente ?? 0;
-    if (this.sistemaDetalle === 'SGP') return this.sgpDetalle?.total ?? 0;
+    if (this.sistemaDetalle === 'SGR') return this.sgrTotal?.presupuesto_total_vigente ?? 0;
+    if (this.sistemaDetalle === 'SGP') return this.sgpTotal?.total ?? 0;
     return this.pgnDetalle?.total_apropiacion_vigente ?? 0;
   }
 
   totalRecaudoDetalle(): number {
-    if (this.sistemaDetalle === 'SGR') return this.sgrDetalle?.caja_total ?? 0;
-    if (this.sistemaDetalle === 'SGP') return 0;
+    if (this.sistemaDetalle === 'SGR') return this.sgrTotal?.caja_total ?? 0;
+    // Obs. 9: el geovisor solo entrega `total` para SGP → es lo distribuido.
+    if (this.sistemaDetalle === 'SGP') return this.sgpTotal?.total ?? 0;
     return this.pgnDetalle?.total_pagos ?? 0;
   }
 
   avanceDetalle(): number {
-    if (this.sistemaDetalle === 'SGR') return (this.sgrDetalle?.avance_iac_presupuesto ?? 0) * 100;
+    if (this.sistemaDetalle === 'SGR') return (this.sgrTotal?.avance_iac_presupuesto ?? 0) * 100;
     // PGN: porcentaje_total_pagos ya viene en escala 0-100
     if (this.sistemaDetalle === 'PGN') return this.pgnDetalle?.porcentaje_total_pagos ?? 0;
-    return 0;
+    // SGP se distribuye al 100% (no hay ejecución/recaudo por territorio)
+    return this.sgpTotal?.total ? 100 : 0;
   }
 
   etiquetaRecaudoDetalle(): string {
@@ -971,52 +1102,45 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     return 'Avance';
   }
 
-  toggleCategoriaSGR(cat: any): void {
-    this.categoriaSeleccionadaSGR =
-      this.categoriaSeleccionadaSGR?.categoria === cat.categoria ? null : cat;
-    this.refrescarGrafica();
+  // Título del panel derecho (donut de distribución) según el sistema
+  get tituloDistribucion(): string {
+    if (this.sistemaDetalle === 'SGP') return 'Distribución porcentual de las participaciones';
+    if (this.sistemaDetalle === 'PGN') return 'Ejecución presupuestal';
+    return 'Distribución porcentual de las asignaciones';
   }
 
-  // Reconstruye la torta del panel derecho según el sistema activo y los datos vigentes
+  // Reconstruye el donut del panel derecho a partir de la selección del árbol
+  // (o de las asignaciones/participaciones de nivel superior si no hay selección).
   private refrescarGrafica(): void {
     if (!this.activeData) { this.tienePieData = false; return; }
 
-    if (this.sistemaDetalle === 'SGR') {
-      const d = this.sgrDetalle;
-      const caja = Number(d?.caja_total) || 0;
-      const presupuesto = Number(d?.presupuesto_total_vigente) || 0;
-      const pendiente = Math.max(0, presupuesto - caja);
-      this.pieData = {
-        labels: ['Caja recaudada', 'Pendiente por recaudar'],
-        datasets: [{ data: [caja, pendiente], backgroundColor: [COLORES_REPORTE.naranja, COLORES_REPORTE.restante], borderWidth: 0 }]
-      };
-      this.tienePieData = (caja + pendiente) > 0;
-    } else if (this.sistemaDetalle === 'SGP') {
-      const sectores = this.sgpTopLevel;
-      const labels = sectores.map((s: any) => s.concepto);
-      const data = sectores.map((s: any) => Number(s.total) || 0);
+    if (this.sistemaDetalle === 'SGR' || this.sistemaDetalle === 'SGP') {
+      const seleccion = this.detalleSeleccion;
+      const nodos = seleccion.length > 0 ? seleccion : this.arbolRaiz;
+      const labels = nodos.map(n => n.concepto);
+      const data = nodos.map(n => this.valorNodo(n));
+      const colores = nodos.map(n => n.color);
       this.pieData = {
         labels,
-        datasets: [{ data, backgroundColor: this.paletaSectores.slice(0, labels.length), borderWidth: 0 }]
+        datasets: [{ data, backgroundColor: colores, borderWidth: 0 }]
       };
-      this.tienePieData = data.some((v: number) => v > 0);
-    } else if (this.pgnSinDatosMunicipio) {
-      // Sin torta de PGN a nivel de municipio
-      this.tienePieData = false;
+      this.tienePieData = data.some(v => v > 0);
       return;
-    } else {
-      const p = this.pgnDetalle;
-      const pagos = Number(p?.total_pagos) || 0;
-      const obligaciones = Number(p?.total_obligaciones) || 0;
-      const apropiacion = Number(p?.total_apropiacion_vigente) || 0;
-      const obligSinPagar = Math.max(0, obligaciones - pagos);
-      const sinEjecutar = Math.max(0, apropiacion - obligaciones);
-      this.pieData = {
-        labels: ['Pagos', 'Obligaciones sin pagar', 'Sin ejecutar'],
-        datasets: [{ data: [pagos, obligSinPagar, sinEjecutar], backgroundColor: [COLORES_REPORTE.naranjaOscuro, COLORES_REPORTE.ambar, COLORES_REPORTE.restante], borderWidth: 0 }]
-      };
-      this.tienePieData = (pagos + obligSinPagar + sinEjecutar) > 0;
     }
+
+    // PGN: donut de ejecución (solo a nivel departamental)
+    if (this.pgnSinDatosMunicipio) { this.tienePieData = false; return; }
+    const p = this.pgnDetalle;
+    const pagos = Number(p?.total_pagos) || 0;
+    const obligaciones = Number(p?.total_obligaciones) || 0;
+    const apropiacion = Number(p?.total_apropiacion_vigente) || 0;
+    const obligSinPagar = Math.max(0, obligaciones - pagos);
+    const sinEjecutar = Math.max(0, apropiacion - obligaciones);
+    this.pieData = {
+      labels: ['Pagos', 'Obligaciones sin pagar', 'Sin ejecutar'],
+      datasets: [{ data: [pagos, obligSinPagar, sinEjecutar], backgroundColor: [COLORES_REPORTE.naranjaOscuro, COLORES_REPORTE.ambar, COLORES_REPORTE.restante], borderWidth: 0 }]
+    };
+    this.tienePieData = (pagos + obligSinPagar + sinEjecutar) > 0;
   }
 
   formatearMilesMillones(valor: number | string | null | undefined): string {
