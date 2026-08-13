@@ -283,7 +283,10 @@ export interface DetallePlanBienal {
 }
 
 export interface DetallePlanRecursos {
-  Orden: number;
+  // Hasta la vigencia 2023-2032 el backend envía `Orden` como número (esquema
+  // plano: 1, 2, 3, 3.1, 14.1 ...). Desde la vigencia 2025-2034 lo envía como
+  // string con la ruta jerárquica completa ("1", "1.1", "1.4.2.1.1" ...).
+  Orden: number | string;
   IdConcepto: string;
   Concepto: string;
   [key: string]: any; // Para soportar claves de año dinámicas ("2025", "2026", ...)

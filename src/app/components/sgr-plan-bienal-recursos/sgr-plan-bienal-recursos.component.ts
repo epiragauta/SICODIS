@@ -22,6 +22,15 @@ import { Select } from 'primeng/select';
 import { TreeNode } from 'primeng/api';
 import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
 
+/**
+ * Fila del plan de recursos ya normalizada: `Orden` siempre string y
+ * `OrdenUnico` como clave de árbol libre de duplicados (ver asignarOrdenUnico).
+ */
+interface FilaPlanRecursos extends DetallePlanRecursos {
+  Orden: string;
+  OrdenUnico: string;
+}
+
 @Component({
   selector: 'app-sgr-plan-bienal-recursos',
   standalone: true,
@@ -83,6 +92,17 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
   private readonly chartColors = [
     '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#06b6d4', '#f97316', '#64748b'
   ];
+
+  /**
+   * Detalle del SSEC. El backend llegó a devolver estas tres filas con la cifra
+   * NACIONAL al consultar un departamento o municipio: no corresponden a la
+   * entidad, su padre (SSEC) llegaba en cero y no sumaban al Total. Hoy ya no
+   * se envían en consultas territoriales; el filtro se conserva por seguridad.
+   */
+  private readonly ID_DETALLE_SSEC = ['701', '702', '703'];
+
+  /** Filas que encabezan sección o consolidan; nunca son series del gráfico. */
+  private readonly ID_CABECERAS = ['1000', '2000', '3000', '99'];
 
   constructor(
     private sicodisApiService: SicodisApiService,
@@ -250,8 +270,9 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
       .getSgrPlanRecursosDetalle(this.selectedVigencia.id_vigencia, codigoEntidad, codigoMunicipio)
       .subscribe({
         next: (data) => {
-          this.procesarDatosTabla(data);
-          this.actualizarGrafico(data);
+          const filas = this.normalizarDatos(data);
+          this.procesarDatosTabla(filas);
+          this.actualizarGrafico(filas);
           this.isLoading = false;
         },
         error: (err) => {
@@ -262,12 +283,91 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
       });
   }
 
-  private procesarDatosTabla(data: DetallePlanRecursos[]): void {
+  /** True cuando se consulta un departamento (o municipio) y no el total nacional. */
+  private get esConsultaTerritorial(): boolean {
+    return !!this.selectedDepartamento && this.selectedDepartamento.codigo !== '0';
+  }
+
+  /**
+   * El esquema jerárquico se reconoce porque INVERSIÓN anida a sus componentes
+   * bajo "1.x". Hoy todas las vigencias lo usan; en el esquema plano anterior
+   * ningún `Orden` empezaba por "1.": los componentes iban al mismo nivel raíz
+   * que INVERSIÓN. Se mantiene la distinción por si el backend revierte.
+   */
+  private esEsquemaJerarquico(data: DetallePlanRecursos[]): boolean {
+    return data.some(item => String(item.Orden).startsWith('1.'));
+  }
+
+  /**
+   * Deja las filas listas para el árbol y el gráfico. `Orden` llega hoy como
+   * string ("1", "1.2.1", "1.4.2.1.1" ...) y antes como número, así que se
+   * normaliza a string; luego se descarta el detalle del SSEC en consultas
+   * territoriales, se garantizan claves de árbol únicas y se recompone el total
+   * de INVERSIÓN. La jerarquía se toma tal como la envía el backend.
+   */
+  private normalizarDatos(data: DetallePlanRecursos[]): FilaPlanRecursos[] {
+    let filas: FilaPlanRecursos[] = data.map(item => {
+      const orden = String(item.Orden);
+      return { ...item, Orden: orden, OrdenUnico: orden };
+    });
+
+    if (this.esConsultaTerritorial) {
+      filas = filas.filter(fila => !this.ID_DETALLE_SSEC.includes(fila.IdConcepto));
+    }
+
+    return this.recalcularInversion(this.asignarOrdenUnico(filas));
+  }
+
+  /**
+   * El backend llegó a repetir el mismo `Orden` en varias filas (p. ej. cinco
+   * conceptos con Orden 10 en el esquema plano de 2013-2022). Como
+   * organizeCategoryData indexa por categoría, esos duplicados colapsaban en un
+   * único nodo y la tabla mostraba la misma fila repetida. Se desambigua con un
+   * sufijo que no altera el orden ni crea niveles nuevos.
+   */
+  private asignarOrdenUnico(filas: FilaPlanRecursos[]): FilaPlanRecursos[] {
+    const repeticiones = new Map<string, number>();
+    return filas.map(fila => {
+      const veces = (repeticiones.get(fila.Orden) ?? 0) + 1;
+      repeticiones.set(fila.Orden, veces);
+      return veces === 1 ? fila : { ...fila, OrdenUnico: `${fila.Orden}#${veces}` };
+    });
+  }
+
+  /**
+   * INVERSIÓN se recompone como la suma de sus componentes directos. El backend
+   * llegó a enviarla mal sumada en la vigencia 2025-2034 (en cero a nivel
+   * departamental pese a que sus componentes traían recursos); hoy ya cuadra y
+   * el recálculo devuelve el mismo valor, así que solo actúa como salvaguarda.
+   * Si INVERSIÓN no tiene componentes en la respuesta, no se toca.
+   */
+  private recalcularInversion(filas: FilaPlanRecursos[]): FilaPlanRecursos[] {
+    const inversion = filas.find(fila => fila.IdConcepto === '1000');
+    if (!inversion) return filas;
+
+    const nivelHijo = inversion.Orden.split('.').length + 1;
+    const componentes = filas.filter(fila =>
+      fila.Orden.startsWith(`${inversion.Orden}.`) &&
+      fila.Orden.split('.').length === nivelHijo
+    );
+    if (componentes.length === 0) return filas;
+
+    const totales = Object.fromEntries(
+      this.years.map(year => [
+        year,
+        componentes.reduce((suma, fila) => suma + (Number(fila[year]) || 0), 0)
+      ])
+    );
+
+    return filas.map(fila => fila === inversion ? { ...fila, ...totales } : fila);
+  }
+
+  private procesarDatosTabla(data: FilaPlanRecursos[]): void {
     const mappedData = data.map(item => {
       const row: any = {
         concepto: item.Concepto,
         orden: item.Orden,
-        categoria: String(item.Orden),
+        categoria: item.OrdenUnico,
         idConcepto: item.IdConcepto,
       };
 
@@ -280,9 +380,14 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
       return row;
     });
 
-    // Cuando se consulta un municipio específico, eliminar filas sin datos en ningún año
-    const municipioEspecifico = this.selectedMunicipio?.codigo && this.selectedMunicipio.codigo !== '0';
-    const dataFinal = municipioEspecifico
+    // En consultas territoriales se ocultan las filas sin recursos en ningún año.
+    // Las otras asignaciones (Paz, Ambiental, CTeI, étnicos, funcionamiento,
+    // fiscalización) no se distribuyen en cabeza de las entidades territoriales,
+    // así que a nivel de departamento o municipio llegaban en cero y solo
+    // agregaban ruido. El backend ya las omite, pero el filtro se conserva para
+    // cubrir cualquier fila en cero que siga llegando. A nivel nacional se
+    // conservan todas las filas.
+    const dataFinal = this.esConsultaTerritorial
       ? mappedData.filter(row =>
           row.idConcepto === '99' ||
           this.years.some(y => row[y] !== 0)
@@ -292,17 +397,10 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
     this.tableData = organizeCategoryData(dataFinal);
   }
 
-  private actualizarGrafico(data: DetallePlanRecursos[]): void {
-    // Los sub-ítems del gráfico son los que tienen Orden entero entre INVERSIÓN y AHORRO
-    const inversionOrd = data.find(d => d.IdConcepto === '1000')?.Orden ?? 1;
-    const ahorroOrd    = data.find(d => d.IdConcepto === '2000')?.Orden ?? Infinity;
-
-    const subItems = data.filter(item =>
-      Number.isInteger(item.Orden) &&
-      item.Orden > inversionOrd &&
-      item.Orden < ahorroOrd &&
-      item.IdConcepto !== '99'          // nunca graficar la fila de Total
-    );
+  private actualizarGrafico(data: FilaPlanRecursos[]): void {
+    const subItems = this.esEsquemaJerarquico(data)
+      ? this.componentesInversionJerarquico(data)
+      : this.componentesInversionPlano(data);
 
     // Obs. 3: solo graficar las asignaciones/fondos que traen recursos en algún año.
     // Así se ocultan de la leyenda las que no aplican al beneficiario consultado
@@ -313,7 +411,7 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
     );
 
     this.categoryMap = {};
-    itemsConDatos.forEach(item => { this.categoryMap[item.Concepto] = String(item.Orden); });
+    itemsConDatos.forEach(item => { this.categoryMap[item.Concepto] = item.OrdenUnico; });
 
     const datasets = itemsConDatos.map((item, i) => ({
       label: item.Concepto,
@@ -324,6 +422,42 @@ export class SgrPlanBienalRecursosComponent implements OnInit {
     }));
 
     this.barChartData = { labels: this.years, datasets };
+  }
+
+  /**
+   * Esquema jerárquico: las series son los componentes directos de INVERSIÓN
+   * (Directas, Regional, Local, CTeI, Paz, Ambiental y Cormagdalena). Sus
+   * desagregaciones cuelgan un nivel más abajo y se omiten para no duplicar
+   * montos ya contenidos en el concepto padre.
+   */
+  private componentesInversionJerarquico(data: FilaPlanRecursos[]): FilaPlanRecursos[] {
+    const inversion = data.find(fila => fila.IdConcepto === '1000');
+    if (!inversion) return [];
+
+    const nivelHijo = inversion.Orden.split('.').length + 1;
+    return data.filter(fila =>
+      fila.Orden.startsWith(`${inversion.Orden}.`) &&
+      fila.Orden.split('.').length === nivelHijo
+    );
+  }
+
+  /**
+   * Esquema plano: las series son las filas con Orden entero dentro del tramo
+   * de inversión, excluidas las cabeceras de sección y el Total. Las
+   * desagregaciones internas llevan Orden decimal (3.1, 4.2 ...) y se omiten
+   * para no duplicar montos ya contenidos en su concepto padre.
+   */
+  private componentesInversionPlano(data: FilaPlanRecursos[]): FilaPlanRecursos[] {
+    const ordenInversion = Number(data.find(fila => fila.IdConcepto === '1000')?.Orden ?? 1);
+    const ordenAhorro    = Number(data.find(fila => fila.IdConcepto === '2000')?.Orden ?? Infinity);
+
+    return data.filter(fila => {
+      const orden = Number(fila.Orden);
+      return Number.isInteger(orden) &&
+             orden >= ordenInversion &&
+             orden < ordenAhorro &&
+             !this.ID_CABECERAS.includes(fila.IdConcepto);
+    });
   }
 
   clearFilters(): void {
