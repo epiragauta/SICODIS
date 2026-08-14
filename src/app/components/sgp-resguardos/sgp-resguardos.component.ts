@@ -107,6 +107,10 @@ export class SgpResguardosComponent implements OnInit {
   // Datos históricos (desde resumen_general)
   datosHistoricos: ResguardoData[] = [];
 
+  // Cantidad de resguardos certificados a nivel nacional (sin filtros), solo las
+  // dos últimas vigencias distribuidas: la más reciente y la inmediatamente anterior.
+  resguardosHistoricos: ResguardoData[] = [];
+
   // Población total de resguardos certificados (desde resumen_general)
   poblacionTotalHistorica: number = 0;
 
@@ -228,6 +232,7 @@ export class SgpResguardosComponent implements OnInit {
             this.selectedVigencia = this.vigencias[0].id; // vigencia más reciente
           }
           this.loadDepartamentos();
+          this.loadResguardosNacional();
           this.loadData();
         },
         error: (error) => {
@@ -343,12 +348,40 @@ export class SgpResguardosComponent implements OnInit {
       });
   }
 
+  /**
+   * Carga la cantidad de resguardos certificados a nivel nacional, sin aplicar los
+   * filtros del usuario, para las dos últimas vigencias distribuidas (la más reciente
+   * y la inmediatamente anterior). Se invoca una sola vez al iniciar y no se recalcula
+   * al cambiar los filtros.
+   */
+  private loadResguardosNacional(): void {
+    const vigenciaBase = this.vigencias.length > 0 ? this.vigencias[0].id : this.selectedVigencia;
+
+    this.sicodisApiService.getSgpIndigenasResumenGeneral(String(vigenciaBase), '0', '0', '0')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (resumen) => {
+          const ultimasDos = [...(resumen?.cantidadResguardos ?? [])]
+            .sort((a, b) => b.Vigencia - a.Vigencia)
+            .slice(0, 2);
+
+          this.resguardosHistoricos = ultimasDos.map(c => ({
+            vigencia: c.Vigencia,
+            presupuesto: 0,
+            poblacion: 0,
+            cantidadResguardos: c.CantidadResguardosCertificados
+          }));
+          this.observacionResguardos = ultimasDos[0]?.Observacion ?? '';
+        },
+        error: (error) => console.error('Error cargando resguardos nacionales de SGP Indígenas:', error)
+      });
+  }
+
   private procesarResumen(resumen: ResumenGeneralSgpIndigenas): void {
     this.presupuestoActual = resumen?.presupuesto?.[0]?.PresupuestoDistribuido ?? 0;
     this.poblacionActual = resumen?.poblacion?.[0]?.PoblacionCertificada ?? 0;
     this.observacionPresupuesto = resumen?.presupuesto?.[0]?.Observacion ?? '';
     this.observacionPoblacion = resumen?.poblacion?.[0]?.Observacion ?? '';
-    this.observacionResguardos = resumen?.cantidadResguardos?.[0]?.Observacion ?? '';
     this.poblacionTotalHistorica = resumen?.poblacionIndigena?.[0]?.PoblacionTotalResguardosCertificados ?? 0;
 
     const historicoPresupuesto = resumen?.historicoPresupuesto ?? [];

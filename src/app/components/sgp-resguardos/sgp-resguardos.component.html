@@ -308,23 +308,23 @@
              tooltipPosition="top"></i>
         </h3>
 
-        @if (datosHistoricos.length > 0) {
+        @if (resguardosHistoricos.length > 0) {
         <div class="resguardos-content">
           <!-- Círculo con número principal -->
           <div class="resguardos-circle">
-            <div class="circle-number">{{ datosHistoricos[0].cantidadResguardos }}</div>
-            <div class="circle-year">{{ datosHistoricos[0].vigencia }}</div>
+            <div class="circle-number">{{ resguardosHistoricos[0].cantidadResguardos }}</div>
+            <div class="circle-year">{{ resguardosHistoricos[0].vigencia }}</div>
           </div>
 
           <!-- Barras horizontales -->
           <div class="resguardos-bars">
-            @for (dato of datosHistoricos; track dato.vigencia) {
+            @for (dato of resguardosHistoricos; track dato.vigencia; let i = $index) {
               <div class="resguardo-bar-item">
                 <span class="resguardo-year">{{ dato.vigencia }}</span>
                 <div class="resguardo-bar-container">
                   <div class="resguardo-bar-fill"
-                       [style.width.%]="(dato.cantidadResguardos / datosHistoricos[0].cantidadResguardos) * 100"
-                       [style.background-color]="dato.vigencia === 2026 ? '#1e3a8a' : dato.vigencia === 2025 ? '#60a5fa' : '#93c5fd'">
+                       [style.width.%]="(dato.cantidadResguardos / resguardosHistoricos[0].cantidadResguardos) * 100"
+                       [style.background-color]="i === 0 ? '#1e3a8a' : '#60a5fa'">
                   </div>
                 </div>
                 <span class="resguardo-value">{{ dato.cantidadResguardos }}</span>
