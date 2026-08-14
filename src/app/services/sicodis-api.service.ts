@@ -289,6 +289,19 @@ export interface DetallePlanRecursos {
   [key: string]: any; // Para soportar claves de año dinámicas ("2025", "2026", ...)
 }
 
+/**
+ * Parámetros para descargar en Excel el detalle del Plan de Recursos o del
+ * Plan Bienal de Caja del SGR. El orden replica el de la ruta del endpoint.
+ */
+export interface DescargaDetallePlanParams {
+  idVigencia: number;
+  vigencia: string;
+  codigoDepto: string;
+  departamento: string;
+  codigoMunicipio: string;
+  municipio: string;
+}
+
 // ========== SGP Interfaces ==========
 export interface VigenciaSgp {
   anio: number;
@@ -1300,6 +1313,24 @@ getSgrDescargaResumenPbcRecaudoMensual( idvigencia: number
     return this.http.get<DetallePlanBienal[]>(url);
   }
 
+  /**
+   * Genera y descarga en Excel el detalle del Plan Bienal de Caja del SGR.
+   * @param params - Filtros de la consulta (vigencia, departamento y municipio)
+   * @returns Observable con la respuesta HTTP que contiene el Blob del archivo .xlsx
+   */
+  getSgrPlanBienalDescargarDetalle(params: DescargaDetallePlanParams): Observable<HttpResponse<Blob>> {
+    const segments = [
+      params.idVigencia,
+      params.vigencia,
+      params.codigoDepto,
+      params.departamento,
+      params.codigoMunicipio,
+      params.municipio
+    ].map(s => encodeURIComponent(String(s))).join('/');
+    const url = `${this.baseUrl}/sgrplanbienal/descarga_detalle_planbienal/${segments}`;
+    return this.http.get(url, { responseType: 'blob', observe: 'response' });
+  }
+
   getSgrPlanRecursosVigencias(): Observable<VigenciaPlanBienal[]> {
     const url = `${this.baseUrl}/sgrplanrecursos/vigencias`;
     return this.http.get<VigenciaPlanBienal[]>(url);
@@ -1318,6 +1349,24 @@ getSgrDescargaResumenPbcRecaudoMensual( idvigencia: number
   getSgrPlanRecursosDetalle(idVigencia: number, codigoEntidad: string, codigoMunicipio: string): Observable<DetallePlanRecursos[]> {
     const url = `${this.baseUrl}/sgrplanrecursos/detalle_planrecursos/${idVigencia}/${codigoEntidad}/${codigoMunicipio}`;
     return this.http.get<DetallePlanRecursos[]>(url);
+  }
+
+  /**
+   * Genera y descarga en Excel el detalle del Plan de Recursos del SGR.
+   * @param params - Filtros de la consulta (vigencia, departamento y municipio)
+   * @returns Observable con la respuesta HTTP que contiene el Blob del archivo .xlsx
+   */
+  getSgrPlanRecursosDescargarDetalle(params: DescargaDetallePlanParams): Observable<HttpResponse<Blob>> {
+    const segments = [
+      params.idVigencia,
+      params.vigencia,
+      params.codigoDepto,
+      params.departamento,
+      params.codigoMunicipio,
+      params.municipio
+    ].map(s => encodeURIComponent(String(s))).join('/');
+    const url = `${this.baseUrl}/sgrplanrecursos/descarga_detalle_planrecursos/${segments}`;
+    return this.http.get(url, { responseType: 'blob', observe: 'response' });
   }
 
   /**
