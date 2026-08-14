@@ -226,11 +226,13 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
       responsive: true,
       maintainAspectRatio: false,
       cutout: '55%',
+      // Margen interno para que las etiquetas de porcentaje de los bordes no se recorten
+      layout: { padding: 10 },
       plugins: {
-        legend: {
-          position: 'bottom',
-          labels: { boxWidth: 12, padding: 8, font: { size: 11 } }
-        },
+        // La leyenda se oculta para no solaparse con el texto/tarjetas debajo del
+        // donut; el color→concepto se identifica por los % sobre el donut, el árbol
+        // de la izquierda y las tarjetas de detalle de la selección.
+        legend: { display: false },
         tooltip: {
           callbacks: {
             label: (ctx: any) => {
@@ -1102,10 +1104,12 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     return 'Avance';
   }
 
-  // Título del panel derecho (donut de distribución) según el sistema
+  // Título del panel derecho (donut de distribución) según el sistema y la selección
   get tituloDistribucion(): string {
-    if (this.sistemaDetalle === 'SGP') return 'Distribución porcentual de las participaciones';
     if (this.sistemaDetalle === 'PGN') return 'Ejecución presupuestal';
+    if (this.sistemaDetalle === 'SGP') return 'Distribución porcentual de las participaciones';
+    // SGR sin selección: recaudo frente a presupuesto; con selección: por asignación
+    if (this.detalleSeleccion.length === 0) return 'Recaudo frente a presupuesto';
     return 'Distribución porcentual de las asignaciones';
   }
 
@@ -1116,14 +1120,37 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
 
     if (this.sistemaDetalle === 'SGR' || this.sistemaDetalle === 'SGP') {
       const seleccion = this.detalleSeleccion;
-      const nodos = seleccion.length > 0 ? seleccion : this.arbolRaiz;
+
+      if (seleccion.length > 0) {
+        const labels = seleccion.map(n => n.concepto);
+        const data = seleccion.map(n => this.valorNodo(n));
+        const colores = seleccion.map(n => n.color);
+        this.pieData = { labels, datasets: [{ data, backgroundColor: colores, borderWidth: 0 }] };
+        this.tienePieData = data.some(v => v > 0);
+        return;
+      }
+
+      // SGR sin selección: presupuesto total vs recaudo total (en vez de quedar
+      // dominado por "Inversión"); muestra recaudado vs pendiente por recaudar.
+      if (this.sistemaDetalle === 'SGR') {
+        const t = this.sgrTotal;
+        const presupuesto = Number(t?.presupuesto_total_vigente) || 0;
+        const recaudo = Number(t?.caja_total) || 0;
+        const pendiente = Math.max(0, presupuesto - recaudo);
+        this.pieData = {
+          labels: ['Recaudo total', 'Pendiente por recaudar'],
+          datasets: [{ data: [recaudo, pendiente], backgroundColor: [COLORES_REPORTE.naranja, COLORES_REPORTE.restante], borderWidth: 0 }]
+        };
+        this.tienePieData = (recaudo + pendiente) > 0;
+        return;
+      }
+
+      // SGP sin selección: distribución por participación de nivel superior
+      const nodos = this.arbolRaiz;
       const labels = nodos.map(n => n.concepto);
       const data = nodos.map(n => this.valorNodo(n));
       const colores = nodos.map(n => n.color);
-      this.pieData = {
-        labels,
-        datasets: [{ data, backgroundColor: colores, borderWidth: 0 }]
-      };
+      this.pieData = { labels, datasets: [{ data, backgroundColor: colores, borderWidth: 0 }] };
       this.tienePieData = data.some(v => v > 0);
       return;
     }

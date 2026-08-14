@@ -136,7 +136,7 @@
       <h3 class="titulo-seccion">Opacidad municipios</h3>
       <div class="sistema-opacidad-row">
         <span class="opacidad-cap">Opacidad</span>
-        <p-slider [(ngModel)]="opacidadMunicipios" (onChange)="onOpacidadMunicipiosChange()" [style]="{'width': '100%'}" />
+        <p-slider [(ngModel)]="opacidadMunicipios" class="sistema-slider" (onChange)="onOpacidadMunicipiosChange()" [style]="{'width': '100%'}" />
         <span class="opacidad-mini-valor">{{ opacidadMunicipios }}%</span>
       </div>
     </div>

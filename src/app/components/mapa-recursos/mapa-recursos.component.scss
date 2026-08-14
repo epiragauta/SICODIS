@@ -1230,10 +1230,10 @@
 // Contenedor de tamaño fijo; se deja que Chart.js dimensione el canvas (no forzar
 // el tamaño del <canvas> con !important, pues genera un bucle de resize al actualizar).
 .grafica-torta {
-  height: 200px;
+  flex: 0 0 240px;   // altura fija; no se comprime dentro del panel flex
+  height: 240px;
   position: relative;
   margin-bottom: 0.5rem;
-  overflow: hidden;
 
   ::ng-deep .p-chart {
     position: relative;
