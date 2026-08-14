@@ -115,6 +115,31 @@ export class SgrPlanBienalCajaComponent implements OnInit {
     return this.selectedVigencia ? this.selectedVigencia.vigencia.replace(' - ', '-') : '';
   }
 
+  /**
+   * Norma (Ley o Decreto) que rige cada bienio, indexada por el año inicial del
+   * rango de vigencia. El API solo devuelve el rango de años en `vigencia`
+   * (p. ej. "2025 - 2026"), sin la norma, así que la fuente se resuelve aquí.
+   */
+  private static readonly NORMA_POR_ANIO_INICIAL: Record<string, string> = {
+    '2025': 'Ley 2441 de 2024',
+    '2023': 'Ley 2279 de 2022',
+    '2021': 'Ley 2072 de 2020',
+    '2019': 'Ley 1942 de 2018',
+    '2017': 'Decreto 2190 de 2016',
+    '2015': 'Ley 1744 de 2014',
+    '2013': 'Ley 1606 de 2012',
+  };
+
+  /**
+   * Norma asociada al bienio seleccionado, usada en la nota (2) de fuente para
+   * que refleje el bienio actual.
+   */
+  get normaVigencia(): string {
+    if (!this.selectedVigencia) return '';
+    const anioInicial = this.selectedVigencia.vigencia.trim().split(/\s*-\s*/)[0];
+    return SgrPlanBienalCajaComponent.NORMA_POR_ANIO_INICIAL[anioInicial] ?? '';
+  }
+
   private getYearsFromVigencia(vigencia: VigenciaPlanBienal): [number, number] {
     const parts = vigencia.vigencia.split(' - ');
     return [parseInt(parts[0].trim()), parseInt(parts[1].trim())];
