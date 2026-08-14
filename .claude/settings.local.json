@@ -41,7 +41,29 @@
       "Bash(dir /s \"C:\\\\ws\\\\dnp\\\\ws\\\\SICODIS_WebII\\\\src\\\\assets\")",
       "Bash(dir \"C:\\\\ws\\\\dnp\\\\ws\\\\SICODIS_WebII\\\\src\\\\app\\\\components\")",
       "Bash(git checkout:*)",
-      "Bash(gh pr create:*)"
+      "Bash(gh pr create:*)",
+      "Bash(git mv:*)",
+      "Bash(npx ng build --configuration development)",
+      "Skill(run)",
+      "Bash(mkdir -p docs/sgr/integracion)",
+      "Bash(mkdir -p docs/sgp/resguardos)",
+      "Bash(mkdir -p docs/config)",
+      "Bash(mkdir -p docs/formularios)",
+      "Bash(mkdir -p docs/banner)",
+      "Bash(mv INTEGRACION_SGR_COMPLETADA.md docs/sgr/integracion/)",
+      "Bash(mv src/assets/data/sgr/DESTINACION_ETNICA.md docs/sgr/integracion/)",
+      "Bash(mv src/assets/data/sgr/README_INTEGRACION.md docs/sgr/integracion/)",
+      "PowerShell(npm start *)",
+      "PowerShell(Get-Content *)",
+      "Skill(code-review)",
+      "PowerShell(git diff *)",
+      "PowerShell(Test-NetConnection *)",
+      "PowerShell(Stop-Process *)",
+      "Bash(node *)",
+      "PowerShell($d = Get-Content 'C:\\\\ws\\\\dnp\\\\ws\\\\SICODIS_WebII\\\\src\\\\assets\\\\data\\\\departamentos.geojson' -Raw | ConvertFrom-Json; $f = $d.features[0]; Write-Host \"Feature count: $\\($d.features.Count\\)\"; Write-Host \"Properties: $\\($f.properties | ConvertTo-Json -Compress\\)\"; Write-Host \"Geometry type: $\\($f.geometry.type\\)\")",
+      "PowerShell($d = Get-Content 'C:\\\\ws\\\\dnp\\\\ws\\\\SICODIS_WebII\\\\src\\\\assets\\\\data\\\\municipios.geojson' -Raw | ConvertFrom-Json; $f = $d.features[0]; Write-Host \"Feature count: $\\($d.features.Count\\)\"; Write-Host \"Properties: $\\($f.properties | ConvertTo-Json -Compress\\)\"; Write-Host \"Geometry type: $\\($f.geometry.type\\)\")",
+      "PowerShell(& \"C:\\\\software\\\\node-v22.16.0-win-x64\\\\node.exe\" \"C:\\\\ws\\\\dnp\\\\ws\\\\SICODIS_WebII\\\\node_modules\\\\typescript\\\\bin\\\\tsc\" --noEmit --project \"C:\\\\ws\\\\dnp\\\\ws\\\\SICODIS_WebII\\\\tsconfig.app.json\" 2>&1 | Select-Object -First 40)",
+      "Bash(npx tsc *)"
     ]
   }
 }

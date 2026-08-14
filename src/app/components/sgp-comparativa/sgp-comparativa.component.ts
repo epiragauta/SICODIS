@@ -78,6 +78,7 @@ export class SgpComparativaComponent {
   
   // Estado de carga
   isLoadingComparativeData: boolean = false;
+  isDownloadingFichaComparativa: boolean = false;
   
 
   barChartInstance: any;
@@ -757,6 +758,57 @@ export class SgpComparativaComponent {
   exportToExcel2(): void {
     console.log('Exportando datos del segundo municipio a Excel...');
     // Aquí iría la lógica para exportar a Excel del segundo municipio
+  }
+
+  /**
+   * Descarga el archivo Excel de la ficha comparativa entre las dos entidades seleccionadas
+   */
+  async descargarFichaComparativa(): Promise<void> {
+    if (!this.selected || !this.departmentSelected || !this.townSelected || !this.departmentSelected2 || !this.townSelected2) {
+      console.warn('Faltan selecciones para descargar la ficha comparativa');
+      return;
+    }
+
+    const depto1 = this.departments.find(d => d.id === this.departmentSelected);
+    const depto2 = this.departments.find(d => d.id === this.departmentSelected2);
+    const entidad1 = this.towns.find(t => t.id === this.townSelected);
+    const entidad2 = this.towns2.find(t => t.id === this.townSelected2);
+
+    this.isDownloadingFichaComparativa = true;
+
+    try {
+      const archivo = await this.sicodisApiService.getSgpDescargarFichaComparativaEntidad(
+        this.selected,
+        this.departmentSelected,
+        this.townSelected,
+        this.departmentSelected2,
+        this.townSelected2,
+        depto1?.label ?? '',
+        entidad1?.label ?? '',
+        depto2?.label ?? '',
+        entidad2?.label ?? ''
+      ).toPromise();
+
+      if (!archivo) {
+        console.warn('No se recibió ningún archivo desde el servicio');
+        return;
+      }
+
+      const excelBlob = new Blob([archivo], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+
+      const url = window.URL.createObjectURL(excelBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'FichaComparativaSGP.xlsx';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error descargando la ficha comparativa:', error);
+    } finally {
+      this.isDownloadingFichaComparativa = false;
+    }
   }
 
   /**

@@ -221,10 +221,10 @@ constructor(private sicodisApiService: SicodisApiService,
       vista: this.showRecaudoView ? 'Recaudo' : 'Tipo de Recurso'
     });
     
-    // Aquí se puede agregar lógica para actualizar los gráficos basado en el rango de fechas
-    //--this.updateChartsData();
+    // NO se debe llamar setPeriodsFromVigencia() aquí: sobrescribiría el rango
+    // de meses que acaba de elegir el usuario. El rango solo se reinicia cuando
+    // cambia el bienio (ver onVigenciaChange).
     this.loadSgrData(); // 👈 aquí, ya tiene selectedVigencia
-    this.setPeriodsFromVigencia(this.selectedVigencia); // 👈 agrega esto
     //this.initializeCharts();
     this.initializeTable();
     this.initializeBehaviorTable();
@@ -237,9 +237,9 @@ constructor(private sicodisApiService: SicodisApiService,
    */
   async clearFilters(): Promise<void> {
     console.log('Limpiando filtros...');
-    this.cargarVigencias();
-    //this.setDefaultPeriods();
-    this.updateChartsData();
+    // cargarVigencias() reestablece el bienio, el rango de meses y recarga los datos.
+    // Debe esperarse: antes se llamaba updateChartsData() sobre el rango anterior.
+    await this.cargarVigencias();
   }
 
   /**
@@ -500,11 +500,10 @@ constructor(private sicodisApiService: SicodisApiService,
     // const pbcMineria = [ 507182857652, 253591429312,211326191168,422652382500,253591429312,169060952916, 464917620452, 422652382500 ,169060952916, 507182858648, 464917620452,380387144060, 406554681320];
 
 
-    console.log('tableDataBase length:', this.tableDataBase.length);
-    console.log('tableDataBase:', this.tableDataBase);
-    const periods = this.tableDataBase.map(row => row.periodo);
-    const recaudoMineria = this.tableDataBase.map(row => row.recaudo_mineria);
-    const pbcMineria = this.tableDataBase.map(row => row.pbc_mineria);
+    // Se usa tableData (ya filtrada por el rango de meses), no tableDataBase
+    const periods = this.tableData.map(row => row.periodo);
+    const recaudoMineria = this.tableData.map(row => row.recaudo_mineria);
+    const pbcMineria = this.tableData.map(row => row.pbc_mineria);
     console.log('periods:', periods);
     console.log('recaudoMineria:', recaudoMineria);
     console.log('pbcMineria:', pbcMineria);
@@ -615,9 +614,10 @@ constructor(private sicodisApiService: SicodisApiService,
     // const pbcHidrocarburos = [ 507182857652,253591429312,211326191168,422652382500,253591429312,169060952916,464917620452,422652382500,694994469215, 718161024698, 694994469215,718161024698.81, 746405760774.72];
 
 
-    const periods = this.tableDataBase.map(row => row.periodo);
-    const recaudoHidrocarburos = this.tableDataBase.map(row => row.recaudo_hidrocarburos);
-    const pbcHidrocarburos = this.tableDataBase.map(row => row.pbc_hidrocarburos);
+    // Se usa tableData (ya filtrada por el rango de meses), no tableDataBase
+    const periods = this.tableData.map(row => row.periodo);
+    const recaudoHidrocarburos = this.tableData.map(row => row.recaudo_hidrocarburos);
+    const pbcHidrocarburos = this.tableData.map(row => row.pbc_hidrocarburos);
 
     this.hydrocarbonChartData = null; // 👈 destruye el chart del DOM
 
@@ -1193,14 +1193,31 @@ setTimeout(() => {
     this.minDate = new Date(startYear, 0, 1, 0, 0, 0, 0);
 
     if (endYear >= currentYear) {
+      // Mes anterior al actual; si el bienio aún no ha comenzado, no puede quedar
+      // por debajo de minDate (dejaría el calendario sin meses seleccionables).
+      const mesAnterior = new Date(currentYear, currentMonth - 1, 1, 0, 0, 0, 0);
+      const tope = mesAnterior < this.minDate ? this.minDate : mesAnterior;
+
       this.selectedPeriodoDesde = new Date(startYear, 0, 1, 0, 0, 0, 0);
-      this.selectedPeriodoHasta = new Date(currentYear, currentMonth - 1, 1, 0, 0, 0, 0);
-      this.maxDate = new Date(currentYear, currentMonth - 1, 1, 0, 0, 0, 0);
+      this.selectedPeriodoHasta = new Date(tope);
+      this.maxDate = new Date(tope);
     } else {
       this.selectedPeriodoDesde = new Date(startYear, 0, 1, 0, 0, 0, 0);
       this.selectedPeriodoHasta = new Date(endYear, 11, 1, 0, 0, 0, 0);
       this.maxDate = new Date(endYear, 11, 1, 0, 0, 0, 0);
     }
+
+    this.syncCurrentYears();
+  }
+
+  /**
+   * Sincroniza el año que muestra cada calendario con la fecha seleccionada.
+   * (onYearChange) solo se dispara al navegar; al abrir el panel PrimeNG
+   * posiciona el calendario en el año de la fecha seleccionada sin emitir evento.
+   */
+  private syncCurrentYears(): void {
+    this.currentYearDesde = this.selectedPeriodoDesde?.getFullYear() ?? this.startYear;
+    this.currentYearHasta = this.selectedPeriodoHasta?.getFullYear() ?? this.endYear;
   }
 
   
@@ -1238,8 +1255,14 @@ currentYearHasta: number = 0;
         detail: 'El período desde no puede ser mayor al período hasta.',
         life: 3000
       });
-      setTimeout(() => this.selectedPeriodoDesde = this.selectedPeriodoHasta, 0);
+      setTimeout(() => {
+        this.selectedPeriodoDesde = this.selectedPeriodoHasta;
+        this.syncCurrentYears();
+      }, 0);
+      return;
     }
+
+    this.syncCurrentYears();
   }
 
   onPeriodoHastaChange(date: Date): void {
@@ -1255,8 +1278,14 @@ currentYearHasta: number = 0;
         detail: 'El período hasta no puede ser menor al período desde.',
         life: 3000
       });
-      setTimeout(() => this.selectedPeriodoHasta = this.selectedPeriodoDesde, 0);
+      setTimeout(() => {
+        this.selectedPeriodoHasta = this.selectedPeriodoDesde;
+        this.syncCurrentYears();
+      }, 0);
+      return;
     }
+
+    this.syncCurrentYears();
   }
 
   get miningChartHeight(): string {

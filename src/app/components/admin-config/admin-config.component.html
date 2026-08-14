@@ -1,0 +1,253 @@
+<div class="admin-config-container">
+  <p-toast></p-toast>
+
+  <!-- Header -->
+  <div class="admin-header">
+    <h1>
+      <i class="pi pi-cog" style="margin-right: 0.5rem;"></i>
+      Panel de Administración de Configuraciones
+    </h1>
+    <p class="admin-subtitle">
+      Gestiona las configuraciones del sistema SICODIS. Los cambios se guardan en localStorage y se aplicarán inmediatamente.
+    </p>
+  </div>
+
+  <!-- Tabs principales -->
+  <p-tabView [(activeIndex)]="activeTabIndex" [scrollable]="true">
+
+    <!-- ============================================================ -->
+    <!-- TAB 1: Fechas y Vigencias -->
+    <!-- ============================================================ -->
+    <p-tabPanel header="Fechas y Vigencias" leftIcon="pi pi-calendar">
+      <div class="tab-content">
+        <app-config-fechas-form></app-config-fechas-form>
+      </div>
+    </p-tabPanel>
+
+    <!-- ============================================================ -->
+    <!-- TAB 2: Banner y Alertas -->
+    <!-- ============================================================ -->
+    <p-tabPanel header="Banner y Alertas" leftIcon="pi pi-bell">
+      <div class="tab-content">
+        <app-config-banner></app-config-banner>
+      </div>
+    </p-tabPanel>
+
+    <!-- ============================================================ -->
+    <!-- TAB 3: Paletas de Colores -->
+    <!-- ============================================================ -->
+    <p-tabPanel header="Paletas de Colores" leftIcon="pi pi-palette">
+      <div class="tab-content">
+        <p-card>
+          <ng-template pTemplate="header">
+            <div class="card-header-content">
+              <h2>Paletas de Colores para Gráficos</h2>
+              <p>Gestiona los colores utilizados en los diferentes gráficos del sistema</p>
+            </div>
+          </ng-template>
+
+          <div class="config-section">
+            <div *ngFor="let config of getConfigsByCategory('colores')" class="config-item color-config">
+              <div class="config-item-header">
+                <span class="config-label">{{ config.clave }}</span>
+                <p-tag [value]="config.activo ? 'Activo' : 'Inactivo'" [severity]="config.activo ? 'success' : 'danger'"></p-tag>
+              </div>
+              <p class="config-description">{{ config.descripcion }}</p>
+
+              <div class="color-preview">
+                <div class="color-swatches">
+                  <!-- Aquí se mostrarían los colores visualmente -->
+                  <code>{{ config.valor }}</code>
+                </div>
+              </div>
+
+              <small class="config-meta">
+                Última modificación: {{ config.fecha_modificacion | date:'short' }} | Versión: {{ config.version }}
+              </small>
+            </div>
+          </div>
+
+          <ng-template pTemplate="footer">
+            <div style="text-align: right;">
+              <button pButton type="button" label="Editar Colores" icon="pi pi-pencil" class="p-button-primary"></button>
+            </div>
+          </ng-template>
+        </p-card>
+      </div>
+    </p-tabPanel>
+
+    <!-- ============================================================ -->
+    <!-- TAB 4: URLs Externas -->
+    <!-- ============================================================ -->
+    <p-tabPanel header="URLs Externas" leftIcon="pi pi-link">
+      <div class="tab-content">
+        <p-card>
+          <ng-template pTemplate="header">
+            <div class="card-header-content">
+              <h2>URLs Externas</h2>
+              <p>Gestiona las URLs utilizadas en el sistema</p>
+            </div>
+          </ng-template>
+
+          <div class="config-section">
+            <div *ngFor="let config of getConfigsByCategory('urls')" class="config-item url-config">
+              <div class="config-item-header">
+                <span class="config-label">{{ config.clave }}</span>
+                <p-tag [value]="config.activo ? 'Activo' : 'Inactivo'" [severity]="config.activo ? 'success' : 'danger'"></p-tag>
+              </div>
+              <p class="config-description">{{ config.descripcion }}</p>
+
+              <div class="url-preview">
+                <a [href]="config.valor" target="_blank" class="url-link">
+                  {{ config.valor }}
+                  <i class="pi pi-external-link" style="margin-left: 0.5rem; font-size: 0.8rem;"></i>
+                </a>
+              </div>
+
+              <small class="config-meta">
+                Última modificación: {{ config.fecha_modificacion | date:'short' }} | Versión: {{ config.version }}
+              </small>
+            </div>
+          </div>
+
+          <ng-template pTemplate="footer">
+            <div style="text-align: right;">
+              <button pButton type="button" label="Editar URLs" icon="pi pi-pencil" class="p-button-primary"></button>
+            </div>
+          </ng-template>
+        </p-card>
+      </div>
+    </p-tabPanel>
+
+    <!-- ============================================================ -->
+    <!-- TAB 5: Todas las Configuraciones (Tabla) -->
+    <!-- ============================================================ -->
+    <p-tabPanel header="Todas las Configuraciones" leftIcon="pi pi-list">
+      <div class="tab-content">
+        <p-card>
+          <ng-template pTemplate="header">
+            <div class="card-header-content">
+              <h2>Vista General de Configuraciones</h2>
+              <p>Todas las configuraciones del sistema en formato de tabla</p>
+            </div>
+          </ng-template>
+
+          <p-table
+            [value]="allConfigs()"
+            [paginator]="true"
+            [rows]="10"
+            [rowsPerPageOptions]="[10, 25, 50]"
+            [loading]="isLoading()"
+            [globalFilterFields]="['categoria', 'clave', 'descripcion']"
+            responsiveLayout="scroll"
+            styleClass="p-datatable-sm">
+
+            <ng-template pTemplate="header">
+              <tr>
+                <th pSortableColumn="id">ID</th>
+                <th pSortableColumn="categoria">Categoría</th>
+                <th pSortableColumn="clave">Clave</th>
+                <th>Descripción</th>
+                <th>Valor</th>
+                <th pSortableColumn="activo">Estado</th>
+                <th pSortableColumn="version">Versión</th>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-config>
+              <tr>
+                <td>{{ config.id }}</td>
+                <td>
+                  <p-tag [value]="config.categoria" [severity]="getCategorySeverity(config.categoria)"></p-tag>
+                </td>
+                <td><code>{{ config.clave }}</code></td>
+                <td>{{ config.descripcion }}</td>
+                <td>
+                  <div class="value-cell">
+                    {{ config.valor.length > 50 ? (config.valor | slice:0:50) + '...' : config.valor }}
+                  </div>
+                </td>
+                <td>
+                  <p-tag [value]="config.activo ? 'Activo' : 'Inactivo'" [severity]="config.activo ? 'success' : 'danger'"></p-tag>
+                </td>
+                <td>{{ config.version }}</td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="7" style="text-align: center; padding: 2rem;">
+                  No se encontraron configuraciones
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+
+          <ng-template pTemplate="footer">
+            <div style="text-align: right;">
+              <button pButton type="button" label="Recargar" icon="pi pi-refresh" (click)="loadAllConfigs()" class="p-button-secondary"></button>
+            </div>
+          </ng-template>
+        </p-card>
+      </div>
+    </p-tabPanel>
+
+    <!-- ============================================================ -->
+    <!-- TAB 6: Ayuda e Información -->
+    <!-- ============================================================ -->
+    <p-tabPanel header="Ayuda" leftIcon="pi pi-question-circle">
+      <div class="tab-content">
+        <p-card>
+          <ng-template pTemplate="header">
+            <div class="card-header-content">
+              <h2>Ayuda y Documentación</h2>
+              <p>Información sobre el uso del panel de administración</p>
+            </div>
+          </ng-template>
+
+          <div class="help-content">
+            <h3>¿Cómo usar este panel?</h3>
+            <p>Este panel te permite gestionar todas las configuraciones del sistema SICODIS sin necesidad de modificar código.</p>
+
+            <h4>Persistencia de datos</h4>
+            <p>Actualmente, todas las configuraciones se guardan en <strong>localStorage</strong> del navegador. Esto significa que:</p>
+            <ul>
+              <li>Los cambios son inmediatos y locales a tu navegador</li>
+              <li>Si limpias el caché del navegador, se perderán las configuraciones personalizadas</li>
+              <li>Los cambios NO se sincronizan con otros usuarios</li>
+              <li>En el futuro, esto se migrará a una base de datos para sincronización global</li>
+            </ul>
+
+            <h4>Banner Inteligente</h4>
+            <p>El banner utiliza un sistema de tracking que controla:</p>
+            <ul>
+              <li><strong>Frecuencia diaria:</strong> Cuántas veces mostrar el banner por día</li>
+              <li><strong>Días consecutivos:</strong> Máximo de días seguidos que se muestra</li>
+              <li><strong>Rango de fechas:</strong> Solo se muestra entre fecha_inicio y fecha_fin</li>
+              <li><strong>Reset automático:</strong> Al cambiar la configuración, se resetea el tracking</li>
+            </ul>
+
+            <h4>Próximas funcionalidades</h4>
+            <ul>
+              <li>Edición inline de configuraciones</li>
+              <li>Historial de cambios y auditoría</li>
+              <li>Rollback a versiones anteriores</li>
+              <li>Sincronización con backend</li>
+              <li>Permisos de usuario (solo admin puede editar)</li>
+            </ul>
+
+            <div class="warning-box">
+              <i class="pi pi-exclamation-triangle"></i>
+              <div>
+                <strong>Nota importante:</strong>
+                Este panel está en desarrollo. Actualmente solo muestra las configuraciones existentes.
+                La funcionalidad de edición se agregará en los próximos sprints.
+              </div>
+            </div>
+          </div>
+        </p-card>
+      </div>
+    </p-tabPanel>
+
+  </p-tabView>
+</div>

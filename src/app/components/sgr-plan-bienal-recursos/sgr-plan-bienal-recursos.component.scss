@@ -372,9 +372,11 @@
   }
 }
 
-// Filas en negrita
+// Conceptos que agrupan (INVERSIÓN, AHORRO, ADMINISTRACIÓN): peso medio, sin
+// negrita, igual que la tabla del componente presupuesto-y-recaudo. La fila
+// Total conserva su énfasis mediante .total-row-text (700).
 .font-bold {
-  font-weight: 600 !important;
+  font-weight: 500 !important;
 }
 
 // Estilo para la fila total

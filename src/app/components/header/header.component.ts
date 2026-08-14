@@ -64,7 +64,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
           },
           {
             label: 'Resguardos Indígenas',
-            command: () => this.downloadFile('assets/data/sgp/sgp_resguardos_datos.xlsx')
+            command: () => this.redirectUrl("sgp-resguardos")
           },
           {
             label: 'Variables Certificadas',
@@ -77,6 +77,23 @@ export class HeaderComponent implements OnInit, OnDestroy {
           {
             label: 'Eficiencias',
             command: () => this.redirectUrl("sgp-eficiencias")
+          },
+          {
+            label: 'Proyecciones',
+            command: () => this.downloadFile('https://colaboracion.dnp.gov.co/CDT/Inversiones%20y%20finanzas%20pblicas/Documentos%20GFT/Documentos_SGP/Ficha%20Proyecciones%20SGP%202026.xlsx')
+          },
+          {
+            label: 'Situado Fiscal',
+            items: [
+              {
+                label: 'Resumen',
+                command: () => this.openExternal('https://sicodispr.dnp.gov.co/ReportesSGP/SGP_Historico_1994_2001.aspx')
+              },
+              {
+                label: 'Histórico',
+                command: () => this.openExternal('https://sicodispr.dnp.gov.co/ReportesSGP/SGP_SF_HistoricoEntidadyFuente.aspx')
+              }
+            ]
           }
         ]
       },
@@ -87,46 +104,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
             label: 'Resumen',
             command: () => this.redirectUrl("sgr-inicio")
           },
-          {
-            label: 'Programación',
-            items: [
-              {
-                label: 'Plan de Recursos',
-                items: [
-                  {
-                    label: '2025 - 2034',
-                    command: () => this.downloadFile('assets/data/sgr/plan-recursos-2025-2034.xlsx')
-                  },
-                  {
-                    label: '2023 - 2032',
-                    command: () => this.downloadFile('assets/data/sgr/plan-recursos-2023-2032.xlsx')
-                  },
-                  {
-                    label: '2021 - 2030',
-                    command: () => this.downloadFile('assets/data/sgr/plan-recursos-2021-2030.xlsx')
-                  }
-                ]
-              },
-              {
-                label: 'Plan Bienal de Caja',
-                items: [
-                  {
-                    label: '2025 - 2026',
-                    command: () => this.downloadFile('assets/data/sgr/plan-bienal-caja-2025-2026.xlsx')
-                  },
-                  {
-                    label: '2023 - 2024',
-                    command: () => this.downloadFile('assets/data/sgr/plan-bienal-caja-2023-2024.xlsx')
-                  },
-                  {
-                    label: '2021 - 2022',
-                    command: () => this.downloadFile('assets/data/sgr/plan-bienal-caja-2021-2022.xlsx')
-                  }
-                ]
-              }
-            ]
-          }
-,
           {
             label: 'Recaudo mensual',
             command: () => this.redirectUrl("sgr-recaudo-mensual")
@@ -268,6 +245,10 @@ downloadFile(path: string) {
   link.target = '_blank';
   link.download = '';
   link.click();
+}
+
+openExternal(url: string) {
+  window.open(url, '_blank');
 }
 
 

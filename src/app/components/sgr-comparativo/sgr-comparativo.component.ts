@@ -49,9 +49,6 @@ export class SgrComparativoComponent implements OnInit {
   diccionarioContent: string = '';
   siglasContent: string = '';
 
-  // Estados de visualización
-  showPresupuestoRecaudoView: boolean = true;
-  showPlanBienalView: boolean = false;
 
   // Filtros
   selectedBienio: any = { id: 8, label: '2025 - 2026' };
@@ -72,12 +69,6 @@ export class SgrComparativoComponent implements OnInit {
   municipios2: any[] = [];
 
   // Chart data
-  municipio1ChartData: any = {};
-  municipio1ChartOptions: any = {};
-  municipio2ChartData: any = {};
-  municipio2ChartOptions: any = {};
-
-  // Chart data for Plan Bienal view
   planBienalMunicipio1ChartData: any = {};
   planBienalMunicipio1ChartOptions: any = {};
   planBienalMunicipio2ChartData: any = {};
@@ -88,15 +79,52 @@ export class SgrComparativoComponent implements OnInit {
   planBienalMunicipio1LocalDonutData: any = {};
   planBienalMunicipio2DirectasDonutData: any = {};
   planBienalMunicipio2LocalDonutData: any = {};
-  donutChartOptions: any = {};
+  donutChartOptions: any = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          padding: 10,
+          usePointStyle: true,
+          font: { size: 10 }
+        }
+      },
+      tooltip: {
+        callbacks: {
+          label: (context: any) => {
+            const label = context.label || '';
+            const value = context.parsed;
+            const formatted = new Intl.NumberFormat('es-CO', {
+              style: 'currency',
+              currency: 'COP',
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0
+            }).format(value);
+            const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
+            const percentage = ((value / total) * 100).toFixed(1);
+            return `${label}: ${formatted} (${percentage}%)`;
+          }
+        }
+      },
+      datalabels: {
+        display: false
+      }
+    }
+  };
 
   // Table data
-  comparativeTableData: any[] = [];
   municipality1TableData: TreeNode[] = [];
   municipality2TableData: TreeNode[] = [];
+  consolidatedTableData: TreeNode[] = [];
 
   // Table columns
   tableCols: any[] = [];
+  consolidatedTableCols: any[] = [];
+
+  // Table view toggle
+  showConsolidatedTable: boolean = false;
 
   constructor(private sicodisApiService: SicodisApiService) { }
 
@@ -110,59 +138,130 @@ export class SgrComparativoComponent implements OnInit {
 
     // Inicializar columnas de la tabla
     this.tableCols = [
-      { field: 'concepto', header: 'Concepto', width: '32%', color: '#e4e6e8', class: 'col-standar', tooltip: 'Descripción de la categoría presupuestal' },
+      { field: 'concepto', header: 'Concepto', width: '30%', color: '#e4e6e8', class: 'col-standar', tooltip: 'Descripción de la categoría presupuestal' },
       { field: 'presupuesto_total_vigente', header: 'Presupuesto Total', width: '10%', color: '#e4e6e8', class: 'col-standar', tooltip: 'Suma total del presupuesto vigente (corriente + otros)' },
       { field: 'presupuesto_corriente', header: 'Presupuesto Corriente', width: '10%', color: '#e4e6e8', class: 'col-standar', tooltip: 'Monto presupuestado para ingresos corrientes' },
       { field: 'presupuesto_otros', header: 'Presupuesto Otros', width: '10%', color: '#e4e6e8', class: 'col-standar', tooltip: 'Montos presupuestados para otras fuentes de ingreso' },
       { field: 'caja_corriente_informada', header: 'Recaudo<br>Corriente', width: '10%', color: '#e4e6e8', class: 'col-standar', tooltip: 'Valores de recaudo reportados para los ingresos corrientes' },
       { field: 'caja_otros', header: 'Recaudo<br>Otros', width: '10%', color: '#e4e6e8', class: 'col-standar', tooltip: 'Valores de recaudo reportados para otros ingresos' },
       { field: 'caja_total', header: 'Recaudo<br>Total', width: '10%', color: '#e4e6e8', class: 'col-standar', tooltip: 'Valores de recaudo reportados para todos los ingresos' },
-      { field: 'avance_iac_presupuesto', header: 'Avance IAC frente a Presupuesto', width: '8%', color: '#e4e6e8', class: 'col-standar', tooltip: 'Porcentaje de ejecución: (Recaudo Total / Presupuesto Corriente) * 100' }
+      { field: 'avance_iac_presupuesto', header: 'Avance IAC frente a Presupuesto', width: '10%', color: '#e4e6e8', class: 'col-standar', tooltip: 'Porcentaje de ejecución: (Recaudo Total / Presupuesto Corriente) * 100' }
     ];
 
-    // Inicialización del componente
-    this.initializeCharts();
+    // Inicializar columnas de la tabla consolidada (se actualizarán con nombres de municipios)
+    this.initializeConsolidatedTableColumns();
   }
 
   /**
-   * Inicializar datos y opciones de gráficos
+   * Inicializar columnas para la tabla consolidada
    */
-  private initializeCharts(): void {
-    const chartOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      indexAxis: 'y',
-      plugins: {
-        legend: {
-          display: true,
-          position: 'bottom'
-        },
-        title: {
-          display: false
-        }
+  private initializeConsolidatedTableColumns(): void {
+    this.consolidatedTableCols = [
+      {
+        field: 'concepto',
+        header: 'Concepto',
+        colspan: 1,
+        rowspan: 2,
+        width: '20%',
+        color: '#e4e6e8',
+        class: 'col-concepto',
+        tooltip: 'Descripción de la categoría presupuestal',
+        isGroup: false
       },
-      scales: {
-        x: {
-          beginAtZero: true,
-          ticks: {
-            maxTicksLimit: 4,
-            callback: (value: any) => {
-              return new Intl.NumberFormat('es-CO', {
-                style: 'currency',
-                currency: 'COP',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0
-              }).format(value).replace('$', ''); // Formato en miles de millones sin decimales
-            }
-          }
-        }
+      // Grupo: Presupuesto Total
+      {
+        field: 'presupuesto_total_group',
+        header: 'Presupuesto Total',
+        colspan: 2,
+        rowspan: 1,
+        color: '#d1e7dd',
+        isGroup: true,
+        subCols: [
+          { field: 'presupuesto_total_vigente_m1', header: 'Municipio 1', width: '8%', color: '#e8f5e8', municipio: 1 },
+          { field: 'presupuesto_total_vigente_m2', header: 'Municipio 2', width: '8%', color: '#e8f5e8', municipio: 2 }
+        ]
+      },
+      // Grupo: Presupuesto Corriente
+      {
+        field: 'presupuesto_corriente_group',
+        header: 'Presupuesto Corriente',
+        colspan: 2,
+        rowspan: 1,
+        color: '#d1e7dd',
+        isGroup: true,
+        subCols: [
+          { field: 'presupuesto_corriente_m1', header: 'Municipio 1', width: '8%', color: '#e8f5e8', municipio: 1 },
+          { field: 'presupuesto_corriente_m2', header: 'Municipio 2', width: '8%', color: '#e8f5e8', municipio: 2 }
+        ]
+      },
+      // Grupo: Presupuesto Otros
+      {
+        field: 'presupuesto_otros_group',
+        header: 'Presupuesto Otros',
+        colspan: 2,
+        rowspan: 1,
+        color: '#d1e7dd',
+        isGroup: true,
+        subCols: [
+          { field: 'presupuesto_otros_m1', header: 'Municipio 1', width: '8%', color: '#e8f5e8', municipio: 1 },
+          { field: 'presupuesto_otros_m2', header: 'Municipio 2', width: '8%', color: '#e8f5e8', municipio: 2 }
+        ]
+      },
+      // Grupo: Recaudo Corriente
+      {
+        field: 'caja_corriente_group',
+        header: 'Recaudo Corriente',
+        colspan: 2,
+        rowspan: 1,
+        color: '#cfe2ff',
+        isGroup: true,
+        subCols: [
+          { field: 'caja_corriente_informada_m1', header: 'Municipio 1', width: '8%', color: '#e3f2fd', municipio: 1 },
+          { field: 'caja_corriente_informada_m2', header: 'Municipio 2', width: '8%', color: '#e3f2fd', municipio: 2 }
+        ]
+      },
+      // Grupo: Recaudo Otros
+      {
+        field: 'caja_otros_group',
+        header: 'Recaudo Otros',
+        colspan: 2,
+        rowspan: 1,
+        color: '#cfe2ff',
+        isGroup: true,
+        subCols: [
+          { field: 'caja_otros_m1', header: 'Municipio 1', width: '8%', color: '#e3f2fd', municipio: 1 },
+          { field: 'caja_otros_m2', header: 'Municipio 2', width: '8%', color: '#e3f2fd', municipio: 2 }
+        ]
+      },
+      // Grupo: Recaudo Total
+      {
+        field: 'caja_total_group',
+        header: 'Recaudo Total',
+        colspan: 2,
+        rowspan: 1,
+        color: '#cfe2ff',
+        isGroup: true,
+        subCols: [
+          { field: 'caja_total_m1', header: 'Municipio 1', width: '8%', color: '#e3f2fd', municipio: 1 },
+          { field: 'caja_total_m2', header: 'Municipio 2', width: '8%', color: '#e3f2fd', municipio: 2 }
+        ]
+      },
+      // Grupo: Avance IAC
+      {
+        field: 'avance_iac_group',
+        header: 'Avance IAC frente a Presupuesto',
+        colspan: 2,
+        rowspan: 1,
+        color: '#fff3cd',
+        isGroup: true,
+        subCols: [
+          { field: 'avance_iac_presupuesto_m1', header: 'Municipio 1', width: '8%', color: '#fff9e6', municipio: 1 },
+          { field: 'avance_iac_presupuesto_m2', header: 'Municipio 2', width: '8%', color: '#fff9e6', municipio: 2 }
+        ]
       }
-    };
-
-    this.municipio1ChartOptions = { ...chartOptions };
-    this.municipio2ChartOptions = { ...chartOptions };
+    ];
   }
-  
+
   /**
    * Obtener nombre del municipio seleccionado
    */
@@ -176,19 +275,103 @@ export class SgrComparativoComponent implements OnInit {
   }
 
   /**
-   * Mostrar vista de Presupuesto y Recaudo
+   * Alternar entre vista individual y consolidada
    */
-  showPresupuestoRecaudo(): void {
-    this.showPresupuestoRecaudoView = true;
-    this.showPlanBienalView = false;
+  toggleTableView(): void {
+    this.showConsolidatedTable = !this.showConsolidatedTable;
+
+    if (this.showConsolidatedTable) {
+      this.buildConsolidatedTable();
+      this.updateConsolidatedHeaders();
+    }
   }
 
   /**
-   * Mostrar vista de Plan Bienal de Caja y Recaudo
+   * Actualizar headers de la tabla consolidada con nombres reales de municipios
    */
-  showPlanBienal(): void {
-    this.showPresupuestoRecaudoView = false;
-    this.showPlanBienalView = true;
+  private updateConsolidatedHeaders(): void {
+    const municipio1Name = this.getSelectedMunicipalityName(1);
+    const municipio2Name = this.getSelectedMunicipalityName(2);
+
+    this.consolidatedTableCols.forEach(col => {
+      if (col.isGroup && col.subCols) {
+        col.subCols.forEach((subCol: any) => {
+          if (subCol.municipio === 1) {
+            subCol.header = municipio1Name;
+          } else if (subCol.municipio === 2) {
+            subCol.header = municipio2Name;
+          }
+        });
+      }
+    });
+  }
+
+  /**
+   * Construir tabla consolidada combinando datos de ambos municipios
+   */
+  private buildConsolidatedTable(): void {
+    if (!this.municipality1TableData.length || !this.municipality2TableData.length) {
+      console.warn('No hay datos para consolidar');
+      return;
+    }
+
+    this.consolidatedTableData = this.mergeTableData(
+      this.municipality1TableData,
+      this.municipality2TableData
+    );
+  }
+
+  /**
+   * Combinar datos de dos tablas en una estructura consolidada
+   */
+  private mergeTableData(data1: TreeNode[], data2: TreeNode[]): TreeNode[] {
+    const consolidated: TreeNode[] = [];
+
+    // Iterar sobre los datos del municipio 1 (asumiendo que ambas tienen la misma estructura)
+    data1.forEach((node1, index) => {
+      const node2 = data2[index];
+
+      if (!node2) return;
+
+      const mergedNode: TreeNode = {
+        data: {
+          concepto: node1.data['concepto'],
+          // Presupuesto Total
+          presupuesto_total_vigente_m1: node1.data['presupuesto_total_vigente'],
+          presupuesto_total_vigente_m2: node2.data['presupuesto_total_vigente'],
+          // Presupuesto Corriente
+          presupuesto_corriente_m1: node1.data['presupuesto_corriente'],
+          presupuesto_corriente_m2: node2.data['presupuesto_corriente'],
+          // Presupuesto Otros
+          presupuesto_otros_m1: node1.data['presupuesto_otros'],
+          presupuesto_otros_m2: node2.data['presupuesto_otros'],
+          // Recaudo Corriente
+          caja_corriente_informada_m1: node1.data['caja_corriente_informada'],
+          caja_corriente_informada_m2: node2.data['caja_corriente_informada'],
+          // Recaudo Otros
+          caja_otros_m1: node1.data['caja_otros'],
+          caja_otros_m2: node2.data['caja_otros'],
+          // Recaudo Total
+          caja_total_m1: node1.data['caja_total'],
+          caja_total_m2: node2.data['caja_total'],
+          // Avance IAC
+          avance_iac_presupuesto_m1: node1.data['avance_iac_presupuesto'],
+          avance_iac_presupuesto_m2: node2.data['avance_iac_presupuesto']
+        },
+        children: [],
+        expanded: node1.expanded,
+        leaf: node1.leaf
+      };
+
+      // Recursivamente procesar hijos si existen
+      if (node1.children && node1.children.length > 0 && node2.children && node2.children.length > 0) {
+        mergedNode.children = this.mergeTableData(node1.children, node2.children);
+      }
+
+      consolidated.push(mergedNode);
+    });
+
+    return consolidated;
   }
 
   /**
@@ -201,30 +384,6 @@ export class SgrComparativoComponent implements OnInit {
     this.selectedDepartamento2 = null;
     this.selectedMunicipio2 = null;
     console.log('Filtros limpiados');
-  }
-
-  /**
-   * Descargar reporte consolidado
-   */
-  downloadConsolidated(): void {
-    console.log('Descargando reporte consolidado para:', {
-      municipio1: this.getSelectedMunicipalityName(1),
-      municipio2: this.getSelectedMunicipalityName(2),
-      bienio: this.selectedBienio?.label
-    });
-    // Aquí se implementaría la lógica de descarga del Excel consolidado
-  }
-
-  /**
-   * Descargar detalle mensual
-   */
-  downloadMonthlyDetail(): void {
-    console.log('Descargando detalle mensual para:', {
-      municipio1: this.getSelectedMunicipalityName(1),
-      municipio2: this.getSelectedMunicipalityName(2),
-      bienio: this.selectedBienio?.label
-    });
-    // Aquí se implementaría la lógica de descarga del Excel con detalle mensual
   }
 
   /**
@@ -298,7 +457,6 @@ export class SgrComparativoComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error cargando datos comparativos:', error);
-        this.initializeCharts();
       }
     });
   }
@@ -340,23 +498,31 @@ export class SgrComparativoComponent implements OnInit {
       labels: ['Asignaciones Directas', 'Ahorro (FONPET)'],
       datasets: [
         {
-          label: 'Presupuesto Total',
-          data: [
-            asignacionesDirectas.presupuesto_total_vigente,
-            ahorro.presupuesto_total_vigente
-          ],
-          backgroundColor: ['#f38135ff', '#f33aafff'],
-          borderColor: ['#be480eff', '#b11049ff'],
+          label: 'Presupuesto - Asignaciones Directas',
+          data: [asignacionesDirectas.presupuesto_total_vigente, null],
+          backgroundColor: '#f38135ff',
+          borderColor: '#be480eff',
           borderWidth: 1
         },
         {
-          label: 'Recaudo Total',
-          data: [
-            asignacionesDirectas.caja_total,
-            ahorro.caja_total
-          ],
-          backgroundColor: ['#edb87cff', '#7991e8ff'],
-          borderColor: ['#8c5516', '#3d4d7a'],
+          label: 'Recaudo - Asignaciones Directas',
+          data: [asignacionesDirectas.caja_total, null],
+          backgroundColor: '#edb87cff',
+          borderColor: '#8c5516',
+          borderWidth: 1
+        },
+        {
+          label: 'Presupuesto - Ahorro (FONPET)',
+          data: [null, ahorro.presupuesto_total_vigente],
+          backgroundColor: '#f33aafff',
+          borderColor: '#b11049ff',
+          borderWidth: 1
+        },
+        {
+          label: 'Recaudo - Ahorro (FONPET)',
+          data: [null, ahorro.caja_total],
+          backgroundColor: '#7991e8ff',
+          borderColor: '#3d4d7a',
           borderWidth: 1
         }
       ]
@@ -369,7 +535,14 @@ export class SgrComparativoComponent implements OnInit {
       plugins: {
         legend: {
           display: true,
-          position: 'bottom'
+          position: 'bottom',
+          labels: {
+            padding: 15,
+            usePointStyle: true,
+            font: {
+              size: 11
+            }
+          }
         },
         title: {
           display: false
@@ -421,10 +594,7 @@ export class SgrComparativoComponent implements OnInit {
           data: [directas20.presupuesto_corriente, directas20.caja_corriente_informada],
           backgroundColor: ['#f33aafff', '#7991e8ff'],
           borderColor: ['#b11049ff', '#3d4d7a'],
-          borderWidth: 1,
-          datalabels: {
-            display: false
-          }
+          borderWidth: 1
         }]
       };
 
@@ -434,10 +604,7 @@ export class SgrComparativoComponent implements OnInit {
           data: [asignacionesDirectas.presupuesto_corriente, asignacionesDirectas.caja_corriente_informada],
           backgroundColor: ['#f38135ff', '#edb87cff'],
           borderColor: ['#be480eff', '#8c5516'],
-          borderWidth: 1,
-          datalabels: {
-            display: false
-          }
+          borderWidth: 1
         }]
       };
 
@@ -452,10 +619,7 @@ export class SgrComparativoComponent implements OnInit {
           data: [directas20.presupuesto_corriente, directas20.caja_corriente_informada],
           backgroundColor: ['#f33aafff', '#7991e8ff'],
           borderColor: ['#b11049ff', '#3d4d7a'],
-          borderWidth: 1,
-          datalabels: {
-            display: false
-          }
+          borderWidth: 1
         }]
       };
 
@@ -465,10 +629,7 @@ export class SgrComparativoComponent implements OnInit {
           data: [asignacionesDirectas.presupuesto_corriente, asignacionesDirectas.caja_corriente_informada],
           backgroundColor: ['#f38135ff', '#edb87cff'],
           borderColor: ['#be480eff', '#8c5516'],
-          borderWidth: 1,
-          datalabels: {
-            display: false
-          }
+          borderWidth: 1
         }]
       };
 

@@ -1,0 +1,175 @@
+.config-fechas-container {
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .card-header {
+    background-color: var(--surface-50);
+    border-bottom: 1px solid var(--surface-border);
+
+    h3 {
+      color: var(--primary-color);
+    }
+  }
+
+  p-card {
+    margin-bottom: 1rem;
+  }
+
+  // Estilos para formularios
+  form {
+    .grid {
+      margin-top: 1rem;
+    }
+
+    label {
+      color: var(--text-color);
+      font-weight: 600;
+
+      i {
+        color: var(--primary-color);
+      }
+    }
+
+    input.ng-invalid.ng-touched {
+      border-color: var(--red-500);
+    }
+
+    small.text-red-500 {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: 0.875rem;
+    }
+  }
+
+  // Estilos para la tabla editable
+  p-table {
+    ::ng-deep {
+      .p-datatable-thead > tr > th {
+        background-color: var(--primary-color);
+        color: white;
+        font-weight: 600;
+        padding: 0.75rem;
+      }
+
+      .p-datatable-tbody > tr > td {
+        padding: 0.75rem;
+        vertical-align: middle;
+
+        small {
+          font-family: monospace;
+        }
+      }
+
+      .p-datatable-tbody > tr:hover {
+        background-color: var(--surface-hover);
+      }
+
+      // Estilos para modo edición
+      tr.p-row-editing {
+        background-color: var(--yellow-50);
+      }
+    }
+  }
+
+  // Mensajes de éxito/error
+  p-messages {
+    margin-bottom: 1.5rem;
+
+    ::ng-deep {
+      .p-message {
+        border-radius: 6px;
+        padding: 1rem;
+      }
+
+      .p-message-success {
+        background-color: var(--green-50);
+        border: 1px solid var(--green-500);
+        color: var(--green-900);
+      }
+
+      .p-message-error {
+        background-color: var(--red-50);
+        border: 1px solid var(--red-500);
+        color: var(--red-900);
+      }
+    }
+  }
+
+  // Botones
+  button {
+    &.p-button-primary {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+
+      &:hover {
+        background-color: var(--primary-600);
+        border-color: var(--primary-600);
+      }
+    }
+
+    &.p-button-success {
+      background-color: var(--green-500);
+      border-color: var(--green-500);
+
+      &:hover {
+        background-color: var(--green-600);
+        border-color: var(--green-600);
+      }
+    }
+  }
+
+  // Acordeón
+  ::ng-deep {
+    .p-accordion {
+      .p-accordion-header {
+        margin-bottom: 0.5rem;
+
+        .p-accordion-header-link {
+          background-color: var(--surface-card);
+          border: 1px solid var(--surface-border);
+          color: var(--text-color);
+          padding: 1rem 1.25rem;
+          font-weight: 600;
+          transition: all 0.2s;
+
+          &:hover {
+            background-color: var(--surface-hover);
+          }
+
+          &:focus {
+            box-shadow: 0 0 0 0.2rem var(--primary-200);
+          }
+        }
+
+        &.p-highlight .p-accordion-header-link {
+          background-color: var(--primary-50);
+          border-color: var(--primary-color);
+          color: var(--primary-color);
+        }
+      }
+
+      .p-accordion-content {
+        border: 1px solid var(--surface-border);
+        border-top: 0;
+        padding: 1.5rem;
+        background-color: var(--surface-card);
+      }
+    }
+  }
+
+  // Responsivo
+  @media (max-width: 768px) {
+    .grid > div {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+
+    p-table {
+      ::ng-deep {
+        .p-datatable {
+          font-size: 0.875rem;
+        }
+      }
+    }
+  }
+}

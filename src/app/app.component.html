@@ -1,7 +1,7 @@
 <!-- Saltar al contenido principal (CC10 / WCAG 2.4.1) — primer elemento enfocable con Tab -->
 <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
 
-<app-header></app-header>
+<app-header *ngIf="!ocultarHeader"></app-header>
 <app-breadcrumb></app-breadcrumb>
 
 <main id="main-content">

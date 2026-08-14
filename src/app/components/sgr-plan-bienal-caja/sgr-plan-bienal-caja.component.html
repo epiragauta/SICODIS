@@ -47,7 +47,8 @@
                     [options]="beneficiarios"
                     inputId="beneficiarioSelect"
                     [(ngModel)]="selectedBeneficiario"
-                    optionLabel="label">
+                    optionLabel="label"
+                    (onChange)="onBeneficiarioChange()">
           </p-select>
           <label for="beneficiarioSelect">Beneficiarios</label>
         </p-floatlabel>
@@ -66,7 +67,7 @@
         </p-floatlabel>
       </div>
 
-      <div class="p-field municipio-select" *ngIf="selectedDepartamento && selectedDepartamento.codigo !== '0'">
+      <div class="p-field municipio-select" *ngIf="selectedBeneficiario?.value === 2 && selectedDepartamento && selectedDepartamento.codigo !== '0'">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="municipio"
                     [options]="municipiosList"
@@ -121,7 +122,7 @@
   <!-- Seccion del grafico -->
   <div class="chart-section">
     <h2 class="section-title">PLAN BIENAL DE CAJA</h2>
-    <p class="section-subtitle">Totales plan bienal de caja (PBC)<br>2025-2026</p>
+    <p class="section-subtitle">Totales plan bienal de caja (PBC)<br>{{ vigenciaLabel }}</p>
 
     <div class="chart-card">
       <div class="chart-content">
@@ -141,8 +142,8 @@
   <!-- Seccion de tabla -->
   <div class="table-section">
     <div class="table-header">
-      <h2 class="table-title">Totales plan bienal de caja (PBC) 2025-2026</h2>
-      <p class="table-subtitle">Ley 2041 de 2024</p>
+      <h2 class="table-title">Totales plan bienal de caja (PBC) {{ vigenciaLabel }}</h2>
+      <p class="table-subtitle">Ley 2441 de 2024</p>
     </div>
 
     <div style="overflow-x: auto;">
@@ -232,13 +233,10 @@
     <!-- Botones de accion -->
     <div class="action-buttons">
       <p-button label="Exportar Excel" icon="pi pi-file-excel" class="detail-button"
+        [loading]="isLoading"
+        [disabled]="!selectedVigencia || !selectedDepartamento"
         (click)="exportarExcel()">
       </p-button>
-      <p-splitButton label="Informes de recaudo"
-                     icon="pi pi-money-bill"
-                     class="detail-button"
-                     [model]="menuItems">
-      </p-splitButton>
     </div>
 
     <!-- Notas -->
@@ -246,7 +244,8 @@
       <h3 class="notes-title">NOTAS</h3>
       <div class="notes-content">
         <p class="note-item">(1) Cifras en pesos corrientes.</p>
-        <p class="note-item">(2) Ley 2441 de 2024 - Decretos 379 y 380 del 2025</p>
+        <p class="note-item">(2) Fuente: {{ normaVigencia }}, Sistema General de Regalías.</p>
+        <p class="note-item">(3) La vigencia 2012 no cuenta con Plan Bienal de Caja, por lo que no se incluye en el filtro.</p>
       </div>
     </div>
   </div>

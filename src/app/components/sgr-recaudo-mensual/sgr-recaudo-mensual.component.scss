@@ -734,9 +734,19 @@
       }
     }
   }
-  ::ng-deep .p-datepicker-prev-button,
-::ng-deep .p-datepicker-next-button {
-  pointer-events: none !important;
-  opacity: 0.3 !important;
 }
+
+// Navegación de año del selector de mes.
+// Solo se bloquea la flecha cuando el año mostrado ya está en el borde del bienio;
+// antes esta regla deshabilitaba AMBAS flechas siempre, impidiendo cambiar de año.
+:host ::ng-deep {
+  p-datepicker.hide-prev .p-datepicker-prev-button {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  p-datepicker.hide-next .p-datepicker-next-button {
+    visibility: hidden;
+    pointer-events: none;
+  }
 }

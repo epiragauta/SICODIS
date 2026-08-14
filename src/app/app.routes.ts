@@ -6,7 +6,7 @@ import { FaqComponent } from './components/faq/faq.component';
 import { ToolsComponent } from './components/tools/tools.component';
 import { PresupuestoYRecaudoComponent } from './components/presupuesto-y-recaudo/presupuesto-y-recaudo.component';
 import { ReporteFuncionamientoComponent } from './components/reporte-funcionamiento/reporte-funcionamiento.component';
-import { ReportsSgpResguardosComponent } from './components/reports-sgp-resguardos/reports-sgp-resguardos.component';
+import { SgpResguardosComponent } from './components/sgp-resguardos/sgp-resguardos.component';
 import { HistoricoSgpComponent } from './components/historico-sgp/historico-sgp.component';
 import { SgpInicioComponent } from './components/sgp-inicio/sgp-inicio.component';
 import { SgpDetallePresupuestalComponent } from './components/sgp-detalle-presupuestal/sgp-detalle-presupuestal.component';
@@ -26,6 +26,9 @@ import { SgrPlanBienalRecursosComponent } from './components/sgr-plan-bienal-rec
 import { SitemapComponent } from './components/sitemap/sitemap.component';
 import { MapaRecursosComponent } from './components/mapa-recursos/mapa-recursos.component';
 import { SgrInicioComponent } from './components/sgr-inicio/sgr-inicio.component';
+import { SgrInformacionGeneralComponent } from './components/sgr-informacion-general/sgr-informacion-general.component';
+import { AdminConfigComponent } from './components/admin-config/admin-config.component';
+import { adminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -40,9 +43,10 @@ export const routes: Routes = [
     { path: 'sgr-plan-bienal-de-caja',        component: SgrPlanBienalCajaComponent,                       data: { breadcrumb: 'SGR — Plan Bienal de Caja' } },
     { path: 'reporte-funcionamiento',         component: ReporteFuncionamientoComponent,                   data: { breadcrumb: 'SGR — Reporte de Funcionamiento' } },
     { path: 'sgr-inicio',                     component: SgrInicioComponent,                               data: { breadcrumb: 'SGR' } },
+    { path: 'sgr-informacion-general',        component: SgrInformacionGeneralComponent,                   data: { breadcrumb: 'SGR — Información General' } },
     // SGP
     { path: 'sgp-inicio',                     component: SgpInicioComponent,                               data: { breadcrumb: 'SGP' } },
-    { path: 'sgp-resguardos',                 component: ReportsSgpResguardosComponent,                    data: { breadcrumb: 'SGP — Resguardos' } },
+    { path: 'sgp-resguardos',                 component: SgpResguardosComponent,                           data: { breadcrumb: 'SGP — Resguardos' } },
     { path: 'sgp-historico',                  component: HistoricoSgpComponent,                            data: { breadcrumb: 'SGP — Histórico' } },
     { path: 'sgp-documentos-anexos',          component: ReportsSgpComponent,                              data: { breadcrumb: 'SGP — Documentos y Anexos' } },
     { path: 'sgp-detalle-presupuestal',       component: SgpDetallePresupuestalComponent,                  data: { breadcrumb: 'SGP — Detalle Presupuestal' } },
@@ -58,6 +62,8 @@ export const routes: Routes = [
     { path: 'tools',                          component: ToolsComponent,                                    data: { breadcrumb: 'Herramientas' } },
     { path: 'mapa-del-sitio',                 component: SitemapComponent,                                  data: { breadcrumb: 'Mapa del sitio' } },
     { path: 'mapa-recursos',                  component: MapaRecursosComponent,                             data: { breadcrumb: 'Mapa de Recursos' } },
+    // Administración (protegido con guard)
+    { path: 'admin-config',                   component: AdminConfigComponent,    canActivate: [adminGuard], data: { breadcrumb: 'Administración' } },
     // 404
     { path: '**', component: NotFoundComponent, data: { breadcrumb: 'Página no encontrada' } },
 ];

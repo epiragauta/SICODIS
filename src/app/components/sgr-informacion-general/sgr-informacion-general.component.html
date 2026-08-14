@@ -1,0 +1,637 @@
+<div class="sgr-info-general-container">
+  <div class="container">
+    <!-- Header: Información General del SGR -->
+    <div class="header-section">
+      <h1 class="main-title">Información general del SGR</h1>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <h3>{{ tituloPresupuestoKPI }}</h3>
+          <p class="kpi-value">${{ presupuestoKPI | numberFormat }}</p>
+        </div>
+
+        <div class="kpi-card">
+          <h3>{{ tituloRecaudoKPI }}</h3>
+          <p class="kpi-value">${{ recaudoKPI | numberFormat }}</p>
+        </div>
+
+        <div class="kpi-card">
+          <h3>Avance de Recaudo</h3>
+          <p class="kpi-value">{{ avanceRecaudoKPI.toFixed(2) }}%</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tarjetas de Entidades -->
+    <div class="entidades-grid">
+      <div class="entidad-card beneficiarias">
+        <div class="entidad-icon">
+          <i class="pi pi-users"></i>
+        </div>
+        <div class="entidad-info">
+          <h4>Beneficiarias</h4>
+          <p class="entidad-count">{{ entidadesCount.beneficiarias }}</p>
+          
+        </div>
+      </div>
+
+      <div class="entidad-card productoras">
+        <div class="entidad-icon">
+          <i class="pi pi-briefcase"></i>
+        </div>
+        <div class="entidad-info">
+          <h4>Entidades Productoras</h4>
+          <p class="entidad-count">{{ entidadesCount.productoras }}</p>
+          
+        </div>
+      </div>
+
+      <div class="entidad-card zomac">
+        <div class="entidad-icon">
+          <i class="pi pi-map-marker"></i>
+        </div>
+        <div class="entidad-info">
+          <h4>Entidades ZOMAC</h4>
+          <p class="entidad-count">{{ entidadesCount.zomac }}</p>
+          
+        </div>
+      </div>
+
+      <div class="entidad-card pdet">
+        <div class="entidad-icon">
+          <i class="pi pi-globe"></i>
+        </div>
+        <div class="entidad-info">
+          <h4>Entidades PDET</h4>
+          <p class="entidad-count">{{ entidadesCount.pdet }}</p>
+          
+        </div>
+      </div>
+
+      <div class="entidad-card etnicas">
+        <div class="entidad-icon">
+          <i class="pi pi-users"></i>
+        </div>
+        <div class="entidad-info">
+          <h4>Entidades con destinación Étnica</h4>
+          <p class="entidad-count">{{ entidadesCount.etnicas }}</p>
+          
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección de Filtros -->
+    <div class="filtros-section">      
+      <!-- Trazabilidad de Filtros -->
+      <div class="filtros-activos" *ngIf="filtrosActivos.length > 0">
+        <div class="filtros-activos-header">
+          <h4><i class="pi pi-filter-fill"></i> Filtros aplicados</h4>
+          <button
+            class="limpiar-filtros-btn"
+            (click)="limpiarTodosFiltros()"
+            title="Remover todos los filtros"
+          >
+            <span class="icon">⟲</span>
+            Remover todos los filtros
+          </button>
+        </div>
+        <div class="filtros-chips">
+          <div
+            *ngFor="let filtro of filtrosActivos"
+            class="filtro-chip"
+            [class.no-removable]="filtro.tipo === 'Periodicidad'"
+          >
+            <i class="pi {{ filtro.icono }}"></i>
+            <span class="filtro-tipo">{{ filtro.tipo }}:</span>
+            <span class="filtro-valor">{{ filtro.valor }}</span>
+            <button
+              *ngIf="filtro.tipo !== 'Periodicidad'"
+              class="remove-filtro"
+              (click)="removerFiltro(filtro)"
+              title="Remover filtro"
+            >
+              <i class="pi pi-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="filtros-container">
+        <!-- Presupuesto y Recaudo (Combinados) -->
+        <div class="filtro-box presupuesto-recaudo-box">
+          <!-- Presupuesto de consulta -->
+          <div class="presupuesto-section">
+            <h3>Presupuesto de consulta</h3>
+            <div class="radio-group">
+              <div class="radio-item">
+                <p-radiobutton
+                  name="presupuesto"
+                  value="total"
+                  [ngModel]="presupuestoSeleccionado"
+                  (ngModelChange)="onPresupuestoSeleccionChange($event)"
+                  inputId="presupuestoTotal"
+                />
+                <label for="presupuestoTotal">Presupuesto Total</label>
+              </div>
+
+              <div class="radio-item">
+                <p-radiobutton
+                  name="presupuesto"
+                  value="corriente"
+                  [ngModel]="presupuestoSeleccionado"
+                  (ngModelChange)="onPresupuestoSeleccionChange($event)"
+                  inputId="presupuestoCorriente"
+                />
+                <label for="presupuestoCorriente">Presupuesto Corriente</label>
+              </div>
+
+              <div class="radio-item">
+                <p-radiobutton
+                  name="presupuesto"
+                  value="otros"
+                  [ngModel]="presupuestoSeleccionado"
+                  (ngModelChange)="onPresupuestoSeleccionChange($event)"
+                  inputId="presupuestoOtros"
+                />
+                <label for="presupuestoOtros">Presupuesto Otros</label>
+              </div>
+            </div>
+
+            <!-- Slider para porcentaje 
+            <div class="slider-container">
+              <label for="sliderDisponibilidad" class="slider-label-multiline">% participación de la Disponibilidad Inicial por vigencia</label>
+              <div class="slider-value">{{ porcentajeDisponibilidad }}%</div>
+              <p-slider
+                [(ngModel)]="porcentajeDisponibilidad"
+                [min]="0"
+                [max]="100"
+                [step]="1"
+                styleClass="slider-disponibilidad"
+              ></p-slider>
+            </div>
+            -->
+          </div>
+
+          <!-- Separador visual -->
+          <div class="seccion-separador"></div>
+
+          <!-- Recaudo -->
+          <div class="recaudo-section">
+            <h3>Recaudo</h3>
+            <div class="radio-group">
+              <div class="radio-item">
+                <p-radiobutton
+                  name="recaudo"
+                  value="total"
+                  [ngModel]="recaudoSeleccionado"
+                  (ngModelChange)="onRecaudoSeleccionChange($event)"
+                  inputId="recaudoTotal"
+                />
+                <label for="recaudoTotal">Recaudo Total</label>
+              </div>
+
+              <div class="radio-item">
+                <p-radiobutton
+                  name="recaudo"
+                  value="corriente"
+                  [ngModel]="recaudoSeleccionado"
+                  (ngModelChange)="onRecaudoSeleccionChange($event)"
+                  inputId="recaudoCorriente"
+                />
+                <label for="recaudoCorriente">Recaudo Corriente</label>
+              </div>
+
+              <div class="radio-item">
+                <p-radiobutton
+                  name="recaudo"
+                  value="otros"
+                  [ngModel]="recaudoSeleccionado"
+                  (ngModelChange)="onRecaudoSeleccionChange($event)"
+                  inputId="recaudoOtros"
+                />
+                <label for="recaudoOtros">Recaudo Otros</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Periodicidad (nuevo diseño en cascada) -->
+        <div class="filtro-box periodicidad-box">
+          <h3>Periodicidad</h3>
+
+          <!-- Bienio (siempre visible) -->
+          <div class="caracterizacion-grupo">
+            <div class="checkbox-item">
+              <p-checkbox
+                name="periodicidad"
+                [(ngModel)]="periodicidadActiva.bienio"
+                (ngModelChange)="onPeriodicidadActivaChange('bienio', $event)"
+                [binary]="true"
+                inputId="filtroBienio"
+                [disabled]="true"
+              />
+              <label for="filtroBienio">Bienio</label>
+            </div>
+            <div class="multiselect-wrapper" *ngIf="periodicidadActiva.bienio">
+              <p-multiselect
+                [options]="bieniosOpciones"
+                [(ngModel)]="bieniosSeleccionados"
+                (ngModelChange)="onBieniosChange()"
+                optionLabel="label"
+                optionValue="value"
+                [optionDisabled]="'disabled'"
+                placeholder="Seleccione bienios"
+                [filter]="false"
+                [showClear]="false"
+                display="comma"
+                styleClass="w-full"
+                [maxSelectedLabels]="2"
+                selectedItemsLabel="{0} bienios"
+                class="w-full md:w-80"
+                [displaySelectedLabel]="false"
+              ></p-multiselect>
+            </div>
+          </div>
+
+          <!-- Año (condicional) -->
+          <div class="caracterizacion-grupo">
+            <div class="checkbox-item">
+              <p-checkbox
+                name="periodicidad"
+                [(ngModel)]="periodicidadActiva.anio"
+                (ngModelChange)="onPeriodicidadActivaChange('anio', $event)"
+                [binary]="true"
+                inputId="filtroAnio"
+              />
+              <label for="filtroAnio">Año</label>
+            </div>
+            <div class="multiselect-wrapper" *ngIf="periodicidadActiva.anio">
+              <p-multiselect
+                [options]="aniosDisponibles"
+                [(ngModel)]="aniosSeleccionados"
+                (ngModelChange)="onAniosChange()"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Seleccione años"
+                [filter]="false"
+                [showClear]="true"
+                display="comma"
+                styleClass="w-full"
+                [maxSelectedLabels]="3"
+                selectedItemsLabel="{0} años"
+                class="w-full md:w-80"
+              ></p-multiselect>
+            </div>
+          </div>
+
+          <!-- Mes (condicional) - Rango de meses -->
+          <div class="caracterizacion-grupo">
+            <div class="checkbox-item">
+              <p-checkbox
+                name="periodicidad"
+                [(ngModel)]="periodicidadActiva.mes"
+                (ngModelChange)="onPeriodicidadActivaChange('mes', $event)"
+                [binary]="true"
+                inputId="filtroMes"
+              />
+              <label for="filtroMes">Período mensual</label>
+            </div>
+            <div class="multiselect-wrapper rango-meses-wrapper" *ngIf="periodicidadActiva.mes">
+              <!-- Mes desde -->
+              <div class="rango-mes-item">
+                <label class="rango-mes-label">Desde</label>
+                <p-calendar
+                  [(ngModel)]="mesDesde"
+                  (onSelect)="onMesDesdeChange()"
+                  view="month"
+                  dateFormat="MM yy"
+                  [showIcon]="true"
+                  [minDate]="minDateMes"
+                  [maxDate]="mesHasta || maxDateMes"
+                  placeholder="Mes inicial"
+                  styleClass="w-full"
+                  class="w-full"
+                ></p-calendar>
+              </div>
+
+              <!-- Mes hasta -->
+              <div class="rango-mes-item">
+                <label class="rango-mes-label">Hasta</label>
+                <p-calendar
+                  [(ngModel)]="mesHasta"
+                  (onSelect)="onMesHastaChange()"
+                  view="month"
+                  dateFormat="MM yy"
+                  [showIcon]="true"
+                  [minDate]="mesDesde || minDateMes"
+                  [maxDate]="maxDateMes"
+                  placeholder="Mes final"
+                  styleClass="w-full"
+                  class="w-full"
+                ></p-calendar>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Caracterización de la consulta -->
+        <div class="filtro-box caracterizacion-box">
+          <h3>Caracterización de la consulta</h3>
+
+          <!-- Concepto de gasto -->
+          <div class="caracterizacion-grupo">
+            <div class="checkbox-item">
+              <p-checkbox
+                name="caracterizacion"
+                [(ngModel)]="caracterizacionesActivas.conceptoGasto"
+                (ngModelChange)="onCaracterizacionChange('conceptoGasto', $event)"
+                [binary]="true"
+                inputId="conceptoGasto"
+              />
+              <label for="conceptoGasto">Concepto de gasto</label>
+            </div>
+            <div class="multiselect-wrapper" *ngIf="caracterizacionesActivas.conceptoGasto">
+              <p-multiselect
+                [options]="conceptoGastoOpciones"
+                [(ngModel)]="valoresConceptoGasto"
+                (ngModelChange)="onValoresConceptoGastoChange()"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Seleccione opciones"
+                [filter]="false"
+                [showClear]="true"
+                display="comma"
+                styleClass="w-full"
+                [maxSelectedLabels]="2"
+                selectedItemsLabel="{0} seleccionados"
+                class="w-full md:w-80"
+                [displaySelectedLabel]="false"
+              ></p-multiselect>
+            </div>
+          </div>
+
+          <!-- Regional -->
+          <div class="caracterizacion-grupo">
+            <div class="checkbox-item">
+              <p-checkbox
+                name="caracterizacion"
+                [(ngModel)]="caracterizacionesActivas.regional"
+                (ngModelChange)="onCaracterizacionChange('regional', $event)"
+                [binary]="true"
+                inputId="regional"
+              />
+              <label for="regional">Regional</label>
+            </div>
+            <div class="multiselect-wrapper" *ngIf="caracterizacionesActivas.regional">
+              <p-multiselect
+                [options]="regionalOpciones"
+                [(ngModel)]="valoresRegional"
+                (ngModelChange)="onValoresRegionalChange()"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Seleccione regiones"
+                [filter]="false"
+                [showClear]="true"
+                display="comma"
+                styleClass="w-full"
+                [maxSelectedLabels]="2"
+                selectedItemsLabel="{0} regiones"
+                class="w-full md:w-80"
+                [displaySelectedLabel]="false"
+              ></p-multiselect>
+            </div>
+          </div>
+
+          <!-- Asignación -->
+          <div class="caracterizacion-grupo">
+            <div class="checkbox-item">
+              <p-checkbox
+                name="caracterizacion"
+                [(ngModel)]="caracterizacionesActivas.asignacion"
+                (ngModelChange)="onCaracterizacionChange('asignacion', $event)"
+                [binary]="true"
+                inputId="asignacion"
+              />
+              <label for="asignacion">Asignación</label>
+            </div>
+            <div class="multiselect-wrapper" *ngIf="caracterizacionesActivas.asignacion">
+              <p-multiselect
+                [options]="asignacionOpciones"
+                [(ngModel)]="valoresAsignacion"
+                (ngModelChange)="onValoresAsignacionChange()"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Seleccione asignaciones"
+                [filter]="true"
+                filterPlaceholder="Buscar..."
+                [showClear]="true"
+                display="comma"
+                styleClass="w-full"
+                [maxSelectedLabels]="2"
+                selectedItemsLabel="{0} asignaciones"
+                class="w-full md:w-80"
+                [displaySelectedLabel]="false"
+              ></p-multiselect>
+            </div>
+          </div>
+
+          <!-- Grupo de interés -->
+          <div class="caracterizacion-grupo">
+            <div class="checkbox-item">
+              <p-checkbox
+                name="caracterizacion"
+                [(ngModel)]="caracterizacionesActivas.grupoInteres"
+                (ngModelChange)="onCaracterizacionChange('grupoInteres', $event)"
+                [binary]="true"
+                inputId="grupoInteres"
+              />
+              <label for="grupoInteres">Grupo de interés</label>
+            </div>
+            <div class="multiselect-wrapper" *ngIf="caracterizacionesActivas.grupoInteres">
+              <p-multiselect
+                [options]="grupoInteresOpciones"
+                [(ngModel)]="valoresGrupoInteres"
+                (ngModelChange)="onValoresGrupoInteresChange()"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Seleccione grupos"
+                [filter]="false"
+                [showClear]="true"
+                display="comma"
+                styleClass="w-full"
+                [maxSelectedLabels]="2"
+                selectedItemsLabel="{0} grupos"
+                class="w-full md:w-80"
+                [displaySelectedLabel]="false"
+              ></p-multiselect>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tipo de entidad -->
+        <div class="filtro-box entidad-box">
+          <h3>Tipo de entidad</h3>
+
+          <div class="checkbox-item">
+            <p-radiobutton
+              name="entidad"
+              value="beneficiario"
+              [ngModel]="entidadSeleccionada"
+              (ngModelChange)="onEntidadChange($event)"
+              inputId="beneficiario"
+            />
+            <label for="beneficiario">Beneficiario</label>
+          </div>
+
+          <div class="checkbox-item">
+            <p-radiobutton
+              name="entidad"
+              value="productoras"
+              [ngModel]="entidadSeleccionada"
+              (ngModelChange)="onEntidadChange($event)"
+              inputId="productoras"
+            />
+            <label for="productoras">Entidades Productora</label>
+          </div>
+
+          <div class="checkbox-item">
+            <p-radiobutton
+              name="entidad"
+              value="pdet"
+              [ngModel]="entidadSeleccionada"
+              (ngModelChange)="onEntidadChange($event)"
+              inputId="pdet"
+            />
+            <label for="pdet">Entidades PDET</label>
+          </div>
+
+          <div class="checkbox-item">
+            <p-radiobutton
+              name="entidad"
+              value="zomac"
+              [ngModel]="entidadSeleccionada"
+              (ngModelChange)="onEntidadChange($event)"
+              inputId="zomac"
+            />
+            <label for="zomac">Entidades ZOMAC</label>
+          </div>
+
+          <div class="checkbox-item">
+            <p-radiobutton
+              name="entidad"
+              value="etnica"
+              [ngModel]="entidadSeleccionada"
+              (ngModelChange)="onEntidadChange($event)"
+              inputId="etnica"
+            />
+            <label for="etnica">Entidades con destinación Étnica</label>
+          </div>
+
+          <div class="checkbox-item">
+            <p-radiobutton
+              name="entidad"
+              value="capital"
+              [ngModel]="entidadSeleccionada"
+              (ngModelChange)="onEntidadChange($event)"
+              inputId="capital"
+            />
+            <label for="capital">Capital</label>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Vista General de la Consulta -->
+    <div class="vista-general-section">
+      <h2 class="section-title">Vista general de la consulta</h2>
+
+      <div class="resultados-grid">
+        <!-- Tarjeta grande con gráfica -->
+        <div class="resultado-card grande">
+          <div class="card-header">
+            <div class="card-info">
+              <h4>{{ tituloPresupuesto }}</h4>
+              <p class="card-value">${{ presupuestoVisualizacion | numberFormat }}</p>
+              <p class="card-periodo">Bienio 2025 - 2026</p>
+            </div>
+            <div class="card-icon">
+              <i class="pi pi-dollar"></i>
+            </div>
+          </div>
+          <div class="chart-area">
+            <canvas id="chartLinea"></canvas>
+          </div>
+        </div>
+
+        <!-- Tarjeta Presupuesto Corriente -->
+        <div class="resultado-card">
+          <div class="card-header-small">
+            <div class="card-icon-small cyan">
+              <i class="pi pi-wallet"></i>
+            </div>
+            <div class="card-info-small">
+              <h4>Presupuesto Corriente</h4>
+              <p class="card-value-small">${{ presupuestoMetricas.presupuestoCorriente | numberFormat }}</p>
+              <div class="porcentaje-bar">
+                <div class="porcentaje-label cyan">{{ porcentajeCorriente | number:'1.1-1' }}%</div>
+                <div class="porcentaje-text">del total</div>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill cyan" [style.width.%]="porcentajeCorriente"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta Presupuesto Otros -->
+        <div class="resultado-card">
+          <div class="card-header-small">
+            <div class="card-icon-small orange">
+              <i class="pi pi-box"></i>
+            </div>
+            <div class="card-info-small">
+              <h4>Presupuesto Otros</h4>
+              <p class="card-value-small">${{ presupuestoMetricas.presupuestoOtros | numberFormat }}</p>
+              <div class="porcentaje-bar">
+                <div class="porcentaje-label orange">{{ porcentajeOtros | number:'1.1-1' }}%</div>
+                <div class="porcentaje-text">del total</div>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill orange" [style.width.%]="porcentajeOtros"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta Gauge -->
+        <div class="resultado-card gauge-card">
+          <h4>% de otros recursos por vigencia</h4>
+          <div class="gauge-container">
+            <canvas id="chartGauge"></canvas>
+            <div class="gauge-value">
+              <span class="gauge-number">{{ presupuestoMetricas.porcentajeDisponibilidad }}%</span>
+              <span class="gauge-label">del total</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-section">
+      <div class="footer-left">
+        <i class="pi pi-star-fill"></i>
+        <span>Reporte generado el {{ fechaReporte }}</span>
+      </div>
+      <div class="footer-right">
+        <p-button
+          label="Exportar reporte"
+          icon="pi pi-download"
+          (onClick)="exportarReporte()"
+          styleClass="p-button-rounded export-btn"
+        />
+      </div>
+    </div>
+  </div>
+</div>

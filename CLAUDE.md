@@ -35,8 +35,8 @@ ng generate pipe utils/pipe-name                 # New pipe
 ### Technology Stack
 - **Framework:** Angular 18.1 with standalone components (no NgModules)
 - **UI Libraries:** PrimeNG 18.0 (primary), Angular Material 17.0, Tailwind CSS 3.4.17
-- **Charts:** Chart.js 4.4.6 (primary), Highcharts 12.2.0, ngx-gauge
-- **Maps:** Leaflet 1.9.4, OpenLayers 10.6.1
+- **Charts:** Chart.js 4.4.6 (primary), ngx-gauge
+- **Maps:** Leaflet 1.9.4
 - **State:** No centralized store - component-level BehaviorSubjects
 - **Auth:** Bearer token with auto-renewal via HTTP interceptor
 
@@ -228,16 +228,6 @@ this.myChart = new Chart(ctx, {
 <p-chart type="bar" [data]="chartData" [options]="chartOptions"></p-chart>
 ```
 Advantage: Styled consistently with PrimeNG theme, responsive by default.
-
-### Highcharts
-```typescript
-import * as Highcharts from 'highcharts';
-
-Highcharts.chart('container', {
-  chart: { type: 'column' },
-  series: [{ data: [1, 2, 3] }]
-});
-```
 
 ## Common Component Patterns
 

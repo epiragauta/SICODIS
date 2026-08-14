@@ -345,6 +345,12 @@
         background-color: #dce6f0;
         font-weight: 700;
 
+        // La fila Total conserva su negrita aunque sus celdas también reciban
+        // la clase .font-bold (que ahora es de peso medio).
+        td {
+          font-weight: 700 !important;
+        }
+
         td.concept-cell {
           background-color: #dce6f0;
         }
@@ -439,9 +445,11 @@
   }
 }
 
-// Negrita
+// Conceptos que agrupan (INVERSIÓN, AHORRO, ADMINISTRACIÓN): peso medio, sin
+// negrita, igual que la tabla del componente presupuesto-y-recaudo. La fila
+// Total conserva su negrita (700) mediante la regla de .total-row td.
 .font-bold {
-  font-weight: 600 !important;
+  font-weight: 500 !important;
 }
 
 // Alineación de texto

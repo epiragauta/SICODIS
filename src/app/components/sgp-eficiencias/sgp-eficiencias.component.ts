@@ -15,6 +15,7 @@ import { departamentos } from '../../data/departamentos';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { MenuItem } from 'primeng/api';
 import { EficienciasService, ResumenMunicipioEficiencia } from '../../services/sicodis-api.service';
+import { ConfigService, FechaActualizacion } from '../../services/config.service';
 
 @Component({
   selector: 'app-sgp-eficiencias',
@@ -79,25 +80,42 @@ export class SgpEficienciasComponent implements OnInit {
   variablesCensalesTable1: any[] = [];
   variablesCensalesTable2: any[] = [];
 
-  // Last updated date
-  lastUpdated = '31 de agosto de 2024';
+  // Fechas de actualización (desde ConfigService)
+  fechaActualizacion: string = 'octubre 01 de 2025'; // Valor por defecto
+  fechaCorte: string = '31 de agosto de 2024'; // Valor por defecto
 
   // API data
   resumenMunicipio: ResumenMunicipioEficiencia | null = null;
   errorMessage: string | null = null;
 
-  constructor(private eficienciasService: EficienciasService) {}
+  constructor(
+    private eficienciasService: EficienciasService,
+    private configService: ConfigService
+  ) {}
 
   ngOnInit(): void {
     this.items = [
         { label: 'SGP', routerLink: '/sgp-inicio' },
-        { label: 'Eficiencias' }        
+        { label: 'Eficiencias' }
     ];
 
     this.home = { icon: 'pi pi-home', routerLink: '/' };
-    
+
+    this.loadFechasActualizacion();
     this.initializeFilters();
     this.initializeData();
+  }
+
+  private loadFechasActualizacion(): void {
+    const fechas = this.configService.getSgpFechasEficienciasSync();
+    if (fechas) {
+      if (fechas.fecha_actualizacion) {
+        this.fechaActualizacion = fechas.fecha_actualizacion;
+      }
+      if (fechas.fecha_corte_recaudo) {
+        this.fechaCorte = fechas.fecha_corte_recaudo;
+      }
+    }
   }
 
   private initializeFilters(): void {

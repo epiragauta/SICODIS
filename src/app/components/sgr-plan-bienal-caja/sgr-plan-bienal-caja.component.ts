@@ -1,14 +1,14 @@
 import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpResponse } from '@angular/common/http';
 import { ButtonModule } from 'primeng/button';
-import { SplitButtonModule } from 'primeng/splitbutton';
 import { FloatLabel } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
 import { ChartModule } from 'primeng/chart';
 import { TableModule } from 'primeng/table';
 import { TreeTableModule } from 'primeng/treetable';
 import { Select } from 'primeng/select';
-import { MenuItem, TreeNode } from 'primeng/api';
+import { TreeNode } from 'primeng/api';
 
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
@@ -30,7 +30,6 @@ import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
   imports: [
     CommonModule,
     ButtonModule,
-    SplitButtonModule,
     FloatLabel,
     FormsModule,
     ChartModule,
@@ -61,6 +60,10 @@ export class SgrPlanBienalCajaComponent implements OnInit {
   isLoading = false;
   isLoadingMunicipios = false;
 
+  // Evita aplicar el filtro inicial más de una vez (vigencias y departamentos
+  // llegan en respuestas asíncronas independientes).
+  private filtroInicialAplicado = false;
+
   // Opciones de filtros
   vigencias: VigenciaPlanBienal[] = [];
   selectedVigencia: VigenciaPlanBienal | null = null;
@@ -88,9 +91,6 @@ export class SgrPlanBienalCajaComponent implements OnInit {
   barChartData: any;
   barChartOptions: any;
 
-  // Menu del split button "Informes de recaudo"
-  menuItems: MenuItem[] = [];
-
   constructor(
     private sicodisApiService: SicodisApiService,
     private ngZone: NgZone
@@ -100,7 +100,6 @@ export class SgrPlanBienalCajaComponent implements OnInit {
     this.buildPeriods();
     this.initializeTableColumns();
     this.initializeChart();
-    this.initializeMenuItems();
     this.cargarSiglasDiccionario();
     this.cargarVigencias();
     this.cargarDepartamentos();
@@ -110,6 +109,50 @@ export class SgrPlanBienalCajaComponent implements OnInit {
     const years = [2025, 2026];
     const months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
     years.forEach(y => months.forEach(m => this.periods.push(`${y}-${m}`)));
+  }
+
+  get vigenciaLabel(): string {
+    return this.selectedVigencia ? this.selectedVigencia.vigencia.replace(' - ', '-') : '';
+  }
+
+  /**
+   * Norma (Ley o Decreto) que rige cada bienio, indexada por el año inicial del
+   * rango de vigencia. El API solo devuelve el rango de años en `vigencia`
+   * (p. ej. "2025 - 2026"), sin la norma, así que la fuente se resuelve aquí.
+   */
+  private static readonly NORMA_POR_ANIO_INICIAL: Record<string, string> = {
+    '2025': 'Ley 2441 de 2024',
+    '2023': 'Ley 2279 de 2022',
+    '2021': 'Ley 2072 de 2020',
+    '2019': 'Ley 1942 de 2018',
+    '2017': 'Decreto 2190 de 2016',
+    '2015': 'Ley 1744 de 2014',
+    '2013': 'Ley 1606 de 2012',
+  };
+
+  /**
+   * Norma asociada al bienio seleccionado, usada en la nota (2) de fuente para
+   * que refleje el bienio actual.
+   */
+  get normaVigencia(): string {
+    if (!this.selectedVigencia) return '';
+    const anioInicial = this.selectedVigencia.vigencia.trim().split(/\s*-\s*/)[0];
+    return SgrPlanBienalCajaComponent.NORMA_POR_ANIO_INICIAL[anioInicial] ?? '';
+  }
+
+  private getYearsFromVigencia(vigencia: VigenciaPlanBienal): [number, number] {
+    const parts = vigencia.vigencia.split(' - ');
+    return [parseInt(parts[0].trim()), parseInt(parts[1].trim())];
+  }
+
+  private rebuildPeriodsAndColumns(year1: number, year2: number): void {
+    this.periods = [];
+    const months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+    [year1, year2].forEach(y => months.forEach(m => this.periods.push(`${y}-${m}`)));
+    this.tableCols = [
+      { field: 'concepto', header: 'Concepto', width: '350px' },
+      ...this.periods.map(period => ({ field: period, header: period, width: '170px' }))
+    ];
   }
 
   private initializeTableColumns(): void {
@@ -167,7 +210,7 @@ export class SgrPlanBienalCajaComponent implements OnInit {
         tooltip: {
           callbacks: {
             label: (ctx: any) =>
-              `${ctx.dataset.label}: ${this.formatCurrency(ctx.parsed.y)}`,
+              `Total ${ctx.dataset.label}: ${this.formatCurrency(ctx.parsed.y)}`,
           },
         },
       },
@@ -195,7 +238,7 @@ export class SgrPlanBienalCajaComponent implements OnInit {
         if (activeElements.length > 0) {
           const datasetIndex = activeElements[0].datasetIndex;
           const monthIndex = activeElements[0].index;
-          const year = datasetIndex === 0 ? '2025' : '2026';
+          const year = chart.data.datasets[datasetIndex].label;
           const month = String((monthIndex % 12) + 1).padStart(2, '0');
           const period = `${year}-${month}`;
           this.ngZone.run(() => this.onChartHover(period));
@@ -204,14 +247,6 @@ export class SgrPlanBienalCajaComponent implements OnInit {
         }
       }
     };
-  }
-
-  private initializeMenuItems(): void {
-    this.menuItems = [
-      { label: 'Recaudo mensual', icon: 'pi pi-calendar' },
-      { label: 'Recaudo por vigencia', icon: 'pi pi-chart-bar' },
-      { label: 'Comparativo vs presupuesto', icon: 'pi pi-chart-line' },
-    ];
   }
 
   private formatCurrency(value: number): string {
@@ -230,11 +265,14 @@ export class SgrPlanBienalCajaComponent implements OnInit {
   private cargarVigencias(): void {
     this.sicodisApiService.getSgrPlanBienalVigencias().subscribe({
       next: (data) => {
-        this.vigencias = data;
+        // Obs. 5: excluir vigencias que no son bienios (p. ej. "2012"), que no
+        // cuentan con Plan Bienal de Caja. Ver nota al pie del reporte.
+        this.vigencias = data.filter(v => v.vigencia.includes(' - '));
         // Seleccionar la primera vigencia por defecto (la más reciente)
         if (this.vigencias.length > 0) {
           this.selectedVigencia = this.vigencias[0];
         }
+        this.aplicarFiltroInicialSiListo();
       },
       error: (error) => {
         console.error('Error cargando vigencias:', error);
@@ -249,6 +287,10 @@ export class SgrPlanBienalCajaComponent implements OnInit {
     this.sicodisApiService.getSgrPlanBienalDepartamentos().subscribe({
       next: (data) => {
         this.departamentosList = data;
+        // Seleccionar "Todos" por defecto para estandarizar con los demás reportes
+        // y evitar que el selector arranque en blanco (placeholder vacío).
+        this.selectedDepartamento = data.find(d => d.codigo === '0') ?? null;
+        this.aplicarFiltroInicialSiListo();
       },
       error: (error) => {
         console.error('Error cargando departamentos:', error);
@@ -257,15 +299,42 @@ export class SgrPlanBienalCajaComponent implements OnInit {
   }
 
   /**
+   * Aplica el filtro automáticamente en la carga inicial una vez que tanto la
+   * vigencia como el departamento por defecto están disponibles. Se ejecuta una
+   * sola vez (vigencias y departamentos llegan en respuestas independientes).
+   */
+  private aplicarFiltroInicialSiListo(): void {
+    if (this.filtroInicialAplicado) return;
+    if (this.selectedVigencia && this.selectedDepartamento) {
+      this.filtroInicialAplicado = true;
+      this.applyFilters();
+    }
+  }
+
+  onBeneficiarioChange(): void {
+    if (this.selectedBeneficiario?.value !== 2) {
+      this.selectedMunicipio = null;
+      this.municipiosList = [];
+    }
+  }
+
+  /**
    * Carga los municipios cuando se selecciona un departamento
    */
+  private sortMunicipios(data: MunicipioPlanBienal[]): MunicipioPlanBienal[] {
+    const todos       = data.filter(m => m.codigo === '0');
+    const gobernacion = data.filter(m => m.nombre.startsWith('Gobernación de'));
+    const rest        = data.filter(m => m.codigo !== '0' && !m.nombre.startsWith('Gobernación de'));
+    return [...todos, ...gobernacion, ...rest];
+  }
+
   onDepartamentoChange(): void {
     if (this.selectedDepartamento && this.selectedDepartamento.codigo !== '0') {
       this.isLoadingMunicipios = true;
       this.sicodisApiService.getSgrPlanBienalMunicipiosDepartamento(this.selectedDepartamento.codigo).subscribe({
         next: (data) => {
-          this.municipiosList = data;
-          this.selectedMunicipio = null; // Resetear municipio seleccionado
+          this.municipiosList = this.sortMunicipios(data);
+          this.selectedMunicipio = null;
           this.isLoadingMunicipios = false;
         },
         error: (error) => {
@@ -290,7 +359,9 @@ export class SgrPlanBienalCajaComponent implements OnInit {
       return;
     }
 
-    // Determinar el código de entidad y municipio
+    const [year1, year2] = this.getYearsFromVigencia(this.selectedVigencia);
+    this.rebuildPeriodsAndColumns(year1, year2);
+
     const codigoEntidad = this.selectedDepartamento.codigo;
     const codigoMunicipio = this.selectedMunicipio?.codigo || '0';
 
@@ -302,7 +373,7 @@ export class SgrPlanBienalCajaComponent implements OnInit {
     ).subscribe({
       next: (data) => {
         this.procesarDatosTabla(data);
-        this.actualizarGrafico(data);
+        this.actualizarGrafico(data, year1, year2);
         this.isLoading = false;
       },
       error: (error) => {
@@ -345,42 +416,46 @@ export class SgrPlanBienalCajaComponent implements OnInit {
       return row;
     });
 
-    // Usar organizeCategoryData para crear la estructura jerárquica
-    this.tableData = organizeCategoryData(mappedData);
+    // Cuando se consulta un municipio específico, eliminar filas sin datos en ningún período
+    const municipioEspecifico = this.selectedMunicipio?.codigo && this.selectedMunicipio.codigo !== '0';
+    const dataFinal = municipioEspecifico
+      ? mappedData.filter(row =>
+          row.idConcepto === '99' ||
+          this.periods.some(p => row[p] !== 0)
+        )
+      : mappedData;
+
+    this.tableData = organizeCategoryData(dataFinal);
   }
 
   /**
    * Actualiza el gráfico con los nuevos datos
    */
-  private actualizarGrafico(data: DetallePlanBienal[]): void {
-    // Buscar el registro de INVERSIÓN para el gráfico (IdConcepto = '1000')
-    const inversionRow = data.find(r => r.IdConcepto === '1000');
-
-    if (!inversionRow) {
-      console.warn('No se encontró registro de INVERSIÓN para el gráfico');
-      return;
-    }
+  private actualizarGrafico(data: DetallePlanBienal[], year1: number, year2: number): void {
+    // Obs. 1: la gráfica muestra el TOTAL mensual del PBC (inversión + ahorro +
+    // administración) por año. El desglose por concepto se consulta en la tabla inferior.
+    const totalRow = data.find(r => r.IdConcepto === '99');
 
     const monthNames = [
       'Enero','Febrero','Marzo','Abril','Mayo','Junio',
       'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre',
     ];
 
-    const data2025 = monthNames.map((_, i) => {
-      const m = String(i + 1).padStart(2, '0');
-      return inversionRow[`2025-${m}`] ?? 0;
-    });
+    const valoresPorMes = (year: number): number[] =>
+      monthNames.map((_, i) => {
+        const m = String(i + 1).padStart(2, '0');
+        return (totalRow?.[`${year}-${m}`] as number) ?? 0;
+      });
 
-    const data2026 = monthNames.map((_, i) => {
-      const m = String(i + 1).padStart(2, '0');
-      return inversionRow[`2026-${m}`] ?? 0;
-    });
+    const data1 = valoresPorMes(year1);
+    const data2 = valoresPorMes(year2);
 
-    // Actualizar datasets del gráfico
-    this.barChartData.datasets[0].data = [...data2025, ...Array(12).fill(null)];
-    this.barChartData.datasets[1].data = [...Array(12).fill(null), ...data2026];
-
-    // Forzar actualización del gráfico
+    // Obs. 5: actualizar SIEMPRE las etiquetas de año según la vigencia seleccionada,
+    // aunque no haya datos, para que la gráfica sea consistente con el filtro.
+    this.barChartData.datasets[0].label = String(year1);
+    this.barChartData.datasets[1].label = String(year2);
+    this.barChartData.datasets[0].data = [...data1, ...Array(12).fill(null)];
+    this.barChartData.datasets[1].data = [...Array(12).fill(null), ...data2];
     this.barChartData = { ...this.barChartData };
   }
 
@@ -428,7 +503,45 @@ export class SgrPlanBienalCajaComponent implements OnInit {
   closeSiglasPopup(): void      { this.showSiglasPopup = false; }
 
   exportarExcel(): void {
-    console.log('Exportar Excel...');
+    if (!this.selectedVigencia || !this.selectedDepartamento) return;
+
+    this.isLoading = true;
+    this.sicodisApiService.getSgrPlanBienalDescargarDetalle({
+      idVigencia: this.selectedVigencia.id_vigencia,
+      vigencia: this.selectedVigencia.vigencia,
+      codigoDepto: this.selectedDepartamento.codigo,
+      departamento: this.selectedDepartamento.nombre,
+      codigoMunicipio: this.selectedMunicipio?.codigo || '0',
+      municipio: this.selectedMunicipio?.nombre || 'Todos'
+    }).subscribe({
+      next: (response) => {
+        this.descargarBlob(response, 'DetallePlanBienalCaja.xlsx');
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error descargando el detalle del Plan Bienal de Caja:', err);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  private descargarBlob(response: HttpResponse<Blob>, nombrePorDefecto: string): void {
+    const blob = response.body;
+    if (!blob) return;
+    const filename = this.extraerNombreArchivo(response.headers.get('content-disposition')) || nombrePorDefecto;
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+    window.URL.revokeObjectURL(link.href);
+  }
+
+  private extraerNombreArchivo(contentDisposition: string | null): string | null {
+    if (contentDisposition) {
+      const match = /filename[^;=\n]*=(?:UTF-8'')?["']?([^;"'\n]+)/i.exec(contentDisposition);
+      if (match && match[1]) return decodeURIComponent(match[1].trim());
+    }
+    return null;
   }
 
   async cargarSiglasDiccionario(): Promise<void> {

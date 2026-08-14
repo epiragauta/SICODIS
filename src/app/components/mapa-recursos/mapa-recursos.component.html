@@ -1,189 +1,325 @@
-<div class="mapa-recursos-container">
-  <!-- Panel lateral izquierdo -->
-  <div class="panel-lateral">
-    <!-- Consulta de recursos -->
+<div class="mapa-recursos-container" [class.detalle-activo]="modoDetalle">
+
+  <!-- ═══════════════════════════════════════════════════════════
+       PANEL LATERAL — MODO PRINCIPAL
+  ════════════════════════════════════════════════════════════════ -->
+  <div class="panel-lateral" *ngIf="!modoDetalle">
+    <!-- 1. Consulta de recursos (sistemas + opacidad) -->
     <div class="seccion-panel">
       <h3 class="titulo-seccion">Consulta de recursos</h3>
-
       <div class="consulta-options">
-        <div class="field-checkbox">
-          <p-checkbox
-            [(ngModel)]="consultaRecursos.inversion"
-            [binary]="true"
-            inputId="inversion"
-          />
-          <label for="inversion">Inversión</label>
-        </div>
-
-        <div class="field-checkbox sistema-checkbox">
-          <p-checkbox
-            [(ngModel)]="consultaRecursos.sgr"
-            [binary]="true"
-            inputId="sgr"
-          />
-          <i class="pi pi-file sistema-icono"></i>
-          <label for="sgr">SGR</label>
-        </div>
-
-        <div class="field-checkbox sistema-checkbox">
-          <p-checkbox
-            [(ngModel)]="consultaRecursos.sgp"
-            [binary]="true"
-            inputId="sgp"
-          />
-          <i class="pi pi-file sistema-icono"></i>
-          <label for="sgp">SGP</label>
-        </div>
-
-        <div class="field-checkbox sistema-checkbox">
-          <p-checkbox
-            [(ngModel)]="consultaRecursos.pgn"
-            [binary]="true"
-            inputId="pgn"
-          />
-          <i class="pi pi-file sistema-icono"></i>
-          <label for="pgn">PGN</label>
-        </div>
-      </div>
-
-      <!-- Vigencia -->
-      <div class="vigencia-selector">
-        <label for="vigencia" class="vigencia-label">Vigencia</label>
-        <p-dropdown
-          [(ngModel)]="vigenciaSeleccionada"
-          [options]="vigencias"
-          inputId="vigencia"
-          [style]="{'width': '100%'}"
-        />
-      </div>
-    </div>
-
-    <!-- Visualización -->
-    <div class="seccion-panel">
-      <h3 class="titulo-seccion">Visualización</h3>
-
-      <div class="visualizacion-toggle">
-        <p-inputSwitch [(ngModel)]="visualizacionActiva" />
-      </div>
-
-      <div class="tipo-inversion-selector">
-        <p-dropdown
-          [(ngModel)]="tipoInversionSeleccionado"
-          [options]="tiposInversion"
-          optionLabel="label"
-          optionValue="value"
-          [style]="{'width': '100%'}"
-        />
-      </div>
-
-      <!-- Capas -->
-      <div class="capas-lista">
-        <div *ngFor="let capa of capas" class="capa-item">
-          <div class="capa-header">
+        <div *ngFor="let capa of capas" class="sistema-bloque">
+          <div class="sistema-row">
             <p-checkbox
               [(ngModel)]="capa.visible"
               [binary]="true"
+              [inputId]="'sistema-' + capa.sistema.toLowerCase()"
               (onChange)="onCapaVisibleChange(capa)"
             />
-            <i class="pi pi-circle-fill capa-color-indicador" [style.color]="capa.color"></i>
-            <span class="capa-nombre">{{ capa.sistema }}</span>
+            <span class="sistema-dot" [style.background-color]="capa.color"></span>
+            <label [for]="'sistema-' + capa.sistema.toLowerCase()" class="sistema-label">{{ capa.sistema }}</label>
+            <span class="sistema-opacidad-val">{{ capa.opacidad }}%</span>
           </div>
-          <div class="capa-slider">
-            <p-slider
-              [(ngModel)]="capa.opacidad"
-              [style]="{'width': '100%'}"
-              (onChange)="onCapaOpacidadChange(capa)"
-            />
+          <div class="sistema-opacidad-row">
+            <span class="opacidad-cap">Opacidad</span>
+            <p-slider [(ngModel)]="capa.opacidad" class="sistema-slider" (onChange)="onCapaOpacidadChange(capa)" [style]="{'width': '100%'}" />
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Botones de acción -->
-      <div class="botones-filtro">
-        <p-button
-          label="Aplicar filtros"
-          icon="pi pi-filter"
-          (onClick)="aplicarFiltros()"
-          styleClass="p-button-sm"
-          [style]="{'width': '48%'}"
-        />
-        <p-button
-          label="Limpiar filtros"
-          icon="pi pi-times"
-          (onClick)="limpiarFiltros()"
-          styleClass="p-button-sm p-button-outlined"
-          [style]="{'width': '48%'}"
-        />
+    <!-- 2. Vigencia -->
+    <div class="seccion-panel">
+      <h3 class="titulo-seccion">Vigencia</h3>
+      <div class="vigencia-selector">
+        <p-dropdown [(ngModel)]="vigenciaSeleccionada" [options]="vigencias" inputId="vigencia" [style]="{'width': '100%'}" />
       </div>
     </div>
 
-    <!-- Consulta Especial -->
+    <!-- 3. Consulta especial -->
     <div class="seccion-panel">
       <h3 class="titulo-seccion">Consulta Especial</h3>
-
       <div class="consulta-especial-item" (click)="navegarResguardos()">
-        <i class="pi pi-users icono-especial"></i>
+        <img src="assets/img/sgp/resguardos/indigenous.png" alt="Resguardos Indígenas" class="icono-especial-img" />
         <span class="nombre-especial">Resguardos Indígenas</span>
         <i class="pi pi-arrow-right flecha-especial"></i>
       </div>
     </div>
 
-    <!-- Notas -->
+    <!-- 4. Visualización -->
+    <div class="seccion-panel">
+      <h3 class="titulo-seccion">Visualización</h3>
+      <div class="visualizacion-toggle">
+        <p-inputSwitch [(ngModel)]="visualizacionActiva" (onChange)="onCapaVisibleChange(capas[0])" />
+        <span class="visualizacion-label">{{ visualizacionActiva ? 'Activa' : 'Inactiva' }}</span>
+      </div>
+    </div>
+
+    <!-- 5. Aplicar / Limpiar filtros -->
+    <div class="seccion-panel">
+      <div class="botones-filtro">
+        <p-button label="Aplicar filtros" icon="pi pi-filter" (onClick)="aplicarFiltros()" styleClass="p-button-sm" />
+        <p-button label="Limpiar filtros" icon="pi pi-times" (onClick)="limpiarFiltros()" styleClass="p-button-sm p-button-outlined" />
+      </div>
+    </div>
+
+    <!-- 6. Acerca del visor -->
+    <div class="seccion-panel acerca-seccion">
+      <h3 class="titulo-seccion">Acerca del visor</h3>
+      <p class="acerca-texto">
+        Visualice y consulte la distribución territorial de los recursos del Sistema General de Regalías (SGR), Sistema General de Participaciones (SGP) y Presupuesto General de la Nación (PGN) mediante un mapa interactivo con información a nivel departamental y municipal.
+      </p>
+      <ul class="acerca-sistemas">
+        <li><span class="sistema-dot" [style.background-color]="sistemaColores['SGR']"></span><strong>SGR</strong></li>
+        <li><span class="sistema-dot" [style.background-color]="sistemaColores['SGP']"></span><strong>SGP</strong></li>
+        <li><span class="sistema-dot" [style.background-color]="sistemaColores['PGN']"></span><strong>PGN</strong></li>
+      </ul>
+      <p class="acerca-tip">
+        <i class="pi pi-info-circle"></i>
+        <span>Haga clic en un departamento para ver su detalle.</span>
+      </p>
+    </div>
+
     <div class="seccion-panel notas-seccion">
       <h4 class="notas-titulo">NOTAS</h4>
-      <p class="notas-texto">Cifras en pesos corrientes</p>
+      <p class="notas-texto">Cifras en billones de pesos</p>
     </div>
   </div>
 
-  <!-- Contenido principal -->
+  <!-- ═══════════════════════════════════════════════════════════
+       PANEL LATERAL — MODO DETALLE
+  ════════════════════════════════════════════════════════════════ -->
+  <div class="panel-lateral" *ngIf="modoDetalle">
+
+    <!-- Árbol desplegable de asignaciones (SGR) / participaciones (SGP) -->
+    <div class="seccion-panel categorias-seccion" *ngIf="sistemaDetalle !== 'PGN'">
+      <h3 class="titulo-seccion">
+        {{ sistemaDetalle === 'SGR' ? 'Asignaciones' : 'Participaciones' }}
+      </h3>
+
+      <div *ngIf="isLoadingPanel()" class="cargando-inline">
+        <i class="pi pi-spin pi-spinner"></i> Cargando…
+      </div>
+
+      <div *ngIf="!isLoadingPanel()" class="arbol-lista">
+        <div *ngFor="let item of arbolVisible"
+             class="arbol-nodo"
+             [class.seleccionado]="estaSeleccionado(item.node)"
+             [style.padding-left.px]="8 + item.node.nivel * 16">
+          <button type="button" class="arbol-toggle"
+                  [class.invisible]="!item.tieneHijos"
+                  (click)="toggleExpandido(item.node)"
+                  [attr.aria-label]="item.expandido ? 'Colapsar' : 'Expandir'">
+            <i class="pi" [ngClass]="item.expandido ? 'pi-chevron-down' : 'pi-chevron-right'"></i>
+          </button>
+          <span class="arbol-check" [class.checked]="estaSeleccionado(item.node)"
+                [style.--c]="item.node.color" (click)="toggleSeleccion(item.node)">
+            <i class="pi pi-check" *ngIf="estaSeleccionado(item.node)"></i>
+          </span>
+          <span class="arbol-dot" [style.background-color]="item.node.color"></span>
+          <span class="arbol-label" (click)="toggleSeleccion(item.node)">{{ item.node.concepto }}</span>
+        </div>
+        <div *ngIf="arbolVisible.length === 0" class="sin-datos">Sin datos</div>
+      </div>
+    </div>
+
+    <!-- PGN sin datos a nivel de municipio -->
+    <div class="seccion-panel" *ngIf="sistemaDetalle === 'PGN' && pgnSinDatosMunicipio">
+      <div class="sin-datos-municipio">
+        <i class="pi pi-info-circle"></i>
+        <span>Sin información a nivel de municipio</span>
+      </div>
+    </div>
+
+    <!-- Opacidad municipios -->
+    <div class="seccion-panel">
+      <h3 class="titulo-seccion">Opacidad municipios</h3>
+      <div class="sistema-opacidad-row">
+        <span class="opacidad-cap">Opacidad</span>
+        <p-slider [(ngModel)]="opacidadMunicipios" class="sistema-slider" (onChange)="onOpacidadMunicipiosChange()" [style]="{'width': '100%'}" />
+        <span class="opacidad-mini-valor">{{ opacidadMunicipios }}%</span>
+      </div>
+    </div>
+
+    <!-- Notas (dinámicas según el sistema seleccionado) -->
+    <div class="seccion-panel notas-seccion">
+      <h4 class="notas-titulo">NOTAS</h4>
+      <p class="notas-texto" *ngFor="let nota of notasDetalle">{{ nota }}</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       CONTENIDO PRINCIPAL
+  ════════════════════════════════════════════════════════════════ -->
   <div class="contenido-principal">
-    <!-- Tarjetas de resumen superior -->
-    <div class="tarjetas-resumen">
+
+    <!-- Header del detalle (solo en modo detalle) -->
+    <div class="detalle-header" *ngIf="modoDetalle">
+      <div class="detalle-header-left">
+        <button class="btn-volver" (click)="cerrarDetalle()">
+          <i class="pi pi-arrow-left"></i> Volver
+        </button>
+        <span class="detalle-entidad">
+          <span (click)="deseleccionarMunicipio()" [class.detalle-breadcrumb]="municipioSeleccionado" [title]="municipioSeleccionado ? 'Volver al departamento' : ''">
+            {{ detalleDepto?.nombre }} <span class="detalle-codigo">({{ detalleDepto?.codigoDepto?.substring(0,2) }})</span>
+          </span>
+          <ng-container *ngIf="municipioSeleccionado">
+            <span class="detalle-sep"> › </span>
+            <span class="detalle-municipio">{{ municipioSeleccionado.nombre }} <span class="detalle-codigo">({{ municipioSeleccionado.codigoMunicipio }})</span></span>
+          </ng-container>
+        </span>
+      </div>
+      <div class="detalle-header-right">
+        <div class="sistema-tabs">
+          <button
+            class="sistema-tab"
+            [class.activo]="sistemaDetalle === 'SGR'"
+            [style.--color-tab]="sistemaColores['SGR']"
+            (click)="cambiarSistemaDetalle('SGR')"
+          >SGR</button>
+          <button
+            class="sistema-tab"
+            [class.activo]="sistemaDetalle === 'SGP'"
+            [style.--color-tab]="sistemaColores['SGP']"
+            (click)="cambiarSistemaDetalle('SGP')"
+          >SGP</button>
+          <button
+            class="sistema-tab"
+            [class.activo]="sistemaDetalle === 'PGN'"
+            [style.--color-tab]="sistemaColores['PGN']"
+            (click)="cambiarSistemaDetalle('PGN')"
+          >PGN</button>
+        </div>
+        <span class="detalle-vigencia">Vigencia {{ vigenciaSeleccionada }}</span>
+      </div>
+    </div>
+
+    <!-- ── Tarjetas resumen MODO PRINCIPAL ─────────────────────── -->
+    <div class="tarjetas-resumen" *ngIf="!modoDetalle" [class.tarjetas-cargando]="isLoading()">
       <div
         *ngFor="let recurso of recursos"
         class="tarjeta-recurso"
-        [style.background-color]="recurso.color"
+        [style.--color-sistema]="recurso.color"
       >
         <div class="tarjeta-header">
-          <div class="tarjeta-icono-container">
-            <i [class]="recurso.icono + ' tarjeta-icono'"></i>
-          </div>
-          <div class="tarjeta-info">
-            <h4 class="tarjeta-sigla">{{ recurso.sigla }}</h4>
-            <h2 class="tarjeta-total">${{ recurso.total | numberFormat }}</h2>
-          </div>
+          <span class="tarjeta-sigla">{{ recurso.sigla }}</span>
+          <span class="tarjeta-nombre">{{ recurso.nombre }}</span>
         </div>
-
-        <div class="tarjeta-progreso">
-          <div class="progreso-item">
-            <span class="progreso-label">Presupuesto</span>
-            <p-progressBar
-              [value]="calcularPorcentaje(recurso.presupuesto, recurso.total)"
-              [showValue]="false"
-              [style]="{'height': '8px'}"
-            />
-          </div>
-          <div class="progreso-item">
-            <span class="progreso-label">Recaudo</span>
-            <p-progressBar
-              [value]="calcularPorcentaje(recurso.recaudo, recurso.total)"
-              [showValue]="false"
-              [style]="{'height': '8px'}"
-            />
-          </div>
+        <div class="tarjeta-total-row">
+          <span class="tarjeta-total">${{ formatearValor(recurso.total) }}</span>
+          <span class="tarjeta-cobertura-badge">{{ recurso.cobertura }}</span>
         </div>
-
-        <div class="tarjeta-cobertura">
-          <p>{{ recurso.cobertura }}</p>
+        <div class="tarjeta-barras">
+          <div class="barra-item">
+            <div class="barra-label">
+              <span>Presupuesto</span>
+              <span>{{ calcularPorcentaje(recurso.presupuesto, recurso.total).toFixed(0) }}%</span>
+            </div>
+            <p-progressBar [value]="calcularPorcentaje(recurso.presupuesto, recurso.total)" [showValue]="false" [style]="{'height': '4px'}" />
+          </div>
+          <div class="barra-item">
+            <div class="barra-label">
+              <span>{{ etiquetaSegundaBarra(recurso.sigla) }}</span>
+              <span>{{ calcularPorcentaje(recurso.recaudo, recurso.total).toFixed(0) }}%</span>
+            </div>
+            <p-progressBar [value]="calcularPorcentaje(recurso.recaudo, recurso.total)" [showValue]="false" [style]="{'height': '4px'}" />
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Mapa -->
+    <!-- ── Tarjetas resumen MODO DETALLE ──────────────────────── -->
+    <div class="tarjetas-resumen tarjetas-detalle" *ngIf="modoDetalle" [class.tarjetas-cargando]="isLoadingPanel()">
+
+      <!-- PGN sin información a nivel de municipio -->
+      <div *ngIf="pgnSinDatosMunicipio" class="tarjeta-recurso tarjeta-detalle-item tarjeta-na-municipio" [style.--color-sistema]="sistemaColores['PGN']">
+        <div class="tarjeta-detalle-head">
+          <span class="tarjeta-detalle-eyebrow">PGN</span>
+          <span class="tarjeta-detalle-label">Presupuesto General de la Nación</span>
+        </div>
+        <div class="tarjeta-total-row">
+          <span class="tarjeta-total tarjeta-na">N/A</span>
+          <span class="tarjeta-na-nota">Sin información a nivel de municipio</span>
+        </div>
+      </div>
+
+      <!-- Tarjetas normales -->
+      <ng-container *ngIf="!pgnSinDatosMunicipio">
+        <div class="tarjeta-recurso tarjeta-detalle-item" [style.--color-sistema]="sistemaColores[sistemaDetalle]">
+          <div class="tarjeta-detalle-head">
+            <span class="tarjeta-detalle-eyebrow">{{ sistemaDetalle }}</span>
+            <span class="tarjeta-detalle-label">Presupuesto total</span>
+          </div>
+          <div class="tarjeta-total-row">
+            <span class="tarjeta-total">${{ formatearMilesMillones(totalPresupuestoDetalle()) }}<small class="tarjeta-unidad">mm</small></span>
+          </div>
+        </div>
+        <div class="tarjeta-recurso tarjeta-detalle-item" [style.--color-sistema]="sistemaColores[sistemaDetalle]">
+          <div class="tarjeta-detalle-head">
+            <span class="tarjeta-detalle-eyebrow">{{ sistemaDetalle }}</span>
+            <span class="tarjeta-detalle-label">{{ etiquetaRecaudoDetalle() }}</span>
+          </div>
+          <div class="tarjeta-total-row">
+            <span class="tarjeta-total">${{ formatearMilesMillones(totalRecaudoDetalle()) }}<small class="tarjeta-unidad">mm</small></span>
+          </div>
+        </div>
+        <div class="tarjeta-recurso tarjeta-detalle-item" [style.--color-sistema]="sistemaColores[sistemaDetalle]">
+          <div class="tarjeta-detalle-head">
+            <span class="tarjeta-detalle-eyebrow">{{ sistemaDetalle }}</span>
+            <span class="tarjeta-detalle-label">{{ etiquetaAvanceDetalle() }}</span>
+          </div>
+          <div class="tarjeta-total-row">
+            <span class="tarjeta-total">{{ avanceDetalle().toFixed(1) }}%</span>
+          </div>
+          <p-progressBar [value]="avanceDetalle()" [showValue]="false" [style]="{'height': '6px', 'margin-top': '4px'}" />
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- ── Tarjetas de cobertura (solo modo principal) ───────── -->
+    <div class="tarjetas-cobertura" *ngIf="!modoDetalle">
+      <div
+        *ngFor="let cob of coberturas"
+        class="tarjeta-cobertura"
+        [style.--color-sistema]="cob.color"
+      >
+        <span *ngFor="let linea of cob.lineas; let first = first"
+              [class]="first ? 'cobertura-linea-superior' : 'cobertura-linea-inferior'"
+        >{{ linea }}</span>
+      </div>
+    </div>
+
+    <!-- ── Mapa (siempre presente) ──────────────────────────── -->
     <div class="mapa-container">
       <div id="mapaRecursos" class="mapa"></div>
 
-      <!-- Controles adicionales del mapa -->
+      <div class="mapa-loading" *ngIf="isLoadingMapa()">
+        <div class="mapa-loading-inner">
+          <i class="pi pi-spin pi-spinner"></i>
+          <span>{{ modoDetalle ? 'Cargando municipios…' : 'Cargando datos geográficos (33 departamentos)…' }}</span>
+        </div>
+      </div>
+
+      <div class="mapa-sin-municipios" *ngIf="sinMunicipiosGeoJSON()">
+        <div class="mapa-sin-municipios-inner">
+          <i class="pi pi-map" style="font-size:1.5rem"></i>
+          <span>Mapa de municipios no disponible para <strong>{{ detalleDepto?.nombre }}</strong></span>
+          <small>El archivo GeoJSON no incluye este departamento</small>
+        </div>
+      </div>
+
+      <div class="mapa-leyenda" *ngIf="hasGeoData && !isLoadingMapa() && !modoDetalle">
+        <div class="leyenda-titulo">Recursos totales</div>
+        <div class="leyenda-escala">
+          <span class="leyenda-min">Menor</span>
+          <div class="leyenda-gradiente"></div>
+          <span class="leyenda-max">Mayor</span>
+        </div>
+        <div class="leyenda-nota">
+          <i class="pi pi-circle-fill" style="font-size:0.6rem"></i> Círculos: proporcionales al valor
+        </div>
+      </div>
+
       <div class="mapa-controles">
         <button class="control-btn" (click)="centrarMapa()" title="Inicio">
           <i class="pi pi-home"></i>
@@ -191,7 +327,74 @@
         <button class="control-btn" (click)="miUbicacion()" title="Mi ubicación">
           <i class="pi pi-compass"></i>
         </button>
+        <button class="control-btn" (click)="abrirAyuda()" title="Ayuda / Manual de usuario">
+          <i class="pi pi-question-circle"></i>
+        </button>
       </div>
     </div>
   </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       PANEL DERECHO — solo en modo detalle
+  ════════════════════════════════════════════════════════════════ -->
+  <div class="panel-derecho" *ngIf="modoDetalle">
+    <h3 class="titulo-seccion titulo-distribucion">{{ tituloDistribucion }}</h3>
+
+    <div *ngIf="isLoadingPanel()" class="cargando-inline"><i class="pi pi-spin pi-spinner"></i> Cargando…</div>
+
+    <!-- Donut: distribución por asignación/participación seleccionada -->
+    <div class="grafica-torta" *ngIf="!isLoadingPanel() && tienePieData">
+      <p-chart type="doughnut" [data]="pieData" [options]="pieOptions"></p-chart>
+    </div>
+
+    <!-- SGR / SGP: detalle de las asignaciones/participaciones seleccionadas -->
+    <ng-container *ngIf="!isLoadingPanel() && sistemaDetalle !== 'PGN'">
+      <p *ngIf="detalleSeleccion.length === 0" class="panel-hint">
+        <i class="pi pi-hand-pointer"></i>
+        Seleccione una o más {{ sistemaDetalle === 'SGR' ? 'asignaciones' : 'participaciones' }} en el árbol para ver su detalle.
+      </p>
+
+      <div *ngFor="let node of detalleSeleccion" class="asignacion-card" [style.--c]="node.color">
+        <div class="asignacion-nombre">{{ node.concepto }}</div>
+
+        <ng-container *ngIf="sistemaDetalle === 'SGR'">
+          <div class="detalle-fila"><span>Presupuesto total</span><strong>${{ formatearValor(node.raw.presupuesto_total_vigente) }}</strong></div>
+          <div class="detalle-fila"><span>Presupuesto corriente</span><strong>${{ formatearValor(node.raw.presupuesto_corriente) }}</strong></div>
+          <div class="detalle-fila"><span>Presupuesto otros</span><strong>${{ formatearValor(node.raw.presupuesto_otros) }}</strong></div>
+          <div class="detalle-fila"><span>Recaudo total</span><strong>${{ formatearValor(node.raw.caja_total) }}</strong></div>
+        </ng-container>
+
+        <ng-container *ngIf="sistemaDetalle === 'SGP'">
+          <div class="detalle-fila"><span>Distribución</span><strong>${{ formatearValor(node.raw.total) }}</strong></div>
+        </ng-container>
+      </div>
+    </ng-container>
+
+    <!-- PGN: ejecución presupuestal (no repite los KPIs superiores) -->
+    <ng-container *ngIf="!isLoadingPanel() && sistemaDetalle === 'PGN'">
+      <div *ngIf="pgnSinDatosMunicipio" class="sin-datos-municipio">
+        <i class="pi pi-info-circle"></i>
+        <span>Sin información a nivel de municipio</span>
+      </div>
+      <ng-container *ngIf="!pgnSinDatosMunicipio && pgnDetalle">
+        <div class="detalle-fila"><span>Compromisos</span><strong>${{ formatearValor(pgnDetalle.total_compromisos) }}</strong></div>
+        <div class="detalle-fila"><span>Obligaciones</span><strong>${{ formatearValor(pgnDetalle.total_obligaciones) }}</strong></div>
+        <div class="detalle-fila"><span>% Compromisos</span><strong>{{ pgnDetalle.porcentaje_total_compromisos?.toFixed(1) }}%</strong></div>
+        <div class="detalle-fila"><span>% Obligaciones</span><strong>{{ pgnDetalle.porcentaje_total_obligaciones?.toFixed(1) }}%</strong></div>
+      </ng-container>
+    </ng-container>
+
+    <!-- Botón de descarga -->
+    <div class="btn-descarga-section">
+      <p-button
+        label="Descargar distribución"
+        icon="pi pi-download"
+        [disabled]="sistemaDetalle !== 'SGP'"
+        (onClick)="descargarArchivo()"
+        styleClass="p-button-sm p-button-outlined"
+        [title]="sistemaDetalle !== 'SGP' ? 'Descarga disponible solo para SGP' : 'Descargar archivo Excel'"
+      />
+    </div>
+  </div>
+
 </div>

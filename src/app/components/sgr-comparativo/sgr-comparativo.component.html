@@ -24,22 +24,6 @@
         <p>Consulte y compare información presupuestal y de recaudo entre diferentes entidades territoriales del Sistema General de Regalías.</p>
     </div>
   </div>
-  
-  <!-- Botones Presupuesto y Recaudo / Plan Bienal de Caja y Recaudo -->
-  <div class="view-buttons-section">
-    <div class="view-buttons-container">
-      <button pButton type="button" 
-              [class]="showPresupuestoRecaudoView ? 'p-button-primary' : 'p-button-secondary'" 
-              label="Presupuesto y Recaudo" 
-              (click)="showPresupuestoRecaudo()">
-      </button>
-      <!--button pButton type="button" 
-              [class]="showPlanBienalView ? 'p-button-primary' : 'p-button-secondary'" 
-              label="Plan Bienal de Caja y Recaudo" 
-              (click)="showPlanBienal()">
-      </button -->
-    </div>
-  </div>
 
   <!-- Panel de filtros -->
   <div class="filters-panel">
@@ -129,7 +113,7 @@
   </div>
 
   <!-- Charts section - Solo visible cuando se seleccionan todos los filtros -->
-   <div class="graphics-section" *ngIf="showPresupuestoRecaudoView && selectedMunicipio && selectedMunicipio2">
+   <div class="graphics-section" *ngIf="selectedMunicipio && selectedMunicipio2">
     <h2 class="charts-main-title">Avance del recaudo frente al Presupuesto Bienio  {{selectedBienio.label}}</h2>
     <div class="dual-chart-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%;">
       <!-- First Chart - Municipality 1 -->
@@ -139,7 +123,7 @@
             <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
               <h3 class="chart-title">{{ getSelectedMunicipalityName(1) }} </h3>
             </div>
-          </ng-template>
+          </ng-template>          
           <div class="chart-container" style="position: relative; height: 320px; width: 100%;">
             <p-chart 
               type="bar" 
@@ -194,11 +178,11 @@
             <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
               <h3 class="chart-title">{{ getSelectedMunicipalityName(2) }}</h3>
             </div>
-          </ng-template>
+          </ng-template>          
           <div class="chart-container" style="position: relative; height: 320px; width: 100%;">
-            <p-chart 
-            type="bar" 
-            [data]="planBienalMunicipio2ChartData" 
+            <p-chart
+            type="bar"
+            [data]="planBienalMunicipio2ChartData"
             [options]="planBienalMunicipio2ChartOptions"
             width="570px"
             height="300px">
@@ -244,8 +228,24 @@
       </div>
     </div>
 
+    <!-- Table View Toggle Buttons -->
+    <div class="table-view-toggle" style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1rem;">
+      <button pButton type="button"
+              [class]="!showConsolidatedTable ? 'p-button-primary' : 'p-button-outlined'"
+              label="Tablas Individuales"
+              icon="pi pi-table"
+              (click)="showConsolidatedTable = false">
+      </button>
+      <button pButton type="button"
+              [class]="showConsolidatedTable ? 'p-button-primary' : 'p-button-outlined'"
+              label="Tabla Consolidada"
+              icon="pi pi-align-justify"
+              (click)="toggleTableView()">
+      </button>
+    </div>
+
     <!-- Individual Municipality Tables for Presupuesto y Recaudo -->
-    <div class="municipality-tables-section">
+    <div class="municipality-tables-section" *ngIf="!showConsolidatedTable">
       <div class="tables-container" style="overflow-x: auto;">
         <!-- Table for Municipality 1 -->
         <div class="municipality-table-wrapper">
@@ -384,114 +384,185 @@
         </div>
       </div>
     </div>
-  </div>  
 
-  <!-- Plan Bienal Charts section - Solo visible cuando se selecciona Plan Bienal view -->
-  <div class="graphics-section" *ngIf="showPlanBienalView && selectedMunicipio && selectedMunicipio2">
-    <h2 class="charts-main-title">Avance del recaudo frente al Plan Bienal de Caja Bienio {{selectedBienio}}</h2>
-    <div class="dual-chart-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%;">
-      <!-- First Chart - Municipality 1 -->
-      <div class="chart-column">
-        <p-card class="chart-card">
-          <ng-template pTemplate="header">
-            <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
-              <h3 class="chart-title">{{ getSelectedMunicipalityName(1) }}</h3>
-            </div>
-          </ng-template>
-          <div class="chart-container" style="position: relative; height: 320px; width: 100%;">
-            <p-chart 
-            type="bar" 
-            [data]="municipio1ChartData" 
-            [options]="municipio1ChartOptions"
-            width="570px"
-            height="300px">
-          </p-chart>
-          </div>
-        </p-card>        
-        
+    <!-- Consolidated Table View -->
+    <div class="consolidated-table-section" *ngIf="showConsolidatedTable">
+      <div class="consolidated-table-wrapper">
+        <div class="table-header">
+          <h3 class="consolidated-table-title">Comparativo Consolidado: {{ getSelectedMunicipalityName(1) }} vs {{ getSelectedMunicipalityName(2) }}</h3>
+        </div>
+
+        <div class="consolidated-table-scroll-container">
+          <p-treetable [value]="consolidatedTableData"
+                       showGridlines
+                       [scrollable]="false"
+                       styleClass="p-treetable-sm consolidated-table"
+                       [resizableColumns]="false"
+                       [tableStyle]="{'min-width': '2210px', 'width': '2210px'}">
+
+            <!-- Definición de anchos de columnas -->
+            <ng-template pTemplate="colgroup">
+              <colgroup>
+                <col style="width: 250px; min-width: 250px;">
+                <col style="width: 140px; min-width: 140px;">
+                <col style="width: 140px; min-width: 140px;">
+                <col style="width: 140px; min-width: 140px;">
+                <col style="width: 140px; min-width: 140px;">
+                <col style="width: 140px; min-width: 140px;">
+                <col style="width: 140px; min-width: 140px;">
+                <col style="width: 140px; min-width: 140px;">
+                <col style="width: 140px; min-width: 140px;">
+                <col style="width: 140px; min-width: 140px;">
+                <col style="width: 140px; min-width: 140px;">
+                <col style="width: 140px; min-width: 140px;">
+                <col style="width: 140px; min-width: 140px;">
+                <col style="width: 140px; min-width: 140px;">
+                <col style="width: 140px; min-width: 140px;">
+                <col style="width: 140px; min-width: 140px;">
+              </colgroup>
+            </ng-template>
+
+            <!-- Header con agrupación -->
+            <ng-template pTemplate="header">
+              <!-- Primera fila de headers (grupos) -->
+              <tr>
+                <th *ngFor="let col of consolidatedTableCols"
+                    [attr.colspan]="col.colspan"
+                    [attr.rowspan]="col.rowspan"
+                    [ngStyle]="{'backgroundColor': col.color, 'text-align': col.field === 'concepto' ? 'left' : 'center'}"
+                    [pTooltip]="col.tooltip"
+                    tooltipPosition="top">
+                  {{ col.header }}
+                </th>
+              </tr>
+
+              <!-- Segunda fila de headers (sub-columnas para municipios) -->
+              <tr>
+                <ng-container *ngFor="let col of consolidatedTableCols">
+                  <ng-container *ngIf="col.isGroup && col.subCols">
+                    <th *ngFor="let subCol of col.subCols"
+                        [ngStyle]="{'width': subCol.width, 'backgroundColor': subCol.color, 'text-align': 'center'}"
+                        class="sub-header-municipio">
+                      {{ subCol.header }}
+                    </th>
+                  </ng-container>
+                </ng-container>
+              </tr>
+            </ng-template>
+
+            <!-- Body de la tabla -->
+            <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+              <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode">
+                <!-- Columna de concepto -->
+                <td>
+                  <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                  <span [ngClass]="{'font-bold': rowNode.level <= 1}">
+                    {{rowData.concepto}}
+                  </span>
+                </td>
+
+                <!-- Presupuesto Total -->
+                <td class="text-right" [ngClass]="{'font-bold': rowNode.level <= 1}">
+                  <span *ngIf="rowData.presupuesto_total_vigente_m1 !== null && rowData.presupuesto_total_vigente_m1 !== undefined">
+                    {{ rowData.presupuesto_total_vigente_m1 | numberFormat }}
+                  </span>
+                  <span *ngIf="rowData.presupuesto_total_vigente_m1 === null || rowData.presupuesto_total_vigente_m1 === undefined">-</span>
+                </td>
+                <td class="text-right" [ngClass]="{'font-bold': rowNode.level <= 1}">
+                  <span *ngIf="rowData.presupuesto_total_vigente_m2 !== null && rowData.presupuesto_total_vigente_m2 !== undefined">
+                    {{ rowData.presupuesto_total_vigente_m2 | numberFormat }}
+                  </span>
+                  <span *ngIf="rowData.presupuesto_total_vigente_m2 === null || rowData.presupuesto_total_vigente_m2 === undefined">-</span>
+                </td>
+
+                <!-- Presupuesto Corriente -->
+                <td class="text-right" [ngClass]="{'font-bold': rowNode.level <= 1}">
+                  <span *ngIf="rowData.presupuesto_corriente_m1 !== null && rowData.presupuesto_corriente_m1 !== undefined">
+                    {{ rowData.presupuesto_corriente_m1 | numberFormat }}
+                  </span>
+                  <span *ngIf="rowData.presupuesto_corriente_m1 === null || rowData.presupuesto_corriente_m1 === undefined">-</span>
+                </td>
+                <td class="text-right" [ngClass]="{'font-bold': rowNode.level <= 1}">
+                  <span *ngIf="rowData.presupuesto_corriente_m2 !== null && rowData.presupuesto_corriente_m2 !== undefined">
+                    {{ rowData.presupuesto_corriente_m2 | numberFormat }}
+                  </span>
+                  <span *ngIf="rowData.presupuesto_corriente_m2 === null || rowData.presupuesto_corriente_m2 === undefined">-</span>
+                </td>
+
+                <!-- Presupuesto Otros -->
+                <td class="text-right" [ngClass]="{'font-bold': rowNode.level <= 1}">
+                  <span *ngIf="rowData.presupuesto_otros_m1 !== null && rowData.presupuesto_otros_m1 !== undefined">
+                    {{ rowData.presupuesto_otros_m1 | numberFormat }}
+                  </span>
+                  <span *ngIf="rowData.presupuesto_otros_m1 === null || rowData.presupuesto_otros_m1 === undefined">-</span>
+                </td>
+                <td class="text-right" [ngClass]="{'font-bold': rowNode.level <= 1}">
+                  <span *ngIf="rowData.presupuesto_otros_m2 !== null && rowData.presupuesto_otros_m2 !== undefined">
+                    {{ rowData.presupuesto_otros_m2 | numberFormat }}
+                  </span>
+                  <span *ngIf="rowData.presupuesto_otros_m2 === null || rowData.presupuesto_otros_m2 === undefined">-</span>
+                </td>
+
+                <!-- Recaudo Corriente -->
+                <td class="text-right" [ngClass]="{'font-bold': rowNode.level <= 1}">
+                  <span *ngIf="rowData.caja_corriente_informada_m1 !== null && rowData.caja_corriente_informada_m1 !== undefined">
+                    {{ rowData.caja_corriente_informada_m1 | numberFormat }}
+                  </span>
+                  <span *ngIf="rowData.caja_corriente_informada_m1 === null || rowData.caja_corriente_informada_m1 === undefined">-</span>
+                </td>
+                <td class="text-right" [ngClass]="{'font-bold': rowNode.level <= 1}">
+                  <span *ngIf="rowData.caja_corriente_informada_m2 !== null && rowData.caja_corriente_informada_m2 !== undefined">
+                    {{ rowData.caja_corriente_informada_m2 | numberFormat }}
+                  </span>
+                  <span *ngIf="rowData.caja_corriente_informada_m2 === null || rowData.caja_corriente_informada_m2 === undefined">-</span>
+                </td>
+
+                <!-- Recaudo Otros -->
+                <td class="text-right" [ngClass]="{'font-bold': rowNode.level <= 1}">
+                  <span *ngIf="rowData.caja_otros_m1 !== null && rowData.caja_otros_m1 !== undefined">
+                    {{ rowData.caja_otros_m1 | numberFormat }}
+                  </span>
+                  <span *ngIf="rowData.caja_otros_m1 === null || rowData.caja_otros_m1 === undefined">-</span>
+                </td>
+                <td class="text-right" [ngClass]="{'font-bold': rowNode.level <= 1}">
+                  <span *ngIf="rowData.caja_otros_m2 !== null && rowData.caja_otros_m2 !== undefined">
+                    {{ rowData.caja_otros_m2 | numberFormat }}
+                  </span>
+                  <span *ngIf="rowData.caja_otros_m2 === null || rowData.caja_otros_m2 === undefined">-</span>
+                </td>
+
+                <!-- Recaudo Total -->
+                <td class="text-right" [ngClass]="{'font-bold': rowNode.level <= 1}">
+                  <span *ngIf="rowData.caja_total_m1 !== null && rowData.caja_total_m1 !== undefined">
+                    {{ rowData.caja_total_m1 | numberFormat }}
+                  </span>
+                  <span *ngIf="rowData.caja_total_m1 === null || rowData.caja_total_m1 === undefined">-</span>
+                </td>
+                <td class="text-right" [ngClass]="{'font-bold': rowNode.level <= 1}">
+                  <span *ngIf="rowData.caja_total_m2 !== null && rowData.caja_total_m2 !== undefined">
+                    {{ rowData.caja_total_m2 | numberFormat }}
+                  </span>
+                  <span *ngIf="rowData.caja_total_m2 === null || rowData.caja_total_m2 === undefined">-</span>
+                </td>
+
+                <!-- Avance IAC -->
+                <td class="text-right" [ngClass]="{'font-bold': rowNode.level <= 1}">
+                  <span *ngIf="rowData.avance_iac_presupuesto_m1 !== null && rowData.avance_iac_presupuesto_m1 !== undefined">
+                    {{ (rowData.avance_iac_presupuesto_m1 * 100) | numberFormat }}%
+                  </span>
+                  <span *ngIf="rowData.avance_iac_presupuesto_m1 === null || rowData.avance_iac_presupuesto_m1 === undefined">-</span>
+                </td>
+                <td class="text-right" [ngClass]="{'font-bold': rowNode.level <= 1}">
+                  <span *ngIf="rowData.avance_iac_presupuesto_m2 !== null && rowData.avance_iac_presupuesto_m2 !== undefined">
+                    {{ (rowData.avance_iac_presupuesto_m2 * 100) | numberFormat }}%
+                  </span>
+                  <span *ngIf="rowData.avance_iac_presupuesto_m2 === null || rowData.avance_iac_presupuesto_m2 === undefined">-</span>
+                </td>
+              </tr>
+            </ng-template>
+          </p-treetable>
+        </div>
       </div>
-
-      <!-- Second Chart - Municipality 2 -->
-      <div class="chart-column">
-        <p-card class="chart-card">
-          <ng-template pTemplate="header">
-            <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
-              <h3 class="chart-title">{{ getSelectedMunicipalityName(2) }}</h3>
-            </div>
-          </ng-template>
-          <div class="chart-container" style="position: relative; height: 320px; width: 100%;">
-            <p-chart 
-            type="bar" 
-            [data]="municipio2ChartData" 
-            [options]="municipio2ChartOptions"            
-            width="570px"
-            height="300px">
-          </p-chart>
-          </div>
-        </p-card>        
-        
-      </div>
-    </div>
-  </div>  
-
-  <!-- Comparative table section -->
-  <div class="table-section" *ngIf="showPlanBienalView && selectedMunicipio && selectedMunicipio2">
-    <div class="table-header">
-      <h2 class="table-title">Comparativo de Asignaciones por Entidad Territorial</h2>
-    </div>
-    
-    <div style="overflow-x: auto;">
-      <p-table [value]="comparativeTableData" 
-               styleClass="p-datatable-sm comparative-table">
-             
-      <!-- Grouped headers -->
-      <ng-template pTemplate="header">
-        <tr>
-          <th rowspan="2" class="entity-header">Entidad</th>
-          <th colspan="2" class="group-header directas-header">Asignaciones Directas 20%</th>
-          <th colspan="2" class="group-header local-header">Asignación para la Inversión Local</th>
-        </tr>
-        <tr>
-          <!-- Directas 20% sub-headers -->
-          <th class="sub-header directas-sub">PBC</th>
-          <th class="sub-header directas-sub">Recaudo</th>
-          <!-- Local sub-headers -->
-          <th class="sub-header local-sub">PBC</th>
-          <th class="sub-header local-sub">Recaudo</th>
-        </tr>
-      </ng-template>
-      
-      <!-- Data rows -->
-      <ng-template pTemplate="body" let-rowData>
-        <tr>
-          <td class="entity-cell">{{rowData.entidad}}</td>
-          <!-- Directas 20% data -->
-          <td class="number-cell">{{rowData.directas_pbc | numberFormat}}</td>
-          <td class="number-cell">{{rowData.directas_recaudo | numberFormat}}</td>
-          <!-- Local data -->
-          <td class="number-cell">{{rowData.local_pbc | numberFormat}}</td>
-          <td class="number-cell">{{rowData.local_recaudo | numberFormat}}</td>
-        </tr>
-      </ng-template>
-      
-      </p-table>
-    </div>
-
-    <!-- Export buttons -->
-    <div class="table-actions">
-      <button pButton type="button" 
-              icon="pi pi-file-excel" 
-              label="Descargar Consolidado" 
-              class="p-button-primary export-btn"
-              (click)="downloadConsolidated()">
-      </button>
-      
-      <button pButton type="button" 
-              icon="pi pi-calendar" 
-              label="Descargar Detalle por Mes" 
-              class="p-button-primary export-btn"
-              (click)="downloadMonthlyDetail()">
-      </button>
     </div>
   </div>
 
