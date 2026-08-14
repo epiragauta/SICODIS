@@ -60,6 +60,10 @@ export class SgrPlanBienalCajaComponent implements OnInit {
   isLoading = false;
   isLoadingMunicipios = false;
 
+  // Evita aplicar el filtro inicial más de una vez (vigencias y departamentos
+  // llegan en respuestas asíncronas independientes).
+  private filtroInicialAplicado = false;
+
   // Opciones de filtros
   vigencias: VigenciaPlanBienal[] = [];
   selectedVigencia: VigenciaPlanBienal | null = null;
@@ -243,6 +247,7 @@ export class SgrPlanBienalCajaComponent implements OnInit {
         if (this.vigencias.length > 0) {
           this.selectedVigencia = this.vigencias[0];
         }
+        this.aplicarFiltroInicialSiListo();
       },
       error: (error) => {
         console.error('Error cargando vigencias:', error);
@@ -257,11 +262,28 @@ export class SgrPlanBienalCajaComponent implements OnInit {
     this.sicodisApiService.getSgrPlanBienalDepartamentos().subscribe({
       next: (data) => {
         this.departamentosList = data;
+        // Seleccionar "Todos" por defecto para estandarizar con los demás reportes
+        // y evitar que el selector arranque en blanco (placeholder vacío).
+        this.selectedDepartamento = data.find(d => d.codigo === '0') ?? null;
+        this.aplicarFiltroInicialSiListo();
       },
       error: (error) => {
         console.error('Error cargando departamentos:', error);
       }
     });
+  }
+
+  /**
+   * Aplica el filtro automáticamente en la carga inicial una vez que tanto la
+   * vigencia como el departamento por defecto están disponibles. Se ejecuta una
+   * sola vez (vigencias y departamentos llegan en respuestas independientes).
+   */
+  private aplicarFiltroInicialSiListo(): void {
+    if (this.filtroInicialAplicado) return;
+    if (this.selectedVigencia && this.selectedDepartamento) {
+      this.filtroInicialAplicado = true;
+      this.applyFilters();
+    }
   }
 
   onBeneficiarioChange(): void {
