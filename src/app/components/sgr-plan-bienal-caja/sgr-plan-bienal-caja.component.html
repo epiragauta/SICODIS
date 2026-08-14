@@ -232,9 +232,9 @@
 
     <!-- Botones de accion -->
     <div class="action-buttons">
-      <!-- Obs. 2: descarga pendiente de endpoint backend; deshabilitada mientras tanto -->
       <p-button label="Exportar Excel" icon="pi pi-file-excel" class="detail-button"
-        [disabled]="true"
+        [loading]="isLoading"
+        [disabled]="!selectedVigencia || !selectedDepartamento"
         (click)="exportarExcel()">
       </p-button>
     </div>

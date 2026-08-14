@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpResponse } from '@angular/common/http';
 import { ButtonModule } from 'primeng/button';
 import { FloatLabel } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
@@ -455,7 +456,45 @@ export class SgrPlanBienalCajaComponent implements OnInit {
   closeSiglasPopup(): void      { this.showSiglasPopup = false; }
 
   exportarExcel(): void {
-    console.log('Exportar Excel...');
+    if (!this.selectedVigencia || !this.selectedDepartamento) return;
+
+    this.isLoading = true;
+    this.sicodisApiService.getSgrPlanBienalDescargarDetalle({
+      idVigencia: this.selectedVigencia.id_vigencia,
+      vigencia: this.selectedVigencia.vigencia,
+      codigoDepto: this.selectedDepartamento.codigo,
+      departamento: this.selectedDepartamento.nombre,
+      codigoMunicipio: this.selectedMunicipio?.codigo || '0',
+      municipio: this.selectedMunicipio?.nombre || 'Todos'
+    }).subscribe({
+      next: (response) => {
+        this.descargarBlob(response, 'DetallePlanBienalCaja.xlsx');
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error descargando el detalle del Plan Bienal de Caja:', err);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  private descargarBlob(response: HttpResponse<Blob>, nombrePorDefecto: string): void {
+    const blob = response.body;
+    if (!blob) return;
+    const filename = this.extraerNombreArchivo(response.headers.get('content-disposition')) || nombrePorDefecto;
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+    window.URL.revokeObjectURL(link.href);
+  }
+
+  private extraerNombreArchivo(contentDisposition: string | null): string | null {
+    if (contentDisposition) {
+      const match = /filename[^;=\n]*=(?:UTF-8'')?["']?([^;"'\n]+)/i.exec(contentDisposition);
+      if (match && match[1]) return decodeURIComponent(match[1].trim());
+    }
+    return null;
   }
 
   async cargarSiglasDiccionario(): Promise<void> {
