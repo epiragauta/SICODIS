@@ -455,6 +455,11 @@ $alert-amber: #f59e0b;     // Acciones de remoción
         padding: 0.85rem 1rem;
         text-align: left;
         white-space: nowrap;
+
+        // Columnas numéricas: encabezado alineado a la derecha, igual que sus valores
+        &.col-num {
+          text-align: right;
+        }
       }
 
       tbody td {

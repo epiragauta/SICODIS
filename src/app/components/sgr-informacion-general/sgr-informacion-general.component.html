@@ -403,6 +403,39 @@
               ></p-multiselect>
             </div>
           </div>
+          
+          <!-- Grupo de interés -->
+          <div class="caracterizacion-grupo">
+            <div class="checkbox-item">
+              <p-checkbox
+                name="caracterizacion"
+                [(ngModel)]="caracterizacionesActivas.grupoInteres"
+                (ngModelChange)="onCaracterizacionChange('grupoInteres', $event)"
+                [binary]="true"
+                inputId="grupoInteres"
+              />
+              <label for="grupoInteres">Grupo de interés</label>
+            </div>
+            <div class="multiselect-wrapper" *ngIf="caracterizacionesActivas.grupoInteres">
+              <p-multiselect
+                [options]="grupoInteresOpciones"
+                [(ngModel)]="valoresGrupoInteres"
+                (ngModelChange)="onValoresGrupoInteresChange()"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Seleccione grupos"
+                [filter]="false"
+                [showClear]="true"
+                display="comma"
+                styleClass="w-full"
+                [maxSelectedLabels]="2"
+                selectedItemsLabel="{0} grupos"
+                class="w-full md:w-80"
+                panelStyleClass="caracterizacion-panel"
+                [displaySelectedLabel]="false"
+              ></p-multiselect>
+            </div>
+          </div>
 
           <!-- Asignación -->
           <div class="caracterizacion-grupo">
@@ -433,39 +466,6 @@
                 selectedItemsLabel="{0} asignaciones"
                 class="w-full md:w-80"
                 panelStyleClass="caracterizacion-panel asignacion-panel"
-                [displaySelectedLabel]="false"
-              ></p-multiselect>
-            </div>
-          </div>
-
-          <!-- Grupo de interés -->
-          <div class="caracterizacion-grupo">
-            <div class="checkbox-item">
-              <p-checkbox
-                name="caracterizacion"
-                [(ngModel)]="caracterizacionesActivas.grupoInteres"
-                (ngModelChange)="onCaracterizacionChange('grupoInteres', $event)"
-                [binary]="true"
-                inputId="grupoInteres"
-              />
-              <label for="grupoInteres">Grupo de interés</label>
-            </div>
-            <div class="multiselect-wrapper" *ngIf="caracterizacionesActivas.grupoInteres">
-              <p-multiselect
-                [options]="grupoInteresOpciones"
-                [(ngModel)]="valoresGrupoInteres"
-                (ngModelChange)="onValoresGrupoInteresChange()"
-                optionLabel="label"
-                optionValue="value"
-                placeholder="Seleccione grupos"
-                [filter]="false"
-                [showClear]="true"
-                display="comma"
-                styleClass="w-full"
-                [maxSelectedLabels]="2"
-                selectedItemsLabel="{0} grupos"
-                class="w-full md:w-80"
-                panelStyleClass="caracterizacion-panel"
                 [displaySelectedLabel]="false"
               ></p-multiselect>
             </div>
@@ -506,7 +506,7 @@
               (ngModelChange)="onEntidadChange($event)"
               inputId="pdet"
             />
-            <label for="pdet">Entidades PDET</label>
+            <label for="pdet">PDET</label>
           </div>
 
           <div class="checkbox-item">
@@ -517,7 +517,7 @@
               (ngModelChange)="onEntidadChange($event)"
               inputId="zomac"
             />
-            <label for="zomac">Entidades ZOMAC</label>
+            <label for="zomac">ZOMAC</label>
           </div>
 
           <div class="checkbox-item">
@@ -528,7 +528,7 @@
               (ngModelChange)="onEntidadChange($event)"
               inputId="etnica"
             />
-            <label for="etnica">Entidades con destinación Étnica</label>
+            <label for="etnica">Con destinación Étnica</label>
           </div>
 
           <div class="checkbox-item">
@@ -539,7 +539,7 @@
               (ngModelChange)="onEntidadChange($event)"
               inputId="capital"
             />
-            <label for="capital">Capital</label>
+            <label for="capital">Capitáles</label>
           </div>
         </div>
 
