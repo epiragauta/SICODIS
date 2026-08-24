@@ -365,6 +365,7 @@
                 [maxSelectedLabels]="2"
                 selectedItemsLabel="{0} seleccionados"
                 class="w-full md:w-80"
+                panelStyleClass="caracterizacion-panel"
                 [displaySelectedLabel]="false"
               ></p-multiselect>
             </div>
@@ -397,6 +398,7 @@
                 [maxSelectedLabels]="2"
                 selectedItemsLabel="{0} regiones"
                 class="w-full md:w-80"
+                panelStyleClass="caracterizacion-panel"
                 [displaySelectedLabel]="false"
               ></p-multiselect>
             </div>
@@ -430,6 +432,7 @@
                 [maxSelectedLabels]="2"
                 selectedItemsLabel="{0} asignaciones"
                 class="w-full md:w-80"
+                panelStyleClass="caracterizacion-panel asignacion-panel"
                 [displaySelectedLabel]="false"
               ></p-multiselect>
             </div>
@@ -462,6 +465,7 @@
                 [maxSelectedLabels]="2"
                 selectedItemsLabel="{0} grupos"
                 class="w-full md:w-80"
+                panelStyleClass="caracterizacion-panel"
                 [displaySelectedLabel]="false"
               ></p-multiselect>
             </div>
@@ -539,6 +543,57 @@
           </div>
         </div>
 
+      </div>
+
+      <!-- Acción: aplicar filtros seleccionados -->
+      <div class="filtros-acciones">
+        <p-button
+          label="Aplicar filtros"
+          icon="pi pi-check"
+          (onClick)="aplicarFiltros()"
+          [loading]="isLoading()"
+          styleClass="aplicar-filtros-btn"
+        />
+      </div>
+    </div>
+
+    <!-- Resumen general de la consulta -->
+    <div class="resumen-consulta-section">
+      <h2 class="section-title">Resumen general de la consulta</h2>
+
+      <div class="resumen-tabla-wrapper">
+        <table class="resumen-tabla">
+          <thead>
+            <tr>
+              <th class="col-texto">Concepto de gasto</th>
+              <th class="col-num">Presupuesto</th>
+              <th class="col-num">Recaudo</th>
+              <th class="col-num">% Avance</th>
+              <th class="col-num">Registros</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let fila of resumenPorConcepto">
+              <td class="col-texto">{{ fila.concepto }}</td>
+              <td class="col-num">${{ fila.presupuesto | numberFormat }}</td>
+              <td class="col-num">${{ fila.recaudo | numberFormat }}</td>
+              <td class="col-num">{{ (fila.avance * 100) | number:'1.2-2' }}%</td>
+              <td class="col-num">{{ fila.registros | numberFormat }}</td>
+            </tr>
+            <tr *ngIf="resumenPorConcepto.length === 0">
+              <td class="col-texto sin-datos" colspan="5">No hay datos para los filtros seleccionados</td>
+            </tr>
+          </tbody>
+          <tfoot *ngIf="resumenPorConcepto.length > 0">
+            <tr class="fila-total">
+              <td class="col-texto">Total</td>
+              <td class="col-num">${{ resumenTotalPresupuesto | numberFormat }}</td>
+              <td class="col-num">${{ resumenTotalRecaudo | numberFormat }}</td>
+              <td class="col-num">{{ (resumenTotalAvance * 100) | number:'1.2-2' }}%</td>
+              <td class="col-num">{{ resumenTotalRegistros | numberFormat }}</td>
+            </tr>
+          </tfoot>
+        </table>
       </div>
     </div>
 

@@ -368,3 +368,30 @@ html, body {
     background-color: rgba(255, 255, 255, 0.95);
   }
 }
+
+// SGR — Información General: acotar el panel de los multiselect de
+// "Caracterización de la consulta" al ancho del campo y truncar nombres
+// largos (el filtro de Asignación se abría demasiado). El overlay de PrimeNG
+// se anexa fuera del componente, por eso la regla vive en estilos globales.
+.p-multiselect-overlay.caracterizacion-panel {
+  // PrimeNG fija min-width:100% (resuelto contra un ancestro ancho) y el panel
+  // crece a su contenido; anulamos ese piso y lo topamos al ancho de la columna.
+  min-width: 0 !important;
+  max-width: 300px !important;
+
+  .p-multiselect-list-container,
+  .p-multiselect-items-wrapper {
+    overflow-x: hidden;
+  }
+
+  .p-multiselect-option {
+    overflow: hidden;
+
+    > span:not(.p-ink) {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      min-width: 0;
+    }
+  }
+}

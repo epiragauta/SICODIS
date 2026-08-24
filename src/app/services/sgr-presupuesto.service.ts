@@ -178,6 +178,9 @@ export class SgrPresupuestoService {
         let recaudoOtrosTotal = 0;
         let sumaAvances = 0;
 
+        // Desglose por concepto de gasto (Inversión / Ahorro / Administración)
+        const porConcepto = new Map<string, { presupuesto: number; recaudo: number; registros: number }>();
+
         registrosFiltrados.forEach(r => {
           const ppto = PresupuestoUtils.calcularPresupuestoTotal(r.presupuesto);
           const caja = PresupuestoUtils.calcularCajaTotal(r.recaudo);
@@ -194,7 +197,24 @@ export class SgrPresupuestoService {
           recaudoOtrosTotal += r.recaudo.otros;
 
           sumaAvances += avance;
+
+          const clave = (r.conceptoGasto || 'Sin clasificar').trim();
+          const acumulado = porConcepto.get(clave) ?? { presupuesto: 0, recaudo: 0, registros: 0 };
+          acumulado.presupuesto += ppto;
+          acumulado.recaudo += caja;
+          acumulado.registros += 1;
+          porConcepto.set(clave, acumulado);
         });
+
+        const resumenPorConcepto = Array.from(porConcepto.entries())
+          .map(([concepto, v]) => ({
+            concepto,
+            presupuesto: v.presupuesto,
+            recaudo: v.recaudo,
+            avance: v.presupuesto > 0 ? v.recaudo / v.presupuesto : 0,
+            registros: v.registros
+          }))
+          .sort((a, b) => b.presupuesto - a.presupuesto);
 
         const avancePromedio = registrosFiltrados.length > 0
           ? sumaAvances / registrosFiltrados.length
@@ -221,7 +241,8 @@ export class SgrPresupuestoService {
           presupuestoOtros: presupuestoOtrosTotal,
           recaudoCorriente: recaudoCorrienteTotal,
           recaudoOtros: recaudoOtrosTotal,
-          registrosDestinacionEtnica
+          registrosDestinacionEtnica,
+          resumenPorConcepto
         };
       })
     );

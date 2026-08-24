@@ -212,7 +212,8 @@ $alert-amber: #f59e0b;     // Acciones de remoción
 
     .filtros-container {
       display: grid;
-      grid-template-columns: auto auto 1fr auto;
+      grid-template-columns: repeat(4, 1fr); // Columnas de igual proporción de ancho
+      align-items: stretch;
       gap: 1.5rem;
 
       .filtro-box {
@@ -389,6 +390,95 @@ $alert-amber: #f59e0b;     // Acciones de remoción
             }
           }
         }
+      }
+    }
+
+    // Acción: aplicar filtros seleccionados
+    .filtros-acciones {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 1.5rem;
+
+      ::ng-deep .aplicar-filtros-btn {
+        background: #0943b5;
+        border: none;
+        border-radius: 2rem;
+        padding: 0.75rem 2.5rem;
+        font-weight: 600;
+
+        &:hover {
+          background: #0736a0;
+        }
+      }
+    }
+  }
+
+  // Resumen general de la consulta
+  .resumen-consulta-section {
+    margin-bottom: 2rem;
+
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: $civic-navy;
+      margin-bottom: 1.5rem;
+      padding: 1rem 1.5rem;
+      background: white;
+      border-radius: 12px;
+      border-left: 4px solid $civic-gold;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .resumen-tabla-wrapper {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 0.5rem;
+      overflow-x: auto;
+    }
+
+    .resumen-tabla {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+
+      .col-num {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+      }
+
+      thead th {
+        background: $civic-navy;
+        color: white;
+        font-weight: 600;
+        padding: 0.85rem 1rem;
+        text-align: left;
+        white-space: nowrap;
+      }
+
+      tbody td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #eef2f7;
+        color: #374151;
+      }
+
+      tbody tr:hover td {
+        background: #f8fafc;
+      }
+
+      .sin-datos {
+        text-align: center;
+        color: #9ca3af;
+        font-style: italic;
+      }
+
+      tfoot .fila-total td {
+        padding: 0.85rem 1rem;
+        font-weight: 700;
+        color: $civic-navy;
+        border-top: 2px solid $civic-gold;
+        background: $civic-cloud;
       }
     }
   }
@@ -751,6 +841,7 @@ $alert-amber: #f59e0b;     // Acciones de remoción
   // MultiSelect Wrapper
   .multiselect-wrapper {
     margin-top: 0.5rem;
+    position: relative; // Referencia de ancho para el panel del multiselect
 
     // Wrapper específico para rango de meses
     &.rango-meses-wrapper {

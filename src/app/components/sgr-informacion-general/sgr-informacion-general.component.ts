@@ -19,7 +19,7 @@ import { SgrPresupuestoService } from '../../services/sgr-presupuesto.service';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 
 // Models
-import { FiltrosSGR, DatosAgregados, EntidadCount } from '../../models/sgr-presupuesto.models';
+import { FiltrosSGR, DatosAgregados, EntidadCount, ResumenConcepto } from '../../models/sgr-presupuesto.models';
 
 interface PresupuestoMetricas {
   presupuestoTotal: number;
@@ -113,15 +113,15 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
   porcentajeDisponibilidad: number = 50;
 
   // Opciones para cada tipo de caracterización
+  // Nota: se elimina la opción "Todos" para evitar redundancia con el
+  // "seleccionar todo" nativo del encabezado del p-multiselect (obs. mockup).
   conceptoGastoOpciones = [
-    { label: 'Todos', value: 'Todos' },
     { label: 'Inversión', value: 'Inversión' },
     { label: 'Ahorro', value: 'Ahorro' },
     { label: 'Administración', value: 'Administración ' }  // Nota: incluye espacio al final para coincidir con los datos
   ];
 
   regionalOpciones = [
-    { label: 'Todos', value: 'Todos' },
     { label: 'Región Eje Cafetero', value: 'Región Eje Cafetero' },
     { label: 'Región Caribe', value: 'Región Caribe' },
     { label: 'Región Centro - Oriente', value: 'Región Centro - Oriente' },
@@ -231,6 +231,9 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     recaudoCorriente: 0,
     recaudoOtros: 0
   };
+
+  // Resumen general de la consulta (desglose por concepto de gasto)
+  resumenPorConcepto: ResumenConcepto[] = [];
 
   // Estados
   isLoading = signal(false);
@@ -357,9 +360,36 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
       recaudoCorriente: datos.recaudoCorriente,
       recaudoOtros: datos.recaudoOtros
     };
+
+    // Actualizar resumen general de la consulta
+    this.resumenPorConcepto = datos.resumenPorConcepto ?? [];
+  }
+
+  // Totales del resumen general (fila Total de la tabla)
+  get resumenTotalPresupuesto(): number {
+    return this.resumenPorConcepto.reduce((s, r) => s + r.presupuesto, 0);
+  }
+
+  get resumenTotalRecaudo(): number {
+    return this.resumenPorConcepto.reduce((s, r) => s + r.recaudo, 0);
+  }
+
+  get resumenTotalRegistros(): number {
+    return this.resumenPorConcepto.reduce((s, r) => s + r.registros, 0);
+  }
+
+  get resumenTotalAvance(): number {
+    return this.resumenTotalPresupuesto > 0
+      ? this.resumenTotalRecaudo / this.resumenTotalPresupuesto
+      : 0;
   }
 
 
+
+  // Aplica los filtros seleccionados (carga manual mediante el botón "Aplicar filtros")
+  aplicarFiltros(): void {
+    this.loadData();
+  }
 
   exportarReporte(): void {
     console.log('Exportando reporte...');
@@ -397,7 +427,7 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
           this.mesHasta = null;
           break;
       }
-      this.loadData();
+      // La recarga se realiza al pulsar "Aplicar filtros"
     }
   }
 
@@ -416,8 +446,7 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
 
     // Actualizar rango de fechas para mes
     this.actualizarRangoFechasMes();
-
-    this.loadData();
+    // La recarga se realiza al pulsar "Aplicar filtros"
   }
 
   onAniosChange(): void {
@@ -438,8 +467,7 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
         this.mesHasta = null;
       }
     }
-
-    this.loadData();
+    // La recarga se realiza al pulsar "Aplicar filtros"
   }
 
   onMesDesdeChange(): void {
@@ -447,7 +475,7 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     if (this.mesDesde && this.mesHasta && this.mesDesde > this.mesHasta) {
       this.mesHasta = null;
     }
-    this.loadData();
+    // La recarga se realiza al pulsar "Aplicar filtros"
   }
 
   onMesHastaChange(): void {
@@ -455,7 +483,7 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     if (this.mesDesde && this.mesHasta && this.mesHasta < this.mesDesde) {
       this.mesDesde = null;
     }
-    this.loadData();
+    // La recarga se realiza al pulsar "Aplicar filtros"
   }
 
   // Métodos para manejar cambios en caracterizaciones
@@ -480,38 +508,30 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
         break;
     }
 
-    // Recargar datos si se desactivó una caracterización
-    if (!activo) {
-      this.loadData();
-    }
+    // La recarga se realiza al pulsar "Aplicar filtros"
   }
 
   // Métodos para manejar cambios en valores de multiselect
   onValoresConceptoGastoChange(): void {
-    console.log('Concepto de Gasto cambiado:', this.valoresConceptoGasto);
-    this.loadData();
+    // La recarga se realiza al pulsar "Aplicar filtros"
   }
 
   onValoresRegionalChange(): void {
-    console.log('Regional cambiado:', this.valoresRegional);
-    this.loadData();
+    // La recarga se realiza al pulsar "Aplicar filtros"
   }
 
   onValoresAsignacionChange(): void {
-    console.log('Asignación cambiada:', this.valoresAsignacion);
-    this.loadData();
+    // La recarga se realiza al pulsar "Aplicar filtros"
   }
 
   onValoresGrupoInteresChange(): void {
-    console.log('Grupo de Interés cambiado:', this.valoresGrupoInteres);
-    this.loadData();
+    // La recarga se realiza al pulsar "Aplicar filtros"
   }
 
   // Método para manejar cambio en filtros de entidad (columna derecha)
   onEntidadChange(nuevaEntidad: string): void {
-    console.log('Cambio de entidad detectado:', nuevaEntidad);
     this.entidadSeleccionada = nuevaEntidad;
-    this.loadData();
+    // La recarga se realiza al pulsar "Aplicar filtros"
   }
 
 
