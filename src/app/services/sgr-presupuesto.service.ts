@@ -151,6 +151,12 @@ export class SgrPresupuestoService {
           if (filtros.zomac !== null && filtros.zomac !== undefined) {
             entidadesFiltradas = entidadesFiltradas.filter(e => e.atributos.esZomac === filtros.zomac);
           }
+
+          // Filtro por entidades beneficiarias específicas (tarjeta "Beneficiario")
+          if (filtros.codigosEntidad && filtros.codigosEntidad.length > 0) {
+            const codigos = new Set(filtros.codigosEntidad);
+            entidadesFiltradas = entidadesFiltradas.filter(e => codigos.has(e.codigo));
+          }
         }
 
         // Obtener códigos de entidades filtradas

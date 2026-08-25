@@ -199,6 +199,7 @@ export interface FiltrosSGR {
   zomac?: boolean | null;
   destinacionEtnica?: boolean | null;
   conceptoGasto?: string | string[];
+  codigosEntidad?: string[];   // Filtro por entidades beneficiarias específicas
 }
 
 export interface EntidadCount {

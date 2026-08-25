@@ -19,20 +19,26 @@ $alert-amber: #f59e0b;     // Acciones de remoción
     padding: 0 2rem;
   }
 
-  // Header Section
-  .header-section {
+  // Tarjeta 1: Información general del SGR (fija al bienio)
+  .info-general-card {
+    background: white;
+    border-radius: 12px;
+    border-left: 4px solid $civic-gold;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 1.5rem;
     margin-bottom: 2rem;
 
     .main-title {
       font-size: 1.5rem;
       font-weight: 600;
       color: $civic-navy;
-      margin-bottom: 1.5rem;
-      padding: 1rem 1.5rem;
-      background: white;
-      border-radius: 12px;
-      border-left: 4px solid $civic-gold;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      margin: 0 0 1.5rem;
+    }
+
+    // Las tarjetas de entidades quedan dentro de la tarjeta contenedora
+    .entidades-grid {
+      margin-top: 1.5rem;
+      margin-bottom: 0;
     }
 
     .kpi-grid {
@@ -207,6 +213,7 @@ $alert-amber: #f59e0b;     // Acciones de remoción
       padding: 1rem 1.5rem;
       background: white;
       border-radius: 12px;
+      border-left: 4px solid $civic-gold;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 
@@ -314,7 +321,20 @@ $alert-amber: #f59e0b;     // Acciones de remoción
       .entidad-box {
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
+        gap: 0;
+
+        .entidad-tipo-section,
+        .beneficiario-section {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+        }
+
+        .seccion-separador {
+          height: 1px;
+          background: #e5e7eb;
+          margin: 1.5rem 0;
+        }
 
         .checkbox-item {
           display: flex;

@@ -1,8 +1,8 @@
 <div class="sgr-info-general-container">
   <div class="container">
-    <!-- Header: Información General del SGR -->
-    <div class="header-section">
-      <h1 class="main-title">Información general del SGR</h1>
+    <!-- TARJETA 1: Información general del SGR (fija al bienio seleccionado) -->
+    <div class="info-general-card">
+      <h1 class="main-title">Información general del SGR - Bienio {{ bienioActual }}</h1>
 
       <div class="kpi-grid">
         <div class="kpi-card">
@@ -20,10 +20,9 @@
           <p class="kpi-value">{{ avanceRecaudoKPI.toFixed(2) }}%</p>
         </div>
       </div>
-    </div>
 
-    <!-- Tarjetas de Entidades -->
-    <div class="entidades-grid">
+      <!-- Tarjetas de Entidades -->
+      <div class="entidades-grid">
       <div class="entidad-card beneficiarias">
         <div class="entidad-icon">
           <i class="pi pi-users"></i>
@@ -75,13 +74,16 @@
         <div class="entidad-info">
           <h4>Entidades con destinación Étnica</h4>
           <p class="entidad-count">{{ entidadesCount.etnicas }}</p>
-          
+
         </div>
+      </div>
       </div>
     </div>
 
-    <!-- Sección de Filtros -->
-    <div class="filtros-section">      
+    <!-- TARJETA 2: Consulta específica de los recursos del SGR -->
+    <div class="filtros-section">
+      <h2 class="section-title consulta-title">Consulta específica de los recursos del SGR</h2>
+
       <!-- Trazabilidad de Filtros -->
       <div class="filtros-activos" *ngIf="filtrosActivos.length > 0">
         <div class="filtros-activos-header">
@@ -121,7 +123,7 @@
         <div class="filtro-box presupuesto-recaudo-box">
           <!-- Presupuesto de consulta -->
           <div class="presupuesto-section">
-            <h3>Presupuesto de consulta</h3>
+            <h3>Presupuesto</h3>
             <div class="radio-group">
               <div class="radio-item">
                 <p-radiobutton
@@ -131,7 +133,7 @@
                   (ngModelChange)="onPresupuestoSeleccionChange($event)"
                   inputId="presupuestoTotal"
                 />
-                <label for="presupuestoTotal">Presupuesto Total</label>
+                <label for="presupuestoTotal">Total</label>
               </div>
 
               <div class="radio-item">
@@ -142,7 +144,7 @@
                   (ngModelChange)="onPresupuestoSeleccionChange($event)"
                   inputId="presupuestoCorriente"
                 />
-                <label for="presupuestoCorriente">Presupuesto Corriente</label>
+                <label for="presupuestoCorriente">Corriente</label>
               </div>
 
               <div class="radio-item">
@@ -153,7 +155,7 @@
                   (ngModelChange)="onPresupuestoSeleccionChange($event)"
                   inputId="presupuestoOtros"
                 />
-                <label for="presupuestoOtros">Presupuesto Otros</label>
+                <label for="presupuestoOtros">Otros</label>
               </div>
             </div>
 
@@ -187,7 +189,7 @@
                   (ngModelChange)="onRecaudoSeleccionChange($event)"
                   inputId="recaudoTotal"
                 />
-                <label for="recaudoTotal">Recaudo Total</label>
+                <label for="recaudoTotal">Total</label>
               </div>
 
               <div class="radio-item">
@@ -198,7 +200,7 @@
                   (ngModelChange)="onRecaudoSeleccionChange($event)"
                   inputId="recaudoCorriente"
                 />
-                <label for="recaudoCorriente">Recaudo Corriente</label>
+                <label for="recaudoCorriente">Corriente</label>
               </div>
 
               <div class="radio-item">
@@ -209,7 +211,7 @@
                   (ngModelChange)="onRecaudoSeleccionChange($event)"
                   inputId="recaudoOtros"
                 />
-                <label for="recaudoOtros">Recaudo Otros</label>
+                <label for="recaudoOtros">Otros</label>
               </div>
             </div>
           </div>
@@ -474,18 +476,9 @@
 
         <!-- Tipo de entidad -->
         <div class="filtro-box entidad-box">
+          <!-- Tipo de entidad -->
+          <div class="entidad-tipo-section">
           <h3>Tipo de entidad</h3>
-
-          <div class="checkbox-item">
-            <p-radiobutton
-              name="entidad"
-              value="beneficiario"
-              [ngModel]="entidadSeleccionada"
-              (ngModelChange)="onEntidadChange($event)"
-              inputId="beneficiario"
-            />
-            <label for="beneficiario">Beneficiario</label>
-          </div>
 
           <div class="checkbox-item">
             <p-radiobutton
@@ -495,7 +488,7 @@
               (ngModelChange)="onEntidadChange($event)"
               inputId="productoras"
             />
-            <label for="productoras">Entidades Productora</label>
+            <label for="productoras">Productora</label>
           </div>
 
           <div class="checkbox-item">
@@ -540,6 +533,48 @@
               inputId="capital"
             />
             <label for="capital">Capitáles</label>
+          </div>
+          </div>
+
+          <!-- Separador visual -->
+          <div class="seccion-separador"></div>
+
+          <!-- Beneficiarios -->
+          <div class="beneficiario-section">
+          <h3>Beneficiarios</h3>
+
+          <div class="checkbox-item">
+            <p-checkbox
+              name="beneficiario"
+              [(ngModel)]="beneficiarioActivo"
+              (ngModelChange)="onBeneficiarioChange($event)"
+              [binary]="true"
+              inputId="beneficiarioCheck"
+            />
+            <label for="beneficiarioCheck">Beneficiarios</label>
+          </div>
+
+          <div class="multiselect-wrapper" *ngIf="beneficiarioActivo">
+            <p-multiselect
+              [options]="beneficiariosOpciones"
+              [(ngModel)]="beneficiariosSeleccionados"
+              (ngModelChange)="onBeneficiariosChange()"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Seleccione entidades"
+              [filter]="true"
+              filterPlaceholder="Buscar..."
+              [showClear]="true"
+              [showToggleAll]="true"
+              display="comma"
+              styleClass="w-full"
+              [maxSelectedLabels]="1"
+              selectedItemsLabel="{0} entidades"
+              class="w-full md:w-80"
+              panelStyleClass="caracterizacion-panel beneficiario-panel"
+              [displaySelectedLabel]="false"
+            ></p-multiselect>
+          </div>
           </div>
         </div>
 
