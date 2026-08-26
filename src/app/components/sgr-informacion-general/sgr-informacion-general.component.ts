@@ -243,6 +243,7 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
 
   // Estados
   isLoading = signal(false);
+  isExporting = signal(false);
   fechaReporte: string = '';
 
   constructor(private sgrPresupuestoService: SgrPresupuestoService) {
@@ -438,9 +439,174 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     this.loadData();
   }
 
-  exportarReporte(): void {
-    console.log('Exportando reporte...');
-    alert('Funcionalidad de exportación en desarrollo');
+  // Genera un archivo Excel (.xlsx) con dos hojas:
+  //  1) "Información general": KPIs del bienio, conteo de entidades y filtros aplicados.
+  //  2) "Detalle": desglose por concepto de gasto de la consulta (con la fila Total).
+  async exportarReporte(): Promise<void> {
+    this.isExporting.set(true);
+    try {
+      const { Workbook } = await import('exceljs');
+      const workbook = new Workbook();
+      workbook.creator = 'SICODIS';
+      workbook.created = new Date();
+
+      // Estilos/format reutilizables
+      const NAVY = 'FF1E3A5F';
+      const CLOUD = 'FFF1F5F9';
+      const MONEY_FMT = '"$"#,##0';
+      const PCT_FMT = '0.00%';
+      const NUM_FMT = '#,##0';
+
+      // ===================== HOJA 1: Información general =====================
+      const wsGen = workbook.addWorksheet('Información general');
+      wsGen.columns = [{ width: 42 }, { width: 26 }];
+
+      let r = 1;
+      const setMerged = (texto: string, font: Partial<import('exceljs').Font>) => {
+        const cell = wsGen.getCell(`A${r}`);
+        cell.value = texto;
+        cell.font = font;
+        wsGen.mergeCells(`A${r}:B${r}`);
+        r++;
+      };
+      setMerged('SICODIS · SGR — Información General', { bold: true, size: 14, color: { argb: NAVY } });
+      setMerged(`Bienio: ${this.bienioActual}`, { bold: true, size: 11 });
+      setMerged(`Reporte generado el ${this.fechaReporte}`, { italic: true, size: 10, color: { argb: 'FF6B7280' } });
+      r++;
+
+      const addSection = (titulo: string) => {
+        ['A', 'B'].forEach((col, i) => {
+          const cell = wsGen.getCell(`${col}${r}`);
+          if (i === 0) {
+            cell.value = titulo;
+            cell.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 11 };
+          }
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: NAVY } };
+        });
+        wsGen.getRow(r).height = 18;
+        r++;
+      };
+      const addRow = (label: string, value: string | number, fmt?: string, bold = false) => {
+        const cellL = wsGen.getCell(`A${r}`);
+        const cellV = wsGen.getCell(`B${r}`);
+        cellL.value = label;
+        cellV.value = value;
+        if (fmt) cellV.numFmt = fmt;
+        cellV.alignment = { horizontal: 'right' };
+        if (bold) { cellL.font = { bold: true }; cellV.font = { bold: true }; }
+        r++;
+      };
+
+      addSection('Indicadores generales (bienio)');
+      addRow('Presupuesto Total', this.presupuestoMetricas.presupuestoTotal, MONEY_FMT, true);
+      addRow('   Presupuesto Corriente', this.presupuestoMetricas.presupuestoCorriente, MONEY_FMT);
+      addRow('   Presupuesto Otros', this.presupuestoMetricas.presupuestoOtros, MONEY_FMT);
+      addRow('Recaudo Total', this.recaudoMetricas.recaudoTotal, MONEY_FMT, true);
+      addRow('   Recaudo Corriente', this.recaudoMetricas.recaudoCorriente, MONEY_FMT);
+      addRow('   Recaudo Otros', this.recaudoMetricas.recaudoOtros, MONEY_FMT);
+      const avanceFrac = this.presupuestoMetricas.presupuestoTotal > 0
+        ? this.recaudoMetricas.recaudoTotal / this.presupuestoMetricas.presupuestoTotal
+        : 0;
+      addRow('Avance de Recaudo', avanceFrac, PCT_FMT, true);
+      r++;
+
+      addSection('Entidades');
+      addRow('Beneficiarias', this.entidadesCount.beneficiarias, NUM_FMT);
+      addRow('Entidades Productoras', this.entidadesCount.productoras, NUM_FMT);
+      addRow('Entidades ZOMAC', this.entidadesCount.zomac, NUM_FMT);
+      addRow('Entidades PDET', this.entidadesCount.pdet, NUM_FMT);
+      addRow('Entidades con destinación Étnica', this.entidadesCount.etnicas, NUM_FMT);
+      r++;
+
+      addSection('Filtros aplicados a la consulta');
+      ['A', 'B'].forEach((col, i) => {
+        const cell = wsGen.getCell(`${col}${r}`);
+        cell.value = i === 0 ? 'Tipo' : 'Valor';
+        cell.font = { bold: true };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: CLOUD } };
+      });
+      r++;
+      const filtros = this.filtrosActivos;
+      if (filtros.length === 0) {
+        wsGen.getCell(`A${r}`).value = 'Sin filtros adicionales';
+        wsGen.mergeCells(`A${r}:B${r}`);
+        r++;
+      } else {
+        filtros.forEach(f => {
+          wsGen.getCell(`A${r}`).value = f.tipo;
+          const cellV = wsGen.getCell(`B${r}`);
+          cellV.value = f.valor;
+          cellV.alignment = { horizontal: 'left', wrapText: true };
+          r++;
+        });
+      }
+
+      // ===================== HOJA 2: Detalle =====================
+      const wsDet = workbook.addWorksheet('Detalle');
+      wsDet.columns = [
+        { header: 'Concepto de gasto', key: 'concepto', width: 34 },
+        { header: 'Presupuesto', key: 'presupuesto', width: 24 },
+        { header: 'Recaudo', key: 'recaudo', width: 24 },
+        { header: '% Avance', key: 'avance', width: 14 },
+        { header: 'Registros', key: 'registros', width: 14 }
+      ];
+      const headerRow = wsDet.getRow(1);
+      headerRow.eachCell(cell => {
+        cell.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 11 };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: NAVY } };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+      });
+      headerRow.height = 20;
+
+      this.resumenPorConcepto.forEach(fila => {
+        const row = wsDet.addRow({
+          concepto: fila.concepto,
+          presupuesto: fila.presupuesto,
+          recaudo: fila.recaudo,
+          avance: fila.avance,
+          registros: fila.registros
+        });
+        row.getCell('presupuesto').numFmt = MONEY_FMT;
+        row.getCell('recaudo').numFmt = MONEY_FMT;
+        row.getCell('avance').numFmt = PCT_FMT;
+        row.getCell('registros').numFmt = NUM_FMT;
+      });
+
+      if (this.resumenPorConcepto.length > 0) {
+        const totalRow = wsDet.addRow({
+          concepto: 'Total',
+          presupuesto: this.resumenTotalPresupuesto,
+          recaudo: this.resumenTotalRecaudo,
+          avance: this.resumenTotalAvance,
+          registros: this.resumenTotalRegistros
+        });
+        totalRow.eachCell(cell => {
+          cell.font = { bold: true };
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: CLOUD } };
+        });
+        totalRow.getCell('presupuesto').numFmt = MONEY_FMT;
+        totalRow.getCell('recaudo').numFmt = MONEY_FMT;
+        totalRow.getCell('avance').numFmt = PCT_FMT;
+        totalRow.getCell('registros').numFmt = NUM_FMT;
+      }
+
+      // ===================== Descarga =====================
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer as BlobPart], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      const fechaArchivo = new Date().toISOString().slice(0, 10);
+      link.download = `SGR_Informacion_General_${this.bienioActual}_${fechaArchivo}.xlsx`;
+      link.click();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error al exportar el reporte:', error);
+    } finally {
+      this.isExporting.set(false);
+    }
   }
 
   // Métodos para manejar cambios en filtros de periodicidad
