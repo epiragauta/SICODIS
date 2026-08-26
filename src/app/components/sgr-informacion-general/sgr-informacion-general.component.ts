@@ -445,8 +445,11 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
   async exportarReporte(): Promise<void> {
     this.isExporting.set(true);
     try {
-      const { Workbook } = await import('exceljs');
-      const workbook = new Workbook();
+      // ExcelJS es CommonJS: en el build de producción (esbuild) el named import
+      // no resuelve bien, por lo que se accede a través del default del módulo.
+      const ExcelJSModule: any = await import('exceljs');
+      const ExcelJS = ExcelJSModule.default ?? ExcelJSModule;
+      const workbook: import('exceljs').Workbook = new ExcelJS.Workbook();
       workbook.creator = 'SICODIS';
       workbook.created = new Date();
 
