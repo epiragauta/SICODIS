@@ -176,7 +176,12 @@ export class SgpResguardosComponent implements OnInit {
           {
             icon: 'pi pi-folder',
             titulo: 'Fuente de información',
-            texto: 'La distribución de recursos se realiza con base en la información poblacional certificada por el DANE, única fuente válida para estos efectos.'
+            texto: 'La distribución de recursos se realiza con base en la información poblacional certificada por el DANE, única fuente válida para estos efectos. El DANE certifica población, no resguardos indígenas.'
+          },
+          {
+            icon: 'pi pi-map',
+            titulo: 'Constitución de resguardos',
+            texto: 'La constitución y el reconocimiento de los resguardos indígenas corresponde a la Agencia Nacional de Tierras (ANT), en articulación con el Ministerio del Interior. El DNP no expide certificaciones sobre resguardos ni sobre población.'
           },
           {
             icon: 'pi pi-file',
