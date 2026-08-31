@@ -174,7 +174,7 @@
           <div class="card-info">
             <h3>Población certificada
               <i class="pi pi-info-circle info-icon"
-                 pTooltip="Número de personas certificadas por el DANE en los resguardos indígenas de la selección consultada."
+                 pTooltip="Número de personas certificadas por el DANE como residentes en los resguardos indígenas de la selección consultada. La certificación de población es expedida por el DANE; el DNP la utiliza como insumo para la distribución."
                  tooltipPosition="top"></i>
             </h3>
             <p class="card-value">{{ poblacionActual | numberFormat }} personas</p>
@@ -302,9 +302,9 @@
     <div class="charts-grid">
       <!-- Cantidad de Resguardos -->
       <div class="chart-card resguardos-card">
-        <h3>CANTIDAD DE RESGUARDOS CERTIFICADOS
+        <h3>RESGUARDOS CON POBLACIÓN CERTIFICADA (TOTAL NACIONAL)
           <i class="pi pi-info-circle info-icon"
-             pTooltip="Número de resguardos indígenas con población certificada por el DANE en cada vigencia."
+             pTooltip="Número de resguardos indígenas para los cuales el DANE certificó población en cada vigencia. El DANE certifica población, no resguardos: la constitución y el reconocimiento de resguardos indígenas corresponde a la Agencia Nacional de Tierras (ANT), en articulación con el Ministerio del Interior. Esta cifra es el total nacional y no varía con los filtros de la consulta."
              tooltipPosition="top"></i>
         </h3>
 
@@ -344,15 +344,18 @@
 
       <!-- Población Total -->
       <div class="chart-card poblacion-card">
-        <h3>POBLACIÓN INDÍGENA EN COLOMBIA
+        <h3>POBLACIÓN INDÍGENA RESGUARDADA
           <i class="pi pi-info-circle info-icon"
-             pTooltip="Población total certificada en los resguardos indígenas del país para la vigencia actual."
+             pTooltip="Población certificada por el DANE que reside en resguardos indígenas del país para la vigencia actual. No corresponde al total de población indígena de Colombia: no incluye comunidades no resguardadas, parcialidades, reservas, territorios de ocupación tradicional ni población indígena en contexto de ciudad."
              tooltipPosition="top"></i>
         </h3>
         <div class="poblacion-box">
-          <div class="poblacion-label-top">Total población certificada</div>
+          <div class="poblacion-label-top">Total población certificada en resguardos</div>
           <div class="poblacion-number-large">{{ poblacionTotalHistorica | numberFormat }}</div>
           <div class="poblacion-text-bottom">personas - vigencia actual</div>
+        </div>
+        <div class="chart-note info">
+          <p>No incluye comunidades no resguardadas, parcialidades, reservas, territorios de ocupación tradicional ni población indígena en contexto de ciudad.</p>
         </div>
       </div>
 
@@ -376,7 +379,12 @@
       <p>
         <strong>Notas:</strong> (1) Cifras en pesos corrientes. (2) La distribución de estos recursos se realiza conforme con el artículo 83 de la Ley 715 de 2001,
         artículos 25 y 26 del Decreto 1953 de 2014 y la información de la población en cada resguardo indígena certificada por el Departamento
-        Administrativo Nacional de Estadística (DANE).
+        Administrativo Nacional de Estadística (DANE). (3) El DANE certifica población, no resguardos: la constitución y el reconocimiento de los
+        resguardos indígenas corresponde a la Agencia Nacional de Tierras (ANT), en articulación con el Ministerio del Interior. El DNP no expide
+        certificaciones; utiliza como insumo la información suministrada por las entidades competentes. (4) La distribución se presenta según el
+        municipio o área no municipalizada en la que se ubica la población del resguardo, por lo que un mismo resguardo puede aparecer en más de
+        un registro del detalle. (5) La población reportada corresponde únicamente a población resguardada; no incluye comunidades no resguardadas,
+        parcialidades, reservas, territorios de ocupación tradicional ni población indígena en contexto de ciudad.
       </p>
     </div>
   </div><!-- /container -->
