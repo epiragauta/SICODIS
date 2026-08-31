@@ -810,6 +810,35 @@ export interface DescargaDetalleSgpIndigenasParams {
   resguardo?: string;
 }
 
+// ========== SGR Distribución — Carga de insumos Interfaces ==========
+
+export interface CargarInsumoDistribucionParams {
+  idBienio: number;
+  bienio: string;
+  fuente: string;
+  insumo: string;
+  archivo: File;
+}
+
+export interface InsumoCargaResultado {
+  fuente: string;
+  insumo: string;
+  nombreArchivo: string;
+  version?: number;
+  fechaCarga?: string;
+  filas?: number;
+  mensaje?: string;
+}
+
+export interface InsumoEstado {
+  fuente: string;
+  insumo: string;
+  cargado: boolean;
+  nombreArchivo?: string;
+  version?: number;
+  fechaCarga?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -2278,6 +2307,54 @@ getSgrDescargaResumenPbcRecaudoMensual( idvigencia: number
   // ============================================================================
   // END EFICIENCIAS FISCALES Y ADMINISTRATIVAS
   // ============================================================================
+
+  // ============================================================================
+  // SGR DISTRIBUCIÓN — CARGA DE INSUMOS (Manual M-CA-04 v12)
+  // ============================================================================
+
+  /**
+   * Sube al backend el archivo (plantilla Excel) de un insumo requerido para el
+   * cálculo de la distribución del SGR, asociado a un bienio y a su fuente.
+   * @param params - Bienio, fuente (MME, DANE, MHCP, ANH/ANM, SGP, Min. Interior),
+   *                 identificador del insumo y archivo a cargar.
+   * @returns Observable con la respuesta HTTP del cargue.
+   */
+  cargarInsumoDistribucionSgr(params: CargarInsumoDistribucionParams): Observable<HttpResponse<InsumoCargaResultado>> {
+    const formData = new FormData();
+    formData.append('archivo', params.archivo, params.archivo.name);
+    formData.append('idBienio', String(params.idBienio));
+    formData.append('bienio', params.bienio);
+    formData.append('fuente', params.fuente);
+    formData.append('insumo', params.insumo);
+
+    const segments = [params.idBienio, params.fuente, params.insumo]
+      .map(s => encodeURIComponent(String(s)))
+      .join('/');
+    const url = `${this.baseUrl}/sgrdistribucion/insumos/cargar/${segments}`;
+    return this.http.post<InsumoCargaResultado>(url, formData, { observe: 'response' });
+  }
+
+  /**
+   * Obtiene el estado de cargue de los insumos de la distribución del SGR para un bienio.
+   * @param idBienio - Identificador del bienio.
+   * @returns Observable con el estado de cada insumo (cargado, pendiente, versión, fecha).
+   */
+  getEstadoInsumosDistribucionSgr(idBienio: number): Observable<InsumoEstado[]> {
+    const url = `${this.baseUrl}/sgrdistribucion/insumos/estado/${encodeURIComponent(idBienio)}`;
+    return this.http.get<InsumoEstado[]>(url);
+  }
+
+  /**
+   * Descarga la plantilla Excel oficial para diligenciar un insumo de la distribución del SGR.
+   * @param fuente - Sigla de la fuente (MME, DANE, MHCP, ANH/ANM, SGP, MININTERIOR).
+   * @param insumo - Identificador del insumo.
+   * @returns Observable con la respuesta HTTP que contiene el Blob de la plantilla .xlsx
+   */
+  descargarPlantillaInsumoDistribucionSgr(fuente: string, insumo: string): Observable<HttpResponse<Blob>> {
+    const segments = [fuente, insumo].map(s => encodeURIComponent(String(s))).join('/');
+    const url = `${this.baseUrl}/sgrdistribucion/insumos/plantilla/${segments}`;
+    return this.http.get(url, { responseType: 'blob', observe: 'response' });
+  }
 
   login(usuario: string, password: string): Observable<string> {
       return this.http.post<{ token: string }>('https://sicodis.dnp.gov.co/apiws/auth/login', { usuario, password })

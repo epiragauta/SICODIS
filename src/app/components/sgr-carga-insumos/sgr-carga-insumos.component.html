@@ -1,0 +1,172 @@
+<div class="sicodis-container">
+
+  <!-- Popups para Diccionario y Siglas -->
+  <app-info-popup
+    [infoText]="diccionarioContent"
+    contentTitle="Insumos de la distribución"
+    [showPopup]="showDiccionarioPopup"
+    (onClose)="closeDiccionarioPopup()">
+  </app-info-popup>
+
+  <app-info-popup
+    [infoText]="siglasContent"
+    contentTitle="Siglas y Abreviaciones"
+    [showPopup]="showSiglasPopup"
+    (onClose)="closeSiglasPopup()">
+  </app-info-popup>
+
+  <!-- Banner -->
+  <div class="gradient-banner">
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h1>Carga de insumos · Distribución SGR</h1>
+      <p>Cargue las plantillas de los insumos requeridos para el cálculo de la distribución del Sistema General de Regalías, según el Manual M-CA-04.</p>
+    </div>
+  </div>
+
+  <!-- Panel de filtros -->
+  <div class="filters-panel">
+    <div class="filters-row">
+      <div class="p-field bienio-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="bienio" [options]="bienios" inputId="bienioSelect" [(ngModel)]="selectedBienio"
+            optionLabel="label" [showClear]="false" placeholder="Bienio"></p-select>
+          <label for="bienioSelect">Bienio</label>
+        </p-floatlabel>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fecha y accesos a Diccionario / Siglas -->
+  <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0;">
+    <div style="width: 83%;">
+      <p class="date-update">Norma base: Manual M-CA-04 · versión 12 (DNP, 2025)</p>
+      <p class="date-update">Ejercicio de referencia: Plan de Recursos 2027 – 2036</p>
+    </div>
+    <div style="position: relative; padding-bottom: .25rem;">
+      <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 1.8rem; width: 96px;"
+          (click)="showPopupDiccionario()">
+      </button>
+      <button pButton type="button" label="Siglas" class="p-button-secondary" style="width: 90px;"
+          (click)="showPopupSiglas()">
+      </button>
+    </div>
+  </div>
+
+  <!-- Resumen de avance -->
+  <div class="progress-panel">
+    <div class="progress-info">
+      <span class="progress-title">Avance de la carga</span>
+      <span class="progress-count">{{ insumosCargados }} de {{ totalInsumos }} insumos cargados</span>
+    </div>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" [style.width.%]="porcentajeAvance"></div>
+    </div>
+    <span class="progress-pct">{{ porcentajeAvance }}%</span>
+  </div>
+
+  <!-- Tarjetas por entidad fuente -->
+  <div class="fuentes-section">
+    <p-card *ngFor="let fuente of fuentes" class="fuente-card">
+      <ng-template pTemplate="header">
+        <div class="fuente-header">
+          <div class="fuente-header-left">
+            <i [class]="fuente.icono"></i>
+            <div class="fuente-titles">
+              <span class="fuente-sigla">{{ fuente.sigla }}</span>
+              <span class="fuente-nombre">{{ fuente.nombre }}</span>
+            </div>
+          </div>
+          <span class="fuente-badge">{{ cargadosPorFuente(fuente) }} / {{ fuente.insumos.length }}</span>
+        </div>
+      </ng-template>
+
+      <p-table [value]="fuente.insumos" styleClass="p-datatable-sm insumos-table">
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="col-insumo">Insumo</th>
+            <th class="col-fase">Fase</th>
+            <th class="col-formato">Formato</th>
+            <th class="col-estado">Estado</th>
+            <th class="col-archivo">Archivo</th>
+            <th class="col-acciones">Acciones</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-insumo>
+          <tr>
+            <td class="col-insumo">
+              <div class="insumo-nombre">{{ insumo.nombre }}</div>
+              <div class="insumo-descripcion">{{ insumo.descripcion }}</div>
+            </td>
+            <td class="col-fase">
+              <span class="fase-chip" [ngClass]="insumo.fase === 'III' ? 'fase-3' : 'fase-1'">
+                {{ insumo.fase === 'III' ? 'Sección III' : 'Sección I' }}
+              </span>
+            </td>
+            <td class="col-formato">{{ insumo.formatos }}</td>
+            <td class="col-estado">
+              <p-tag [value]="estadoLabel(insumo.estado)" [severity]="estadoSeverity(insumo.estado)"></p-tag>
+            </td>
+            <td class="col-archivo">
+              <ng-container *ngIf="insumo.nombreArchivo; else sinArchivo">
+                <div class="archivo-nombre" [title]="insumo.nombreArchivo">
+                  <i class="pi pi-file-excel"></i> {{ insumo.nombreArchivo }}
+                </div>
+                <div class="archivo-meta" *ngIf="insumo.fechaCarga">
+                  v{{ insumo.version }} · {{ insumo.fechaCarga | date:'dd/MM/yyyy HH:mm' }}
+                </div>
+                <div class="archivo-msg" *ngIf="insumo.mensaje">{{ insumo.mensaje }}</div>
+              </ng-container>
+              <ng-template #sinArchivo>
+                <span class="archivo-vacio">Sin archivo</span>
+              </ng-template>
+            </td>
+            <td class="col-acciones">
+              <!-- input nativo oculto por insumo -->
+              <input type="file" [id]="'file-' + fuente.id + '-' + insumo.id" class="hidden-file-input"
+                     [accept]="accept"
+                     (change)="onFileSelected($event, fuente, insumo)" />
+
+              <button pButton type="button"
+                      [label]="insumo.estado === 'cargado' ? 'Reemplazar' : 'Cargar'"
+                      icon="pi pi-upload"
+                      class="p-button-primary p-button-sm accion-btn"
+                      [disabled]="insumo.estado === 'cargando'"
+                      (click)="triggerFileInput('file-' + fuente.id + '-' + insumo.id)">
+              </button>
+
+              <button pButton type="button"
+                      icon="pi pi-download"
+                      class="p-button-secondary p-button-sm accion-icon"
+                      pTooltip="Descargar plantilla"
+                      (click)="descargarPlantilla(fuente, insumo)">
+              </button>
+
+              <button pButton type="button"
+                      icon="pi pi-times"
+                      class="p-button-secondary p-button-sm accion-icon"
+                      *ngIf="insumo.estado === 'cargado' || insumo.estado === 'error'"
+                      pTooltip="Quitar archivo"
+                      (click)="quitarArchivo(insumo)">
+              </button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
+  </div>
+
+  <!-- Notas -->
+  <div class="notes-section">
+    <div class="notes-content">
+      <h4 class="notes-title">Notas:</h4>
+      <ul class="notes-list">
+        <li>Los insumos se diligencian en las plantillas normalizadas de Excel; use "Descargar plantilla" para obtener el formato oficial.</li>
+        <li>Los códigos DANE deben tener siempre cinco dígitos, conservando el cero inicial de Antioquia y Atlántico.</li>
+        <li>Los insumos de la Sección III (Factor K, Población étnica, Acreditación étnica) alimentan el cálculo indicativo de destinaciones étnicas.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
