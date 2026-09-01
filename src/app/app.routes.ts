@@ -18,6 +18,8 @@ import { SgrRecaudoMensualComponent } from './components/sgr-recaudo-mensual/sgr
 import { SgrComparativoComponent } from './components/sgr-comparativo/sgr-comparativo.component';
 import { SgrProgramacionComponent } from './components/sgr-programacion/sgr-programacion.component';
 import { SgrCargaInsumosComponent } from './components/sgr-carga-insumos/sgr-carga-insumos.component';
+import { SgrEjecucionDistribucionComponent } from './components/sgr-ejecucion-distribucion/sgr-ejecucion-distribucion.component';
+import { SgrParametrosDistribucionComponent } from './components/sgr-parametros-distribucion/sgr-parametros-distribucion.component';
 import { SgrRecaudoDirectasComponent } from './components/sgr-recaudo-directas/sgr-recaudo-directas.component';
 import { SgrMontosCorrientesConstantesComponent } from './components/sgr-montos-corrientes-constantes/sgr-montos-corrientes-constantes.component';
 import { PgnInversionPorSectorComponent } from './components/pgn-inversion-por-sector/pgn-inversion-por-sector.component';
@@ -39,6 +41,8 @@ export const routes: Routes = [
     { path: 'sgr-comparativo',                component: SgrComparativoComponent,                          data: { breadcrumb: 'SGR — Comparativo' } },
     { path: 'sgr-programacion',               component: SgrProgramacionComponent,                         data: { breadcrumb: 'SGR — Programación' } },
     { path: 'sgr-carga-insumos',              component: SgrCargaInsumosComponent,                         data: { breadcrumb: 'SGR — Carga de Insumos' } },
+    { path: 'sgr-ejecucion-distribucion',     component: SgrEjecucionDistribucionComponent,                data: { breadcrumb: 'SGR — Ejecución de la Distribución' } },
+    { path: 'sgr-parametros-distribucion',    component: SgrParametrosDistribucionComponent,               data: { breadcrumb: 'SGR — Parámetros de la Distribución' } },
     { path: 'sgr-recaudo-directas',           component: SgrRecaudoDirectasComponent,                      data: { breadcrumb: 'SGR — Recaudo Directas' } },
     { path: 'sgr-montos-corrientes-constantes', component: SgrMontosCorrientesConstantesComponent,         data: { breadcrumb: 'SGR — Montos Corrientes y Constantes' } },
     { path: 'sgr-plan-recursos',              component: SgrPlanBienalRecursosComponent,                   data: { breadcrumb: 'SGR — Plan de Recursos' } },
