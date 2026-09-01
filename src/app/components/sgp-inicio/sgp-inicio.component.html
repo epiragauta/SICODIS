@@ -99,10 +99,7 @@
               <strong>{{ getTreeTableTotal('presupuesto') | numberFormat }}</strong>
             </td>
             <td class="col-number">
-              <div class="progress-bar-container">
-                <div class="progress-bar-fill"
-                     [style.width.%]="getTreeTableAvanceTotal() * 100"></div>
-              </div>
+              <strong>{{ getTreeTableTotal('distribuido') | numberFormat }}</strong>
             </td>
             <td class="col-number">
               <strong>{{ getTreeTableTotal('pendiente') | numberFormat }}</strong>
