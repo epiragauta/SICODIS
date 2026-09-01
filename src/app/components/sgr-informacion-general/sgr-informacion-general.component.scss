@@ -19,20 +19,32 @@ $alert-amber: #f59e0b;     // Acciones de remoción
     padding: 0 2rem;
   }
 
-  // Header Section
-  .header-section {
+  // Título principal (al mismo nivel que la sección de consulta)
+  .main-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: $civic-navy;
+    margin: 0 0 1.5rem;
+    padding: 1rem 1.5rem;
+    background: white;
+    border-radius: 12px;
+    border-left: 4px solid $civic-gold;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  // Tarjeta 1: Información general del SGR (fija al bienio)
+  .info-general-card {
+    background: white;
+    border-radius: 12px;
+    border-left: 4px solid $civic-gold;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 1.5rem;
     margin-bottom: 2rem;
 
-    .main-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: $civic-navy;
-      margin-bottom: 1.5rem;
-      padding: 1rem 1.5rem;
-      background: white;
-      border-radius: 12px;
-      border-left: 4px solid $civic-gold;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    // Las tarjetas de entidades quedan dentro de la tarjeta contenedora
+    .entidades-grid {
+      margin-top: 1.5rem;
+      margin-bottom: 0;
     }
 
     .kpi-grid {
@@ -207,12 +219,14 @@ $alert-amber: #f59e0b;     // Acciones de remoción
       padding: 1rem 1.5rem;
       background: white;
       border-radius: 12px;
+      border-left: 4px solid $civic-gold;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 
     .filtros-container {
       display: grid;
-      grid-template-columns: auto auto 1fr auto;
+      grid-template-columns: repeat(4, 1fr); // Columnas de igual proporción de ancho
+      align-items: stretch;
       gap: 1.5rem;
 
       .filtro-box {
@@ -226,6 +240,19 @@ $alert-amber: #f59e0b;     // Acciones de remoción
           font-weight: 600;
           color: $civic-navy;
           margin: 0 0 1rem;
+        }
+
+        // Etiquetas de checkbox unificadas con las de radiobutton
+        .checkbox-item {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+
+          label {
+            font-size: 0.9rem;
+            color: #4b5563;
+            cursor: pointer;
+          }
         }
 
         .radio-group {
@@ -313,7 +340,20 @@ $alert-amber: #f59e0b;     // Acciones de remoción
       .entidad-box {
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
+        gap: 0;
+
+        .entidad-tipo-section,
+        .beneficiario-section {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+        }
+
+        .seccion-separador {
+          height: 1px;
+          background: #e5e7eb;
+          margin: .25rem 0;
+        }
 
         .checkbox-item {
           display: flex;
@@ -341,7 +381,7 @@ $alert-amber: #f59e0b;     // Acciones de remoción
         .seccion-separador {
           height: 1px;
           background: #e5e7eb;
-          margin: 1.5rem 0;
+          margin: .25rem 0;
         }
 
         .slider-container {
@@ -389,6 +429,82 @@ $alert-amber: #f59e0b;     // Acciones de remoción
             }
           }
         }
+      }
+    }
+
+  }
+
+  // Resumen general de la consulta
+  .resumen-consulta-section {
+    margin-bottom: 2rem;
+
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: $civic-navy;
+      margin-bottom: 1.5rem;
+      padding: 1rem 1.5rem;
+      background: white;
+      border-radius: 12px;
+      border-left: 4px solid $civic-gold;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .resumen-tabla-wrapper {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 0.5rem;
+      overflow-x: auto;
+    }
+
+    .resumen-tabla {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+
+      .col-num {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+      }
+
+      thead th {
+        background: $civic-navy;
+        color: white;
+        font-weight: 600;
+        padding: 0.85rem 1rem;
+        text-align: left;
+        white-space: nowrap;
+
+        // Columnas numéricas: encabezado alineado a la derecha, igual que sus valores
+        &.col-num {
+          text-align: right;
+        }
+      }
+
+      tbody td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #eef2f7;
+        color: #374151;
+      }
+
+      tbody tr:hover td {
+        background: #f8fafc;
+      }
+
+      .sin-datos {
+        text-align: center;
+        color: #9ca3af;
+        font-style: italic;
+      }
+
+      tfoot .fila-total td {
+        padding: 0.85rem 1rem;
+        font-weight: 700;
+        color: $civic-navy;
+        border-top: 2px solid $civic-gold;
+        background: $civic-cloud;
       }
     }
   }
@@ -614,8 +730,17 @@ $alert-amber: #f59e0b;     // Acciones de remoción
     .filtros-activos-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
+      align-items: flex-start;
+      gap: 1.5rem;
+
+      // Columna izquierda: título + chips, ocupa el espacio disponible
+      .filtros-activos-main {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
 
       h4 {
         font-size: 1rem;
@@ -631,6 +756,14 @@ $alert-amber: #f59e0b;     // Acciones de remoción
         }
       }
 
+      // Botones apilados: "Remover todos los filtros" y debajo "Aplicar filtros"
+      .filtros-header-acciones {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+      }
+
       .limpiar-filtros-btn {
         background: #0943b5;
         border: none;
@@ -642,6 +775,7 @@ $alert-amber: #f59e0b;     // Acciones de remoción
         cursor: pointer;
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: 0.5rem;
         transition: all 0.2s ease;
 
@@ -649,6 +783,21 @@ $alert-amber: #f59e0b;     // Acciones de remoción
           display: inline-block;
           font-size: 16px;
         }
+
+        &:hover {
+          background: #0736a0;
+        }
+      }
+
+      ::ng-deep .aplicar-filtros-btn {
+        width: 100%;
+        justify-content: center;
+        background: #0943b5;
+        border: none;
+        border-radius: 2rem;
+        padding: 0.75rem 2rem;
+        font-size: 0.85rem;
+        font-weight: 600;
 
         &:hover {
           background: #0736a0;
@@ -751,6 +900,7 @@ $alert-amber: #f59e0b;     // Acciones de remoción
   // MultiSelect Wrapper
   .multiselect-wrapper {
     margin-top: 0.5rem;
+    position: relative; // Referencia de ancho para el panel del multiselect
 
     // Wrapper específico para rango de meses
     &.rango-meses-wrapper {

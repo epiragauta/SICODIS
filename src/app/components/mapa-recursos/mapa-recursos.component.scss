@@ -1127,6 +1127,25 @@
   overflow-y: auto;
 }
 
+// Obs. 3: nota aclaratoria de bienios bajo el árbol (solo SGR)
+.nota-bienios {
+  margin: 0.75rem 0 0 0;
+  padding: 0.6rem 0.7rem;
+  font-size: 0.7rem;
+  line-height: 1.45;
+  color: #475569;
+  background: #f1f5f9;
+  border-left: 3px solid #94a3b8;
+  border-radius: 4px;
+}
+
+// Obs. 1: unidad "mm" (miles de millones) en las filas de detalle del panel derecho
+.detalle-unidad {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
 // Obs. 5: árbol desplegable de asignaciones / participaciones (con checkboxes)
 .arbol-lista {
   display: flex;

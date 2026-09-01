@@ -37,7 +37,7 @@
     </div>
 
     <!-- 3. Consulta especial -->
-    <div class="seccion-panel">
+    <div class="seccion-panel" style="display:none;">
       <h3 class="titulo-seccion">Consulta Especial</h3>
       <div class="consulta-especial-item" (click)="navegarResguardos()">
         <img src="assets/img/sgp/resguardos/indigenous.png" alt="Resguardos Indígenas" class="icono-especial-img" />
@@ -58,8 +58,8 @@
     <!-- 5. Aplicar / Limpiar filtros -->
     <div class="seccion-panel">
       <div class="botones-filtro">
-        <p-button label="Aplicar filtros" icon="pi pi-filter" (onClick)="aplicarFiltros()" styleClass="p-button-sm" />
-        <p-button label="Limpiar filtros" icon="pi pi-times" (onClick)="limpiarFiltros()" styleClass="p-button-sm p-button-outlined" />
+        <p-button label="Aplicar filtro" icon="pi pi-filter" (onClick)="aplicarFiltros()" styleClass="p-button-sm" />
+        <p-button label="Limpiar filtro" icon="pi pi-times" (onClick)="limpiarFiltros()" styleClass="p-button-sm p-button-outlined" />
       </div>
     </div>
 
@@ -75,14 +75,13 @@
         <li><span class="sistema-dot" [style.background-color]="sistemaColores['PGN']"></span><strong>PGN</strong></li>
       </ul>
       <p class="acerca-tip">
-        <i class="pi pi-info-circle"></i>
         <span>Haga clic en un departamento para ver su detalle.</span>
       </p>
     </div>
 
     <div class="seccion-panel notas-seccion">
       <h4 class="notas-titulo">NOTAS</h4>
-      <p class="notas-texto">Cifras en billones de pesos</p>
+      <p class="notas-texto">Cifras en miles de millones de pesos</p>
     </div>
   </div>
 
@@ -121,6 +120,11 @@
         </div>
         <div *ngIf="arbolVisible.length === 0" class="sin-datos">Sin datos</div>
       </div>
+
+      <!-- Obs. 3: nota aclaratoria de estructura por bienios (solo SGR) -->
+      <p class="nota-bienios" *ngIf="sistemaDetalle === 'SGR'">
+        La información está estructurada por bienios. Aunque puede seleccionarse cada año de manera individual, los años que pertenecen al mismo bienio presentan la misma información. Los bienios corresponden a: (2012–2013, 2014–2015, 2016–2017, 2018, 2019–2020, 2021–2022 y 2023–2024).
+      </p>
     </div>
 
     <!-- PGN sin datos a nivel de municipio -->
@@ -203,11 +207,9 @@
       >
         <div class="tarjeta-header">
           <span class="tarjeta-sigla">{{ recurso.sigla }}</span>
-          <span class="tarjeta-nombre">{{ recurso.nombre }}</span>
         </div>
         <div class="tarjeta-total-row">
-          <span class="tarjeta-total">${{ formatearValor(recurso.total) }}</span>
-          <span class="tarjeta-cobertura-badge">{{ recurso.cobertura }}</span>
+          <span class="tarjeta-total">${{ formatearMilesMillones(recurso.total) }}<small class="tarjeta-unidad">mm</small></span>
         </div>
         <div class="tarjeta-barras">
           <div class="barra-item">
@@ -235,7 +237,6 @@
       <div *ngIf="pgnSinDatosMunicipio" class="tarjeta-recurso tarjeta-detalle-item tarjeta-na-municipio" [style.--color-sistema]="sistemaColores['PGN']">
         <div class="tarjeta-detalle-head">
           <span class="tarjeta-detalle-eyebrow">PGN</span>
-          <span class="tarjeta-detalle-label">Presupuesto General de la Nación</span>
         </div>
         <div class="tarjeta-total-row">
           <span class="tarjeta-total tarjeta-na">N/A</span>
@@ -358,14 +359,14 @@
         <div class="asignacion-nombre">{{ node.concepto }}</div>
 
         <ng-container *ngIf="sistemaDetalle === 'SGR'">
-          <div class="detalle-fila"><span>Presupuesto total</span><strong>${{ formatearValor(node.raw.presupuesto_total_vigente) }}</strong></div>
-          <div class="detalle-fila"><span>Presupuesto corriente</span><strong>${{ formatearValor(node.raw.presupuesto_corriente) }}</strong></div>
-          <div class="detalle-fila"><span>Presupuesto otros</span><strong>${{ formatearValor(node.raw.presupuesto_otros) }}</strong></div>
-          <div class="detalle-fila"><span>Recaudo total</span><strong>${{ formatearValor(node.raw.caja_total) }}</strong></div>
+          <div class="detalle-fila"><span>Presupuesto total</span><strong>${{ formatearMilesMillones(node.raw.presupuesto_total_vigente) }} <small class="detalle-unidad">mm</small></strong></div>
+          <div class="detalle-fila"><span>Presupuesto corriente</span><strong>${{ formatearMilesMillones(node.raw.presupuesto_corriente) }} <small class="detalle-unidad">mm</small></strong></div>
+          <div class="detalle-fila"><span>Presupuesto otros</span><strong>${{ formatearMilesMillones(node.raw.presupuesto_otros) }} <small class="detalle-unidad">mm</small></strong></div>
+          <div class="detalle-fila"><span>Recaudo total</span><strong>${{ formatearMilesMillones(node.raw.caja_total) }} <small class="detalle-unidad">mm</small></strong></div>
         </ng-container>
 
         <ng-container *ngIf="sistemaDetalle === 'SGP'">
-          <div class="detalle-fila"><span>Distribución</span><strong>${{ formatearValor(node.raw.total) }}</strong></div>
+          <div class="detalle-fila"><span>Distribución</span><strong>${{ formatearMilesMillones(node.raw.total) }} <small class="detalle-unidad">mm</small></strong></div>
         </ng-container>
       </div>
     </ng-container>
@@ -377,8 +378,8 @@
         <span>Sin información a nivel de municipio</span>
       </div>
       <ng-container *ngIf="!pgnSinDatosMunicipio && pgnDetalle">
-        <div class="detalle-fila"><span>Compromisos</span><strong>${{ formatearValor(pgnDetalle.total_compromisos) }}</strong></div>
-        <div class="detalle-fila"><span>Obligaciones</span><strong>${{ formatearValor(pgnDetalle.total_obligaciones) }}</strong></div>
+        <div class="detalle-fila"><span>Compromisos</span><strong>${{ formatearMilesMillones(pgnDetalle.total_compromisos) }} <small class="detalle-unidad">mm</small></strong></div>
+        <div class="detalle-fila"><span>Obligaciones</span><strong>${{ formatearMilesMillones(pgnDetalle.total_obligaciones) }} <small class="detalle-unidad">mm</small></strong></div>
         <div class="detalle-fila"><span>% Compromisos</span><strong>{{ pgnDetalle.porcentaje_total_compromisos?.toFixed(1) }}%</strong></div>
         <div class="detalle-fila"><span>% Obligaciones</span><strong>{{ pgnDetalle.porcentaje_total_obligaciones?.toFixed(1) }}%</strong></div>
       </ng-container>

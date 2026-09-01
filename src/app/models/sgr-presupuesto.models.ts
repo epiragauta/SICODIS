@@ -199,6 +199,7 @@ export interface FiltrosSGR {
   zomac?: boolean | null;
   destinacionEtnica?: boolean | null;
   conceptoGasto?: string | string[];
+  codigosEntidad?: string[];   // Filtro por entidades beneficiarias específicas
 }
 
 export interface EntidadCount {
@@ -207,6 +208,14 @@ export interface EntidadCount {
   zomac: number;
   pdet: number;
   etnicas: number;
+}
+
+export interface ResumenConcepto {
+  concepto: string;      // Concepto de gasto: Inversión / Ahorro / Administración
+  presupuesto: number;
+  recaudo: number;
+  avance: number;        // recaudo / presupuesto (0-1)
+  registros: number;
 }
 
 export interface DatosAgregados {
@@ -219,4 +228,5 @@ export interface DatosAgregados {
   recaudoCorriente: number;
   recaudoOtros: number;
   registrosDestinacionEtnica: number;  // Conteo de registros con destinación étnica
+  resumenPorConcepto: ResumenConcepto[]; // Desglose por concepto de gasto (para "Resumen general de la consulta")
 }

@@ -153,25 +153,50 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
   detalleDepto: { nombre: string; codigoDepto: string } | null = null;
   sistemaDetalle: 'SGR' | 'SGP' | 'PGN' = 'SGR';
 
-  // Notas del panel de detalle, tomadas de los componentes sgr-inicio y sgp-inicio.
-  // Se muestran según el sistema seleccionado. (PGN pendiente de contenido definitivo.)
-  readonly notasPorSistema: Record<'SGR' | 'SGP' | 'PGN', string[]> = {
-    SGR: [
-      '(1) Cifras en pesos corrientes.',
-      '(2) Ley 2441 de 2024 - Decretos 379 y 380 del 2025'
-    ],
-    SGP: [
-      '(1) Cifras en pesos corrientes.',
-      '(2) Los recursos pendientes por distribuir corresponden a una parte de las doce doceavas de la participación para educación ($ 18.644 miles de millones) y las once doceavas de la asignación especial para el FONPET ($ 2.731 miles de millones).'
-    ],
-    PGN: [
-      '(1) Cifras en pesos corrientes.',
-      '(2) Fuente: DNP - DPIP - SDRT a partir del Presupuesto General de la Nación y reportes de regionalización presupuestal.'
-    ]
+  // Norma (Ley o Decreto) que rige cada bienio del SGR, indexada por el año inicial
+  // del bienio. Reutiliza el mapeo de sgr-plan-bienal-recursos para que la nota (2)
+  // corresponda a la vigencia consultada.
+  private static readonly NORMA_POR_ANIO_INICIAL: Record<string, string> = {
+    '2025': 'Ley 2441 de 2024',
+    '2023': 'Ley 2279 de 2022',
+    '2021': 'Ley 2072 de 2020',
+    '2019': 'Ley 1942 de 2018',
+    '2017': 'Decreto 2190 de 2016',
+    '2015': 'Ley 1744 de 2014',
+    '2013': 'Ley 1606 de 2012'
   };
 
+  // Norma del bienio al que pertenece la vigencia consultada (el año inicial del
+  // bienio es el año impar: p. ej. 2024 y 2023 pertenecen al bienio que inicia en 2023).
+  private get normaVigenciaSGR(): string {
+    const anioInicial = this.vigenciaSeleccionada % 2 === 1
+      ? this.vigenciaSeleccionada
+      : this.vigenciaSeleccionada - 1;
+    return MapaRecursosComponent.NORMA_POR_ANIO_INICIAL[String(anioInicial)] ?? '';
+  }
+
+  // Notas del panel de detalle, tomadas de los componentes sgr-inicio y sgp-inicio.
+  // Se muestran según el sistema seleccionado y corresponden a la vigencia consultada.
   get notasDetalle(): string[] {
-    return this.notasPorSistema[this.sistemaDetalle] ?? [];
+    if (this.sistemaDetalle === 'SGR') {
+      const norma = this.normaVigenciaSGR;
+      return [
+        '(1) Cifras en miles de millones de pesos corrientes.',
+        norma
+          ? `(2) Fuente: ${norma}, Sistema General de Regalías.`
+          : '(2) Sistema General de Regalías.'
+      ];
+    }
+    if (this.sistemaDetalle === 'SGP') {
+      return [
+        '(1) Cifras en miles de millones de pesos corrientes.',
+        `(2) Distribución de la vigencia ${this.vigenciaSeleccionada}. Los recursos pendientes por distribuir corresponden a una parte de las doce doceavas de la participación para educación y a las once doceavas de la asignación especial para el FONPET.`
+      ];
+    }
+    return [
+      '(1) Cifras en pesos corrientes.',
+      `(2) Fuente: DNP - DPIP - SDRT a partir del Presupuesto General de la Nación ${this.vigenciaSeleccionada} y reportes de regionalización presupuestal.`
+    ];
   }
 
   detalleData: ResumenGeovisor | null = null;
@@ -354,6 +379,13 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     ];
   }
 
+  // Obs. 6: las asignaciones directas del SGR corresponden al 20%; se anota en la
+  // línea de cobertura ("A. Directas" → "A. Directas 20%") sin duplicar si ya lo trae.
+  private agregar20ADirectas(linea: string): string {
+    if (!linea || /A\.\s*Directas\s*20\s*%/i.test(linea)) return linea;
+    return linea.replace(/(A\.\s*Directas)/i, '$1 20%');
+  }
+
   private mapearCoberturas(data: ResumenGeovisor): CoberturaSistema[] {
     const sgr = data.sgr_beneficiados?.[0];
     const sgp = data.sgp_beneficiados?.[0];
@@ -367,7 +399,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
           sgr?.dato_general_regional_depto      || COBERTURA_FALLBACK['SGR'][1],
           sgr?.dato_general_adirectas_municipio || COBERTURA_FALLBACK['SGR'][2],
           sgr?.dato_general_local_municipio     || COBERTURA_FALLBACK['SGR'][3],
-        ],
+        ].map(l => this.agregar20ADirectas(l)),
         color: SISTEMA_COLORES['SGR']
       },
       {
@@ -457,7 +489,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     const requests = features.map((feature: any) => {
       const cod: string = feature.properties.cod ?? '0';
       const codigoDepto = cod.padStart(2, '0') + '000';
-      const nombre: string = feature.properties.nombre ?? '';
+      const nombre: string = this.acortarNombreDepto(feature.properties.nombre ?? '');
       const centroid = this.capitalesMap.get(codigoDepto) ?? this.computeCentroid(feature);
 
       return this.sicodisApi.getGeovisorResumen(this.vigenciaSeleccionada, codigoDepto, 0).pipe(
@@ -625,6 +657,12 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     return `<svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">${paths}<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="white" stroke-width="1.5"/></svg>`;
   }
 
+  // Obs. 10: acorta nombres largos con especificación de subdivisiones; p. ej.
+  // "Archipiélago de San Andrés, Providencia y Santa Catalina" → "Archipiélago de San Andrés".
+  private acortarNombreDepto(nombre: string): string {
+    return (nombre ?? '').split(',')[0].trim();
+  }
+
   private computeCentroid(feature: any): L.LatLngExpression {
     const coords: Array<[number, number]> = [];
     const geom = feature.geometry;
@@ -668,7 +706,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     const sgp = Array.isArray(data.sgp) ? data.sgp.find(d => d.id_concepto === '99') : undefined;
     const pgn = Array.isArray(data.pgn) ? data.pgn[0] : undefined;
 
-    const fmt = (v: unknown) => { const n = Number(v); return Number.isFinite(n) ? '$' + this.formatearValor(n) : 'N/D'; };
+    const fmt = (v: unknown) => { const n = Number(v); return Number.isFinite(n) ? '$' + this.formatearMilesMillones(n) + ' mm' : 'N/D'; };
     const pct = (v: unknown) => `${(Number(v) * 100).toFixed(1)}%`;
     const btnStyle = 'float:right;padding:2px 8px;border:none;border-radius:4px;font-size:10px;font-weight:600;cursor:pointer;color:white;white-space:nowrap;';
 
@@ -726,7 +764,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     const sgr = Array.isArray(data.sgr) ? data.sgr.find(d => d.categoria === '-2') : undefined;
     const sgp = Array.isArray(data.sgp) ? data.sgp.find(d => d.id_concepto === '99') : undefined;
 
-    const fmt = (v: unknown) => { const n = Number(v); return Number.isFinite(n) ? '$' + this.formatearValor(n) : 'N/D'; };
+    const fmt = (v: unknown) => { const n = Number(v); return Number.isFinite(n) ? '$' + this.formatearMilesMillones(n) + ' mm' : 'N/D'; };
     const pct = (v: unknown) => `${(Number(v) * 100).toFixed(1)}%`;
 
     // Obs. 6: el popup del municipio muestra el detalle de las asignaciones /
@@ -824,7 +862,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
     for (const it of sorted) {
       const key = String(it.categoria);
       const nivel = key.split('.').length - 1;
-      const node: NodoArbol = { key, concepto: it.concepto, nivel, color: '', hijos: [], raw: it };
+      const node: NodoArbol = { key, concepto: this.normalizarConceptoSGR(it.concepto), nivel, color: '', hijos: [], raw: it };
       map.set(key, node);
       const parentKey = key.includes('.') ? key.substring(0, key.lastIndexOf('.')) : null;
       if (parentKey && map.has(parentKey)) map.get(parentKey)!.hijos.push(node);
@@ -845,6 +883,11 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
         .map((h: any) => ({ key: h.id_concepto, concepto: h.concepto, nivel: 1, color, hijos: [], raw: h } as NodoArbol));
       return { key: t.id_concepto, concepto: t.concepto, nivel: 0, color, hijos, raw: t } as NodoArbol;
     });
+  }
+
+  // Obs. 2: en el SGR el concepto "Administración" se muestra como "Funcionamiento".
+  private normalizarConceptoSGR(concepto: string): string {
+    return (concepto ?? '').replace(/administraci[oó]n/gi, 'FUNCIONAMIENTO');
   }
 
   private pintarNodo(node: NodoArbol, color: string): void {

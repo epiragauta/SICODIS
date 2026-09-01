@@ -1,9 +1,9 @@
 <div class="sgr-info-general-container">
   <div class="container">
-    <!-- Header: Información General del SGR -->
-    <div class="header-section">
-      <h1 class="main-title">Información general del SGR</h1>
+    <!-- TARJETA 1: Información general del SGR (fija al bienio seleccionado) -->
+    <h1 class="main-title">Información general del SGR - Bienio {{ bienioActual }}</h1>
 
+    <div class="info-general-card">
       <div class="kpi-grid">
         <div class="kpi-card">
           <h3>{{ tituloPresupuestoKPI }}</h3>
@@ -20,10 +20,9 @@
           <p class="kpi-value">{{ avanceRecaudoKPI.toFixed(2) }}%</p>
         </div>
       </div>
-    </div>
 
-    <!-- Tarjetas de Entidades -->
-    <div class="entidades-grid">
+      <!-- Tarjetas de Entidades -->
+      <div class="entidades-grid">
       <div class="entidad-card beneficiarias">
         <div class="entidad-icon">
           <i class="pi pi-users"></i>
@@ -75,43 +74,57 @@
         <div class="entidad-info">
           <h4>Entidades con destinación Étnica</h4>
           <p class="entidad-count">{{ entidadesCount.etnicas }}</p>
-          
+
         </div>
+      </div>
       </div>
     </div>
 
-    <!-- Sección de Filtros -->
-    <div class="filtros-section">      
+    <!-- TARJETA 2: Consulta específica de los recursos del SGR -->
+    <div class="filtros-section">
+      <h2 class="section-title consulta-title">Consulta específica de los recursos del SGR</h2>
+
       <!-- Trazabilidad de Filtros -->
       <div class="filtros-activos" *ngIf="filtrosActivos.length > 0">
         <div class="filtros-activos-header">
-          <h4><i class="pi pi-filter-fill"></i> Filtros aplicados</h4>
-          <button
-            class="limpiar-filtros-btn"
-            (click)="limpiarTodosFiltros()"
-            title="Remover todos los filtros"
-          >
-            <span class="icon">⟲</span>
-            Remover todos los filtros
-          </button>
-        </div>
-        <div class="filtros-chips">
-          <div
-            *ngFor="let filtro of filtrosActivos"
-            class="filtro-chip"
-            [class.no-removable]="filtro.tipo === 'Periodicidad'"
-          >
-            <i class="pi {{ filtro.icono }}"></i>
-            <span class="filtro-tipo">{{ filtro.tipo }}:</span>
-            <span class="filtro-valor">{{ filtro.valor }}</span>
+          <div class="filtros-activos-main">
+            <h4><i class="pi pi-filter-fill"></i> Filtros aplicados</h4>
+            <div class="filtros-chips">
+              <div
+                *ngFor="let filtro of filtrosActivos"
+                class="filtro-chip"
+                [class.no-removable]="filtro.tipo === 'Periodicidad'"
+              >
+                <i class="pi {{ filtro.icono }}"></i>
+                <span class="filtro-tipo">{{ filtro.tipo }}:</span>
+                <span class="filtro-valor">{{ filtro.valor }}</span>
+                <button
+                  *ngIf="filtro.tipo !== 'Periodicidad'"
+                  class="remove-filtro"
+                  (click)="removerFiltro(filtro)"
+                  title="Remover filtro"
+                >
+                  <i class="pi pi-times"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="filtros-header-acciones">
             <button
-              *ngIf="filtro.tipo !== 'Periodicidad'"
-              class="remove-filtro"
-              (click)="removerFiltro(filtro)"
-              title="Remover filtro"
+              class="limpiar-filtros-btn"
+              (click)="limpiarTodosFiltros()"
+              title="Remover filtros"
             >
-              <i class="pi pi-times"></i>
+              <span class="icon">⟲</span>
+              Remover filtros
             </button>
+            <p-button
+              label="Aplicar filtros"
+              icon="pi pi-check"
+              (onClick)="aplicarFiltros()"
+              [loading]="isLoading()"
+              styleClass="aplicar-filtros-btn"
+            />
           </div>
         </div>
       </div>
@@ -121,7 +134,7 @@
         <div class="filtro-box presupuesto-recaudo-box">
           <!-- Presupuesto de consulta -->
           <div class="presupuesto-section">
-            <h3>Presupuesto de consulta</h3>
+            <h3>Presupuesto</h3>
             <div class="radio-group">
               <div class="radio-item">
                 <p-radiobutton
@@ -131,7 +144,7 @@
                   (ngModelChange)="onPresupuestoSeleccionChange($event)"
                   inputId="presupuestoTotal"
                 />
-                <label for="presupuestoTotal">Presupuesto Total</label>
+                <label for="presupuestoTotal">Total</label>
               </div>
 
               <div class="radio-item">
@@ -142,7 +155,7 @@
                   (ngModelChange)="onPresupuestoSeleccionChange($event)"
                   inputId="presupuestoCorriente"
                 />
-                <label for="presupuestoCorriente">Presupuesto Corriente</label>
+                <label for="presupuestoCorriente">Corriente</label>
               </div>
 
               <div class="radio-item">
@@ -153,7 +166,7 @@
                   (ngModelChange)="onPresupuestoSeleccionChange($event)"
                   inputId="presupuestoOtros"
                 />
-                <label for="presupuestoOtros">Presupuesto Otros</label>
+                <label for="presupuestoOtros">Otros</label>
               </div>
             </div>
 
@@ -187,7 +200,7 @@
                   (ngModelChange)="onRecaudoSeleccionChange($event)"
                   inputId="recaudoTotal"
                 />
-                <label for="recaudoTotal">Recaudo Total</label>
+                <label for="recaudoTotal">Total</label>
               </div>
 
               <div class="radio-item">
@@ -198,7 +211,7 @@
                   (ngModelChange)="onRecaudoSeleccionChange($event)"
                   inputId="recaudoCorriente"
                 />
-                <label for="recaudoCorriente">Recaudo Corriente</label>
+                <label for="recaudoCorriente">Corriente</label>
               </div>
 
               <div class="radio-item">
@@ -209,7 +222,7 @@
                   (ngModelChange)="onRecaudoSeleccionChange($event)"
                   inputId="recaudoOtros"
                 />
-                <label for="recaudoOtros">Recaudo Otros</label>
+                <label for="recaudoOtros">Otros</label>
               </div>
             </div>
           </div>
@@ -365,6 +378,7 @@
                 [maxSelectedLabels]="2"
                 selectedItemsLabel="{0} seleccionados"
                 class="w-full md:w-80"
+                panelStyleClass="caracterizacion-panel"
                 [displaySelectedLabel]="false"
               ></p-multiselect>
             </div>
@@ -397,6 +411,40 @@
                 [maxSelectedLabels]="2"
                 selectedItemsLabel="{0} regiones"
                 class="w-full md:w-80"
+                panelStyleClass="caracterizacion-panel"
+                [displaySelectedLabel]="false"
+              ></p-multiselect>
+            </div>
+          </div>
+          
+          <!-- Grupo de interés -->
+          <div class="caracterizacion-grupo">
+            <div class="checkbox-item">
+              <p-checkbox
+                name="caracterizacion"
+                [(ngModel)]="caracterizacionesActivas.grupoInteres"
+                (ngModelChange)="onCaracterizacionChange('grupoInteres', $event)"
+                [binary]="true"
+                inputId="grupoInteres"
+              />
+              <label for="grupoInteres">Grupo de interés</label>
+            </div>
+            <div class="multiselect-wrapper" *ngIf="caracterizacionesActivas.grupoInteres">
+              <p-multiselect
+                [options]="grupoInteresOpciones"
+                [(ngModel)]="valoresGrupoInteres"
+                (ngModelChange)="onValoresGrupoInteresChange()"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Seleccione grupos"
+                [filter]="false"
+                [showClear]="true"
+                display="comma"
+                styleClass="w-full"
+                [maxSelectedLabels]="2"
+                selectedItemsLabel="{0} grupos"
+                class="w-full md:w-80"
+                panelStyleClass="caracterizacion-panel"
                 [displaySelectedLabel]="false"
               ></p-multiselect>
             </div>
@@ -430,38 +478,7 @@
                 [maxSelectedLabels]="2"
                 selectedItemsLabel="{0} asignaciones"
                 class="w-full md:w-80"
-                [displaySelectedLabel]="false"
-              ></p-multiselect>
-            </div>
-          </div>
-
-          <!-- Grupo de interés -->
-          <div class="caracterizacion-grupo">
-            <div class="checkbox-item">
-              <p-checkbox
-                name="caracterizacion"
-                [(ngModel)]="caracterizacionesActivas.grupoInteres"
-                (ngModelChange)="onCaracterizacionChange('grupoInteres', $event)"
-                [binary]="true"
-                inputId="grupoInteres"
-              />
-              <label for="grupoInteres">Grupo de interés</label>
-            </div>
-            <div class="multiselect-wrapper" *ngIf="caracterizacionesActivas.grupoInteres">
-              <p-multiselect
-                [options]="grupoInteresOpciones"
-                [(ngModel)]="valoresGrupoInteres"
-                (ngModelChange)="onValoresGrupoInteresChange()"
-                optionLabel="label"
-                optionValue="value"
-                placeholder="Seleccione grupos"
-                [filter]="false"
-                [showClear]="true"
-                display="comma"
-                styleClass="w-full"
-                [maxSelectedLabels]="2"
-                selectedItemsLabel="{0} grupos"
-                class="w-full md:w-80"
+                panelStyleClass="caracterizacion-panel asignacion-panel"
                 [displaySelectedLabel]="false"
               ></p-multiselect>
             </div>
@@ -470,18 +487,9 @@
 
         <!-- Tipo de entidad -->
         <div class="filtro-box entidad-box">
+          <!-- Tipo de entidad -->
+          <div class="entidad-tipo-section">
           <h3>Tipo de entidad</h3>
-
-          <div class="checkbox-item">
-            <p-radiobutton
-              name="entidad"
-              value="beneficiario"
-              [ngModel]="entidadSeleccionada"
-              (ngModelChange)="onEntidadChange($event)"
-              inputId="beneficiario"
-            />
-            <label for="beneficiario">Beneficiario</label>
-          </div>
 
           <div class="checkbox-item">
             <p-radiobutton
@@ -491,7 +499,7 @@
               (ngModelChange)="onEntidadChange($event)"
               inputId="productoras"
             />
-            <label for="productoras">Entidades Productora</label>
+            <label for="productoras">Productora</label>
           </div>
 
           <div class="checkbox-item">
@@ -502,7 +510,7 @@
               (ngModelChange)="onEntidadChange($event)"
               inputId="pdet"
             />
-            <label for="pdet">Entidades PDET</label>
+            <label for="pdet">PDET</label>
           </div>
 
           <div class="checkbox-item">
@@ -513,7 +521,7 @@
               (ngModelChange)="onEntidadChange($event)"
               inputId="zomac"
             />
-            <label for="zomac">Entidades ZOMAC</label>
+            <label for="zomac">ZOMAC</label>
           </div>
 
           <div class="checkbox-item">
@@ -524,7 +532,7 @@
               (ngModelChange)="onEntidadChange($event)"
               inputId="etnica"
             />
-            <label for="etnica">Entidades con destinación Étnica</label>
+            <label for="etnica">Con destinación Étnica</label>
           </div>
 
           <div class="checkbox-item">
@@ -535,10 +543,92 @@
               (ngModelChange)="onEntidadChange($event)"
               inputId="capital"
             />
-            <label for="capital">Capital</label>
+            <label for="capital">Capitáles</label>
+          </div>
+          </div>
+
+          <!-- Separador visual -->
+          <div class="seccion-separador"></div>
+
+          <!-- Beneficiarios -->
+          <div class="beneficiario-section">
+          <h3>Beneficiarios</h3>
+
+          <div class="checkbox-item">
+            <p-checkbox
+              name="beneficiario"
+              [(ngModel)]="beneficiarioActivo"
+              (ngModelChange)="onBeneficiarioChange($event)"
+              [binary]="true"
+              inputId="beneficiarioCheck"
+            />
+            <label for="beneficiarioCheck">Beneficiarios</label>
+          </div>
+
+          <div class="multiselect-wrapper" *ngIf="beneficiarioActivo">
+            <p-multiselect
+              [options]="beneficiariosOpciones"
+              [(ngModel)]="beneficiariosSeleccionados"
+              (ngModelChange)="onBeneficiariosChange()"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Seleccione entidades"
+              [filter]="true"
+              filterPlaceholder="Buscar..."
+              [showClear]="true"
+              [showToggleAll]="true"
+              display="comma"
+              styleClass="w-full"
+              [maxSelectedLabels]="1"
+              selectedItemsLabel="{0} entidades"
+              class="w-full md:w-80"
+              panelStyleClass="caracterizacion-panel beneficiario-panel"
+              [displaySelectedLabel]="false"
+            ></p-multiselect>
+          </div>
           </div>
         </div>
 
+      </div>
+    </div>
+
+    <!-- Resumen general de la consulta -->
+    <div class="resumen-consulta-section">
+      <h2 class="section-title">Resumen general de la consulta</h2>
+
+      <div class="resumen-tabla-wrapper">
+        <table class="resumen-tabla">
+          <thead>
+            <tr>
+              <th class="col-texto">Concepto de gasto</th>
+              <th class="col-num">Presupuesto</th>
+              <th class="col-num">Recaudo</th>
+              <th class="col-num">% Avance</th>
+              <th class="col-num">Registros</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let fila of resumenPorConcepto">
+              <td class="col-texto">{{ fila.concepto }}</td>
+              <td class="col-num">${{ fila.presupuesto | numberFormat }}</td>
+              <td class="col-num">${{ fila.recaudo | numberFormat }}</td>
+              <td class="col-num">{{ (fila.avance * 100) | number:'1.2-2' }}%</td>
+              <td class="col-num">{{ fila.registros | numberFormat }}</td>
+            </tr>
+            <tr *ngIf="resumenPorConcepto.length === 0">
+              <td class="col-texto sin-datos" colspan="5">No hay datos para los filtros seleccionados</td>
+            </tr>
+          </tbody>
+          <tfoot *ngIf="resumenPorConcepto.length > 0">
+            <tr class="fila-total">
+              <td class="col-texto">Total</td>
+              <td class="col-num">${{ resumenTotalPresupuesto | numberFormat }}</td>
+              <td class="col-num">${{ resumenTotalRecaudo | numberFormat }}</td>
+              <td class="col-num">{{ (resumenTotalAvance * 100) | number:'1.2-2' }}%</td>
+              <td class="col-num">{{ resumenTotalRegistros | numberFormat }}</td>
+            </tr>
+          </tfoot>
+        </table>
       </div>
     </div>
 
@@ -629,6 +719,7 @@
           label="Exportar reporte"
           icon="pi pi-download"
           (onClick)="exportarReporte()"
+          [loading]="isExporting()"
           styleClass="p-button-rounded export-btn"
         />
       </div>

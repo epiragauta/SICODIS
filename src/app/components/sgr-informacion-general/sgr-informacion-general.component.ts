@@ -19,7 +19,7 @@ import { SgrPresupuestoService } from '../../services/sgr-presupuesto.service';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 
 // Models
-import { FiltrosSGR, DatosAgregados, EntidadCount } from '../../models/sgr-presupuesto.models';
+import { FiltrosSGR, DatosAgregados, EntidadCount, ResumenConcepto, Entidad } from '../../models/sgr-presupuesto.models';
 
 interface PresupuestoMetricas {
   presupuestoTotal: number;
@@ -107,21 +107,27 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
   valoresAsignacion: string[] = [];
   valoresGrupoInteres: string[] = [];
 
-  entidadSeleccionada: string = 'beneficiario';
+  entidadSeleccionada: string = '';  // Tipo de entidad: '' = sin filtro de atributo
+
+  // Beneficiario (tarjeta independiente): checkbox + multiselect de entidades
+  beneficiarioActivo: boolean = false;
+  beneficiariosSeleccionados: string[] = [];
+  beneficiariosOpciones: Array<{ label: string; value: string }> = [];
+
   presupuestoSeleccionado: string = 'total';
   recaudoSeleccionado: string = 'total';
   porcentajeDisponibilidad: number = 50;
 
   // Opciones para cada tipo de caracterización
+  // Nota: se elimina la opción "Todos" para evitar redundancia con el
+  // "seleccionar todo" nativo del encabezado del p-multiselect (obs. mockup).
   conceptoGastoOpciones = [
-    { label: 'Todos', value: 'Todos' },
     { label: 'Inversión', value: 'Inversión' },
     { label: 'Ahorro', value: 'Ahorro' },
     { label: 'Administración', value: 'Administración ' }  // Nota: incluye espacio al final para coincidir con los datos
   ];
 
   regionalOpciones = [
-    { label: 'Todos', value: 'Todos' },
     { label: 'Región Eje Cafetero', value: 'Región Eje Cafetero' },
     { label: 'Región Caribe', value: 'Región Caribe' },
     { label: 'Región Centro - Oriente', value: 'Región Centro - Oriente' },
@@ -232,8 +238,12 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     recaudoOtros: 0
   };
 
+  // Resumen general de la consulta (desglose por concepto de gasto)
+  resumenPorConcepto: ResumenConcepto[] = [];
+
   // Estados
   isLoading = signal(false);
+  isExporting = signal(false);
   fechaReporte: string = '';
 
   constructor(private sgrPresupuestoService: SgrPresupuestoService) {
@@ -250,7 +260,58 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     this.actualizarAniosDisponibles();
     this.actualizarRangoFechasMes();
 
+    // Cargar opciones de beneficiarios (todas las entidades)
+    this.cargarOpcionesBeneficiarios();
+
+    // Datos fijos de la tarjeta "Información general" (solo bienio, no cambian con filtros)
+    this.cargarDatosFijos();
+
+    // Resumen inicial de la consulta
     this.loadData();
+  }
+
+  // Bienio(s) seleccionado(s) para el título de la tarjeta de información general
+  get bienioActual(): string {
+    return this.bieniosSeleccionados.join(', ');
+  }
+
+  private cargarOpcionesBeneficiarios(): void {
+    this.sgrPresupuestoService.getEntidades()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (entidades: Entidad[]) => {
+          this.beneficiariosOpciones = entidades
+            .map(e => ({ label: (e.nombre || '').trim(), value: e.codigo }))
+            .sort((a, b) => a.label.localeCompare(b.label));
+        },
+        error: (error) => console.error('Error al cargar beneficiarios:', error)
+      });
+  }
+
+  // Carga los totales del bienio para la tarjeta de información general (KPIs y entidades).
+  // No se ven afectados por los filtros de la consulta específica.
+  private cargarDatosFijos(): void {
+    this.sgrPresupuestoService.getDatosAgregados({})
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (datos: DatosAgregados) => {
+          this.entidadesCount = datos.entidadesCount;
+          this.presupuestoMetricas = {
+            presupuestoTotal: datos.presupuestoTotal,
+            presupuestoCorriente: datos.presupuestoCorriente,
+            presupuestoOtros: datos.presupuestoOtros,
+            porcentajeDisponibilidad: datos.presupuestoTotal > 0
+              ? (datos.presupuestoOtros / datos.presupuestoTotal) * 100
+              : 0
+          };
+          this.recaudoMetricas = {
+            recaudoTotal: datos.recaudoTotal,
+            recaudoCorriente: datos.recaudoCorriente,
+            recaudoOtros: datos.recaudoOtros
+          };
+        },
+        error: (error) => console.error('Error al cargar datos fijos:', error)
+      });
   }
 
   ngOnDestroy(): void {
@@ -322,6 +383,14 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
         break;
     }
 
+    // Filtro de beneficiario (entidades específicas seleccionadas en su tarjeta)
+    if (this.beneficiarioActivo && this.beneficiariosSeleccionados.length > 0) {
+      const seleccion = this.beneficiariosSeleccionados.filter(v => v !== 'TODAS');
+      if (seleccion.length > 0) {
+        filtros.codigosEntidad = seleccion;
+      }
+    }
+
     // Cargar datos agregados con filtros
     this.sgrPresupuestoService.getDatosAgregados(filtros)
       .pipe(takeUntil(this.destroy$))
@@ -338,32 +407,209 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
   }
 
   private actualizarDatosComponente(datos: DatosAgregados): void {
-    // Actualizar conteo de entidades
-    this.entidadesCount = datos.entidadesCount;
+    // Solo se actualiza el resumen de la consulta. Los KPIs y las tarjetas de
+    // entidades (tarjeta "Información general") permanecen fijos al bienio y se
+    // cargan en cargarDatosFijos().
+    this.resumenPorConcepto = datos.resumenPorConcepto ?? [];
+  }
 
-    // Actualizar métricas de presupuesto
-    this.presupuestoMetricas = {
-      presupuestoTotal: datos.presupuestoTotal,
-      presupuestoCorriente: datos.presupuestoCorriente,
-      presupuestoOtros: datos.presupuestoOtros,
-      porcentajeDisponibilidad: datos.presupuestoTotal > 0
-        ? (datos.presupuestoOtros / datos.presupuestoTotal) * 100
-        : 0
-    };
+  // Totales del resumen general (fila Total de la tabla)
+  get resumenTotalPresupuesto(): number {
+    return this.resumenPorConcepto.reduce((s, r) => s + r.presupuesto, 0);
+  }
 
-    // Actualizar métricas de recaudo
-    this.recaudoMetricas = {
-      recaudoTotal: datos.recaudoTotal,
-      recaudoCorriente: datos.recaudoCorriente,
-      recaudoOtros: datos.recaudoOtros
-    };
+  get resumenTotalRecaudo(): number {
+    return this.resumenPorConcepto.reduce((s, r) => s + r.recaudo, 0);
+  }
+
+  get resumenTotalRegistros(): number {
+    return this.resumenPorConcepto.reduce((s, r) => s + r.registros, 0);
+  }
+
+  get resumenTotalAvance(): number {
+    return this.resumenTotalPresupuesto > 0
+      ? this.resumenTotalRecaudo / this.resumenTotalPresupuesto
+      : 0;
   }
 
 
 
-  exportarReporte(): void {
-    console.log('Exportando reporte...');
-    alert('Funcionalidad de exportación en desarrollo');
+  // Aplica los filtros seleccionados (carga manual mediante el botón "Aplicar filtros")
+  aplicarFiltros(): void {
+    this.loadData();
+  }
+
+  // Genera un archivo Excel (.xlsx) con dos hojas:
+  //  1) "Información general": KPIs del bienio, conteo de entidades y filtros aplicados.
+  //  2) "Detalle": desglose por concepto de gasto de la consulta (con la fila Total).
+  async exportarReporte(): Promise<void> {
+    this.isExporting.set(true);
+    try {
+      // ExcelJS es CommonJS: en el build de producción (esbuild) el named import
+      // no resuelve bien, por lo que se accede a través del default del módulo.
+      const ExcelJSModule: any = await import('exceljs');
+      const ExcelJS = ExcelJSModule.default ?? ExcelJSModule;
+      const workbook: import('exceljs').Workbook = new ExcelJS.Workbook();
+      workbook.creator = 'SICODIS';
+      workbook.created = new Date();
+
+      // Estilos/format reutilizables
+      const NAVY = 'FF1E3A5F';
+      const CLOUD = 'FFF1F5F9';
+      const MONEY_FMT = '"$"#,##0';
+      const PCT_FMT = '0.00%';
+      const NUM_FMT = '#,##0';
+
+      // ===================== HOJA 1: Información general =====================
+      const wsGen = workbook.addWorksheet('Información general');
+      wsGen.columns = [{ width: 42 }, { width: 26 }];
+
+      let r = 1;
+      const setMerged = (texto: string, font: Partial<import('exceljs').Font>) => {
+        const cell = wsGen.getCell(`A${r}`);
+        cell.value = texto;
+        cell.font = font;
+        wsGen.mergeCells(`A${r}:B${r}`);
+        r++;
+      };
+      setMerged('SICODIS · SGR — Información General', { bold: true, size: 14, color: { argb: NAVY } });
+      setMerged(`Bienio: ${this.bienioActual}`, { bold: true, size: 11 });
+      setMerged(`Reporte generado el ${this.fechaReporte}`, { italic: true, size: 10, color: { argb: 'FF6B7280' } });
+      r++;
+
+      const addSection = (titulo: string) => {
+        ['A', 'B'].forEach((col, i) => {
+          const cell = wsGen.getCell(`${col}${r}`);
+          if (i === 0) {
+            cell.value = titulo;
+            cell.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 11 };
+          }
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: NAVY } };
+        });
+        wsGen.getRow(r).height = 18;
+        r++;
+      };
+      const addRow = (label: string, value: string | number, fmt?: string, bold = false) => {
+        const cellL = wsGen.getCell(`A${r}`);
+        const cellV = wsGen.getCell(`B${r}`);
+        cellL.value = label;
+        cellV.value = value;
+        if (fmt) cellV.numFmt = fmt;
+        cellV.alignment = { horizontal: 'right' };
+        if (bold) { cellL.font = { bold: true }; cellV.font = { bold: true }; }
+        r++;
+      };
+
+      addSection('Indicadores generales (bienio)');
+      addRow('Presupuesto Total', this.presupuestoMetricas.presupuestoTotal, MONEY_FMT, true);
+      addRow('   Presupuesto Corriente', this.presupuestoMetricas.presupuestoCorriente, MONEY_FMT);
+      addRow('   Presupuesto Otros', this.presupuestoMetricas.presupuestoOtros, MONEY_FMT);
+      addRow('Recaudo Total', this.recaudoMetricas.recaudoTotal, MONEY_FMT, true);
+      addRow('   Recaudo Corriente', this.recaudoMetricas.recaudoCorriente, MONEY_FMT);
+      addRow('   Recaudo Otros', this.recaudoMetricas.recaudoOtros, MONEY_FMT);
+      const avanceFrac = this.presupuestoMetricas.presupuestoTotal > 0
+        ? this.recaudoMetricas.recaudoTotal / this.presupuestoMetricas.presupuestoTotal
+        : 0;
+      addRow('Avance de Recaudo', avanceFrac, PCT_FMT, true);
+      r++;
+
+      addSection('Entidades');
+      addRow('Beneficiarias', this.entidadesCount.beneficiarias, NUM_FMT);
+      addRow('Entidades Productoras', this.entidadesCount.productoras, NUM_FMT);
+      addRow('Entidades ZOMAC', this.entidadesCount.zomac, NUM_FMT);
+      addRow('Entidades PDET', this.entidadesCount.pdet, NUM_FMT);
+      addRow('Entidades con destinación Étnica', this.entidadesCount.etnicas, NUM_FMT);
+      r++;
+
+      addSection('Filtros aplicados a la consulta');
+      ['A', 'B'].forEach((col, i) => {
+        const cell = wsGen.getCell(`${col}${r}`);
+        cell.value = i === 0 ? 'Tipo' : 'Valor';
+        cell.font = { bold: true };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: CLOUD } };
+      });
+      r++;
+      const filtros = this.filtrosActivos;
+      if (filtros.length === 0) {
+        wsGen.getCell(`A${r}`).value = 'Sin filtros adicionales';
+        wsGen.mergeCells(`A${r}:B${r}`);
+        r++;
+      } else {
+        filtros.forEach(f => {
+          wsGen.getCell(`A${r}`).value = f.tipo;
+          const cellV = wsGen.getCell(`B${r}`);
+          cellV.value = f.valor;
+          cellV.alignment = { horizontal: 'left', wrapText: true };
+          r++;
+        });
+      }
+
+      // ===================== HOJA 2: Detalle =====================
+      const wsDet = workbook.addWorksheet('Detalle');
+      wsDet.columns = [
+        { header: 'Concepto de gasto', key: 'concepto', width: 34 },
+        { header: 'Presupuesto', key: 'presupuesto', width: 24 },
+        { header: 'Recaudo', key: 'recaudo', width: 24 },
+        { header: '% Avance', key: 'avance', width: 14 },
+        { header: 'Registros', key: 'registros', width: 14 }
+      ];
+      const headerRow = wsDet.getRow(1);
+      headerRow.eachCell(cell => {
+        cell.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 11 };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: NAVY } };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+      });
+      headerRow.height = 20;
+
+      this.resumenPorConcepto.forEach(fila => {
+        const row = wsDet.addRow({
+          concepto: fila.concepto,
+          presupuesto: fila.presupuesto,
+          recaudo: fila.recaudo,
+          avance: fila.avance,
+          registros: fila.registros
+        });
+        row.getCell('presupuesto').numFmt = MONEY_FMT;
+        row.getCell('recaudo').numFmt = MONEY_FMT;
+        row.getCell('avance').numFmt = PCT_FMT;
+        row.getCell('registros').numFmt = NUM_FMT;
+      });
+
+      if (this.resumenPorConcepto.length > 0) {
+        const totalRow = wsDet.addRow({
+          concepto: 'Total',
+          presupuesto: this.resumenTotalPresupuesto,
+          recaudo: this.resumenTotalRecaudo,
+          avance: this.resumenTotalAvance,
+          registros: this.resumenTotalRegistros
+        });
+        totalRow.eachCell(cell => {
+          cell.font = { bold: true };
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: CLOUD } };
+        });
+        totalRow.getCell('presupuesto').numFmt = MONEY_FMT;
+        totalRow.getCell('recaudo').numFmt = MONEY_FMT;
+        totalRow.getCell('avance').numFmt = PCT_FMT;
+        totalRow.getCell('registros').numFmt = NUM_FMT;
+      }
+
+      // ===================== Descarga =====================
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer as BlobPart], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      const fechaArchivo = new Date().toISOString().slice(0, 10);
+      link.download = `SGR_Informacion_General_${this.bienioActual}_${fechaArchivo}.xlsx`;
+      link.click();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error al exportar el reporte:', error);
+    } finally {
+      this.isExporting.set(false);
+    }
   }
 
   // Métodos para manejar cambios en filtros de periodicidad
@@ -397,7 +643,7 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
           this.mesHasta = null;
           break;
       }
-      this.loadData();
+      // La recarga se realiza al pulsar "Aplicar filtros"
     }
   }
 
@@ -416,8 +662,7 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
 
     // Actualizar rango de fechas para mes
     this.actualizarRangoFechasMes();
-
-    this.loadData();
+    // La recarga se realiza al pulsar "Aplicar filtros"
   }
 
   onAniosChange(): void {
@@ -438,8 +683,7 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
         this.mesHasta = null;
       }
     }
-
-    this.loadData();
+    // La recarga se realiza al pulsar "Aplicar filtros"
   }
 
   onMesDesdeChange(): void {
@@ -447,7 +691,7 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     if (this.mesDesde && this.mesHasta && this.mesDesde > this.mesHasta) {
       this.mesHasta = null;
     }
-    this.loadData();
+    // La recarga se realiza al pulsar "Aplicar filtros"
   }
 
   onMesHastaChange(): void {
@@ -455,7 +699,7 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     if (this.mesDesde && this.mesHasta && this.mesHasta < this.mesDesde) {
       this.mesDesde = null;
     }
-    this.loadData();
+    // La recarga se realiza al pulsar "Aplicar filtros"
   }
 
   // Métodos para manejar cambios en caracterizaciones
@@ -480,38 +724,43 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
         break;
     }
 
-    // Recargar datos si se desactivó una caracterización
-    if (!activo) {
-      this.loadData();
-    }
+    // La recarga se realiza al pulsar "Aplicar filtros"
   }
 
   // Métodos para manejar cambios en valores de multiselect
   onValoresConceptoGastoChange(): void {
-    console.log('Concepto de Gasto cambiado:', this.valoresConceptoGasto);
-    this.loadData();
+    // La recarga se realiza al pulsar "Aplicar filtros"
   }
 
   onValoresRegionalChange(): void {
-    console.log('Regional cambiado:', this.valoresRegional);
-    this.loadData();
+    // La recarga se realiza al pulsar "Aplicar filtros"
   }
 
   onValoresAsignacionChange(): void {
-    console.log('Asignación cambiada:', this.valoresAsignacion);
-    this.loadData();
+    // La recarga se realiza al pulsar "Aplicar filtros"
   }
 
   onValoresGrupoInteresChange(): void {
-    console.log('Grupo de Interés cambiado:', this.valoresGrupoInteres);
-    this.loadData();
+    // La recarga se realiza al pulsar "Aplicar filtros"
   }
 
   // Método para manejar cambio en filtros de entidad (columna derecha)
   onEntidadChange(nuevaEntidad: string): void {
-    console.log('Cambio de entidad detectado:', nuevaEntidad);
     this.entidadSeleccionada = nuevaEntidad;
-    this.loadData();
+    // La recarga se realiza al pulsar "Aplicar filtros"
+  }
+
+  // Beneficiario: al desactivar el checkbox se limpian las entidades seleccionadas
+  onBeneficiarioChange(activo: boolean): void {
+    this.beneficiarioActivo = activo;
+    if (!activo) {
+      this.beneficiariosSeleccionados = [];
+    }
+    // La recarga se realiza al pulsar "Aplicar filtros"
+  }
+
+  onBeneficiariosChange(): void {
+    // La recarga se realiza al pulsar "Aplicar filtros"
   }
 
 
@@ -651,60 +900,37 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
       }
     }
 
-    // Concepto de Gasto
+    // Caracterización de la consulta: se referencia el título del elemento,
+    // no los ítems detallados seleccionados (un chip por caracterización activa).
     if (this.caracterizacionesActivas.conceptoGasto && this.valoresConceptoGasto.length > 0) {
-      this.valoresConceptoGasto.forEach(valor => {
-        if (valor !== 'Todos') {
-          filtros.push({
-            tipo: 'Concepto de Gasto',
-            valor: valor,
-            icono: 'pi-tag'
-          });
-        }
-      });
+      filtros.push({ tipo: 'Caracterización', valor: 'Concepto de gasto', icono: 'pi-tag' });
     }
-
-    // Regional
     if (this.caracterizacionesActivas.regional && this.valoresRegional.length > 0) {
-      this.valoresRegional.forEach(valor => {
-        if (valor !== 'Todos') {
-          filtros.push({
-            tipo: 'Regional',
-            valor: valor,
-            icono: 'pi-map'
-          });
-        }
-      });
+      filtros.push({ tipo: 'Caracterización', valor: 'Regional', icono: 'pi-map' });
     }
-
-    // Asignación
     if (this.caracterizacionesActivas.asignacion && this.valoresAsignacion.length > 0) {
-      this.valoresAsignacion.forEach(valor => {
-        filtros.push({
-          tipo: 'Asignación',
-          valor: valor,
-          icono: 'pi-briefcase'
-        });
-      });
+      filtros.push({ tipo: 'Caracterización', valor: 'Asignación', icono: 'pi-briefcase' });
     }
-
-    // Grupo de Interés
     if (this.caracterizacionesActivas.grupoInteres && this.valoresGrupoInteres.length > 0) {
-      this.valoresGrupoInteres.forEach(valor => {
-        filtros.push({
-          tipo: 'Grupo de Interés',
-          valor: valor,
-          icono: 'pi-sitemap'
-        });
-      });
+      filtros.push({ tipo: 'Caracterización', valor: 'Grupo de interés', icono: 'pi-sitemap' });
     }
 
-    // Entidad
-    if (this.entidadSeleccionada && this.entidadSeleccionada !== 'beneficiario') {
+    // Entidad (Tipo de entidad)
+    if (this.entidadSeleccionada) {
       const entidadLabel = this.obtenerLabelEntidad(this.entidadSeleccionada);
       filtros.push({
-        tipo: 'Entidad',
+        tipo: 'Tipo de entidad',
         valor: entidadLabel,
+        icono: 'pi-sitemap'
+      });
+    }
+
+    // Beneficiario
+    if (this.beneficiarioActivo) {
+      const cantidad = this.beneficiariosSeleccionados.filter(v => v !== 'TODAS').length;
+      filtros.push({
+        tipo: 'Beneficiarios',
+        valor: cantidad > 0 ? `${cantidad} seleccionado(s)` : 'Todas',
         icono: 'pi-users'
       });
     }
@@ -779,32 +1005,39 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     }
 
     // Remover de caracterizaciones
-    if (filtro.tipo === 'Concepto de Gasto') {
-      this.valoresConceptoGasto = this.valoresConceptoGasto.filter(v => v !== filtro.valor);
+    // Caracterización: se limpia la caracterización referida por su título
+    if (filtro.tipo === 'Caracterización') {
+      switch (filtro.valor) {
+        case 'Concepto de gasto':
+          this.caracterizacionesActivas.conceptoGasto = false;
+          this.valoresConceptoGasto = [];
+          break;
+        case 'Regional':
+          this.caracterizacionesActivas.regional = false;
+          this.valoresRegional = [];
+          break;
+        case 'Asignación':
+          this.caracterizacionesActivas.asignacion = false;
+          this.valoresAsignacion = [];
+          break;
+        case 'Grupo de interés':
+          this.caracterizacionesActivas.grupoInteres = false;
+          this.valoresGrupoInteres = [];
+          break;
+      }
       this.loadData();
       return;
     }
 
-    if (filtro.tipo === 'Regional') {
-      this.valoresRegional = this.valoresRegional.filter(v => v !== filtro.valor);
+    if (filtro.tipo === 'Tipo de entidad') {
+      this.entidadSeleccionada = '';
       this.loadData();
       return;
     }
 
-    if (filtro.tipo === 'Asignación') {
-      this.valoresAsignacion = this.valoresAsignacion.filter(v => v !== filtro.valor);
-      this.loadData();
-      return;
-    }
-
-    if (filtro.tipo === 'Grupo de Interés') {
-      this.valoresGrupoInteres = this.valoresGrupoInteres.filter(v => v !== filtro.valor);
-      this.loadData();
-      return;
-    }
-
-    if (filtro.tipo === 'Entidad') {
-      this.entidadSeleccionada = 'beneficiario';
+    if (filtro.tipo === 'Beneficiarios') {
+      this.beneficiarioActivo = false;
+      this.beneficiariosSeleccionados = [];
       this.loadData();
       return;
     }
@@ -836,7 +1069,9 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     this.valoresGrupoInteres = [];
 
     // Resetear otros filtros
-    this.entidadSeleccionada = 'beneficiario';
+    this.entidadSeleccionada = '';
+    this.beneficiarioActivo = false;
+    this.beneficiariosSeleccionados = [];
     this.presupuestoSeleccionado = 'total';
     this.recaudoSeleccionado = 'total';
 
