@@ -1,0 +1,172 @@
+<div class="sicodis-container">
+
+  <!-- Banner -->
+  <div class="gradient-banner">
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h1>Parámetros de cálculo · Distribución SGR</h1>
+      <p>Administre y versione los porcentajes, ponderadores, umbrales y reglas de redondeo del cálculo de la distribución del SGR.</p>
+    </div>
+  </div>
+
+  <!-- Aviso de perfil -->
+  <div class="admin-aviso">
+    <i class="pi pi-shield"></i>
+    <span>Pantalla de administración (perfil administrador). Cada guardado crea una <strong>nueva versión</strong> con vigencia y auditoría; las versiones anteriores no se modifican. El componente de ejecución usa estos parámetros en modo de solo lectura.</span>
+    <a routerLink="/sgr-ejecucion-distribucion" class="admin-link">Ir a ejecución →</a>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters-panel">
+    <div class="filters-row">
+      <div class="p-field bienio-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="bienio" [options]="bienios" inputId="bienioSelect" [(ngModel)]="selectedBienio"
+            optionLabel="label" [showClear]="false" placeholder="Bienio" (onChange)="onBienioChange()"></p-select>
+          <label for="bienioSelect">Bienio</label>
+        </p-floatlabel>
+      </div>
+      <div class="version-actual" *ngIf="baseVigente">
+        Versión vigente: <strong>{{ baseVigente.etiquetaVersion }}</strong>
+        <span class="va-meta">· {{ baseVigente.fecha | date:'dd/MM/yyyy' }} · {{ baseVigente.autor }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mensaje de guardado -->
+  <div class="guardado-ok" *ngIf="guardadoOk">
+    <i class="pi pi-check-circle"></i>
+    Nueva versión <strong>{{ versionGuardada }}</strong> guardada correctamente. Es la nueva versión vigente del bienio.
+  </div>
+
+  <div class="param-layout" *ngIf="conjunto">
+
+    <!-- Columna izquierda: edición -->
+    <div class="param-editor">
+
+      <!-- A. Porcentajes -->
+      <p-card class="edit-card">
+        <ng-template pTemplate="header"><div class="edit-card-header">A · Porcentajes (tabla 2)</div></ng-template>
+        <p-table [value]="conjunto.porcentajes" styleClass="p-datatable-sm edit-table">
+          <ng-template pTemplate="body" let-p>
+            <tr [ngClass]="{ 'sub-row': p.etiqueta.trim().startsWith('—') }">
+              <td class="etq">{{ p.etiqueta }}</td>
+              <td class="val">
+                <input type="number" step="0.01" min="0" max="100" [(ngModel)]="p.valor" (input)="onValorCambio()" />
+                <span class="uni">%</span>
+              </td>
+              <td class="ref">{{ p.referenciaNormativa }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+
+      <!-- B. Ponderadores -->
+      <p-card class="edit-card">
+        <ng-template pTemplate="header"><div class="edit-card-header">B · Ponderadores de fórmula</div></ng-template>
+        <p-table [value]="conjunto.ponderadores" styleClass="p-datatable-sm edit-table">
+          <ng-template pTemplate="body" let-p>
+            <tr>
+              <td class="etq">{{ p.etiqueta }}</td>
+              <td class="val">
+                <input type="number" step="0.05" min="0" max="1" [(ngModel)]="p.valor" (input)="onValorCambio()" />
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+
+      <!-- C. Umbrales y banderas -->
+      <p-card class="edit-card">
+        <ng-template pTemplate="header"><div class="edit-card-header">C · Umbrales y banderas</div></ng-template>
+        <p-table [value]="conjunto.umbrales" styleClass="p-datatable-sm edit-table">
+          <ng-template pTemplate="body" let-p>
+            <tr>
+              <td class="etq">{{ p.etiqueta }}</td>
+              <td class="val">
+                <ng-container *ngIf="esFlag(p); else numUmbral">
+                  <label class="switch">
+                    <input type="checkbox" [(ngModel)]="p.valor" (change)="onValorCambio()" />
+                    <span class="switch-label">{{ p.valor ? 'Sí' : 'No' }}</span>
+                  </label>
+                </ng-container>
+                <ng-template #numUmbral>
+                  <input type="number" step="1" min="0" [(ngModel)]="p.valor" (input)="onValorCambio()" />
+                  <span class="uni">{{ p.unidad === 'pp' ? 'p.p.' : '%' }}</span>
+                </ng-template>
+              </td>
+              <td class="ref">{{ p.referenciaNormativa }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+
+      <!-- D. Redondeo -->
+      <p-card class="edit-card">
+        <ng-template pTemplate="header"><div class="edit-card-header">D · Redondeo por tipo de salida</div></ng-template>
+        <p-table [value]="conjunto.redondeo" styleClass="p-datatable-sm edit-table">
+          <ng-template pTemplate="header">
+            <tr><th>Salida</th><th>Decimales</th><th>Modo</th></tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-r>
+            <tr>
+              <td class="etq">{{ r.etiqueta }}</td>
+              <td class="val">
+                <select [(ngModel)]="r.decimales" (change)="onValorCambio()" class="sel">
+                  <option *ngFor="let d of decimalesOpts" [ngValue]="d">{{ d }}</option>
+                </select>
+              </td>
+              <td>
+                <select [(ngModel)]="r.modo" (change)="onValorCambio()" class="sel">
+                  <option *ngFor="let m of modoOpts" [ngValue]="m">{{ modoLabel(m) }}</option>
+                </select>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+    </div>
+
+    <!-- Columna derecha: validaciones + guardar -->
+    <div class="param-panel">
+      <div class="panel-sticky">
+        <div class="valid-header">
+          <span class="valid-titulo">Validación</span>
+          <span class="valid-badge" [ngClass]="todoValido ? 'ok' : 'err'">
+            {{ validacionesOk }} / {{ validaciones.length }}
+          </span>
+        </div>
+        <ul class="valid-list">
+          <li *ngFor="let v of validaciones" [ngClass]="v.ok ? 'ok' : 'err'">
+            <i [class]="v.ok ? 'pi pi-check-circle' : 'pi pi-times-circle'"></i>
+            <div class="valid-cuerpo">
+              <span class="valid-etq">{{ v.etiqueta }}</span>
+              <span class="valid-num" *ngIf="!v.ok">esperado {{ v.esperado }} · actual {{ v.actual }}</span>
+            </div>
+          </li>
+        </ul>
+
+        <div class="motivo-box">
+          <label for="motivo">Motivo del cambio <span class="req">*</span></label>
+          <textarea id="motivo" rows="3" [(ngModel)]="nuevoMotivo" (input)="guardadoOk = false"
+                    placeholder="Describa la reforma o ajuste que motiva la nueva versión (mín. 5 caracteres)."></textarea>
+          <span class="motivo-nota" *ngIf="!motivoValido">El motivo es obligatorio para versionar (mín. 5 caracteres).</span>
+        </div>
+
+        <div class="panel-acciones">
+          <button pButton type="button" icon="pi pi-save" label="Guardar nueva versión"
+                  class="p-button-primary guardar-btn"
+                  [disabled]="!puedeGuardar"
+                  (click)="guardar()"></button>
+          <button pButton type="button" icon="pi pi-undo" label="Restaurar vigente"
+                  class="p-button-secondary"
+                  (click)="restaurar()"></button>
+        </div>
+        <div class="panel-nota" *ngIf="!todoValido">
+          Corrija las validaciones en rojo para poder guardar.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -839,6 +839,91 @@ export interface InsumoEstado {
   fechaCarga?: string;
 }
 
+// ========== SGR Distribución — Ejecución y corridas Interfaces ==========
+
+export interface ChequeoItem {
+  codigo: string;
+  descripcion: string;
+  resultado: 'ok' | 'advertencia' | 'error';
+  detalle?: string;
+}
+
+export interface ResumenVerificacion {
+  cuadraturaOk: boolean;
+  chequeosTotales: number;
+  chequeosOk: number;
+  chequeos: ChequeoItem[];
+}
+
+export interface CorridaDistribucion {
+  idCorrida: number;
+  version: number;
+  idBienio: number;
+  bienio: string;
+  fechaEjecucion: string;
+  usuario: string;
+  versionInsumos: string;
+  versionParametros: string;
+  hashResultados: string;
+  estado: 'en_proceso' | 'exitosa' | 'con_diferencias' | 'fallida';
+  esOficial: boolean;
+  resumenVerificacion?: ResumenVerificacion;
+  mensaje?: string;
+}
+
+export interface EjecucionEstado {
+  idCorrida: number;
+  estado: CorridaDistribucion['estado'];
+  faseActual?: string;
+  progreso?: number;
+}
+
+export interface TotalAsignacion {
+  concepto: string;
+  porcentaje: number;
+  valor: number;
+  isTotal?: boolean;
+  esSubnivel?: boolean;
+}
+
+export interface DetalleCorrida {
+  idCorrida: number;
+  chequeos: ChequeoItem[];
+  totales: TotalAsignacion[];
+}
+
+export type TipoSalidaCorrida = 'excel' | 'xml' | 'reporte';
+
+// ========== SGR Distribución — Parámetros de cálculo Interfaces ==========
+
+export interface ParametroValor {
+  clave: string;
+  etiqueta: string;
+  valor: number | boolean;
+  unidad?: '%' | 'factor' | 'pp' | 'flag';
+  referenciaNormativa?: string;
+}
+
+export interface ConfigRedondeo {
+  tipoSalida: 'PR' | 'PBC' | 'IAC' | 'desahorroFAE' | 'mayorRecaudo' | 'multas' | 'etnicas';
+  etiqueta: string;
+  decimales: 0 | 2;
+  modo: 'redondeo' | 'truncamiento';
+}
+
+export interface ConjuntoParametros {
+  idVersion: number;
+  etiquetaVersion: string;      // p. ej. "P-v2"
+  vigencia: string;             // p. ej. "2027-2028"
+  fecha: string;
+  autor: string;
+  motivo?: string;
+  porcentajes: ParametroValor[];
+  ponderadores: ParametroValor[];
+  umbrales: ParametroValor[];
+  redondeo: ConfigRedondeo[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -2354,6 +2439,102 @@ getSgrDescargaResumenPbcRecaudoMensual( idvigencia: number
     const segments = [fuente, insumo].map(s => encodeURIComponent(String(s))).join('/');
     const url = `${this.baseUrl}/sgrdistribucion/insumos/plantilla/${segments}`;
     return this.http.get(url, { responseType: 'blob', observe: 'response' });
+  }
+
+  /**
+   * Inicia una corrida de cálculo de la distribución del SGR para un bienio.
+   * La ejecución es asíncrona; devuelve el identificador de la corrida creada.
+   * @param idBienio - Identificador del bienio.
+   * @returns Observable con la corrida creada (estado inicial `en_proceso`).
+   */
+  ejecutarDistribucionSgr(idBienio: number): Observable<CorridaDistribucion> {
+    const url = `${this.baseUrl}/sgrdistribucion/ejecutar/${encodeURIComponent(idBienio)}`;
+    return this.http.post<CorridaDistribucion>(url, {});
+  }
+
+  /**
+   * Consulta el estado/progreso de una corrida en ejecución (polling).
+   * @param idCorrida - Identificador de la corrida.
+   * @returns Observable con el estado y la fase actual.
+   */
+  getEstadoEjecucionSgr(idCorrida: number): Observable<EjecucionEstado> {
+    const url = `${this.baseUrl}/sgrdistribucion/corridas/estado/${encodeURIComponent(idCorrida)}`;
+    return this.http.get<EjecucionEstado>(url);
+  }
+
+  /**
+   * Obtiene el historial de corridas (versionadas por fecha de ejecución) de un bienio.
+   * @param idBienio - Identificador del bienio.
+   * @returns Observable con la lista de corridas, de la más reciente a la más antigua.
+   */
+  getCorridasDistribucionSgr(idBienio: number): Observable<CorridaDistribucion[]> {
+    const url = `${this.baseUrl}/sgrdistribucion/corridas/${encodeURIComponent(idBienio)}`;
+    return this.http.get<CorridaDistribucion[]>(url);
+  }
+
+  /**
+   * Obtiene el detalle de una corrida: reporte de verificación (listas de chequeo del
+   * manual) y totales por asignación.
+   * @param idCorrida - Identificador de la corrida.
+   * @returns Observable con el detalle de la corrida.
+   */
+  getDetalleCorridaSgr(idCorrida: number): Observable<DetalleCorrida> {
+    const url = `${this.baseUrl}/sgrdistribucion/corridas/detalle/${encodeURIComponent(idCorrida)}`;
+    return this.http.get<DetalleCorrida>(url);
+  }
+
+  /**
+   * Descarga una de las salidas de una corrida (Excel oficial, XML del SPGR o reporte
+   * de verificación).
+   * @param idCorrida - Identificador de la corrida.
+   * @param tipo - Tipo de salida a descargar.
+   * @returns Observable con la respuesta HTTP que contiene el Blob del archivo.
+   */
+  descargarSalidaCorridaSgr(idCorrida: number, tipo: TipoSalidaCorrida): Observable<HttpResponse<Blob>> {
+    const segments = [idCorrida, tipo].map(s => encodeURIComponent(String(s))).join('/');
+    const url = `${this.baseUrl}/sgrdistribucion/corridas/descarga/${segments}`;
+    return this.http.get(url, { responseType: 'blob', observe: 'response' });
+  }
+
+  /**
+   * Marca una corrida como la versión oficial del bienio (desmarca la anterior).
+   * @param idCorrida - Identificador de la corrida a promover.
+   * @returns Observable con la corrida actualizada.
+   */
+  marcarCorridaOficialSgr(idCorrida: number): Observable<CorridaDistribucion> {
+    const url = `${this.baseUrl}/sgrdistribucion/corridas/marcar-oficial/${encodeURIComponent(idCorrida)}`;
+    return this.http.post<CorridaDistribucion>(url, {});
+  }
+
+  /**
+   * Obtiene el conjunto de parámetros de cálculo vigente para un bienio
+   * (porcentajes de la tabla 2, ponderadores, umbrales/banderas y redondeo).
+   * @param idBienio - Identificador del bienio.
+   * @returns Observable con el conjunto de parámetros versionado.
+   */
+  getParametrosVigentesSgr(idBienio: number): Observable<ConjuntoParametros> {
+    const url = `${this.baseUrl}/sgrdistribucion/parametros/vigente/${encodeURIComponent(idBienio)}`;
+    return this.http.get<ConjuntoParametros>(url);
+  }
+
+  /**
+   * Obtiene el histórico de versiones de parámetros de un bienio.
+   * @param idBienio - Identificador del bienio.
+   * @returns Observable con las versiones de parámetros, de la más reciente a la más antigua.
+   */
+  getHistoricoParametrosSgr(idBienio: number): Observable<ConjuntoParametros[]> {
+    const url = `${this.baseUrl}/sgrdistribucion/parametros/${encodeURIComponent(idBienio)}`;
+    return this.http.get<ConjuntoParametros[]>(url);
+  }
+
+  /**
+   * Crea una nueva versión del conjunto de parámetros de cálculo (perfil administrador).
+   * @param conjunto - Conjunto de parámetros a versionar.
+   * @returns Observable con el conjunto persistido (con su nueva versión).
+   */
+  guardarParametrosSgr(conjunto: ConjuntoParametros): Observable<ConjuntoParametros> {
+    const url = `${this.baseUrl}/sgrdistribucion/parametros`;
+    return this.http.post<ConjuntoParametros>(url, conjunto);
   }
 
   login(usuario: string, password: string): Observable<string> {

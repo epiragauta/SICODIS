@@ -1,0 +1,411 @@
+<div class="sicodis-container">
+
+  <!-- Popups para Diccionario y Siglas -->
+  <app-info-popup
+    [infoText]="diccionarioContent"
+    contentTitle="Ejecución de la distribución"
+    [showPopup]="showDiccionarioPopup"
+    (onClose)="closeDiccionarioPopup()">
+  </app-info-popup>
+
+  <app-info-popup
+    [infoText]="siglasContent"
+    contentTitle="Siglas y Abreviaciones"
+    [showPopup]="showSiglasPopup"
+    (onClose)="closeSiglasPopup()">
+  </app-info-popup>
+
+  <!-- Banner -->
+  <div class="gradient-banner">
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h1>Ejecución de la Distribución SGR</h1>
+      <p>Ejecute el cálculo de la distribución del Sistema General de Regalías y consulte el historial de corridas versionadas por fecha de ejecución.</p>
+    </div>
+  </div>
+
+  <!-- Panel de filtros -->
+  <div class="filters-panel">
+    <div class="filters-row">
+      <div class="p-field bienio-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="bienio" [options]="bienios" inputId="bienioSelect" [(ngModel)]="selectedBienio"
+            optionLabel="label" [showClear]="false" placeholder="Bienio"
+            [disabled]="ejecucionEnCurso" (onChange)="onBienioChange()"></p-select>
+          <label for="bienioSelect">Bienio</label>
+        </p-floatlabel>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fecha y accesos a Diccionario / Siglas -->
+  <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0;">
+    <div style="width: 83%;">
+      <p class="date-update">Norma base: Manual M-CA-04 · versión 12 (DNP, 2025)</p>
+      <p class="date-update">Cada corrida se guarda como una versión inmutable identificada por su fecha de ejecución.</p>
+    </div>
+    <div style="position: relative; padding-bottom: .25rem;">
+      <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 1.8rem; width: 96px;"
+          (click)="showPopupDiccionario()">
+      </button>
+      <button pButton type="button" label="Siglas" class="p-button-secondary" style="width: 90px;"
+          (click)="showPopupSiglas()">
+      </button>
+    </div>
+  </div>
+
+  <!-- Pestañas: Ejecución | Parámetros -->
+  <div class="tabs-bar">
+    <button type="button" class="tab-btn" [class.active]="activeTab === 'ejecucion'"
+            (click)="setTab('ejecucion')">
+      <i class="pi pi-play-circle"></i> Ejecución
+    </button>
+    <button type="button" class="tab-btn" [class.active]="activeTab === 'parametros'"
+            (click)="setTab('parametros')">
+      <i class="pi pi-sliders-h"></i> Parámetros
+    </button>
+  </div>
+
+  <!-- ===================== PESTAÑA EJECUCIÓN ===================== -->
+  <div *ngIf="activeTab === 'ejecucion'">
+
+  <!-- ZONA 1 · Precondiciones + ejecutar -->
+  <p-card class="precondicion-card">
+    <div class="precondicion-body">
+      <div class="precondicion-estado">
+        <div class="precondicion-linea">
+          <i [class]="seccionICompleta ? 'pi pi-check-circle ok' : 'pi pi-exclamation-circle pend'"></i>
+          <span><strong>Sección I</strong> (Programación): {{ precondicion.seccionICargados }} / {{ precondicion.seccionITotal }} insumos cargados</span>
+        </div>
+        <div class="precondicion-linea">
+          <i [class]="seccionIIICompleta ? 'pi pi-check-circle ok' : 'pi pi-exclamation-triangle warn'"></i>
+          <span><strong>Sección III</strong> (Étnicas): {{ precondicion.seccionIIICargados }} / {{ precondicion.seccionIIITotal }} insumos cargados</span>
+        </div>
+        <a class="precondicion-link" routerLink="/sgr-carga-insumos">Ver / cargar insumos →</a>
+      </div>
+
+      <div class="precondicion-accion">
+        <button pButton type="button"
+                icon="pi pi-play"
+                label="Ejecutar cálculo"
+                class="p-button-primary ejecutar-btn"
+                [disabled]="!puedeEjecutar"
+                (click)="ejecutarCalculo()">
+        </button>
+        <div class="precondicion-nota" *ngIf="!seccionICompleta">
+          Complete los insumos de la Sección I para habilitar la ejecución.
+        </div>
+        <div class="precondicion-nota" *ngIf="seccionICompleta && !seccionIIICompleta">
+          Puede ejecutar sin la Sección III; el cálculo indicativo étnico quedará pendiente.
+        </div>
+      </div>
+    </div>
+  </p-card>
+
+  <!-- ZONA 2 · Ejecución en curso -->
+  <p-card class="ejecucion-card" *ngIf="ejecucionEnCurso">
+    <div class="ejecucion-body">
+      <div class="ejecucion-header">
+        <i class="pi pi-spin pi-spinner"></i>
+        <span>Ejecutando el cálculo… fase actual: <strong>{{ faseActual }}</strong></span>
+      </div>
+      <div class="ejecucion-fases">Tabla 2 → AIL → AIR → FAE → FONPET → SSEC → Bolsas</div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" [style.width.%]="progreso"></div>
+      </div>
+      <span class="progress-pct">{{ progreso }}%</span>
+    </div>
+  </p-card>
+
+  <!-- ZONA 3 · Historial de corridas versionadas -->
+  <div class="historial-section">
+    <div class="historial-header">
+      <h3 class="historial-title">Historial de corridas · {{ selectedBienio?.label }}</h3>
+    </div>
+
+    <p-table [value]="corridas" styleClass="p-datatable-sm corridas-table">
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="col-ver">Versión</th>
+          <th class="col-fecha">Fecha / hora</th>
+          <th class="col-usuario">Usuario</th>
+          <th class="col-insumos">Insumos</th>
+          <th class="col-param">Parámetros</th>
+          <th class="col-hash">Hash</th>
+          <th class="col-verif">Verificación</th>
+          <th class="col-estado">Estado</th>
+          <th class="col-acciones">Acciones</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-corrida>
+        <tr>
+          <td class="col-ver">
+            <span class="ver-chip">v{{ corrida.version }}</span>
+            <i class="pi pi-star-fill oficial-star" *ngIf="corrida.esOficial" pTooltip="Versión oficial"></i>
+          </td>
+          <td class="col-fecha">{{ corrida.fechaEjecucion | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td class="col-usuario">{{ corrida.usuario }}</td>
+          <td class="col-insumos">{{ corrida.versionInsumos }}</td>
+          <td class="col-param">{{ corrida.versionParametros }}</td>
+          <td class="col-hash"><code>{{ corrida.hashResultados }}</code></td>
+          <td class="col-verif">
+            <span class="verif-cell" [ngClass]="corrida.estado">
+              <i [class]="verificacionIcono(corrida)"></i> {{ verificacionTexto(corrida) }}
+            </span>
+          </td>
+          <td class="col-estado">
+            <p-tag [value]="estadoLabel(corrida.estado)" [severity]="estadoSeverity(corrida.estado)"></p-tag>
+          </td>
+          <td class="col-acciones">
+            <button pButton type="button" icon="pi pi-eye"
+                    class="p-button-secondary p-button-sm accion-icon"
+                    pTooltip="Ver detalle y descargas"
+                    [disabled]="corrida.estado === 'fallida'"
+                    (click)="verDetalle(corrida)">
+            </button>
+            <button pButton type="button" icon="pi pi-star"
+                    class="p-button-secondary p-button-sm accion-icon accion-oficial"
+                    pTooltip="Marcar como oficial"
+                    *ngIf="puedeMarcarOficial(corrida)"
+                    (click)="marcarOficial(corrida)">
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="9" class="historial-vacio">
+            No hay corridas registradas para este bienio. Ejecute el cálculo para crear la primera versión.
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Notas -->
+  <div class="notes-section">
+    <div class="notes-content">
+      <h4 class="notes-title">Notas:</h4>
+      <ul class="notes-list">
+        <li>Recalcular no sobrescribe corridas anteriores: cada ejecución genera una nueva versión.</li>
+        <li>La versión de insumos y de parámetros aplicadas quedan registradas para reproducir la distribución.</li>
+        <li>El detalle de la corrida, las descargas (Excel · XML · reporte) y la marcación oficial se incorporan en las siguientes entregas.</li>
+      </ul>
+    </div>
+  </div>
+
+  </div>
+  <!-- ===================== FIN PESTAÑA EJECUCIÓN ===================== -->
+
+  <!-- ===================== PESTAÑA PARÁMETROS ===================== -->
+  <div *ngIf="activeTab === 'parametros'" class="parametros-section">
+
+    <div class="parametros-header" *ngIf="parametros">
+      <div>
+        <span class="param-version">Versión vigente: {{ parametros.etiquetaVersion }}</span>
+        <span class="param-meta">
+          vigencia {{ parametros.vigencia }} · autor {{ parametros.autor }} · {{ parametros.fecha | date:'dd/MM/yyyy' }}
+        </span>
+        <div class="param-motivo" *ngIf="parametros.motivo">{{ parametros.motivo }}</div>
+      </div>
+      <div class="param-header-acciones">
+        <a routerLink="/sgr-parametros-distribucion" class="param-admin-link">Administrar parámetros →</a>
+        <span class="param-readonly"><i class="pi pi-lock"></i> Solo lectura</span>
+      </div>
+    </div>
+
+    <div class="param-aviso">
+      Los parámetros se administran y versionan en una pantalla aparte (perfil administrador). Cada corrida queda anclada a la versión de parámetros aplicada.
+    </div>
+
+    <div class="param-grid" *ngIf="parametros">
+
+      <!-- A. Porcentajes -->
+      <p-card class="param-card">
+        <ng-template pTemplate="header"><div class="param-card-header">A · Porcentajes (tabla 2)</div></ng-template>
+        <p-table [value]="parametros.porcentajes" styleClass="p-datatable-sm param-table">
+          <ng-template pTemplate="body" let-p>
+            <tr>
+              <td class="param-etq">{{ p.etiqueta }}</td>
+              <td class="param-val">{{ formatValor(p) }}</td>
+              <td class="param-ref">{{ p.referenciaNormativa }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+
+      <!-- B. Ponderadores -->
+      <p-card class="param-card">
+        <ng-template pTemplate="header"><div class="param-card-header">B · Ponderadores de fórmula</div></ng-template>
+        <p-table [value]="parametros.ponderadores" styleClass="p-datatable-sm param-table">
+          <ng-template pTemplate="body" let-p>
+            <tr>
+              <td class="param-etq">{{ p.etiqueta }}</td>
+              <td class="param-val">{{ formatValor(p) }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+
+      <!-- C. Umbrales y banderas -->
+      <p-card class="param-card">
+        <ng-template pTemplate="header"><div class="param-card-header">C · Umbrales y banderas</div></ng-template>
+        <p-table [value]="parametros.umbrales" styleClass="p-datatable-sm param-table">
+          <ng-template pTemplate="body" let-p>
+            <tr>
+              <td class="param-etq">{{ p.etiqueta }}</td>
+              <td class="param-val">
+                <span *ngIf="p.unidad === 'flag'" class="param-flag" [ngClass]="p.valor ? 'on' : 'off'">{{ formatValor(p) }}</span>
+                <span *ngIf="p.unidad !== 'flag'">{{ formatValor(p) }}</span>
+              </td>
+              <td class="param-ref">{{ p.referenciaNormativa }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+
+      <!-- D. Redondeo -->
+      <p-card class="param-card">
+        <ng-template pTemplate="header"><div class="param-card-header">D · Redondeo por tipo de salida</div></ng-template>
+        <p-table [value]="parametros.redondeo" styleClass="p-datatable-sm param-table">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Salida</th>
+              <th class="param-val">Decimales</th>
+              <th>Modo</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-r>
+            <tr>
+              <td class="param-etq">{{ r.etiqueta }}</td>
+              <td class="param-val">{{ r.decimales }}</td>
+              <td>{{ redondeoModoLabel(r.modo) }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+
+    </div>
+  </div>
+  <!-- ===================== FIN PESTAÑA PARÁMETROS ===================== -->
+
+  <!-- Diálogo · Detalle de corrida (Incremento 2) -->
+  <p-dialog [(visible)]="showDetalleDialog" [modal]="true" [style]="{ width: '860px', maxWidth: '95vw' }"
+            [draggable]="false" [resizable]="false" styleClass="detalle-dialog"
+            (onHide)="cerrarDetalle()">
+    <ng-template pTemplate="header">
+      <div class="detalle-header" *ngIf="corridaDetalle">
+        <span class="detalle-titulo">Detalle de la corrida · <strong>v{{ corridaDetalle.version }}</strong></span>
+        <p-tag [value]="estadoLabel(corridaDetalle.estado)" [severity]="estadoSeverity(corridaDetalle.estado)"></p-tag>
+        <i class="pi pi-star-fill oficial-star" *ngIf="corridaDetalle.esOficial" pTooltip="Versión oficial"></i>
+      </div>
+    </ng-template>
+
+    <div class="detalle-body" *ngIf="corridaDetalle">
+
+      <!-- Trazabilidad -->
+      <div class="detalle-bloque">
+        <h4 class="detalle-subtitulo">Trazabilidad</h4>
+        <div class="trazabilidad-grid">
+          <div><span class="tz-etq">Fecha / hora</span><span class="tz-val">{{ corridaDetalle.fechaEjecucion | date:'dd/MM/yyyy HH:mm' }}</span></div>
+          <div><span class="tz-etq">Usuario</span><span class="tz-val">{{ corridaDetalle.usuario }}</span></div>
+          <div><span class="tz-etq">Versión de insumos</span><span class="tz-val">{{ corridaDetalle.versionInsumos }}</span></div>
+          <div><span class="tz-etq">Versión de parámetros</span><span class="tz-val">{{ corridaDetalle.versionParametros }}</span></div>
+          <div><span class="tz-etq">Hash de resultados</span><span class="tz-val"><code>{{ corridaDetalle.hashResultados }}</code></span></div>
+          <div><span class="tz-etq">Bienio</span><span class="tz-val">{{ corridaDetalle.bienio }}</span></div>
+        </div>
+        <div class="detalle-msg" *ngIf="corridaDetalle.mensaje"><i class="pi pi-info-circle"></i> {{ corridaDetalle.mensaje }}</div>
+      </div>
+
+      <!-- Reporte de verificación -->
+      <div class="detalle-bloque">
+        <h4 class="detalle-subtitulo">Reporte de verificación
+          <span class="verif-resumen" *ngIf="corridaDetalle.resumenVerificacion">
+            ({{ corridaDetalle.resumenVerificacion.chequeosOk }}/{{ corridaDetalle.resumenVerificacion.chequeosTotales }} ·
+            cuadratura {{ corridaDetalle.resumenVerificacion.cuadraturaOk ? '100%' : 'con diferencias' }})
+          </span>
+        </h4>
+        <ul class="chequeos-list">
+          <li *ngFor="let ch of detalleChequeos" [ngClass]="ch.resultado">
+            <i [class]="chequeoIcono(ch.resultado)"></i>
+            <span class="chequeo-cod">{{ ch.codigo }}</span>
+            <span class="chequeo-desc">{{ ch.descripcion }}<span class="chequeo-detalle" *ngIf="ch.detalle"> — {{ ch.detalle }}</span></span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Totales por asignación -->
+      <div class="detalle-bloque" *ngIf="detalleTotales.length">
+        <h4 class="detalle-subtitulo">Totales por asignación</h4>
+        <p-table [value]="detalleTotales" styleClass="p-datatable-sm totales-table">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Concepto</th>
+              <th class="num">Part. %</th>
+              <th class="num">Valor</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-t>
+            <tr [ngClass]="{ 'total-row': t.isTotal, 'sub-row': t.esSubnivel }">
+              <td>{{ t.concepto }}</td>
+              <td class="num">{{ t.porcentaje }}%</td>
+              <td class="num">{{ t.valor | numberFormat }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+        <div class="totales-nota">Cifras en pesos corrientes · base de ingresos corrientes proyectados del bienio.</div>
+      </div>
+
+      <!-- Parámetros aplicados -->
+      <div class="detalle-bloque">
+        <h4 class="detalle-subtitulo">Parámetros aplicados · {{ corridaDetalle.versionParametros }}</h4>
+        <div *ngIf="parametrosAplicadosDisponibles(corridaDetalle) && parametros" class="param-aplicados">
+          <div class="pa-grupo">
+            <span class="pa-titulo">Umbrales y banderas</span>
+            <span class="pa-item" *ngFor="let p of parametros.umbrales">{{ p.etiqueta }}: <strong>{{ formatValor(p) }}</strong></span>
+          </div>
+        </div>
+        <div *ngIf="!parametrosAplicadosDisponibles(corridaDetalle)" class="param-hist-nota">
+          <i class="pi pi-info-circle"></i>
+          Los valores de la versión <strong>{{ corridaDetalle.versionParametros }}</strong> no están cargados en esta vista (la versión vigente es {{ parametros?.etiquetaVersion }}).
+        </div>
+      </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <div class="detalle-footer" *ngIf="corridaDetalle">
+        <div class="footer-oficial">
+          <button pButton type="button" label="Marcar como oficial" icon="pi pi-star"
+                  class="p-button-warning p-button-sm oficial-btn"
+                  *ngIf="puedeMarcarOficial(corridaDetalle)"
+                  (click)="marcarOficial(corridaDetalle)"></button>
+          <span class="es-oficial" *ngIf="corridaDetalle.esOficial">
+            <i class="pi pi-star-fill"></i> Versión oficial del bienio
+          </span>
+        </div>
+        <div class="footer-descargas">
+          <span class="descargas-label">Descargas:</span>
+          <button pButton type="button" label="Excel oficial" icon="pi pi-file-excel"
+                  class="p-button-primary p-button-sm"
+                  [disabled]="descargando === 'excel'"
+                  (click)="descargarSalida(corridaDetalle, 'excel')"></button>
+          <button pButton type="button" label="XML SPGR" icon="pi pi-code"
+                  class="p-button-secondary p-button-sm"
+                  [disabled]="descargando === 'xml'"
+                  (click)="descargarSalida(corridaDetalle, 'xml')"></button>
+          <button pButton type="button" label="Reporte" icon="pi pi-file"
+                  class="p-button-secondary p-button-sm"
+                  [disabled]="descargando === 'reporte'"
+                  (click)="descargarSalida(corridaDetalle, 'reporte')"></button>
+        </div>
+      </div>
+    </ng-template>
+  </p-dialog>
+
+  <!-- Confirmación · marcar oficial (Incremento 3) -->
+  <p-confirmDialog [style]="{ width: '460px' }" acceptButtonStyleClass="p-button-warning"
+                   rejectButtonStyleClass="p-button-secondary"></p-confirmDialog>
+
+</div>
