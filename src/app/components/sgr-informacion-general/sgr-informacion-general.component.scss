@@ -19,6 +19,61 @@ $alert-amber: #f59e0b;     // Acciones de remoción
     padding: 0 2rem;
   }
 
+  // Banner de cabecera (consistente con los demás componentes SGR)
+  .gradient-banner {
+    position: relative;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto 1rem;
+    height: 320px;
+    background-image: url('/assets/img/sgr/sgr-informacion-general.jpg');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    display: flex;
+    border-radius: 8px;
+
+    .gradient-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 95%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        #e5e6e8b5 0%,
+        rgba(255, 255, 255, 0.01) 100%
+      );
+      z-index: 1;
+    }
+
+    .banner-content {
+      position: relative;
+      margin-top: 1rem;
+      z-index: 2;
+      padding: 1rem;
+      max-width: 70%;
+      width: 1210px;
+      color: white;
+
+      h1 {
+        font-size: 2rem;
+        margin-top: 2.25rem;
+        margin-bottom: 2.5rem;
+        color: #1a408c;
+        font-weight: bold;
+      }
+
+      p {
+        font-size: 1.35rem;
+        margin-bottom: 2rem;
+        color: #264a70;
+        width: 80%;
+        font-weight: 500;
+      }
+    }
+  }
+
   // Título principal (al mismo nivel que la sección de consulta)
   .main-title {
     font-size: 1.7rem;
@@ -69,7 +124,7 @@ $alert-amber: #f59e0b;     // Acciones de remoción
         .kpi-value {
           font-size: 1.65rem;
           font-weight: 700;
-          color: #1f2937;
+          color: $civic-navy;
           text-align: right;
           margin: 0;
         }
@@ -142,7 +197,7 @@ $alert-amber: #f59e0b;     // Acciones de remoción
         .entidad-count {
           font-size: 1.8rem;
           font-weight: 700;
-          color: #1f2937;
+          color: $civic-navy;
           margin: 0.25rem 0;
           line-height: 1;
         }
@@ -212,7 +267,7 @@ $alert-amber: #f59e0b;     // Acciones de remoción
     margin-bottom: 2rem;
 
     .section-title {
-      font-size: 1.3rem;
+      font-size: 1.6rem;
       font-weight: 600;
       color: $civic-navy;
       margin-bottom: 1.5rem;

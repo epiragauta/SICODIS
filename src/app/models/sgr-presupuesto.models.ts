@@ -218,6 +218,39 @@ export interface ResumenConcepto {
   registros: number;
 }
 
+// Fila de detalle (una por registro presupuesto-recaudo) para la vista/hoja "Detalle".
+// Une la información de la entidad con el desglose de presupuesto y recaudo.
+export interface DetalleRegistroSGR {
+  vigencia: string;
+  region: string;
+  codDepto: string;
+  departamento: string;
+  codigoEntidad: string;
+  entidad: string;
+  tipo: string;
+  productor: boolean;
+  pdet: boolean;
+  capital: boolean;
+  concepto: string;
+  presupuestoTotal: number;
+  presupuestoCorriente: number;
+  disponibilidadInicial: number;
+  rendimientosFinancieros: number;
+  desahorro: number;
+  reintegros: number;
+  mayorRecaudo: number;
+  mineralSinIdentificacion: number;
+  multasSancionesIntereses: number;
+  saldosVigenciasAnteriores: number | null;  // Sin fuente en los datos actuales
+  adicionModificacion: number;
+  controversiasJudiciales: number;
+  recaudoCorriente: number;
+  avanceRecaudoCorriente: number;
+  recaudoOtros: number;
+  recaudoTotal: number;
+  avanceTotal: number;
+}
+
 export interface DatosAgregados {
   entidadesCount: EntidadCount;
   presupuestoTotal: number;
