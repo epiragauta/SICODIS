@@ -10,7 +10,7 @@ import { TreeTableModule } from 'primeng/treetable';
 import { FormsModule } from '@angular/forms';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
-import { SicodisApiService, SgrResumenPtoRecaudoComparador, SgrPtoRecaudoItem, DepartamentoSgr, MunicipioSgp, SGRFechaActualizacionCorte } from '../../services/sicodis-api.service';
+import { SicodisApiService, SgrResumenPtoRecaudoComparador, SgrPtoRecaudoItem, DepartamentoSgr, MunicipioSgp, SGRFechaActualizacionCorte, Vigencia } from '../../services/sicodis-api.service';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { MenuItem, TreeNode } from 'primeng/api';
 import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
@@ -54,18 +54,14 @@ export class SgrComparativoComponent implements OnInit {
   fechaCorteRecaudo: string = '';
 
   // Filtros
-  selectedBienio: any = { id: 8, label: '2025 - 2026' };
+  selectedBienio: any = null;
   selectedDepartamento: any = null;
   selectedMunicipio: any = null;
   selectedDepartamento2: any = null;
   selectedMunicipio2: any = null;
 
-  // Opciones de filtros
-  bienios: any[] = [
-    { id: 8, label: '2025 - 2026' } /*,
-    { id: 7, label: '2023 - 2024' },
-    { id: 6, label: '2021 - 2022' } */
-  ];
+  // Opciones de filtros (bienios cargados desde el API, como en presupuesto-y-recaudo)
+  bienios: any[] = [];
 
   departamentos: DepartamentoSgr[] = [];
   municipios: MunicipioSgp[] = [];
@@ -139,11 +135,11 @@ export class SgrComparativoComponent implements OnInit {
 
     this.home = { icon: 'pi pi-home', routerLink: '/' };
 
+    // Cargar bienios (vigencias) desde el API (misma fuente que presupuesto-y-recaudo)
+    this.cargarBienios();
+
     // Cargar departamentos desde el API (misma fuente que presupuesto-y-recaudo)
     this.cargarDepartamentos();
-
-    // Cargar fechas de actualización y corte de recaudo del bienio seleccionado
-    this.cargarFechasActualizacionCorte();
 
     // Inicializar columnas de la tabla
     this.tableCols = [
@@ -281,6 +277,30 @@ export class SgrComparativoComponent implements OnInit {
       return this.selectedMunicipio2.nombre;
     }
     return `Municipio ${municipioNumber}`;
+  }
+
+  /**
+   * Cargar la lista de bienios (vigencias) desde el API (misma fuente que
+   * presupuesto-y-recaudo). Selecciona el primero por defecto y carga sus fechas.
+   */
+  private cargarBienios(): void {
+    this.sicodisApiService.getSgrVigenciasQa().subscribe({
+      next: (vigencias: Vigencia[]) => {
+        this.bienios = (vigencias || []).map(vigencia => ({
+          id: vigencia.id_vigencia,
+          label: vigencia.vigencia
+        }));
+
+        if (this.bienios.length > 0) {
+          this.selectedBienio = this.bienios[0];
+          this.cargarFechasActualizacionCorte();
+        }
+      },
+      error: (error) => {
+        console.error('Error cargando bienios (vigencias):', error);
+        this.bienios = [];
+      }
+    });
   }
 
   /**
@@ -426,7 +446,7 @@ export class SgrComparativoComponent implements OnInit {
    * Limpiar filtros
    */
   clearFilters(): void {
-    this.selectedBienio = { id: 1, label: '2025 - 2026' };
+    this.selectedBienio = this.bienios.length > 0 ? this.bienios[0] : null;
     this.selectedDepartamento = null;
     this.selectedMunicipio = null;
     this.selectedDepartamento2 = null;
@@ -533,6 +553,12 @@ export class SgrComparativoComponent implements OnInit {
       item.categoria === '1.1.3'
     );
 
+    // Asignación para la Inversión Local (categoría 1.3). Es opcional: algunas
+    // entidades (p. ej. Medellín) no la reciben, por lo que no se exige su presencia.
+    const inversionLocal = entityData.find(item =>
+      item.categoria === '1.3'
+    );
+
     const ahorro = entityData.find(item =>
       item.categoria === '2.2'
     );
@@ -548,32 +574,46 @@ export class SgrComparativoComponent implements OnInit {
     }
 
     const chartData = {
-      labels: ['Asignaciones Directas', 'Ahorro (FONPET)'],
+      labels: ['A. Directas', 'A. para la Inversión Local', 'Ahorro (FONPET)'],
       datasets: [
         {
-          label: 'Presupuesto - Asignaciones Directas',
-          data: [asignacionesDirectas.presupuesto_total_vigente, null],
+          label: 'Presupuesto - A. Directas',
+          data: [asignacionesDirectas.presupuesto_total_vigente, null, null],
           backgroundColor: '#f38135ff',
           borderColor: '#be480eff',
           borderWidth: 1
         },
         {
-          label: 'Recaudo - Asignaciones Directas',
-          data: [asignacionesDirectas.caja_total, null],
+          label: 'Recaudo - A. Directas',
+          data: [asignacionesDirectas.caja_total, null, null],
           backgroundColor: '#edb87cff',
           borderColor: '#8c5516',
           borderWidth: 1
         },
         {
+          label: 'Presupuesto - A. para la Inversión Local',
+          data: [null, inversionLocal ? inversionLocal.presupuesto_total_vigente : null, null],
+          backgroundColor: '#2f9e6f',
+          borderColor: '#1c6647',
+          borderWidth: 1
+        },
+        {
+          label: 'Recaudo - A. para la Inversión Local',
+          data: [null, inversionLocal ? inversionLocal.caja_total : null, null],
+          backgroundColor: '#8ed6bd',
+          borderColor: '#4f9c81',
+          borderWidth: 1
+        },
+        {
           label: 'Presupuesto - Ahorro (FONPET)',
-          data: [null, ahorro.presupuesto_total_vigente],
+          data: [null, null, ahorro.presupuesto_total_vigente],
           backgroundColor: '#f33aafff',
           borderColor: '#b11049ff',
           borderWidth: 1
         },
         {
           label: 'Recaudo - Ahorro (FONPET)',
-          data: [null, ahorro.caja_total],
+          data: [null, null, ahorro.caja_total],
           backgroundColor: '#7991e8ff',
           borderColor: '#3d4d7a',
           borderWidth: 1
