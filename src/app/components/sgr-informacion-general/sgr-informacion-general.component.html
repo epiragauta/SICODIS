@@ -1,7 +1,16 @@
 <div class="sgr-info-general-container">
+  <!-- Banner -->
+  <div class="gradient-banner">
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h1>Información general del SGR</h1>
+      <p>Consulte los indicadores generales del Sistema General de Regalías y construya consultas específicas de presupuesto y recaudo por vigencia, caracterización y tipo de entidad.</p>
+    </div>
+  </div>
+
   <div class="container">
-    <!-- TARJETA 1: Información general del SGR (fija al bienio seleccionado) -->
-    <h1 class="main-title">Información general del SGR - Bienio {{ bienioActual }}</h1>
+    <!-- TARJETA 1: Información general del SGR (fija al último bienio) -->
+    <h1 class="main-title">Información general del SGR - Bienio {{ ultimoBienio }}</h1>
 
     <div class="info-general-card">
       <div class="kpi-grid">
@@ -246,7 +255,6 @@
                 (ngModelChange)="onPeriodicidadActivaChange('bienio', $event)"
                 [binary]="true"
                 inputId="filtroBienio"
-                [disabled]="true"
               />
               <label for="filtroBienio">Bienio</label>
             </div>

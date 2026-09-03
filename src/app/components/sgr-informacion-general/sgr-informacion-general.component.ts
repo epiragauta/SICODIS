@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, firstValueFrom } from 'rxjs';
 
 // PrimeNG imports
 import { ButtonModule } from 'primeng/button';
@@ -16,6 +16,7 @@ import { CalendarModule } from 'primeng/calendar';
 
 // Services
 import { SgrPresupuestoService } from '../../services/sgr-presupuesto.service';
+import { SicodisApiService, SGRFechaActualizacionCorte, Vigencia } from '../../services/sicodis-api.service';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 
 // Models
@@ -72,13 +73,13 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     anio: boolean;
     mes: boolean;
   } = {
-    bienio: true,  // Siempre activo por defecto
+    bienio: false,  // Filtro independiente y opcional (desacoplado de los KPIs)
     anio: false,
     mes: false
   };
 
   // Valores seleccionados para cada nivel
-  bieniosSeleccionados: string[] = ['2025-2026']; // Pre-seleccionado y bloqueado
+  bieniosSeleccionados: string[] = []; // Filtro de vigencias independiente (sin preselección)
   aniosSeleccionados: number[] = [];
   mesDesde: Date | null = null;  // Rango de meses: inicio
   mesHasta: Date | null = null;  // Rango de meses: fin
@@ -200,7 +201,13 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
   private actualizarAniosDisponibles(): void {
     const anios: number[] = [];
 
-    this.bieniosSeleccionados.forEach(bienio => {
+    // Si no hay bienios en el filtro, los años disponibles se derivan del último
+    // bienio (para que el filtro de Año siga siendo utilizable de forma independiente).
+    const bienios = this.bieniosSeleccionados.length > 0
+      ? this.bieniosSeleccionados
+      : [this.ultimoBienio];
+
+    bienios.forEach(bienio => {
       const [inicio, fin] = bienio.split('-').map(y => parseInt(y));
       if (!anios.includes(inicio)) anios.push(inicio);
       if (!anios.includes(fin)) anios.push(fin);
@@ -246,7 +253,15 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
   isExporting = signal(false);
   fechaReporte: string = '';
 
-  constructor(private sgrPresupuestoService: SgrPresupuestoService) {
+  // Fechas de actualización y corte de recaudo del SGR (dinámicas, mismo origen
+  // que el componente presupuesto-y-recaudo). Se usan en el bloque de notas del Excel.
+  fechaActualizacion: string = '';
+  fechaCorteRecaudo: string = '';
+
+  constructor(
+    private sgrPresupuestoService: SgrPresupuestoService,
+    private sicodisApiService: SicodisApiService
+  ) {
     const fecha = new Date();
     const meses = [
       'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
@@ -266,13 +281,54 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     // Datos fijos de la tarjeta "Información general" (solo bienio, no cambian con filtros)
     this.cargarDatosFijos();
 
+    // Fechas de actualización / corte de recaudo (para el bloque de notas del Excel)
+    this.cargarFechasActualizacionCorte();
+
     // Resumen inicial de la consulta
     this.loadData();
   }
 
-  // Bienio(s) seleccionado(s) para el título de la tarjeta de información general
+  // Carga las fechas de actualización y corte de recaudo desde el API del SGR,
+  // resolviendo primero el id de vigencia del último bienio (igual que
+  // presupuesto-y-recaudo). Ante error (p. ej. CORS en desarrollo) se dejan vacías.
+  private cargarFechasActualizacionCorte(): void {
+    this.sicodisApiService.getSgrVigenciasQa()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (vigencias: Vigencia[]) => {
+          if (!vigencias || vigencias.length === 0) { return; }
+          // Buscar la vigencia que corresponde al último bienio; si no, la primera (más reciente)
+          const normalizar = (s: string) => (s || '').replace(/\s/g, '');
+          const objetivo = normalizar(this.ultimoBienio);
+          const vigencia = vigencias.find(v => normalizar(v.vigencia) === objetivo) ?? vigencias[0];
+
+          this.sicodisApiService.getSGRFechasActualizacionCorteRecaudoIACVigencia(vigencia.id_vigencia)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+              next: (data: SGRFechaActualizacionCorte[]) => {
+                if (data && data.length > 0) {
+                  this.fechaActualizacion = data[0].fecha_actualizacion;
+                  this.fechaCorteRecaudo = data[0].fecha_corte_recaudo;
+                }
+              },
+              error: (err) => console.error('Error al cargar fechas de actualización/corte:', err)
+            });
+        },
+        error: (err) => console.error('Error al cargar vigencias del SGR:', err)
+      });
+  }
+
+  // Último bienio disponible (con datos). Los KPIs de la sección "Información
+  // general del SGR" SIEMPRE corresponden a este bienio, de forma independiente
+  // al filtro de vigencias de la consulta.
+  get ultimoBienio(): string {
+    const disponible = this.bieniosOpciones.find(b => !b.disabled);
+    return disponible?.value ?? this.bieniosOpciones[0]?.value ?? '';
+  }
+
+  // Bienio de referencia para los KPIs / encabezado de la tarjeta de información general
   get bienioActual(): string {
-    return this.bieniosSeleccionados.join(', ');
+    return this.ultimoBienio;
   }
 
   private cargarOpcionesBeneficiarios(): void {
@@ -319,10 +375,8 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  loadData(): void {
-    this.isLoading.set(true);
-
-    // Construir filtros combinando todas las caracterizaciones activas
+  // Construye el objeto de filtros de la consulta a partir de la selección actual.
+  private construirFiltros(): FiltrosSGR {
     const filtros: FiltrosSGR = {};
 
     // 1. Filtros de Concepto de Gasto (si está activo)
@@ -361,7 +415,7 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
       }
     }
 
-    // 2. Aplicar filtros de entidad (columna derecha con radio buttons)
+    // Aplicar filtros de entidad (columna derecha con radio buttons)
     switch (this.entidadSeleccionada) {
       case 'productoras':
         filtros.productor = true;
@@ -390,6 +444,14 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
         filtros.codigosEntidad = seleccion;
       }
     }
+
+    return filtros;
+  }
+
+  loadData(): void {
+    this.isLoading.set(true);
+
+    const filtros = this.construirFiltros();
 
     // Cargar datos agregados con filtros
     this.sgrPresupuestoService.getDatosAgregados(filtros)
@@ -440,8 +502,9 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
   }
 
   // Genera un archivo Excel (.xlsx) con dos hojas:
-  //  1) "Información general": KPIs del bienio, conteo de entidades y filtros aplicados.
-  //  2) "Detalle": desglose por concepto de gasto de la consulta (con la fila Total).
+  //  1) "Filtros aplicados": detalle de los filtros aplicados a la consulta.
+  //  2) "Detalle": una fila por registro (entidad + concepto) con el desglose
+  //     completo de presupuesto y recaudo, respetando los filtros.
   async exportarReporte(): Promise<void> {
     this.isExporting.set(true);
     try {
@@ -456,13 +519,12 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
       // Estilos/format reutilizables
       const NAVY = 'FF1E3A5F';
       const CLOUD = 'FFF1F5F9';
-      const MONEY_FMT = '"$"#,##0';
-      const PCT_FMT = '0.00%';
-      const NUM_FMT = '#,##0';
 
-      // ===================== HOJA 1: Información general =====================
-      const wsGen = workbook.addWorksheet('Información general');
-      wsGen.columns = [{ width: 42 }, { width: 26 }];
+      // ===================== HOJA: Filtros aplicados =====================
+      // Por ahora el reporte solo incluye el detalle de los filtros aplicados a
+      // la consulta (sin indicadores generales ni conteo de entidades).
+      const wsGen = workbook.addWorksheet('Filtros aplicados');
+      wsGen.columns = [{ width: 28 }, { width: 70 }];
 
       let r = 1;
       const setMerged = (texto: string, font: Partial<import('exceljs').Font>) => {
@@ -473,7 +535,6 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
         r++;
       };
       setMerged('SICODIS · SGR — Información General', { bold: true, size: 14, color: { argb: NAVY } });
-      setMerged(`Bienio: ${this.bienioActual}`, { bold: true, size: 11 });
       setMerged(`Reporte generado el ${this.fechaReporte}`, { italic: true, size: 10, color: { argb: 'FF6B7280' } });
       r++;
 
@@ -489,109 +550,194 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
         wsGen.getRow(r).height = 18;
         r++;
       };
-      const addRow = (label: string, value: string | number, fmt?: string, bold = false) => {
-        const cellL = wsGen.getCell(`A${r}`);
-        const cellV = wsGen.getCell(`B${r}`);
-        cellL.value = label;
-        cellV.value = value;
-        if (fmt) cellV.numFmt = fmt;
-        cellV.alignment = { horizontal: 'right' };
-        if (bold) { cellL.font = { bold: true }; cellV.font = { bold: true }; }
-        r++;
-      };
-
-      addSection('Indicadores generales (bienio)');
-      addRow('Presupuesto Total', this.presupuestoMetricas.presupuestoTotal, MONEY_FMT, true);
-      addRow('   Presupuesto Corriente', this.presupuestoMetricas.presupuestoCorriente, MONEY_FMT);
-      addRow('   Presupuesto Otros', this.presupuestoMetricas.presupuestoOtros, MONEY_FMT);
-      addRow('Recaudo Total', this.recaudoMetricas.recaudoTotal, MONEY_FMT, true);
-      addRow('   Recaudo Corriente', this.recaudoMetricas.recaudoCorriente, MONEY_FMT);
-      addRow('   Recaudo Otros', this.recaudoMetricas.recaudoOtros, MONEY_FMT);
-      const avanceFrac = this.presupuestoMetricas.presupuestoTotal > 0
-        ? this.recaudoMetricas.recaudoTotal / this.presupuestoMetricas.presupuestoTotal
-        : 0;
-      addRow('Avance de Recaudo', avanceFrac, PCT_FMT, true);
-      r++;
-
-      addSection('Entidades');
-      addRow('Beneficiarias', this.entidadesCount.beneficiarias, NUM_FMT);
-      addRow('Entidades Productoras', this.entidadesCount.productoras, NUM_FMT);
-      addRow('Entidades ZOMAC', this.entidadesCount.zomac, NUM_FMT);
-      addRow('Entidades PDET', this.entidadesCount.pdet, NUM_FMT);
-      addRow('Entidades con destinación Étnica', this.entidadesCount.etnicas, NUM_FMT);
-      r++;
 
       addSection('Filtros aplicados a la consulta');
       ['A', 'B'].forEach((col, i) => {
         const cell = wsGen.getCell(`${col}${r}`);
-        cell.value = i === 0 ? 'Tipo' : 'Valor';
+        cell.value = i === 0 ? 'Filtro' : 'Valor(es) seleccionado(s)';
         cell.font = { bold: true };
         cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: CLOUD } };
       });
       r++;
-      const filtros = this.filtrosActivos;
+      const filtros = this.filtrosDetallados;
       if (filtros.length === 0) {
-        wsGen.getCell(`A${r}`).value = 'Sin filtros adicionales';
+        const cell = wsGen.getCell(`A${r}`);
+        cell.value = 'Sin filtros aplicados';
+        cell.font = { italic: true, color: { argb: 'FF6B7280' } };
         wsGen.mergeCells(`A${r}:B${r}`);
         r++;
       } else {
         filtros.forEach(f => {
-          wsGen.getCell(`A${r}`).value = f.tipo;
+          const cellL = wsGen.getCell(`A${r}`);
+          cellL.value = f.tipo;
+          cellL.font = { bold: true };
+          cellL.alignment = { vertical: 'top' };
           const cellV = wsGen.getCell(`B${r}`);
           cellV.value = f.valor;
-          cellV.alignment = { horizontal: 'left', wrapText: true };
+          cellV.alignment = { horizontal: 'left', vertical: 'top', wrapText: true };
           r++;
         });
       }
 
-      // ===================== HOJA 2: Detalle =====================
+      // ===================== HOJA: Detalle =====================
+      // Una fila por registro (entidad + concepto) con todo el desglose de
+      // presupuesto y recaudo, respetando los filtros aplicados a la consulta.
+      // Presentación tipo "Consolidado Nacional": bloque de notas + tabla.
+      const MONEY_FMT = '"$" #,##0.00';
+      const PCT_FMT = '0.00%';
+      const HEADER_FILL = 'FFB8CCE4';          // Azul claro para encabezados
+      const HEADER_FILL_CORRIENTE = 'FFDCE6F1'; // Azul más claro (Presupuesto Corriente)
+      const SI_NO = (v: boolean) => (v ? 'Sí' : 'No');
+
+      const registros = await firstValueFrom(
+        this.sgrPresupuestoService.getRegistrosDetallados(this.construirFiltros())
+      );
+
       const wsDet = workbook.addWorksheet('Detalle');
-      wsDet.columns = [
-        { header: 'Concepto de gasto', key: 'concepto', width: 34 },
-        { header: 'Presupuesto', key: 'presupuesto', width: 24 },
-        { header: 'Recaudo', key: 'recaudo', width: 24 },
-        { header: '% Avance', key: 'avance', width: 14 },
-        { header: 'Registros', key: 'registros', width: 14 }
+
+      // Definición de columnas (clave + ancho); los encabezados se escriben manualmente
+      // más abajo para poder anteponer el bloque de notas.
+      const detCols: Array<{ key: string; header: string; width: number; corriente?: boolean }> = [
+        { key: 'vigencia', header: 'Vigencia', width: 12 },
+        { key: 'region', header: 'Región', width: 22 },
+        { key: 'codDepto', header: 'Cod Depto', width: 11 },
+        { key: 'departamento', header: 'Departamento', width: 22 },
+        { key: 'codigoEntidad', header: 'Código Entidad', width: 14 },
+        { key: 'entidad', header: 'Entidad', width: 40 },
+        { key: 'tipo', header: 'Tipo', width: 16 },
+        { key: 'productor', header: 'Productor', width: 13 },
+        { key: 'pdet', header: 'PDET', width: 10 },
+        { key: 'capital', header: 'Capital', width: 9 },
+        { key: 'concepto', header: 'Concepto', width: 42 },
+        { key: 'presupuestoTotal', header: 'Presupuesto Total', width: 20 },
+        { key: 'presupuestoCorriente', header: 'Presupuesto Corriente', width: 20, corriente: true },
+        { key: 'disponibilidadInicial', header: 'Disponibilidad Inicial', width: 20 },
+        { key: 'rendimientosFinancieros', header: 'Rendimientos Financieros', width: 22 },
+        { key: 'desahorro', header: 'Desahorro', width: 16 },
+        { key: 'reintegros', header: 'Reintegros', width: 16 },
+        { key: 'mayorRecaudo', header: 'Mayor Recaudo', width: 18 },
+        { key: 'mineralSinIdentificacion', header: 'Mineral sin identificación de origen', width: 30 },
+        { key: 'multasSancionesIntereses', header: 'Multas, Sanciones e Intereses', width: 26 },
+        { key: 'saldosVigenciasAnteriores', header: 'Saldos Vigencias Anteriores', width: 24 },
+        { key: 'adicionModificacion', header: 'Adición y/o Modificación', width: 22 },
+        { key: 'controversiasJudiciales', header: 'Controversias Judiciales', width: 22 },
+        { key: 'recaudoCorriente', header: 'Recaudo Corriente', width: 20 },
+        { key: 'avanceRecaudoCorriente', header: 'Avance Recaudo Corriente', width: 22 },
+        { key: 'recaudoOtros', header: 'Recaudo Otros', width: 18 },
+        { key: 'recaudoTotal', header: 'Recaudo Total', width: 20 },
+        { key: 'avanceTotal', header: 'Avance Total', width: 14 }
       ];
-      const headerRow = wsDet.getRow(1);
-      headerRow.eachCell(cell => {
-        cell.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 11 };
-        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: NAVY } };
-        cell.alignment = { horizontal: 'center', vertical: 'middle' };
-      });
-      headerRow.height = 20;
+      wsDet.columns = detCols.map(c => ({ key: c.key, width: c.width }));
+      const totalCols = detCols.length;
 
-      this.resumenPorConcepto.forEach(fila => {
+      // ---- Bloque de notas (título, fuente, fechas y aclaraciones de columnas) ----
+      // Nota: las referencias normativas y las fechas de actualización/corte
+      // provienen del reporte oficial y se mantienen como texto fijo.
+      const notas: Array<{ texto: string; font: Partial<import('exceljs').Font> }> = [
+        { texto: 'Consolidado Nacional', font: { bold: true, size: 14, color: { argb: NAVY } } },
+        { texto: 'Fuente: Subdirección de Distribución de Recursos Territoriales SDRT - DPIP', font: { size: 10 } },
+        { texto: `Reporte generado el ${this.fechaReporte}`, font: { size: 10 } },
+        ...(this.fechaActualizacion
+          ? [{ texto: `Fecha de actualización: ${this.fechaActualizacion}`, font: { size: 10 } }]
+          : []),
+        ...(this.fechaCorteRecaudo
+          ? [{ texto: `Fecha de corte de recaudo: ${this.fechaCorteRecaudo}`, font: { size: 10 } }]
+          : []),
+        { texto: '* Disponibilidad inicial: contiene lo establecido en los Decretos 379 y 0043 de 2025 y las Resoluciones 3158 y 1163 de 2025.', font: { size: 9, italic: true } },
+        { texto: '* Rendimientos financieros: Contiene lo establecido en el numeral 2 del artículo 6 de la Ley 2441 de 2024, y los Decretos 0070 y 0854 de 2025, y 110 de 2026.', font: { size: 9, italic: true } },
+        { texto: '* Reintegros: Contiene lo establecido en el numeral 2 del artículo 8 de la Ley 2441 de 2024, los Decretos 379 y 854 de 2025, la Resolución 1163 de 2025, y los Decretos 0110 y 0329 de 2026.', font: { size: 9, italic: true } },
+        { texto: '* Saldos de vigencias anteriores: Contiene lo establecido en el numeral 4 del artículo 6 del Decreto 379 de 2025 (Excedentes de ahorro FAEP y FONPET) y el artículo 3 de la Ley 2441 de 2024.', font: { size: 9, italic: true } },
+        { texto: '* Adición y/o modificación: Contiene lo establecido en el artículo 7 del Decreto 379 de 2025 y el Decreto 1336 de 2025.', font: { size: 9, italic: true } },
+        { texto: '* Controversias judiciales: Conforme con lo establecido en el Decreto 1336 de 2025.', font: { size: 9, italic: true } }
+      ];
+
+      let dr = 1;
+      notas.forEach(n => {
+        const cell = wsDet.getCell(dr, 1);
+        cell.value = n.texto;
+        cell.font = n.font;
+        cell.alignment = { horizontal: 'left', vertical: 'middle' };
+        dr++;
+      });
+      dr++; // fila en blanco antes de la tabla
+
+      // ---- Encabezado de la tabla ----
+      const headerRowNum = dr;
+      const headerRow = wsDet.getRow(headerRowNum);
+      detCols.forEach((c, i) => {
+        const cell = headerRow.getCell(i + 1);
+        cell.value = c.header;
+        cell.font = { bold: true, size: 10, color: { argb: 'FF1F2937' } };
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: c.corriente ? HEADER_FILL_CORRIENTE : HEADER_FILL }
+        };
+        cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+        cell.border = {
+          top: { style: 'thin', color: { argb: 'FFB0B7C3' } },
+          bottom: { style: 'thin', color: { argb: 'FFB0B7C3' } },
+          left: { style: 'thin', color: { argb: 'FFB0B7C3' } },
+          right: { style: 'thin', color: { argb: 'FFB0B7C3' } }
+        };
+      });
+      headerRow.height = 32;
+
+      const MONEY_KEYS = [
+        'presupuestoTotal', 'presupuestoCorriente', 'disponibilidadInicial', 'rendimientosFinancieros',
+        'desahorro', 'reintegros', 'mayorRecaudo', 'mineralSinIdentificacion', 'multasSancionesIntereses',
+        'saldosVigenciasAnteriores', 'adicionModificacion', 'controversiasJudiciales',
+        'recaudoCorriente', 'recaudoOtros', 'recaudoTotal'
+      ];
+
+      const vigenciaLabel = this.ultimoBienio.replace('-', ' - ');
+
+      // ---- Filas de datos ----
+      registros.forEach(d => {
         const row = wsDet.addRow({
-          concepto: fila.concepto,
-          presupuesto: fila.presupuesto,
-          recaudo: fila.recaudo,
-          avance: fila.avance,
-          registros: fila.registros
+          vigencia: vigenciaLabel,
+          region: d.region,
+          codDepto: d.codDepto,
+          departamento: d.departamento,
+          codigoEntidad: d.codigoEntidad,
+          entidad: d.entidad,
+          tipo: d.tipo,
+          productor: SI_NO(d.productor),
+          pdet: SI_NO(d.pdet),
+          capital: SI_NO(d.capital),
+          concepto: d.concepto,
+          presupuestoTotal: d.presupuestoTotal,
+          presupuestoCorriente: d.presupuestoCorriente,
+          disponibilidadInicial: d.disponibilidadInicial,
+          rendimientosFinancieros: d.rendimientosFinancieros,
+          desahorro: d.desahorro,
+          reintegros: d.reintegros,
+          mayorRecaudo: d.mayorRecaudo,
+          mineralSinIdentificacion: d.mineralSinIdentificacion,
+          multasSancionesIntereses: d.multasSancionesIntereses,
+          saldosVigenciasAnteriores: d.saldosVigenciasAnteriores ?? '',
+          adicionModificacion: d.adicionModificacion,
+          controversiasJudiciales: d.controversiasJudiciales,
+          recaudoCorriente: d.recaudoCorriente,
+          avanceRecaudoCorriente: d.avanceRecaudoCorriente,
+          recaudoOtros: d.recaudoOtros,
+          recaudoTotal: d.recaudoTotal,
+          avanceTotal: d.avanceTotal
         });
-        row.getCell('presupuesto').numFmt = MONEY_FMT;
-        row.getCell('recaudo').numFmt = MONEY_FMT;
-        row.getCell('avance').numFmt = PCT_FMT;
-        row.getCell('registros').numFmt = NUM_FMT;
+        MONEY_KEYS.forEach(k => { row.getCell(k).numFmt = MONEY_FMT; });
+        row.getCell('avanceRecaudoCorriente').numFmt = PCT_FMT;
+        row.getCell('avanceTotal').numFmt = PCT_FMT;
+        ['productor', 'pdet', 'capital', 'codDepto'].forEach(k => {
+          row.getCell(k).alignment = { horizontal: 'center' };
+        });
       });
 
-      if (this.resumenPorConcepto.length > 0) {
-        const totalRow = wsDet.addRow({
-          concepto: 'Total',
-          presupuesto: this.resumenTotalPresupuesto,
-          recaudo: this.resumenTotalRecaudo,
-          avance: this.resumenTotalAvance,
-          registros: this.resumenTotalRegistros
-        });
-        totalRow.eachCell(cell => {
-          cell.font = { bold: true };
-          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: CLOUD } };
-        });
-        totalRow.getCell('presupuesto').numFmt = MONEY_FMT;
-        totalRow.getCell('recaudo').numFmt = MONEY_FMT;
-        totalRow.getCell('avance').numFmt = PCT_FMT;
-        totalRow.getCell('registros').numFmt = NUM_FMT;
-      }
+      // Congelar el encabezado de la tabla y habilitar autofiltro
+      wsDet.views = [{ state: 'frozen', ySplit: headerRowNum }];
+      wsDet.autoFilter = {
+        from: { row: headerRowNum, column: 1 },
+        to: { row: headerRowNum, column: totalCols }
+      };
 
       // ===================== Descarga =====================
       const buffer = await workbook.xlsx.writeBuffer();
@@ -620,11 +766,6 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     if (!activo) {
       switch (tipo) {
         case 'bienio':
-          // No permitir desactivar bienio si 2025-2026 está seleccionado
-          if (this.bieniosSeleccionados.includes('2025-2026')) {
-            this.periodicidadActiva.bienio = true;
-            return;
-          }
           this.bieniosSeleccionados = [];
           this.periodicidadActiva.anio = false;
           this.aniosSeleccionados = [];
@@ -648,11 +789,7 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
   }
 
   onBieniosChange(): void {
-    // Asegurar que 2025-2026 siempre esté seleccionado
-    if (!this.bieniosSeleccionados.includes('2025-2026')) {
-      this.bieniosSeleccionados.push('2025-2026');
-    }
-
+    // El filtro de bienios es independiente; no se fuerza ninguna selección.
     // Actualizar años disponibles
     this.actualizarAniosDisponibles();
 
@@ -956,6 +1093,77 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
     return filtros;
   }
 
+  // Filtros aplicados con el detalle de los valores seleccionados (para el Excel).
+  // A diferencia de `filtrosActivos` (chips por categoría), aquí se listan los
+  // valores concretos elegidos en cada filtro.
+  get filtrosDetallados(): Array<{ tipo: string; valor: string }> {
+    const filtros: Array<{ tipo: string; valor: string }> = [];
+    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+    // Periodicidad
+    if (this.periodicidadActiva.bienio && this.bieniosSeleccionados.length > 0) {
+      filtros.push({ tipo: 'Bienio', valor: this.bieniosSeleccionados.join(', ') });
+    }
+    if (this.periodicidadActiva.anio && this.aniosSeleccionados.length > 0) {
+      const anios = [...this.aniosSeleccionados].sort((a, b) => b - a).join(', ');
+      filtros.push({ tipo: 'Año', valor: anios });
+    }
+    if (this.periodicidadActiva.mes && (this.mesDesde || this.mesHasta)) {
+      let rango = '';
+      if (this.mesDesde && this.mesHasta) {
+        rango = `${meses[this.mesDesde.getMonth()]} ${this.mesDesde.getFullYear()} - ${meses[this.mesHasta.getMonth()]} ${this.mesHasta.getFullYear()}`;
+      } else if (this.mesDesde) {
+        rango = `Desde ${meses[this.mesDesde.getMonth()]} ${this.mesDesde.getFullYear()}`;
+      } else if (this.mesHasta) {
+        rango = `Hasta ${meses[this.mesHasta.getMonth()]} ${this.mesHasta.getFullYear()}`;
+      }
+      if (rango) filtros.push({ tipo: 'Período mensual', valor: rango });
+    }
+
+    // Caracterización de la consulta (valores concretos)
+    if (this.caracterizacionesActivas.conceptoGasto && this.valoresConceptoGasto.length > 0) {
+      filtros.push({ tipo: 'Concepto de gasto', valor: this.valoresConceptoGasto.map(v => v.trim()).join(', ') });
+    }
+    if (this.caracterizacionesActivas.regional && this.valoresRegional.length > 0) {
+      filtros.push({ tipo: 'Regional', valor: this.valoresRegional.join(', ') });
+    }
+    if (this.caracterizacionesActivas.asignacion && this.valoresAsignacion.length > 0) {
+      filtros.push({ tipo: 'Asignación', valor: this.valoresAsignacion.map(v => v.trim()).join(', ') });
+    }
+    if (this.caracterizacionesActivas.grupoInteres && this.valoresGrupoInteres.length > 0) {
+      filtros.push({ tipo: 'Grupo de interés', valor: this.valoresGrupoInteres.join(', ') });
+    }
+
+    // Tipo de entidad
+    if (this.entidadSeleccionada) {
+      filtros.push({ tipo: 'Tipo de entidad', valor: this.obtenerLabelEntidad(this.entidadSeleccionada) });
+    }
+
+    // Beneficiarios (nombres de las entidades seleccionadas)
+    if (this.beneficiarioActivo) {
+      const seleccion = this.beneficiariosSeleccionados.filter(v => v !== 'TODAS');
+      if (seleccion.length > 0) {
+        const nombres = seleccion
+          .map(cod => this.beneficiariosOpciones.find(o => o.value === cod)?.label ?? cod)
+          .join(', ');
+        filtros.push({ tipo: 'Beneficiarios', valor: nombres });
+      } else {
+        filtros.push({ tipo: 'Beneficiarios', valor: 'Todas' });
+      }
+    }
+
+    // Presupuesto / Recaudo (solo si no es total)
+    if (this.presupuestoSeleccionado !== 'total') {
+      filtros.push({ tipo: 'Presupuesto', valor: this.presupuestoSeleccionado === 'corriente' ? 'Corriente' : 'Otros' });
+    }
+    if (this.recaudoSeleccionado !== 'total') {
+      filtros.push({ tipo: 'Recaudo', valor: this.recaudoSeleccionado === 'corriente' ? 'Corriente' : 'Otros' });
+    }
+
+    return filtros;
+  }
+
   private obtenerLabelCaracterizacion(tipo: string): string {
     switch (tipo) {
       case 'conceptoGasto': return 'Concepto de Gasto';
@@ -983,10 +1191,10 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
 
     // Filtros de periodicidad
     if (filtro.tipo === 'Bienio') {
-      // No permitir remover 2025-2026
-      if (filtro.valor === '2025-2026') return;
-
       this.bieniosSeleccionados = this.bieniosSeleccionados.filter(b => b !== filtro.valor);
+      if (this.bieniosSeleccionados.length === 0) {
+        this.periodicidadActiva.bienio = false;
+      }
       this.loadData();
       return;
     }
@@ -1054,11 +1262,12 @@ export class SgrInformacionGeneralComponent implements OnInit, OnDestroy {
   }
 
   limpiarTodosFiltros(): void {
-    // Resetear filtros de periodicidad (mantener solo 2025-2026)
-    this.bieniosSeleccionados = ['2025-2026'];
+    // Resetear filtros de periodicidad (el bienio es opcional, sin preselección)
+    this.bieniosSeleccionados = [];
     this.aniosSeleccionados = [];
     this.mesDesde = null;
     this.mesHasta = null;
+    this.periodicidadActiva.bienio = false;
     this.periodicidadActiva.anio = false;
     this.periodicidadActiva.mes = false;
 
