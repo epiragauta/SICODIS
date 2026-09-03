@@ -47,7 +47,7 @@
       <div class="p-field municipio-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="municipio" [options]="municipios" inputId="municipioSelect" [(ngModel)]="selectedMunicipio"
-            (onChange)="onMunicipioChange($event)" optionLabel="nombre_municipio" [showClear]="false" [disabled]="!selectedDepartamento"></p-select>
+            (onChange)="onMunicipioChange($event)" optionLabel="nombre" [showClear]="false" [disabled]="!selectedDepartamento"></p-select>
           <label for="municipioSelect">Municipio</label>
         </p-floatlabel>
       </div>
@@ -63,7 +63,7 @@
       <div class="p-field municipio2-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="municipio2" [options]="municipios2" inputId="municipio2Select" [(ngModel)]="selectedMunicipio2"
-            (onChange)="onMunicipio2Change($event)" optionLabel="nombre_municipio" [showClear]="false" [disabled]="!selectedDepartamento2"></p-select>
+            (onChange)="onMunicipio2Change($event)" optionLabel="nombre" [showClear]="false" [disabled]="!selectedDepartamento2"></p-select>
           <label for="municipio2Select">Municipio 2</label>
         </p-floatlabel>
       </div>
@@ -82,8 +82,8 @@
   <!-- Sección de botones Diccionario y Siglas -->
   <div style="display: flex; justify-content: space-between; align-items: center; padding: .1rem 0;">
     <div style="width: 83%;">
-      <p class="date-update">Fecha de actualización: junio 30 de 2025</p>
-      <p class="date-update">Fecha de corte de recaudo: mayo 30 de 2025</p>
+      <p class="date-update">Fecha de actualización: {{ fechaActualizacion }}</p>
+      <p class="date-update">Fecha de corte de recaudo: {{ fechaCorteRecaudo }}</p>
     </div>
     <div style="position: relative; padding-bottom: .25rem;">
       <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 1.8rem; width: 96px;"
