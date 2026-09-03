@@ -529,14 +529,19 @@ export class SgrComparativoComponent implements OnInit {
       item.categoria === '1.1.1'
     );
 
+    const directasAnticipadas = entityData.find(item =>
+      item.categoria === '1.1.3'
+    );
+
     const ahorro = entityData.find(item =>
       item.categoria === '2.2'
     );
 
-    if (!asignacionesDirectas || !directas20 || !ahorro) {
+    if (!asignacionesDirectas || !directas20 || !directasAnticipadas || !ahorro) {
       console.warn(`Datos incompletos para entidad ${entityNumber}`, {
         asignacionesDirectas: !!asignacionesDirectas,
         directas20: !!directas20,
+        directasAnticipadas: !!directasAnticipadas,
         ahorro: !!ahorro
       });
       return;
@@ -649,7 +654,7 @@ export class SgrComparativoComponent implements OnInit {
       this.planBienalMunicipio1LocalDonutData = {
         labels: ['Presupuesto', 'Recaudo'],
         datasets: [{
-          data: [asignacionesDirectas.presupuesto_corriente, asignacionesDirectas.caja_corriente_informada],
+          data: [directasAnticipadas.presupuesto_corriente, directasAnticipadas.caja_corriente_informada],
           backgroundColor: ['#f38135ff', '#edb87cff'],
           borderColor: ['#be480eff', '#8c5516'],
           borderWidth: 1
@@ -674,7 +679,7 @@ export class SgrComparativoComponent implements OnInit {
       this.planBienalMunicipio2LocalDonutData = {
         labels: ['Presupuesto', 'Recaudo'],
         datasets: [{
-          data: [asignacionesDirectas.presupuesto_corriente, asignacionesDirectas.caja_corriente_informada],
+          data: [directasAnticipadas.presupuesto_corriente, directasAnticipadas.caja_corriente_informada],
           backgroundColor: ['#f38135ff', '#edb87cff'],
           borderColor: ['#be480eff', '#8c5516'],
           borderWidth: 1
