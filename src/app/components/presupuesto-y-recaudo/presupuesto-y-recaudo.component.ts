@@ -273,7 +273,7 @@ export class PresupuestoYRecaudoComponent implements OnInit {
         { field: 'caja_corriente_informada', header: 'Recaudo <br>Corriente', width: '10%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Valores de recaudo reportados para los ingresos corrientes' },
         { field: 'caja_otros', header: 'Recaudo <br>Otros', width: '10%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Valores de recaudo reportados para otros ingresos.' },
         { field: 'caja_total', header: 'Recaudo <br>Total', width: '10%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Valores de recaudo reportados para todos los ingresos.' },
-        { field: 'avance_iac_presupuesto', header: 'Avance IAC frente a Presupuesto', width: '7%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Porcentaje de ejecución: (Recaudo Total / Presupuesto Corriente) * 100.' },
+        { field: 'avance_iac_presupuesto', header: 'Avance Recaudo Corriente', width: '7%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Porcentaje de ejecución: (Recaudo Total / Presupuesto Corriente) * 100.' },
       ]
       this.colsB = [
         { field: 'presupuesto_corriente', header: 'Presupuesto Corriente', width: '14%', 'color': '#e4e6e8', 'class': 'col-standar', tooltip: 'Monto presupuestado para ingresos corrientes' },
@@ -522,15 +522,24 @@ export class PresupuestoYRecaudoComponent implements OnInit {
           // si ya usabas esto con el JSON de archivo, NO lo cambies
           this.data = organizeCategoryData(this.detailedData);
 
-          const resumen = this.detailedData[0];
+          if (this.departmentSelected !== '0' || this.townSelected !== '0') {
+            this.data = this.data.slice(1);
+          }
+
+          const resumen_row1 = this.detailedData[0];
+          let resumen_row2 = this.detailedData[1];
+
+          if (idVigencia ==8){
+            resumen_row2 = this.detailedData[0];
+          }
 
           this.financialData = {
-            presupuesto_total_vigente: resumen.presupuesto_total_vigente,
-            caja_total: resumen.caja_total,
-            presupuesto_corriente: resumen.presupuesto_corriente,
-            caja_corriente_informada: resumen.caja_corriente_informada,
-            presupuesto_otros: resumen.presupuesto_otros,
-            caja_otros: resumen.caja_otros
+            presupuesto_total_vigente: resumen_row1.presupuesto_total_vigente,
+            caja_total: resumen_row1.caja_total,
+            presupuesto_corriente: resumen_row2.presupuesto_corriente,
+            caja_corriente_informada: resumen_row2.caja_corriente_informada,
+            presupuesto_otros: resumen_row1.presupuesto_otros,
+            caja_otros: resumen_row1.caja_otros
           };
           this.initializeChart();
           this.initializeDonutCharts();
@@ -830,8 +839,8 @@ private formatCurrency(value: number): string {
       labels: ['Recaudo', 'Presupuesto'],
       datasets: [{
         data: [
-          recaudoOtros,
-          this.financialData.presupuesto_otros - recaudoOtros
+          this.financialData.caja_otros,
+          this.financialData.presupuesto_otros - this.financialData.caja_otros
         ],
         backgroundColor: ['#10b981', '#e2e8f0'],
         borderColor: ['#059669', '#cbd5e1'],
@@ -1396,20 +1405,23 @@ private formatCurrency(value: number): string {
 
 
   notasVigencia: Record<number, string[]> = {
-    8: ['(1) Ley 2441 de 2024 - Decretos 379, Decreto 380, Decreto 0070, Resolución 1169, Decreto 0854, Decreto 1165, Resolución 3158, todos del año 2025. Decretos 0043, 0110, 0288 del 2026.'],
+    8: ['(1) Ley 2441 de 2024 - Decretos 379, 380, 0070, 0854, 1165 y Resoluciones 1169 y 3158, todos del año 2025. Decretos 0043, 0110, 0288 del año 2026.'],
     7: ['(1) Fuente: Decreto 379 del 31 de marzo de 2025'],
     6: ['(1) Fuente: Decreto 363 del 16 de marzo de 2023'],
-    5: ['(1) Fuente: Decreto 317 del 30 de marzo de 2021',
-        '•	Para el concepto "FDR - Compensación", el recaudo de ingresos corrientes contiene la compensación establecida en el Decreto 599 de 2020 por valor de $733.855.017.884',
-        '•	La compensación establecida en el Decreto 1131 de 2019, es descontada de los recursos de disponibilidad inicial y del saldo de mayor recaudo de las entidades correspondientes.'
+    5: ['(1) Fuente: Decreto 317 del 30 de marzo de 2021'
+       , 'En este bienio el recaudo total alcanzó el 80,1% del presupuesto corriente establecido en la Ley 1942 de 2018 por $18,5 billones.'
+      //   '•	Para el concepto "FDR - Compensación", el recaudo de ingresos corrientes contiene la compensación establecida en el Decreto 599 de 2020 por valor de $733.855.017.884',
+      //   '•	La compensación establecida en el Decreto 1131 de 2019, es descontada de los recursos de disponibilidad inicial y del saldo de mayor recaudo de las entidades correspondientes.'
       ],
-    4: ['(1) Fuente: Decreto 606 del 05 de abril de 2019',
-        '•	El recaudo de ingresos corrientes contiene la compensación establecida en el Decreto 737 de 2018',
-        '•	La compensación establecida en el Decreto 2152 de 2017, aplica sobre los recursos de disponibilidad inicial. '
+    4: ['(1) Fuente: Decreto 606 del 05 de abril de 2019'
+      // ,
+      //   '•	El recaudo de ingresos corrientes contiene la compensación establecida en el Decreto 737 de 2018',
+      //   '•	La compensación establecida en el Decreto 2152 de 2017, aplica sobre los recursos de disponibilidad inicial. '
       ],
-    3: ['(1) Fuente: Decreto 1103 del 27 de junio de 2017', 
-        '•	El recaudo de ingresos corrientes contiene la compensación establecida en los Decretos 724 y 1296 de 2015',
-        '•	La compensación establecida en el Decreto 1490 de 2015, es descontada de los recursos de disponibilidad inicial y del saldo de mayor recaudo de las entidades correspondientes. '
+    3: ['(1) Fuente: Decreto 1103 del 27 de junio de 2017'
+      // , 
+      //   '•	El recaudo de ingresos corrientes contiene la compensación establecida en los Decretos 724 y 1296 de 2015',
+      //   '•	La compensación establecida en el Decreto 1490 de 2015, es descontada de los recursos de disponibilidad inicial y del saldo de mayor recaudo de las entidades correspondientes. '
       ],
     2: ['(1) Fuente: Decreto 722 del 17 de abril de 2015'],
     1: ['(1) Fuente: Decreto 1399 del 28 de junio de 2013'],
