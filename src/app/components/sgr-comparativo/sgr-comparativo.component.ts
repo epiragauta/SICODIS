@@ -443,6 +443,18 @@ export class SgrComparativoComponent implements OnInit {
   }
 
   /**
+   * Al cambiar de vigencia (bienio) se aplican los filtros limpios, conservando
+   * el bienio recién seleccionado y recargando sus fechas de actualización/corte.
+   */
+  onBienioChange(event: any): void {
+    const bienioSeleccionado = this.selectedBienio;
+    this.clearFilters();
+    this.selectedBienio = bienioSeleccionado;
+    this.cargarFechasActualizacionCorte();
+    console.log('Bienio seleccionado:', bienioSeleccionado);
+  }
+
+  /**
    * Limpiar filtros
    */
   clearFilters(): void {
