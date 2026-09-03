@@ -20,11 +20,11 @@ $alert-amber: #f59e0b;     // Acciones de remoción
   }
 
   // Banner de cabecera (consistente con los demás componentes SGR)
+  // Va dentro de .container para alinearse con el ancho del contenido.
   .gradient-banner {
     position: relative;
     width: 100%;
-    max-width: 1400px;
-    margin: 0 auto 1rem;
+    margin: 0 0 1rem;
     height: 320px;
     background-image: url('/assets/img/sgr/sgr-informacion-general.jpg');
     background-size: cover;
