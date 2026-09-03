@@ -257,8 +257,9 @@ $alert-amber: #f59e0b;     // Acciones de remoción
 
         .radio-group {
           display: flex;
-          flex-direction: column;
-          gap: 0.75rem;
+          flex-direction: row;
+          flex-wrap: wrap;
+          gap: 0.75rem 1.5rem;
 
           .radio-item {
             display: flex;
@@ -347,6 +348,16 @@ $alert-amber: #f59e0b;     // Acciones de remoción
           display: flex;
           flex-direction: column;
           gap: 0.75rem;
+        }
+
+        .entidad-radio-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 0.75rem 1.5rem;
+
+          .full-row {
+            grid-column: 1 / -1;
+          }
         }
 
         .seccion-separador {

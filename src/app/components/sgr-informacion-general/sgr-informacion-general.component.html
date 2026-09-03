@@ -11,8 +11,18 @@
         </div>
 
         <div class="kpi-card">
+          <h3>Presupuesto Corriente</h3>
+          <p class="kpi-value">${{ presupuestoMetricas.presupuestoCorriente | numberFormat }}</p>
+        </div>
+
+        <div class="kpi-card">
           <h3>{{ tituloRecaudoKPI }}</h3>
           <p class="kpi-value">${{ recaudoKPI | numberFormat }}</p>
+        </div>
+
+        <div class="kpi-card">
+          <h3>Recaudo Corriente</h3>
+          <p class="kpi-value">${{ recaudoMetricas.recaudoCorriente | numberFormat }}</p>
         </div>
 
         <div class="kpi-card">
@@ -491,60 +501,61 @@
           <div class="entidad-tipo-section">
           <h3>Tipo de entidad</h3>
 
-          <div class="checkbox-item">
-            <p-radiobutton
-              name="entidad"
-              value="productoras"
-              [ngModel]="entidadSeleccionada"
-              (ngModelChange)="onEntidadChange($event)"
-              inputId="productoras"
-            />
-            <label for="productoras">Productora</label>
-          </div>
+          <div class="entidad-radio-grid">
+            <div class="checkbox-item">
+              <p-radiobutton
+                name="entidad"
+                value="productoras"
+                [ngModel]="entidadSeleccionada"
+                (ngModelChange)="onEntidadChange($event)"
+                inputId="productoras"
+              />
+              <label for="productoras">Productora</label>
+            </div>
 
-          <div class="checkbox-item">
-            <p-radiobutton
-              name="entidad"
-              value="pdet"
-              [ngModel]="entidadSeleccionada"
-              (ngModelChange)="onEntidadChange($event)"
-              inputId="pdet"
-            />
-            <label for="pdet">PDET</label>
-          </div>
+            <div class="checkbox-item">
+              <p-radiobutton
+                name="entidad"
+                value="pdet"
+                [ngModel]="entidadSeleccionada"
+                (ngModelChange)="onEntidadChange($event)"
+                inputId="pdet"
+              />
+              <label for="pdet">PDET</label>
+            </div>
 
-          <div class="checkbox-item">
-            <p-radiobutton
-              name="entidad"
-              value="zomac"
-              [ngModel]="entidadSeleccionada"
-              (ngModelChange)="onEntidadChange($event)"
-              inputId="zomac"
-            />
-            <label for="zomac">ZOMAC</label>
-          </div>
+            <div class="checkbox-item">
+              <p-radiobutton
+                name="entidad"
+                value="zomac"
+                [ngModel]="entidadSeleccionada"
+                (ngModelChange)="onEntidadChange($event)"
+                inputId="zomac"
+              />
+              <label for="zomac">ZOMAC</label>
+            </div>
 
-          <div class="checkbox-item">
-            <p-radiobutton
-              name="entidad"
-              value="etnica"
-              [ngModel]="entidadSeleccionada"
-              (ngModelChange)="onEntidadChange($event)"
-              inputId="etnica"
-            />
-            <label for="etnica">Con destinación Étnica</label>
-          </div>
+            <div class="checkbox-item">
+              <p-radiobutton
+                name="entidad"
+                value="capital"
+                [ngModel]="entidadSeleccionada"
+                (ngModelChange)="onEntidadChange($event)"
+                inputId="capital"
+              />
+              <label for="capital">Capitáles</label>
+            </div>
 
-          <div class="checkbox-item">
-            <p-radiobutton
-              name="entidad"
-              value="capital"
-              [ngModel]="entidadSeleccionada"
-              (ngModelChange)="onEntidadChange($event)"
-              inputId="capital"
-            />
-            <label for="capital">Capitáles</label>
-          </div>
+            <div class="checkbox-item full-row">
+              <p-radiobutton
+                name="entidad"
+                value="etnica"
+                [ngModel]="entidadSeleccionada"
+                (ngModelChange)="onEntidadChange($event)"
+                inputId="etnica"
+              />
+              <label for="etnica">Con destinación Étnica</label>
+            </div>
           </div>
 
           <!-- Separador visual -->
