@@ -31,7 +31,7 @@
       <div class="p-field bienio-select">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="bienio" [options]="bienios" inputId="bienioSelect" [(ngModel)]="selectedBienio"
-            optionLabel="label" [showClear]="false" placeholder="Bienio"></p-select>
+            (onChange)="onBienioChange($event)" optionLabel="label" [showClear]="false" placeholder="Bienio"></p-select>
           <label for="bienioSelect">Bienio</label>
         </p-floatlabel>
       </div>
