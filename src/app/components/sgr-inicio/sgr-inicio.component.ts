@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ButtonModule } from 'primeng/button';
 import { Select, SelectChangeEvent } from 'primeng/select';
 import { TreeTableModule } from 'primeng/treetable';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TreeNode } from 'primeng/api';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { PercentFormatPipe } from '../../utils/percentFormatPipe';
@@ -24,6 +25,7 @@ import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
     ButtonModule,
     Select,
     TreeTableModule,
+    ProgressSpinnerModule,
     NumberFormatPipe,
     PercentFormatPipe
   ],
@@ -44,6 +46,8 @@ export class SgrInicioComponent implements OnInit {
   saldoTotal: number = 0;
 
   treeTableData: TreeNode[] = [];
+
+  isLoading: boolean = true;
 
   fechaActualizacion: string = '';
   fechaCorteRecaudo: string = '';
@@ -109,6 +113,8 @@ export class SgrInicioComponent implements OnInit {
         if (vigencias.length > 0) {
           this.selectedVigencia = vigencias[0];
           this.loadData();
+        } else {
+          this.isLoading = false;
         }
       },
       error: () => {
@@ -125,6 +131,7 @@ export class SgrInicioComponent implements OnInit {
 
   loadData(): void {
     const idVigencia = this.selectedVigencia.id_vigencia;
+    this.isLoading = true;
 
     this.sicodisApiService.getSGRFechasActualizacionCorteRecaudoIACVigencia(idVigencia).subscribe({
       next: (fechas) => {
@@ -139,6 +146,7 @@ export class SgrInicioComponent implements OnInit {
     this.sicodisApiService.getSgrResumenPtoRecaudoQA(idVigencia, '1', '0').subscribe({
       next: (data) => {
         this.buildTreeTableData(data);
+        this.isLoading = false;
       },
       error: () => {
         this.presupuestoTotal = 64087661072292;
@@ -146,6 +154,7 @@ export class SgrInicioComponent implements OnInit {
         this.avanceTotal = 0.7748;
         this.saldoTotal = this.presupuestoTotal - this.recaudoTotal;
         this.treeTableData = [];
+        this.isLoading = false;
       }
     });
   }
