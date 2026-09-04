@@ -17,7 +17,8 @@ import * as L from 'leaflet';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import {
   SicodisApiService,
-  ResumenGeovisor
+  ResumenGeovisor,
+  Vigencia
 } from '../../services/sicodis-api.service';
 
 const COBERTURA_FALLBACK: Record<string, string[]> = {
@@ -140,6 +141,7 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
   coberturas: CoberturaSistema[] = this.buildCoberturas();
 
   isLoading = signal(false);
+  isDescargando = signal(false);
   isLoadingMapa = signal(false);
   isLoadingDetalle = signal(false);
   sinMunicipiosGeoJSON = signal(false);
@@ -1223,7 +1225,18 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
   }
 
   descargarArchivo(): void {
-    if (this.sistemaDetalle !== 'SGP' || !this.detalleDepto) return;
+    if (!this.detalleDepto || this.isDescargando()) return;
+    if (this.sistemaDetalle === 'SGP') {
+      this.isDescargando.set(true);
+      this.descargarArchivoSGP();
+    } else if (this.sistemaDetalle === 'SGR') {
+      this.isDescargando.set(true);
+      this.descargarArchivoSGR();
+    }
+  }
+
+  private descargarArchivoSGP(): void {
+    if (!this.detalleDepto) { this.isDescargando.set(false); return; }
     const deptCode = this.detalleDepto.codigoDepto.substring(0, 2).padStart(2, '0');
     this.sicodisApi.getSgpDescargaDatosSgpResumenParticipaciones(
       this.vigenciaSeleccionada, deptCode, '0', this.detalleDepto.nombre, ''
@@ -1235,7 +1248,71 @@ export class MapaRecursosComponent implements OnInit, AfterViewInit {
         a.download = `sgp_${this.detalleDepto!.nombre}_${this.vigenciaSeleccionada}.xlsx`;
         a.click();
         URL.revokeObjectURL(url);
-      }
+        this.isDescargando.set(false);
+      },
+      error: () => this.isDescargando.set(false)
+    });
+  }
+
+  // Descarga del detalle SGR (Presupuesto vs. Recaudo) del departamento en detalle.
+  // Reutiliza el mismo endpoint/estructura que el módulo Recaudo-Presupuesto, por lo
+  // que el archivo conserva el formato de la información visualizada en el panel.
+  private descargarArchivoSGR(): void {
+    if (!this.detalleDepto) return;
+    // El endpoint QA trabaja por id de bienio (1..8); el Geovisor usa el año
+    // calendario, así que resolvemos la vigencia y sus fechas antes de descargar.
+    this.sicodisApi.getSgrVigenciasQa()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (vigencias) => {
+          const vig = this.resolverVigenciaSGR(vigencias, this.vigenciaSeleccionada);
+          if (!vig) { this.isDescargando.set(false); return; }
+          this.sicodisApi.getSGRFechasActualizacionCorteRecaudoIACVigencia(vig.id_vigencia)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+              next: (fechas) => this.ejecutarDescargaSGR(
+                vig,
+                fechas?.[0]?.fecha_actualizacion ?? '',
+                fechas?.[0]?.fecha_corte_recaudo ?? ''
+              ),
+              error: () => this.ejecutarDescargaSGR(vig, '', '')
+            });
+        },
+        error: () => this.isDescargando.set(false)
+      });
+  }
+
+  // Ubica la vigencia (bienio) del SGR que contiene el año consultado. Los bienios se
+  // etiquetan "2025 - 2026"; se busca por el año y, en su defecto, por el año inicial.
+  private resolverVigenciaSGR(vigencias: Vigencia[], anio: number): Vigencia | undefined {
+    const anioInicial = anio % 2 === 1 ? anio : anio - 1;
+    return vigencias.find(v => v.vigencia.includes(String(anio)))
+        ?? vigencias.find(v => v.vigencia.includes(String(anioInicial)));
+  }
+
+  private ejecutarDescargaSGR(vig: Vigencia, fechaActualizacion: string, fechaCorte: string): void {
+    if (!this.detalleDepto) { this.isDescargando.set(false); return; }
+    // Detalle a nivel departamental: tipoConsulta '9' y código de entidad = código
+    // del departamento (5 dígitos, p. ej. "05000"). Municipio "Todos" para el título.
+    const deptCode = this.detalleDepto.codigoDepto.substring(0, 2).padStart(2, '0') + '000';
+    this.sicodisApi.getSgrDescargaResumenPtoRecaudoQA(
+      vig.id_vigencia, '9', deptCode,
+      vig.vigencia, this.detalleDepto.nombre, 'Todos',
+      fechaActualizacion, fechaCorte
+    ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (blob) => {
+        const excelBlob = new Blob([blob], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        });
+        const url = URL.createObjectURL(excelBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `sgr_${this.detalleDepto!.nombre}_${this.vigenciaSeleccionada}.xlsx`;
+        a.click();
+        URL.revokeObjectURL(url);
+        this.isDescargando.set(false);
+      },
+      error: () => this.isDescargando.set(false)
     });
   }
 

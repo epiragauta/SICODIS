@@ -144,7 +144,7 @@
 
   // Date update styles
   .date-update {
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     font-weight: bold;
     color: #0943b5;
     text-align: left;
@@ -709,6 +709,33 @@
     }
 
     .p-treetable-tbody > tr:hover {
+      background-color: #f1f5f9 !important;
+    }
+
+    // Fijar la primera columna (Concepto) durante el scroll horizontal
+    .p-treetable-thead > tr > th:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 3;
+      background-color: #e4e6e8 !important;
+      box-shadow: 2px 0 4px rgba(0, 0, 0, 0.08);
+      border-right: 2px solid #cbd5e1 !important;
+    }
+
+    .p-treetable-tbody > tr > td:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      background-color: white;
+      box-shadow: 2px 0 4px rgba(0, 0, 0, 0.08);
+      border-right: 2px solid #cbd5e1 !important;
+    }
+
+    .p-treetable-tbody > tr:nth-child(even) > td:first-child {
+      background-color: #fafbfc;
+    }
+
+    .p-treetable-tbody > tr:hover > td:first-child {
       background-color: #f1f5f9 !important;
     }
 

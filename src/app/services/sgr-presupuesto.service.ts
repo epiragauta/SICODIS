@@ -12,6 +12,7 @@ import {
   PresupuestoUtils,
   FiltrosSGR,
   DatosAgregados,
+  DetalleRegistroSGR,
   EntidadCount
 } from '../models/sgr-presupuesto.models';
 
@@ -250,6 +251,96 @@ export class SgrPresupuestoService {
           registrosDestinacionEtnica,
           resumenPorConcepto
         };
+      })
+    );
+  }
+
+  /**
+   * Obtiene el detalle (una fila por registro presupuesto-recaudo) aplicando los
+   * mismos filtros que getDatosAgregados. Une la información de la entidad
+   * (región, departamento, atributos) con el desglose de presupuesto y recaudo.
+   */
+  getRegistrosDetallados(filtros?: FiltrosSGR): Observable<DetalleRegistroSGR[]> {
+    return combineLatest([
+      this.getEntidades(),
+      this.getPresupuesto()
+    ]).pipe(
+      map(([entidades, registros]) => {
+        // Filtros a nivel de entidad (mismos criterios que getDatosAgregados)
+        let entidadesFiltradas = entidades;
+        if (filtros) {
+          if (filtros.tipoEntidad) {
+            const tipos = Array.isArray(filtros.tipoEntidad) ? filtros.tipoEntidad : [filtros.tipoEntidad];
+            entidadesFiltradas = entidadesFiltradas.filter(e => tipos.includes(e.tipo));
+          }
+          if (filtros.region) {
+            const regiones = Array.isArray(filtros.region) ? filtros.region : [filtros.region];
+            entidadesFiltradas = entidadesFiltradas.filter(e => regiones.includes(e.region));
+          }
+          if (filtros.productor !== null && filtros.productor !== undefined) {
+            entidadesFiltradas = entidadesFiltradas.filter(e => e.atributos.esProductor === filtros.productor);
+          }
+          if (filtros.pdet !== null && filtros.pdet !== undefined) {
+            entidadesFiltradas = entidadesFiltradas.filter(e => e.atributos.esPdet === filtros.pdet);
+          }
+          if (filtros.zomac !== null && filtros.zomac !== undefined) {
+            entidadesFiltradas = entidadesFiltradas.filter(e => e.atributos.esZomac === filtros.zomac);
+          }
+          if (filtros.codigosEntidad && filtros.codigosEntidad.length > 0) {
+            const codigos = new Set(filtros.codigosEntidad);
+            entidadesFiltradas = entidadesFiltradas.filter(e => codigos.has(e.codigo));
+          }
+        }
+
+        const entidadPorCodigo = new Map(entidadesFiltradas.map(e => [e.codigo, e]));
+        const codigosEntidades = new Set(entidadesFiltradas.map(e => e.codigo));
+
+        // Filtros a nivel de registro
+        let registrosFiltrados = registros.filter(r => codigosEntidades.has(r.codigoEntidad));
+        if (filtros?.conceptoGasto) {
+          const conceptos = Array.isArray(filtros.conceptoGasto) ? filtros.conceptoGasto : [filtros.conceptoGasto];
+          registrosFiltrados = registrosFiltrados.filter(r => conceptos.includes(r.conceptoGasto));
+        }
+        if (filtros?.destinacionEtnica !== null && filtros?.destinacionEtnica !== undefined) {
+          registrosFiltrados = registrosFiltrados.filter(r => r.destinacionEtnica === filtros.destinacionEtnica);
+        }
+
+        return registrosFiltrados.map(r => {
+          const e = entidadPorCodigo.get(r.codigoEntidad);
+          const p = r.presupuesto;
+          const presupuestoTotal = PresupuestoUtils.calcularPresupuestoTotal(p);
+          const recaudoTotal = PresupuestoUtils.calcularCajaTotal(r.recaudo);
+          return {
+            vigencia: '',  // Lo completa el componente con el bienio de referencia
+            region: e?.region ?? '',
+            codDepto: e?.codDepto ?? '',
+            departamento: e?.departamento ?? '',
+            codigoEntidad: r.codigoEntidad,
+            entidad: (r.nombreEntidad || '').trim(),
+            tipo: r.tipoEntidad,
+            productor: e?.atributos.esProductor ?? false,
+            pdet: e?.atributos.esPdet ?? false,
+            capital: e?.atributos.esCapital ?? false,
+            concepto: r.concepto,
+            presupuestoTotal,
+            presupuestoCorriente: p.corriente,
+            disponibilidadInicial: p.disponibilidadInicial,
+            rendimientosFinancieros: p.rendimientosFinancieros,
+            desahorro: p.desahorroFae,
+            reintegros: p.reintegros,
+            mayorRecaudo: p.mayorRecaudo,
+            mineralSinIdentificacion: p.mineralSinIdentificacion,
+            multasSancionesIntereses: p.multasSancionesIntereses,
+            saldosVigenciasAnteriores: null,
+            adicionModificacion: p.adicionAsignacionesDirectas,
+            controversiasJudiciales: p.controversiasJudiciales,
+            recaudoCorriente: r.recaudo.corriente,
+            avanceRecaudoCorriente: PresupuestoUtils.calcularAvanceRecaudoCorriente(p.corriente, r.recaudo.corriente),
+            recaudoOtros: r.recaudo.otros,
+            recaudoTotal,
+            avanceTotal: presupuestoTotal > 0 ? recaudoTotal / presupuestoTotal : 0
+          } as DetalleRegistroSGR;
+        });
       })
     );
   }

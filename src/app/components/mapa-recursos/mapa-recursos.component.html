@@ -388,12 +388,13 @@
     <!-- Botón de descarga -->
     <div class="btn-descarga-section">
       <p-button
-        label="Descargar distribución"
+        [label]="isDescargando() ? 'Generando archivo…' : 'Descargar distribución'"
         icon="pi pi-download"
-        [disabled]="sistemaDetalle !== 'SGP'"
+        [loading]="isDescargando()"
+        [disabled]="sistemaDetalle === 'PGN' || isDescargando()"
         (onClick)="descargarArchivo()"
         styleClass="p-button-sm p-button-outlined"
-        [title]="sistemaDetalle !== 'SGP' ? 'Descarga disponible solo para SGP' : 'Descargar archivo Excel'"
+        [title]="sistemaDetalle === 'PGN' ? 'Descarga no disponible para PGN' : 'Descargar archivo Excel'"
       />
     </div>
   </div>

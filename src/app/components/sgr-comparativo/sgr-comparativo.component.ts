@@ -10,8 +10,7 @@ import { TreeTableModule } from 'primeng/treetable';
 import { FormsModule } from '@angular/forms';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
-import { SicodisApiService, SgrResumenPtoRecaudoComparador, SgrPtoRecaudoItem } from '../../services/sicodis-api.service';
-import { departamentos } from '../../data/departamentos';
+import { SicodisApiService, SgrResumenPtoRecaudoComparador, SgrPtoRecaudoItem, DepartamentoSgr, MunicipioSgp, SGRFechaActualizacionCorte, Vigencia } from '../../services/sicodis-api.service';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { MenuItem, TreeNode } from 'primeng/api';
 import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
@@ -50,23 +49,23 @@ export class SgrComparativoComponent implements OnInit {
   siglasContent: string = '';
 
 
+  // Fechas de actualización y corte de recaudo (tomadas del API por vigencia)
+  fechaActualizacion: string = '';
+  fechaCorteRecaudo: string = '';
+
   // Filtros
-  selectedBienio: any = { id: 8, label: '2025 - 2026' };
+  selectedBienio: any = null;
   selectedDepartamento: any = null;
   selectedMunicipio: any = null;
   selectedDepartamento2: any = null;
   selectedMunicipio2: any = null;
 
-  // Opciones de filtros
-  bienios: any[] = [
-    { id: 8, label: '2025 - 2026' } /*,
-    { id: 7, label: '2023 - 2024' },
-    { id: 6, label: '2021 - 2022' } */
-  ];
+  // Opciones de filtros (bienios cargados desde el API, como en presupuesto-y-recaudo)
+  bienios: any[] = [];
 
-  departamentos = departamentos;
-  municipios: any[] = [];
-  municipios2: any[] = [];
+  departamentos: DepartamentoSgr[] = [];
+  municipios: MunicipioSgp[] = [];
+  municipios2: MunicipioSgp[] = [];
 
   // Chart data
   planBienalMunicipio1ChartData: any = {};
@@ -135,6 +134,12 @@ export class SgrComparativoComponent implements OnInit {
     ];
 
     this.home = { icon: 'pi pi-home', routerLink: '/' };
+
+    // Cargar bienios (vigencias) desde el API (misma fuente que presupuesto-y-recaudo)
+    this.cargarBienios();
+
+    // Cargar departamentos desde el API (misma fuente que presupuesto-y-recaudo)
+    this.cargarDepartamentos();
 
     // Inicializar columnas de la tabla
     this.tableCols = [
@@ -267,11 +272,74 @@ export class SgrComparativoComponent implements OnInit {
    */
   getSelectedMunicipalityName(municipioNumber: number): string {
     if (municipioNumber === 1 && this.selectedMunicipio) {
-      return this.selectedMunicipio.nombre_municipio;
+      return this.selectedMunicipio.nombre;
     } else if (municipioNumber === 2 && this.selectedMunicipio2) {
-      return this.selectedMunicipio2.nombre_municipio;
+      return this.selectedMunicipio2.nombre;
     }
     return `Municipio ${municipioNumber}`;
+  }
+
+  /**
+   * Cargar la lista de bienios (vigencias) desde el API (misma fuente que
+   * presupuesto-y-recaudo). Selecciona el primero por defecto y carga sus fechas.
+   */
+  private cargarBienios(): void {
+    this.sicodisApiService.getSgrVigenciasQa().subscribe({
+      next: (vigencias: Vigencia[]) => {
+        this.bienios = (vigencias || []).map(vigencia => ({
+          id: vigencia.id_vigencia,
+          label: vigencia.vigencia
+        }));
+
+        if (this.bienios.length > 0) {
+          this.selectedBienio = this.bienios[0];
+          this.cargarFechasActualizacionCorte();
+        }
+      },
+      error: (error) => {
+        console.error('Error cargando bienios (vigencias):', error);
+        this.bienios = [];
+      }
+    });
+  }
+
+  /**
+   * Cargar las fechas de actualización y corte de recaudo del bienio seleccionado
+   * (misma fuente que presupuesto-y-recaudo)
+   */
+  private cargarFechasActualizacionCorte(): void {
+    const idVigencia = this.selectedBienio?.id;
+    if (idVigencia === null || idVigencia === undefined) {
+      return;
+    }
+
+    this.sicodisApiService.getSGRFechasActualizacionCorteRecaudoIACVigencia(idVigencia).subscribe({
+      next: (data: SGRFechaActualizacionCorte[]) => {
+        if (data && data.length > 0) {
+          this.fechaActualizacion = data[0].fecha_actualizacion;
+          this.fechaCorteRecaudo = data[0].fecha_corte_recaudo;
+        }
+      },
+      error: (error) => {
+        console.error('Error cargando fechas de actualización y corte:', error);
+      }
+    });
+  }
+
+  /**
+   * Cargar los departamentos desde el API (misma fuente que presupuesto-y-recaudo)
+   */
+  private cargarDepartamentos(): void {
+    this.sicodisApiService.getSgrDepartamentos().subscribe({
+      next: (departamentos) => {
+        console.log('Departamentos cargados:', departamentos);
+        this.departamentos = departamentos || [];
+      },
+      error: (error) => {
+        console.error('Error cargando departamentos:', error);
+        this.departamentos = [];
+      }
+    });
   }
 
   /**
@@ -375,10 +443,22 @@ export class SgrComparativoComponent implements OnInit {
   }
 
   /**
+   * Al cambiar de vigencia (bienio) se aplican los filtros limpios, conservando
+   * el bienio recién seleccionado y recargando sus fechas de actualización/corte.
+   */
+  onBienioChange(event: any): void {
+    const bienioSeleccionado = this.selectedBienio;
+    this.clearFilters();
+    this.selectedBienio = bienioSeleccionado;
+    this.cargarFechasActualizacionCorte();
+    console.log('Bienio seleccionado:', bienioSeleccionado);
+  }
+
+  /**
    * Limpiar filtros
    */
   clearFilters(): void {
-    this.selectedBienio = { id: 1, label: '2025 - 2026' };
+    this.selectedBienio = this.bienios.length > 0 ? this.bienios[0] : null;
     this.selectedDepartamento = null;
     this.selectedMunicipio = null;
     this.selectedDepartamento2 = null;
@@ -432,9 +512,9 @@ export class SgrComparativoComponent implements OnInit {
 
     const idVigencia = this.selectedBienio.id;
     const tipoConsulta1 = 7;
-    const codigoEntidad1 = this.selectedMunicipio.codigo_municipio;
+    const codigoEntidad1 = this.selectedMunicipio.codigo;
     const tipoConsulta2 = 7;
-    const codigoEntidad2 = this.selectedMunicipio2.codigo_municipio;
+    const codigoEntidad2 = this.selectedMunicipio2.codigo;
 
     console.log('Cargando datos comparativos:', {
       idVigencia,
@@ -481,46 +561,71 @@ export class SgrComparativoComponent implements OnInit {
       item.categoria === '1.1.1'
     );
 
+    const directasAnticipadas = entityData.find(item =>
+      item.categoria === '1.1.3'
+    );
+
+    // Asignación para la Inversión Local (categoría 1.3). Es opcional: algunas
+    // entidades (p. ej. Medellín) no la reciben, por lo que no se exige su presencia.
+    const inversionLocal = entityData.find(item =>
+      item.categoria === '1.3'
+    );
+
     const ahorro = entityData.find(item =>
       item.categoria === '2.2'
     );
 
-    if (!asignacionesDirectas || !directas20 || !ahorro) {
+    if (!asignacionesDirectas || !directas20 || !directasAnticipadas || !ahorro) {
       console.warn(`Datos incompletos para entidad ${entityNumber}`, {
         asignacionesDirectas: !!asignacionesDirectas,
         directas20: !!directas20,
+        directasAnticipadas: !!directasAnticipadas,
         ahorro: !!ahorro
       });
       return;
     }
 
     const chartData = {
-      labels: ['Asignaciones Directas', 'Ahorro (FONPET)'],
+      labels: ['A. Directas', 'A. para la Inversión Local', 'Ahorro (FONPET)'],
       datasets: [
         {
-          label: 'Presupuesto - Asignaciones Directas',
-          data: [asignacionesDirectas.presupuesto_total_vigente, null],
+          label: 'Presupuesto - A. Directas',
+          data: [asignacionesDirectas.presupuesto_total_vigente, null, null],
           backgroundColor: '#f38135ff',
           borderColor: '#be480eff',
           borderWidth: 1
         },
         {
-          label: 'Recaudo - Asignaciones Directas',
-          data: [asignacionesDirectas.caja_total, null],
+          label: 'Recaudo - A. Directas',
+          data: [asignacionesDirectas.caja_total, null, null],
           backgroundColor: '#edb87cff',
           borderColor: '#8c5516',
           borderWidth: 1
         },
         {
+          label: 'Presupuesto - A. para la Inversión Local',
+          data: [null, inversionLocal ? inversionLocal.presupuesto_total_vigente : null, null],
+          backgroundColor: '#2f9e6f',
+          borderColor: '#1c6647',
+          borderWidth: 1
+        },
+        {
+          label: 'Recaudo - A. para la Inversión Local',
+          data: [null, inversionLocal ? inversionLocal.caja_total : null, null],
+          backgroundColor: '#8ed6bd',
+          borderColor: '#4f9c81',
+          borderWidth: 1
+        },
+        {
           label: 'Presupuesto - Ahorro (FONPET)',
-          data: [null, ahorro.presupuesto_total_vigente],
+          data: [null, null, ahorro.presupuesto_total_vigente],
           backgroundColor: '#f33aafff',
           borderColor: '#b11049ff',
           borderWidth: 1
         },
         {
           label: 'Recaudo - Ahorro (FONPET)',
-          data: [null, ahorro.caja_total],
+          data: [null, null, ahorro.caja_total],
           backgroundColor: '#7991e8ff',
           borderColor: '#3d4d7a',
           borderWidth: 1
@@ -601,7 +706,7 @@ export class SgrComparativoComponent implements OnInit {
       this.planBienalMunicipio1LocalDonutData = {
         labels: ['Presupuesto', 'Recaudo'],
         datasets: [{
-          data: [asignacionesDirectas.presupuesto_corriente, asignacionesDirectas.caja_corriente_informada],
+          data: [directasAnticipadas.presupuesto_corriente, directasAnticipadas.caja_corriente_informada],
           backgroundColor: ['#f38135ff', '#edb87cff'],
           borderColor: ['#be480eff', '#8c5516'],
           borderWidth: 1
@@ -626,7 +731,7 @@ export class SgrComparativoComponent implements OnInit {
       this.planBienalMunicipio2LocalDonutData = {
         labels: ['Presupuesto', 'Recaudo'],
         datasets: [{
-          data: [asignacionesDirectas.presupuesto_corriente, asignacionesDirectas.caja_corriente_informada],
+          data: [directasAnticipadas.presupuesto_corriente, directasAnticipadas.caja_corriente_informada],
           backgroundColor: ['#f38135ff', '#edb87cff'],
           borderColor: ['#be480eff', '#8c5516'],
           borderWidth: 1
@@ -641,7 +746,11 @@ export class SgrComparativoComponent implements OnInit {
    * Construir datos de tabla a partir de los datos de la entidad
    */
   private buildTableData(entityData: SgrPtoRecaudoItem[]): TreeNode[] {
-    return organizeCategoryData(entityData);
+    // Excluir la fila de concepto "TOTAL SGR (incluye aforado y no aforado)"
+    const datosFiltrados = entityData.filter(
+      item => item.concepto?.trim() !== 'TOTAL SGR (incluye aforado y no aforado)'
+    );
+    return organizeCategoryData(datosFiltrados);
   }
 
   /**
@@ -656,10 +765,10 @@ export class SgrComparativoComponent implements OnInit {
 
     console.log('Cargando municipios para departamento:', this.selectedDepartamento.codigo);
     
-    this.sicodisApiService.getMunicipiosPorDepartamento(this.selectedDepartamento.codigo).subscribe({
+    this.sicodisApiService.getMunicipiosDepartamentosSgr(this.selectedDepartamento.codigo).subscribe({
       next: (municipios) => {
         console.log('Municipios cargados:', municipios);
-        this.municipios = municipios;
+        this.municipios = this.aplicarFallbackBogota(this.selectedDepartamento, municipios);
         this.updateMunicipios2List();
       },
       error: (error) => {
@@ -681,10 +790,10 @@ export class SgrComparativoComponent implements OnInit {
 
     console.log('Cargando municipios para departamento 2:', this.selectedDepartamento2.codigo);
     
-    this.sicodisApiService.getMunicipiosPorDepartamento(this.selectedDepartamento2.codigo).subscribe({
+    this.sicodisApiService.getMunicipiosDepartamentosSgr(this.selectedDepartamento2.codigo).subscribe({
       next: (municipios) => {
         console.log('Municipios 2 cargados:', municipios);
-        this.municipios2 = municipios;
+        this.municipios2 = this.aplicarFallbackBogota(this.selectedDepartamento2, municipios);
         this.updateMunicipios2List();
       },
       error: (error) => {
@@ -695,12 +804,26 @@ export class SgrComparativoComponent implements OnInit {
   }
 
   /**
+   * Si el departamento es Bogotá D.C. (código 11) y el backend no retorna
+   * municipios, se crea un único municipio con código "11001" y nombre "Bogotá D.C."
+   */
+  private aplicarFallbackBogota(departamento: any, municipios: MunicipioSgp[]): MunicipioSgp[] {
+    if (departamento?.codigo === '11' && (!municipios || municipios.length === 0)) {
+      return [{
+        codigo: '11001',
+        nombre: 'Bogotá D.C.'
+      }];
+    }
+    return municipios || [];
+  }
+
+  /**
    * Actualiza la lista de municipios 2 para evitar duplicados
    */
   private updateMunicipios2List(): void {
     if (this.selectedMunicipio && this.selectedDepartamento?.codigo === this.selectedDepartamento2?.codigo) {
       // Si ambos departamentos son iguales, filtrar el municipio seleccionado en la lista 1
-      this.municipios2 = this.municipios2.filter(municipio => municipio.codigo_municipio !== this.selectedMunicipio.codigo_municipio);
+      this.municipios2 = this.municipios2.filter(municipio => municipio.codigo !== this.selectedMunicipio.codigo);
     }
   }
 

@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ButtonModule } from 'primeng/button';
 import { Select, SelectChangeEvent } from 'primeng/select';
 import { TreeTableModule } from 'primeng/treetable';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TreeNode } from 'primeng/api';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { PercentFormatPipe } from '../../utils/percentFormatPipe';
@@ -24,6 +25,7 @@ import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
     ButtonModule,
     Select,
     TreeTableModule,
+    ProgressSpinnerModule,
     NumberFormatPipe,
     PercentFormatPipe
   ],
@@ -45,15 +47,22 @@ export class SgrInicioComponent implements OnInit {
 
   treeTableData: TreeNode[] = [];
 
+  isLoading: boolean = true;
+
   fechaActualizacion: string = '';
   fechaCorteRecaudo: string = '';
 
   recursos = [
     {
-      titulo: 'Programación',
-      descripcion: 'Plan de Recursos y Plan Bienal de Caja',
+      titulo: 'Plan de Recursos',
+      descripcion: 'Plan de Recursos',
       link: 'sgr-plan-bienal-de-caja',
-      icon: 'assets/img/sgr/icono-sgr-programacion.png'
+      icon: 'assets/img/sgr/icono-sgr-plan-recursos.png'
+    },{
+      titulo: 'Plan Bienal de Caja',
+      descripcion: 'Plan Bienal de Caja',
+      link: 'sgr-plan-bienal-de-caja',
+      icon: 'assets/img/sgr/icono-sgr-pbc.png'
     },
     {
       titulo: 'Recaudo Mensual',
@@ -104,6 +113,8 @@ export class SgrInicioComponent implements OnInit {
         if (vigencias.length > 0) {
           this.selectedVigencia = vigencias[0];
           this.loadData();
+        } else {
+          this.isLoading = false;
         }
       },
       error: () => {
@@ -120,6 +131,7 @@ export class SgrInicioComponent implements OnInit {
 
   loadData(): void {
     const idVigencia = this.selectedVigencia.id_vigencia;
+    this.isLoading = true;
 
     this.sicodisApiService.getSGRFechasActualizacionCorteRecaudoIACVigencia(idVigencia).subscribe({
       next: (fechas) => {
@@ -134,6 +146,7 @@ export class SgrInicioComponent implements OnInit {
     this.sicodisApiService.getSgrResumenPtoRecaudoQA(idVigencia, '1', '0').subscribe({
       next: (data) => {
         this.buildTreeTableData(data);
+        this.isLoading = false;
       },
       error: () => {
         this.presupuestoTotal = 64087661072292;
@@ -141,6 +154,7 @@ export class SgrInicioComponent implements OnInit {
         this.avanceTotal = 0.7748;
         this.saldoTotal = this.presupuestoTotal - this.recaudoTotal;
         this.treeTableData = [];
+        this.isLoading = false;
       }
     });
   }
@@ -158,7 +172,10 @@ export class SgrInicioComponent implements OnInit {
     }
 
     const treeData = data.filter(
-      item => item.concepto !== TOTAL_CONCEPTO && item.categoria !== 'total'
+      item =>
+        item.concepto !== TOTAL_CONCEPTO &&
+        item.categoria !== 'total' &&
+        !(item.concepto?.toUpperCase().includes('TOTAL AFORADO'))
     );
     const organized = organizeCategoryData(treeData);
     const sorted = this.sortRootNodes(organized);
@@ -166,11 +183,11 @@ export class SgrInicioComponent implements OnInit {
   }
 
   private readonly CONCEPTO_ORDER: string[] = [
-    'AHORRO',
     'INVERSIÓN',
+    'AHORRO',
+    'ADMINISTRACIÓN',
     'RECAUDO CORRIENTE NO AFORADO',
-    'OTROS',
-    'TOTAL AFORADO'
+    'OTROS'
   ];
 
   private sortRootNodes(nodes: any[]): any[] {
@@ -215,5 +232,32 @@ export class SgrInicioComponent implements OnInit {
         }, 100);
       });
     }
+  }
+
+  // Notas por vigencia (id_vigencia). La nota (1) "Cifras en pesos corrientes"
+  // se mantiene estática en la plantilla; estas se agregan a partir de la (2).
+  notasVigencia: Record<number, string[]> = {
+    8: ['(2) Ley 2441 de 2024 - Decretos 379, Decreto 380, Decreto 0070, Resolución 1169, Decreto 0854, Decreto 1165, Resolución 3158, todos del año 2025. Decretos 0043, 0110, 0288 del 2026.'],
+    7: ['(2) Fuente: Decreto 379 del 31 de marzo de 2025'],
+    6: ['(2) Fuente: Decreto 363 del 16 de marzo de 2023'],
+    5: ['(2) Fuente: Decreto 317 del 30 de marzo de 2021',
+        '•\tPara el concepto "FDR - Compensación", el recaudo de ingresos corrientes contiene la compensación establecida en el Decreto 599 de 2020 por valor de $733.855.017.884',
+        '•\tLa compensación establecida en el Decreto 1131 de 2019, es descontada de los recursos de disponibilidad inicial y del saldo de mayor recaudo de las entidades correspondientes.'
+      ],
+    4: ['(2) Fuente: Decreto 606 del 05 de abril de 2019',
+        '•\tEl recaudo de ingresos corrientes contiene la compensación establecida en el Decreto 737 de 2018',
+        '•\tLa compensación establecida en el Decreto 2152 de 2017, aplica sobre los recursos de disponibilidad inicial. '
+      ],
+    3: ['(2) Fuente: Decreto 1103 del 27 de junio de 2017',
+        '•\tEl recaudo de ingresos corrientes contiene la compensación establecida en los Decretos 724 y 1296 de 2015',
+        '•\tLa compensación establecida en el Decreto 1490 de 2015, es descontada de los recursos de disponibilidad inicial y del saldo de mayor recaudo de las entidades correspondientes. '
+      ],
+    2: ['(2) Fuente: Decreto 722 del 17 de abril de 2015'],
+    1: ['(2) Fuente: Decreto 1399 del 28 de junio de 2013'],
+  };
+
+  get notasActuales(): string[] {
+    const id = this.selectedVigencia?.id_vigencia;
+    return this.notasVigencia[id] ?? [];
   }
 }

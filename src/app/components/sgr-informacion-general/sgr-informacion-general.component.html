@@ -1,7 +1,16 @@
 <div class="sgr-info-general-container">
   <div class="container">
-    <!-- TARJETA 1: Información general del SGR (fija al bienio seleccionado) -->
-    <h1 class="main-title">Información general del SGR - Bienio {{ bienioActual }}</h1>
+    <!-- Banner -->
+    <div class="gradient-banner">
+      <div class="gradient-overlay"></div>
+      <div class="banner-content">
+        <h1>Información general del SGR</h1>
+        <p>Consulte los indicadores generales del Sistema General de Regalías y construya consultas específicas de presupuesto y recaudo por vigencia, caracterización y tipo de entidad.</p>
+      </div>
+    </div>
+
+    <!-- TARJETA 1: Información general del SGR (fija al último bienio) -->
+    <h1 class="main-title">Información general del SGR - Bienio {{ ultimoBienio }}</h1>
 
     <div class="info-general-card">
       <div class="kpi-grid">
@@ -11,8 +20,13 @@
         </div>
 
         <div class="kpi-card">
-          <h3>{{ tituloRecaudoKPI }}</h3>
-          <p class="kpi-value">${{ recaudoKPI | numberFormat }}</p>
+          <h3>Presupuesto Corriente</h3>
+          <p class="kpi-value">${{ presupuestoMetricas.presupuestoCorriente | numberFormat }}</p>
+        </div>
+
+        <div class="kpi-card">
+          <h3>Recaudo Corriente</h3>
+          <p class="kpi-value">${{ recaudoMetricas.recaudoCorriente | numberFormat }}</p>
         </div>
 
         <div class="kpi-card">
@@ -241,7 +255,6 @@
                 (ngModelChange)="onPeriodicidadActivaChange('bienio', $event)"
                 [binary]="true"
                 inputId="filtroBienio"
-                [disabled]="true"
               />
               <label for="filtroBienio">Bienio</label>
             </div>
@@ -258,10 +271,10 @@
                 [showClear]="false"
                 display="comma"
                 styleClass="w-full"
-                [maxSelectedLabels]="2"
+                [maxSelectedLabels]="0"
                 selectedItemsLabel="{0} bienios"
                 class="w-full md:w-80"
-                [displaySelectedLabel]="false"
+                [displaySelectedLabel]="true"
               ></p-multiselect>
             </div>
           </div>
@@ -290,9 +303,10 @@
                 [showClear]="true"
                 display="comma"
                 styleClass="w-full"
-                [maxSelectedLabels]="3"
+                [maxSelectedLabels]="0"
                 selectedItemsLabel="{0} años"
                 class="w-full md:w-80"
+                [displaySelectedLabel]="true"
               ></p-multiselect>
             </div>
           </div>
@@ -375,11 +389,11 @@
                 [showClear]="true"
                 display="comma"
                 styleClass="w-full"
-                [maxSelectedLabels]="2"
+                [maxSelectedLabels]="0"
                 selectedItemsLabel="{0} seleccionados"
                 class="w-full md:w-80"
                 panelStyleClass="caracterizacion-panel"
-                [displaySelectedLabel]="false"
+                [displaySelectedLabel]="true"
               ></p-multiselect>
             </div>
           </div>
@@ -408,11 +422,11 @@
                 [showClear]="true"
                 display="comma"
                 styleClass="w-full"
-                [maxSelectedLabels]="2"
+                [maxSelectedLabels]="0"
                 selectedItemsLabel="{0} regiones"
                 class="w-full md:w-80"
                 panelStyleClass="caracterizacion-panel"
-                [displaySelectedLabel]="false"
+                [displaySelectedLabel]="true"
               ></p-multiselect>
             </div>
           </div>
@@ -441,11 +455,11 @@
                 [showClear]="true"
                 display="comma"
                 styleClass="w-full"
-                [maxSelectedLabels]="2"
+                [maxSelectedLabels]="0"
                 selectedItemsLabel="{0} grupos"
                 class="w-full md:w-80"
                 panelStyleClass="caracterizacion-panel"
-                [displaySelectedLabel]="false"
+                [displaySelectedLabel]="true"
               ></p-multiselect>
             </div>
           </div>
@@ -475,11 +489,11 @@
                 [showClear]="true"
                 display="comma"
                 styleClass="w-full"
-                [maxSelectedLabels]="2"
+                [maxSelectedLabels]="0"
                 selectedItemsLabel="{0} asignaciones"
                 class="w-full md:w-80"
                 panelStyleClass="caracterizacion-panel asignacion-panel"
-                [displaySelectedLabel]="false"
+                [displaySelectedLabel]="true"
               ></p-multiselect>
             </div>
           </div>
@@ -491,60 +505,61 @@
           <div class="entidad-tipo-section">
           <h3>Tipo de entidad</h3>
 
-          <div class="checkbox-item">
-            <p-radiobutton
-              name="entidad"
-              value="productoras"
-              [ngModel]="entidadSeleccionada"
-              (ngModelChange)="onEntidadChange($event)"
-              inputId="productoras"
-            />
-            <label for="productoras">Productora</label>
-          </div>
+          <div class="entidad-radio-grid">
+            <div class="checkbox-item">
+              <p-radiobutton
+                name="entidad"
+                value="productoras"
+                [ngModel]="entidadSeleccionada"
+                (ngModelChange)="onEntidadChange($event)"
+                inputId="productoras"
+              />
+              <label for="productoras">Productora</label>
+            </div>
 
-          <div class="checkbox-item">
-            <p-radiobutton
-              name="entidad"
-              value="pdet"
-              [ngModel]="entidadSeleccionada"
-              (ngModelChange)="onEntidadChange($event)"
-              inputId="pdet"
-            />
-            <label for="pdet">PDET</label>
-          </div>
+            <div class="checkbox-item">
+              <p-radiobutton
+                name="entidad"
+                value="pdet"
+                [ngModel]="entidadSeleccionada"
+                (ngModelChange)="onEntidadChange($event)"
+                inputId="pdet"
+              />
+              <label for="pdet">PDET</label>
+            </div>
 
-          <div class="checkbox-item">
-            <p-radiobutton
-              name="entidad"
-              value="zomac"
-              [ngModel]="entidadSeleccionada"
-              (ngModelChange)="onEntidadChange($event)"
-              inputId="zomac"
-            />
-            <label for="zomac">ZOMAC</label>
-          </div>
+            <div class="checkbox-item">
+              <p-radiobutton
+                name="entidad"
+                value="zomac"
+                [ngModel]="entidadSeleccionada"
+                (ngModelChange)="onEntidadChange($event)"
+                inputId="zomac"
+              />
+              <label for="zomac">ZOMAC</label>
+            </div>
 
-          <div class="checkbox-item">
-            <p-radiobutton
-              name="entidad"
-              value="etnica"
-              [ngModel]="entidadSeleccionada"
-              (ngModelChange)="onEntidadChange($event)"
-              inputId="etnica"
-            />
-            <label for="etnica">Con destinación Étnica</label>
-          </div>
+            <div class="checkbox-item">
+              <p-radiobutton
+                name="entidad"
+                value="capital"
+                [ngModel]="entidadSeleccionada"
+                (ngModelChange)="onEntidadChange($event)"
+                inputId="capital"
+              />
+              <label for="capital">Capitáles</label>
+            </div>
 
-          <div class="checkbox-item">
-            <p-radiobutton
-              name="entidad"
-              value="capital"
-              [ngModel]="entidadSeleccionada"
-              (ngModelChange)="onEntidadChange($event)"
-              inputId="capital"
-            />
-            <label for="capital">Capitáles</label>
-          </div>
+            <div class="checkbox-item full-row">
+              <p-radiobutton
+                name="entidad"
+                value="etnica"
+                [ngModel]="entidadSeleccionada"
+                (ngModelChange)="onEntidadChange($event)"
+                inputId="etnica"
+              />
+              <label for="etnica">Con destinación Étnica</label>
+            </div>
           </div>
 
           <!-- Separador visual -->
@@ -579,11 +594,11 @@
               [showToggleAll]="true"
               display="comma"
               styleClass="w-full"
-              [maxSelectedLabels]="1"
+              [maxSelectedLabels]="0"
               selectedItemsLabel="{0} entidades"
               class="w-full md:w-80"
               panelStyleClass="caracterizacion-panel beneficiario-panel"
-              [displaySelectedLabel]="false"
+              [displaySelectedLabel]="true"
             ></p-multiselect>
           </div>
           </div>

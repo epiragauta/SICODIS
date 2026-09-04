@@ -42,7 +42,7 @@
   <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0;">
     <div style="width: 83%;">
       <p class="date-update">Norma base: Manual M-CA-04 · versión 12 (DNP, 2025)</p>
-      <p class="date-update">Cada corrida se guarda como una versión inmutable identificada por su fecha de ejecución.</p>
+      <p class="date-update">Cada ejecución se guarda como una versión inmutable identificada por su fecha de ejecución.</p>
     </div>
     <div style="position: relative; padding-bottom: .25rem;">
       <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 1.8rem; width: 96px;"
@@ -120,7 +120,7 @@
   <!-- ZONA 3 · Historial de corridas versionadas -->
   <div class="historial-section">
     <div class="historial-header">
-      <h3 class="historial-title">Historial de corridas · {{ selectedBienio?.label }}</h3>
+      <h3 class="historial-title">Historial de ejecuciones · {{ selectedBienio?.label }}</h3>
     </div>
 
     <p-table [value]="corridas" styleClass="p-datatable-sm corridas-table">
@@ -177,7 +177,7 @@
       <ng-template pTemplate="emptymessage">
         <tr>
           <td colspan="9" class="historial-vacio">
-            No hay corridas registradas para este bienio. Ejecute el cálculo para crear la primera versión.
+            No hay ejecuciones registradas para este bienio. Ejecute el cálculo para crear la primera versión.
           </td>
         </tr>
       </ng-template>
@@ -191,7 +191,7 @@
       <ul class="notes-list">
         <li>Recalcular no sobrescribe corridas anteriores: cada ejecución genera una nueva versión.</li>
         <li>La versión de insumos y de parámetros aplicadas quedan registradas para reproducir la distribución.</li>
-        <li>El detalle de la corrida, las descargas (Excel · XML · reporte) y la marcación oficial se incorporan en las siguientes entregas.</li>
+        <li>El detalle de la ejecución, las descargas (Excel · XML · reporte) y la marcación oficial se incorporan en las siguientes entregas.</li>
       </ul>
     </div>
   </div>
@@ -217,7 +217,7 @@
     </div>
 
     <div class="param-aviso">
-      Los parámetros se administran y versionan en una pantalla aparte (perfil administrador). Cada corrida queda anclada a la versión de parámetros aplicada.
+      Los parámetros se administran y versionan en una pantalla aparte (perfil administrador). Cada ejecución queda anclada a la versión de parámetros aplicada.
     </div>
 
     <div class="param-grid" *ngIf="parametros">
@@ -297,7 +297,7 @@
             (onHide)="cerrarDetalle()">
     <ng-template pTemplate="header">
       <div class="detalle-header" *ngIf="corridaDetalle">
-        <span class="detalle-titulo">Detalle de la corrida · <strong>v{{ corridaDetalle.version }}</strong></span>
+        <span class="detalle-titulo">Detalle de la ejecución · <strong>v{{ corridaDetalle.version }}</strong></span>
         <p-tag [value]="estadoLabel(corridaDetalle.estado)" [severity]="estadoSeverity(corridaDetalle.estado)"></p-tag>
         <i class="pi pi-star-fill oficial-star" *ngIf="corridaDetalle.esOficial" pTooltip="Versión oficial"></i>
       </div>
