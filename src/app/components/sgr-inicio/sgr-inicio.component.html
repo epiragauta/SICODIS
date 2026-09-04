@@ -52,13 +52,20 @@
 
     <!-- Tabla jerárquica por concepto de gasto -->
     <div class="card">
+
+      <!-- Indicador de carga -->
+      <div *ngIf="isLoading" class="tabla-loading">
+        <p-progressSpinner strokeWidth="4" [style]="{ width: '48px', height: '48px' }"></p-progressSpinner>
+        <p>Cargando información de la vigencia...</p>
+      </div>
+
       <p-treetable [value]="treeTableData"
                    dataKey="key"
                    [scrollable]="true"
                    [scrollHeight]="treeTableData && treeTableData.length > 5 ? '400px' : 'auto'"
                    styleClass="tabla-recaudo-tree"
                    [tableStyle]="{'min-width':'100%'}"
-                   *ngIf="treeTableData.length > 0">
+                   *ngIf="!isLoading && treeTableData.length > 0">
         <ng-template pTemplate="colgroup">
           <colgroup>
             <col style="width:35%">
@@ -106,7 +113,7 @@
         </ng-template>
       </p-treetable>
 
-      <div *ngIf="treeTableData.length === 0"
+      <div *ngIf="!isLoading && treeTableData.length === 0"
            style="padding: 1rem; text-align: center; color: #666;">
         <p>No hay datos para mostrar para la vigencia: {{ selectedVigencia.vigencia }}</p>
       </div>
