@@ -271,13 +271,6 @@
   position: relative;
   overflow: hidden;
 
-  // Centrar la última tarjeta (Geovisor)
-  &:last-child {
-    grid-column: 1 / -1;
-    max-width: calc(50% - 10px);
-    margin: 0 auto;
-  }
-
   &::before {
     content: '';
     position: absolute;
@@ -536,14 +529,6 @@
 
   .herramientas-cards-container {
     grid-template-columns: 1fr;
-  }
-
-  .herramienta-card {
-    &:last-child {
-      grid-column: auto;
-      max-width: 100%;
-      margin: 0;
-    }
   }
 }
 
