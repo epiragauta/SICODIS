@@ -1,28 +1,13 @@
-import { inject } from '@angular/core';
-import { Router, type CanActivateFn } from '@angular/router';
-import { AuthService } from '../auth.service';
+import { type CanActivateFn } from '@angular/router';
+import { authGuard } from './auth.guard';
 
-export const adminGuard: CanActivateFn = (route, state) => {
-  const authService = inject(AuthService);
-  const router = inject(Router);
-
-  // Verificar si hay token válido
-  const token = authService.getToken();
-
-  if (!token) {
-    console.warn('Admin access denied: No valid token');
-    router.navigate(['/']);
-    return false;
-  }
-
-  // TODO: Cuando el backend esté listo, verificar rol de admin en el JWT
-  // Por ahora, solo verificamos que haya un token válido
-  // const decodedToken = jwt_decode(token);
-  // if (decodedToken.role !== 'admin') {
-  //   console.warn('Admin access denied: User is not admin');
-  //   router.navigate(['/']);
-  //   return false;
-  // }
-
-  return true;
-};
+/**
+ * @deprecated Usar `authGuard` (sesión) junto con `paginaGuard` (permiso por
+ * pantalla, vía `data.paginaLegado`). Se conserva como alias para no romper
+ * rutas que aún lo referencien.
+ *
+ * La versión anterior solo comprobaba la existencia del token de servicio
+ * (`app.public.read`), que cualquier visitante anónimo tiene: no identificaba
+ * a una persona ni verificaba rol alguno.
+ */
+export const adminGuard: CanActivateFn = authGuard;

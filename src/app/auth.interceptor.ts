@@ -4,6 +4,7 @@ import { inject } from '@angular/core';
 import { AuthService } from './auth.service';
 import { MessageService } from 'primeng/api';
 import { catchError, switchMap, throwError } from 'rxjs';
+import { esUrlDeAutenticacionUsuario } from './auth/auth.urls';
 
 function getErrorMessage(error: HttpErrorResponse): string {
   if (error.status === 0)   return 'Error de conexión. Verifique su conexión a internet e intente nuevamente.';
@@ -19,6 +20,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   // ❌ NO agregar token a la petición de login
   if (req.url.includes('/auth/login')) {
+    return next(req);
+  }
+
+  // ❌ Autenticación de usuario (DNP): lleva su propio token y sus errores los
+  // traduce el proveedor, no el toast genérico. Ver auth/user-auth.provider.ts
+  if (esUrlDeAutenticacionUsuario(req.url)) {
     return next(req);
   }
 

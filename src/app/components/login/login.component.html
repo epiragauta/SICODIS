@@ -1,0 +1,102 @@
+<section class="login" aria-labelledby="login-title">
+  <div class="login-card">
+
+    <h1 id="login-title">Inicio de sesión</h1>
+
+    <p class="login-intro">
+      Acceso para funcionarios del Departamento Nacional de Planeación. Ingrese
+      con su usuario de red institucional.
+    </p>
+
+    <!-- Sesión activa: la pantalla actúa como panel de sesión -->
+    @if (estaAutenticado()) {
+      <div class="login-sesion" role="status">
+        <p class="login-sesion-nombre">
+          <i class="pi pi-lock-open" aria-hidden="true"></i>
+          Sesión activa: <strong>{{ nombre() }}</strong>
+        </p>
+        <p class="login-sesion-usuario">Usuario: {{ usuario() }}</p>
+      </div>
+
+      <div class="login-acciones">
+        <button
+          type="button"
+          pButton
+          class="p-button-outlined"
+          label="Cerrar sesión"
+          icon="pi pi-sign-out"
+          (click)="cerrarSesion()"></button>
+        <a routerLink="/" class="login-volver">Volver al inicio</a>
+      </div>
+    } @else {
+
+      <form [formGroup]="formulario" (ngSubmit)="ingresar()" novalidate>
+
+        @if (error()) {
+          <div
+            #resumenError
+            class="login-error"
+            role="alert"
+            aria-live="assertive"
+            tabindex="-1">
+            <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+            <span>{{ error() }}</span>
+          </div>
+        }
+
+        <div class="login-campo">
+          <label for="usuario">Usuario</label>
+          <input
+            id="usuario"
+            type="text"
+            pInputText
+            formControlName="usuario"
+            autocomplete="username"
+            autocapitalize="none"
+            spellcheck="false"
+            maxlength="64"
+            [attr.aria-invalid]="campoUsuario.touched && campoUsuario.invalid ? 'true' : null"
+            aria-describedby="usuario-ayuda" />
+          <small id="usuario-ayuda" class="login-ayuda">
+            Login de acceso asignado por el DNP, sin el dominio.
+          </small>
+          @if (campoUsuario.touched && campoUsuario.hasError('required')) {
+            <small class="login-campo-error">Ingrese su usuario.</small>
+          }
+        </div>
+
+        <div class="login-campo">
+          <label for="password">Contraseña</label>
+          <p-password
+            inputId="password"
+            formControlName="password"
+            styleClass="login-password"
+            [feedback]="false"
+            [toggleMask]="true"
+            [maxlength]="128"
+            autocomplete="current-password" />
+          @if (campoPassword.touched && campoPassword.hasError('required')) {
+            <small class="login-campo-error">Ingrese su contraseña.</small>
+          }
+        </div>
+
+        <div class="login-acciones">
+          <button
+            type="submit"
+            pButton
+            class="login-boton"
+            [disabled]="enviando()"
+            [label]="enviando() ? 'Ingresando, un momento por favor…' : 'Ingresar'"
+            [icon]="enviando() ? 'pi pi-spin pi-spinner' : 'pi pi-sign-in'"></button>
+          <a routerLink="/" class="login-volver">Volver al inicio</a>
+        </div>
+
+        <p class="login-estado" aria-live="polite">
+          @if (enviando()) { Validando credenciales… }
+        </p>
+
+      </form>
+    }
+
+  </div>
+</section>

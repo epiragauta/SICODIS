@@ -1,0 +1,21 @@
+<section class="acceso" aria-labelledby="acceso-title">
+  <div class="acceso-content">
+
+    <i class="pi pi-lock acceso-icono" aria-hidden="true"></i>
+
+    <h1 id="acceso-title">Acceso limitado</h1>
+
+    <p class="acceso-mensaje">
+      Su usuario está autenticado, pero su perfil no tiene habilitada esta
+      pantalla. Si requiere el acceso, solicítelo al administrador de SICODIS
+      indicando la sección a la que necesita ingresar.
+    </p>
+
+    @if (nombre()) {
+      <p class="acceso-usuario">Sesión de: <strong>{{ nombre() }}</strong></p>
+    }
+
+    <a routerLink="/" class="acceso-home-link">Ir a la página de inicio</a>
+
+  </div>
+</section>

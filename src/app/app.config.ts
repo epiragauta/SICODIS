@@ -20,6 +20,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './auth.interceptor';
 import { AUTH_INITIALIZER } from './app.initializer'; // 👈 NUEVO
 import { MessageService } from 'primeng/api';
+import { provideUserAuth } from './auth/auth.providers';
 
 // Paleta ajustada para cumplir contraste WCAG AA (≥ 4.5:1) con texto blanco.
 // blue.500 (#3b82f6) tiene ratio 3.4:1 — insuficiente.
@@ -61,6 +62,10 @@ export const appConfig: ApplicationConfig = {
 
     // 🆕 Inicializador - Obtiene el token ANTES de arrancar la app
     AUTH_INITIALIZER,
+
+    // 🔑 Sesión de usuario (DNP). La implementación depende de
+    // environment.auth.provider: mock | legacy | apiws
+    provideUserAuth(),
 
     providePrimeNG({
       theme: {

@@ -72,6 +72,18 @@
             <p>Buzón de notificaciones DNP: <a href="mailto:notificacionesjudiciales@dnp.gov.co">notificacionesjudiciales&#64;dnp.gov.co</a></p>
           </div>
         </div>
+
+        <!-- Acceso autenticado (funcionarios DNP). Único punto de entrada a la
+             sesión: el menú superior no expone inicio de sesión. -->
+        <a class="gov-co-acceso-autenticado"
+           routerLink="/autenticacion"
+           [attr.title]="estaAutenticado() ? 'Sesión activa de ' + nombre() : 'Ingreso autenticado para funcionarios del DNP'">
+          <i class="pi"
+             [class.pi-lock]="!estaAutenticado()"
+             [class.pi-lock-open]="estaAutenticado()"
+             aria-hidden="true"></i>
+          <span>{{ estaAutenticado() ? 'Sesión activa: ' + nombre() : 'Ingreso funcionarios' }}</span>
+        </a>
       </div>
       <div class="gov-co-pilo-venta">
         <a class="goc-co-link-poli-venta" href="https://pqrsd.dnp.gov.co">Formule su petición PQRSD</a>
