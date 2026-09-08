@@ -86,7 +86,8 @@ export class SgrInicioComponent implements OnInit {
       titulo: 'Comparativo',
       descripcion: 'Avance del recaudo y el presupuesto entre entidades.',
       link: 'sgr-comparativo',
-      icon: 'assets/img/sgr/icono-sgr-comparativo.png'
+      icon: 'assets/img/sgr/icono-sgr-comparativo.png',
+      disabled: true
     },
     {
       titulo: 'Administración y SSEC',
@@ -240,6 +241,9 @@ export class SgrInicioComponent implements OnInit {
   }
 
   onResourceClick(recurso: any): void {
+    if (recurso.disabled) {
+      return;
+    }
     if (recurso.link) {
       this.router.navigate([recurso.link]).then(() => {
         setTimeout(() => {

@@ -144,8 +144,10 @@
     <div class="herramientas-cards-container">
       <div class="herramienta-card"
            *ngFor="let recurso of recursos"
+           [class.herramienta-card-disabled]="recurso.disabled"
            (click)="onResourceClick(recurso)"
-           style="cursor: pointer;">
+           [style.cursor]="recurso.disabled ? 'not-allowed' : 'pointer'"
+           [style.opacity]="recurso.disabled ? 0.5 : 1">
         <div class="card-icon-placeholder">
           <img [src]="recurso.icon" alt="{{ recurso.titulo }}" class="sgr-icon">
         </div>
@@ -153,7 +155,7 @@
           <h3>{{ recurso.titulo }}</h3>
           <p>{{ recurso.descripcion }}</p>
         </div>
-        <mat-icon style="font-size: 32px; color: #403a3a;">chevron_right</mat-icon>
+        <mat-icon *ngIf="!recurso.disabled" style="font-size: 32px; color: #403a3a;">chevron_right</mat-icon>
       </div>
     </div>
   </div>
