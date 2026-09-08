@@ -153,7 +153,7 @@ export class SgrInicioComponent implements OnInit {
         this.presupuestoTotal = 64087661072292;
         this.recaudoTotal = 49658264357763;
         this.avanceTotal = 0.7748;
-        this.saldoTotal = this.presupuestoTotal - this.recaudoTotal;
+        this.saldoTotal = Math.max(0, this.presupuestoTotal - this.recaudoTotal);
         this.treeTableData = [];
         this.isLoading = false;
       }
@@ -169,7 +169,8 @@ export class SgrInicioComponent implements OnInit {
       this.presupuestoTotal = totalRecord.presupuesto_total_vigente;
       this.recaudoTotal = totalRecord.caja_total;
       this.avanceTotal = totalRecord.avance_iac_presupuesto;
-      this.saldoTotal = this.presupuestoTotal - this.recaudoTotal;
+      // El saldo a recaudar total no se muestra en negativo (se presenta como 0).
+      this.saldoTotal = Math.max(0, this.presupuestoTotal - this.recaudoTotal);
     }
 
     const treeData = data.filter(
