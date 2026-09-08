@@ -204,19 +204,34 @@ export class SgrInicioComponent implements OnInit {
     });
   }
 
-  private mapTreeNodes(nodes: any[]): TreeNode[] {
-    return nodes.map(node => ({
-      key: node.data.categoria,
-      data: {
-        concepto: node.data.concepto,
-        presupuesto: node.data.presupuesto_total_vigente,
-        recaudo: node.data.caja_total,
-        saldo: node.data.presupuesto_total_vigente - node.data.caja_total,
-        avance: node.data.avance_iac_presupuesto
-      },
-      children: node.children?.length ? this.mapTreeNodes(node.children) : [],
-      expanded: false
-    }));
+  // Conceptos cuyo saldo a recaudar no debe mostrarse en negativo (mayor
+  // recaudo / recaudo corriente no aforado): el recaudo supera al presupuesto,
+  // por lo que el saldo negativo se muestra como 0. La regla se propaga a los hijos.
+  private esConceptoSaldoNoNegativo(concepto: string | undefined): boolean {
+    const texto = (concepto ?? '').toUpperCase();
+    return texto.includes('MAYOR RECAUDO') || texto.includes('RECAUDO CORRIENTE NO AFORADO');
+  }
+
+  private mapTreeNodes(nodes: any[], forzarSaldoNoNegativo = false): TreeNode[] {
+    return nodes.map(node => {
+      const noNegativo = forzarSaldoNoNegativo || this.esConceptoSaldoNoNegativo(node.data.concepto);
+      let saldo = node.data.presupuesto_total_vigente - node.data.caja_total;
+      if (noNegativo && saldo < 0) {
+        saldo = 0;
+      }
+      return {
+        key: node.data.categoria,
+        data: {
+          concepto: node.data.concepto,
+          presupuesto: node.data.presupuesto_total_vigente,
+          recaudo: node.data.caja_total,
+          saldo,
+          avance: node.data.avance_iac_presupuesto
+        },
+        children: node.children?.length ? this.mapTreeNodes(node.children, noNegativo) : [],
+        expanded: false
+      };
+    });
   }
 
   onVigenciaChange(event: SelectChangeEvent): void {
