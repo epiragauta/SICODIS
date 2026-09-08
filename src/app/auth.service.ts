@@ -46,8 +46,9 @@ export class AuthService {
         
         // Programar renovación automática
         this.scheduleTokenRenewal(response.expires_in);
-        
-        console.log('✅ Token obtenido:', response.access_token.substring(0, 20) + '...');
+
+        // El token no se registra en consola (ni siquiera truncado).
+        console.log('✅ Token de servicio obtenido');
       }),
       catchError(error => {
         console.error('❌ Error al obtener token:', error);

@@ -31,7 +31,11 @@ import { MapaRecursosComponent } from './components/mapa-recursos/mapa-recursos.
 import { SgrInicioComponent } from './components/sgr-inicio/sgr-inicio.component';
 import { SgrInformacionGeneralComponent } from './components/sgr-informacion-general/sgr-informacion-general.component';
 import { AdminConfigComponent } from './components/admin-config/admin-config.component';
-import { adminGuard } from './guards/admin.guard';
+import { LoginComponent } from './components/login/login.component';
+import { AccesoLimitadoComponent } from './components/acceso-limitado/acceso-limitado.component';
+import { AccesoNoAutorizadoComponent } from './components/acceso-no-autorizado/acceso-no-autorizado.component';
+import { authGuard } from './guards/auth.guard';
+import { paginaGuard } from './guards/pagina.guard';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -40,9 +44,11 @@ export const routes: Routes = [
     { path: 'sgr-recaudo-mensual',            component: SgrRecaudoMensualComponent,                       data: { breadcrumb: 'SGR — Recaudo Mensual' } },
     { path: 'sgr-comparativo',                component: SgrComparativoComponent,                          data: { breadcrumb: 'SGR — Comparativo' } },
     { path: 'sgr-programacion',               component: SgrProgramacionComponent,                         data: { breadcrumb: 'SGR — Programación' } },
-    { path: 'sgr-carga-insumos',              component: SgrCargaInsumosComponent,                         data: { breadcrumb: 'SGR — Carga de Insumos' } },
-    { path: 'sgr-ejecucion-distribucion',     component: SgrEjecucionDistribucionComponent,                data: { breadcrumb: 'SGR — Ejecución de la Distribución' } },
-    { path: 'sgr-parametros-distribucion',    component: SgrParametrosDistribucionComponent,               data: { breadcrumb: 'SGR — Parámetros de la Distribución' } },
+    // Pantallas restringidas del módulo de distribución SGR: exigen sesión
+    // (authGuard) y permiso de pantalla (paginaGuard → Consulta_AccesoPaginas).
+    { path: 'sgr-carga-insumos',              component: SgrCargaInsumosComponent,          canActivate: [authGuard, paginaGuard], data: { breadcrumb: 'SGR — Carga de Insumos', paginaLegado: 'SgrCargaInsumos.aspx' } },
+    { path: 'sgr-ejecucion-distribucion',     component: SgrEjecucionDistribucionComponent, canActivate: [authGuard, paginaGuard], data: { breadcrumb: 'SGR — Ejecución de la Distribución', paginaLegado: 'SgrEjecucionDistribucion.aspx' } },
+    { path: 'sgr-parametros-distribucion',    component: SgrParametrosDistribucionComponent, canActivate: [authGuard, paginaGuard], data: { breadcrumb: 'SGR — Parámetros de la Distribución', paginaLegado: 'SgrParametrosDistribucion.aspx' } },
     { path: 'sgr-recaudo-directas',           component: SgrRecaudoDirectasComponent,                      data: { breadcrumb: 'SGR — Recaudo Directas' } },
     { path: 'sgr-montos-corrientes-constantes', component: SgrMontosCorrientesConstantesComponent,         data: { breadcrumb: 'SGR — Montos Corrientes y Constantes' } },
     { path: 'sgr-plan-recursos',              component: SgrPlanBienalRecursosComponent,                   data: { breadcrumb: 'SGR — Plan de Recursos' } },
@@ -68,8 +74,15 @@ export const routes: Routes = [
     { path: 'tools',                          component: ToolsComponent,                                    data: { breadcrumb: 'Herramientas' } },
     { path: 'mapa-del-sitio',                 component: SitemapComponent,                                  data: { breadcrumb: 'Mapa del sitio' } },
     { path: 'mapa-recursos',                  component: MapaRecursosComponent,                             data: { breadcrumb: 'Mapa de Recursos' } },
-    // Administración (protegido con guard)
-    { path: 'admin-config',                   component: AdminConfigComponent,    canActivate: [adminGuard], data: { breadcrumb: 'Administración' } },
+    // Autenticación de usuario (equivale a Autenticacion.aspx del SICODIS legado).
+    // Sin 'breadcrumb': la miga de pan se oculta sola cuando la ruta no lo declara.
+    { path: 'autenticacion',                  component: LoginComponent },
+    { path: 'acceso-limitado',                component: AccesoLimitadoComponent },
+    { path: 'acceso-no-autorizado',           component: AccesoNoAutorizadoComponent },
+    // Administración — exige sesión (authGuard) y permiso de pantalla (paginaGuard).
+    // 'paginaLegado' es el identificador que consulta Consulta_AccesoPaginas;
+    // para restringir otra pantalla basta con replicar canActivate + paginaLegado.
+    { path: 'admin-config',                   component: AdminConfigComponent,    canActivate: [authGuard, paginaGuard], data: { breadcrumb: 'Administración', paginaLegado: 'AdminConfig.aspx' } },
     // 404
     { path: '**', component: NotFoundComponent, data: { breadcrumb: 'Página no encontrada' } },
 ];

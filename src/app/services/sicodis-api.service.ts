@@ -2537,7 +2537,13 @@ getSgrDescargaResumenPbcRecaudoMensual( idvigencia: number
     return this.http.post<ConjuntoParametros>(url, conjunto);
   }
 
-  login(usuario: string, password: string): Observable<string> {
+  /**
+   * @deprecated No usar. Quedó de un intento previo de login y nunca se invocó:
+   * espera `{ token }` mientras el API devuelve `{ access_token }`.
+   * La sesión de usuario se maneja ahora en `auth/user-auth.service.ts`.
+   * Se conserva renombrado para no perder la referencia al endpoint.
+   */
+  loginObsoleto(usuario: string, password: string): Observable<string> {
       return this.http.post<{ token: string }>('https://sicodis.dnp.gov.co/apiws/auth/login', { usuario, password })
         .pipe(
           tap((resp: { token: string }) => {

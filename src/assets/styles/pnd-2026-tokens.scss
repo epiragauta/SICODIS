@@ -1,0 +1,151 @@
+// =============================================================================
+//  TOKENS DE IDENTIDAD VISUAL — PND 2026–2030  (SICODIS)
+// -----------------------------------------------------------------------------
+//  Extraídos de: DOCS/2026-09-Instruccion-Interna.pptx (DNP).
+//  Guía visual:  docs/marca-pnd-2026/guia-identidad-visual-pnd-2026.html
+//  Assets:       src/assets/brand/pnd-2026/
+//
+//  Diseñado para ADOPCIÓN GRADUAL: sólo declara variables CSS con prefijo
+//  `--pnd-*`. No sobrescribe el tema actual (PrimeNG / Material / Work Sans).
+//  Para "encender" la nueva imagen, mapea estos tokens a las variables que ya
+//  usa la app (ver bloque "PUENTE" al final, comentado).
+//
+//  Cómo incluirlo (una sola vez, p. ej. en src/styles.scss):
+//      @import './assets/styles/pnd-2026-tokens.scss';
+// =============================================================================
+
+
+// -----------------------------------------------------------------------------
+//  1. TIPOGRAFÍA
+//  Familias oficiales: Poppins (titulares/cuerpo) + Space Grotesk (datos).
+//  Opción A (rápida): cargar desde Google Fonts — la app ya usa Google Fonts.
+//  Opción B (recomendada en prod): auto-hospedar los .woff2 y usar @font-face.
+// -----------------------------------------------------------------------------
+
+// ACTIVO — auto-hospedado (subset latin; cubre español). Los .woff2 viven en
+// src/assets/fonts/. Alternativa por CDN (charset completo) en Opción A abajo.
+@font-face { font-family:'Poppins'; font-weight:300; font-display:swap; src:url('/assets/fonts/poppins-light.woff2')    format('woff2'); }
+@font-face { font-family:'Poppins'; font-weight:400; font-display:swap; src:url('/assets/fonts/poppins-regular.woff2')  format('woff2'); }
+@font-face { font-family:'Poppins'; font-weight:600; font-display:swap; src:url('/assets/fonts/poppins-semibold.woff2') format('woff2'); }
+@font-face { font-family:'Poppins'; font-weight:900; font-display:swap; src:url('/assets/fonts/poppins-black.woff2')    format('woff2'); }
+@font-face { font-family:'Space Grotesk'; font-weight:500; font-display:swap; src:url('/assets/fonts/space-grotesk-medium.woff2') format('woff2'); }
+
+// Opción A — alternativa por CDN (descomenta y comenta los @font-face de arriba):
+// @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;900&family=Space+Grotesk:wght@400;500;700&display=swap');
+
+
+:root {
+  // ---- Familias -------------------------------------------------------------
+  --pnd-font-display: 'Poppins', 'Century Gothic', 'Segoe UI', system-ui, sans-serif; // titulares
+  --pnd-font-body:    'Poppins', 'Segoe UI', system-ui, Arial, sans-serif;            // cuerpo
+  --pnd-font-data:    'Space Grotesk', 'Poppins', ui-monospace, monospace;            // cifras/etiquetas
+
+  // ---- Pesos ----------------------------------------------------------------
+  --pnd-weight-light:    300;
+  --pnd-weight-regular:  400;
+  --pnd-weight-semibold: 600;
+  --pnd-weight-black:    900;
+
+  // -----------------------------------------------------------------------------
+  //  2. COLOR — paleta cruda (muestreada de las diapositivas)
+  // -----------------------------------------------------------------------------
+
+  // Azules institucionales
+  --pnd-petroleo:      #015787;  // COLOR ANCLA / primario
+  --pnd-azul-600:      #11628F;
+  --pnd-azul-acero:    #20819D;
+  --pnd-azul-profundo: #1B3E6C;
+  --pnd-navy:          #062D7B;
+  --pnd-indigo:        #1F3C88;
+  --pnd-anil:          #2D2E5A;
+
+  // Cian / turquesa (acento)
+  --pnd-turquesa:      #02ACBC;
+  --pnd-cian-claro:    #44CDD0;
+  --pnd-verde-azulado: #1EA9A6;
+
+  // Tintas de iconografía
+  --pnd-ico-azul:      #3B97CC;
+  --pnd-ico-azul-med:  #3B74C5;
+  --pnd-ico-azul-real: #2571BC;
+  --pnd-ico-violaceo:  #4C4CB0;
+
+  // Bandera / semántico
+  --pnd-ambar:         #FDBB02;
+  --pnd-ambar-oscuro:  #E29408;
+  --pnd-rojo:          #CB0023;
+  --pnd-bandera-azul:  #0033A0;
+
+  // Neutros (sesgo azul)
+  --pnd-tinta:         #182430;
+  --pnd-texto:         #3A3A3A;
+  --pnd-gris-azulado:  #4C5563;
+  --pnd-gris-calido:   #A9A2A0;
+  --pnd-arena:         #E3DCD7;
+  --pnd-superficie:    #F7F5F5;
+  --pnd-blanco:        #FFFFFF;
+
+  // -----------------------------------------------------------------------------
+  //  3. TOKENS SEMÁNTICOS  (usa ESTOS en los componentes, no los crudos)
+  // -----------------------------------------------------------------------------
+  --pnd-color-primary:        var(--pnd-petroleo);
+  --pnd-color-primary-strong: var(--pnd-navy);
+  --pnd-color-accent:         var(--pnd-turquesa);
+  --pnd-color-accent-soft:    var(--pnd-cian-claro);
+
+  --pnd-color-ink:            var(--pnd-tinta);      // títulos
+  --pnd-color-text:           var(--pnd-texto);      // cuerpo
+  --pnd-color-muted:          var(--pnd-gris-azulado);
+  --pnd-color-surface:        var(--pnd-superficie);
+  --pnd-color-surface-alt:    var(--pnd-blanco);
+  --pnd-color-border:         rgba(20, 40, 60, .12);
+
+  // Estados (semántico ≠ acento)
+  --pnd-color-success: var(--pnd-verde-azulado);
+  --pnd-color-warning: var(--pnd-ambar);
+  --pnd-color-danger:  var(--pnd-rojo);
+
+  // Gradiente institucional (para banners/hero)
+  --pnd-gradient-brand: linear-gradient(135deg, var(--pnd-petroleo) 0%, var(--pnd-navy) 100%);
+  --pnd-gradient-accent: linear-gradient(135deg, var(--pnd-turquesa) 0%, var(--pnd-cian-claro) 100%);
+}
+
+
+// -----------------------------------------------------------------------------
+//  4. UTILIDADES OPCIONALES  (clases sueltas, no invasivas)
+// -----------------------------------------------------------------------------
+
+.pnd-tricolor {                        // barra tricolor del escudo DNP
+  height: 5px; border-radius: 3px; overflow: hidden; display: flex;
+  > i { flex: 1; }
+  > i:nth-child(1) { background: var(--pnd-ambar); }
+  > i:nth-child(2) { background: var(--pnd-bandera-azul); }
+  > i:nth-child(3) { background: var(--pnd-rojo); }
+}
+
+.pnd-heading { font-family: var(--pnd-font-display); font-weight: var(--pnd-weight-semibold); color: var(--pnd-color-ink); letter-spacing: -.01em; }
+.pnd-display { font-family: var(--pnd-font-display); font-weight: var(--pnd-weight-black);    color: var(--pnd-color-ink); letter-spacing: -.02em; }
+.pnd-data    { font-family: var(--pnd-font-data);    font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+
+
+// =============================================================================
+//  5. PUENTE — activar la imagen en SICODIS (descomentar cuando se apruebe)
+// -----------------------------------------------------------------------------
+//  Mapea los tokens PND sobre las variables que la app ya consume. Hazlo por
+//  fases (primero tipografía, luego color) para controlar el impacto visual.
+// =============================================================================
+
+// El PUENTE se activa SOLO cuando el tema PND está presente en <html>
+// (data-tema="pnd", lo pone ThemeService al leer ?tema=pnd). Así conviven la
+// imagen clásica (por defecto) y la nueva sin recompilar. El color primario de
+// PrimeNG lo cambia ThemeService con updatePrimaryPalette(); aquí cubrimos la
+// tipografía y los usos de --primary-color fuera de PrimeNG.
+html[data-tema="pnd"] {
+  --app-font-family: var(--pnd-font-body);   // Work Sans → Poppins
+  --primary-color:   var(--pnd-color-primary);
+}
+
+// Foco accesible con el azul institucional cuando el tema PND está activo.
+html[data-tema="pnd"] *:focus-visible {
+  outline-color: var(--pnd-color-primary);
+}

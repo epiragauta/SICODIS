@@ -1,0 +1,155 @@
+// Paleta alineada con not-found y con el tema PrimeNG de la aplicación:
+// #0943b5 cumple contraste AA (>= 4.5:1) sobre blanco y con texto blanco.
+
+.login {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 60vh;
+  padding: 3rem 1rem;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 460px;
+  background: #ffffff;
+  border: 1px solid #e2e6ee;
+  border-radius: 10px;
+  box-shadow: 0 2px 14px rgba(15, 23, 42, 0.08);
+  padding: 2rem;
+}
+
+h1 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 0.75rem;
+}
+
+.login-intro {
+  color: #555;
+  line-height: 1.6;
+  margin: 0 0 1.75rem;
+}
+
+.login-campo {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.25rem;
+
+  label {
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 0.4rem;
+  }
+
+  input,
+  ::ng-deep .login-password,
+  ::ng-deep .login-password input {
+    width: 100%;
+  }
+}
+
+.login-ayuda {
+  color: #6b7280;
+  margin-top: 0.35rem;
+  line-height: 1.4;
+}
+
+.login-campo-error {
+  color: #b3261e;
+  font-weight: 600;
+  margin-top: 0.35rem;
+}
+
+// El error no se señala solo con color: lleva icono y texto explícito.
+.login-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  background: #fdecea;
+  border-left: 4px solid #b3261e;
+  color: #7f1d1d;
+  padding: 0.85rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+
+  &:focus {
+    outline: 2px solid #b3261e;
+    outline-offset: 2px;
+  }
+}
+
+.login-sesion {
+  background: #eef4ff;
+  border-left: 4px solid #0943b5;
+  border-radius: 6px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.5rem;
+
+  p {
+    margin: 0;
+    line-height: 1.5;
+  }
+}
+
+.login-sesion-nombre {
+  color: #0b2e6f;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.login-sesion-usuario {
+  color: #4b5563;
+  margin-top: 0.25rem !important;
+}
+
+.login-acciones {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+.login-boton {
+  min-width: 11rem;
+}
+
+.login-volver {
+  color: #0943b5;
+  text-decoration: underline;
+
+  &:hover,
+  &:focus-visible {
+    color: #06307f;
+  }
+}
+
+// Solo para lectores de pantalla: anuncia el progreso sin ocupar espacio.
+.login-estado {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 576px) {
+  .login-card {
+    padding: 1.5rem;
+  }
+
+  .login-acciones {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .login-volver {
+    text-align: center;
+  }
+}

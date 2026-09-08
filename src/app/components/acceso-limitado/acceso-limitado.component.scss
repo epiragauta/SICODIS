@@ -1,0 +1,53 @@
+.acceso {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.acceso-content {
+  max-width: 560px;
+  width: 100%;
+}
+
+.acceso-icono {
+  font-size: 3rem;
+  color: #0943b5;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 1rem;
+}
+
+.acceso-mensaje {
+  color: #555;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.acceso-usuario {
+  color: #4b5563;
+  margin-bottom: 1.5rem;
+}
+
+.acceso-home-link {
+  display: inline-block;
+  background-color: #0943b5;
+  color: #ffffff;
+  padding: 0.65rem 1.5rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+
+  &:hover,
+  &:focus-visible {
+    background-color: #06307f;
+  }
+}
