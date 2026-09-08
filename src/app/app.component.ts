@@ -10,6 +10,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { PrimeNG } from 'primeng/config';
 import { Toast } from 'primeng/toast';
 import { filter } from 'rxjs/operators';
+import { ThemeService } from './theme.service';
 
 declare let gtag: Function;
 
@@ -38,10 +39,16 @@ export class AppComponent implements OnInit {
     private primeng: PrimeNG,
     private router: Router,
     private titleService: Title,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private theme: ThemeService
   ) {}
 
   ngOnInit() {
+
+    /* ===============================
+       Imagen institucional (tema por URL: ?tema=pnd | ?tema=clasico)
+    =============================== */
+    this.theme.init();
 
     /* ===============================
        Configuración PrimeNG

@@ -2,6 +2,7 @@
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 @import './theme/sicodis-theme.scss';
 @import 'leaflet/dist/leaflet.css';
+@import './assets/styles/pnd-2026-tokens.scss'; // Imagen PND 2026–2030 (tokens --pnd-*)
 /* You can add global styles to this file, and also import other style files */
 /* @import "@angular/material/prebuilt-themes/indigo-pink.css";
 body {
@@ -45,6 +46,8 @@ body {
 }
 
 :root {
+  // Fuente por defecto (imagen clásica). El tema PND la cambia a Poppins vía
+  // `html[data-tema="pnd"]` (ver assets/styles/pnd-2026-tokens.scss).
   --app-font-family: 'Work Sans', sans-serif;
   --app-heading-weight: 600;
   --app-body-weight: 400;

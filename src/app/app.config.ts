@@ -22,6 +22,9 @@ import { AUTH_INITIALIZER } from './app.initializer'; // 👈 NUEVO
 import { MessageService } from 'primeng/api';
 import { provideUserAuth } from './auth/auth.providers';
 
+// Preset base (imagen CLÁSICA). El tema PND se aplica en runtime cambiando la
+// paleta primaria con updatePrimaryPalette() desde ThemeService (?tema=pnd).
+//
 // Paleta ajustada para cumplir contraste WCAG AA (≥ 4.5:1) con texto blanco.
 // blue.500 (#3b82f6) tiene ratio 3.4:1 — insuficiente.
 // blue.700 (#1d4ed8) tiene ratio 6.0:1 — cumple (referencia paleta GOV.CO).
