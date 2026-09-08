@@ -1,6 +1,6 @@
 // src/app/components/header/header.component.ts
 
-import { Component, OnInit, OnDestroy, ElementRef, Renderer2, HostListener, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnDestroy, ElementRef, Renderer2, HostListener, Inject, PLATFORM_ID, computed, inject } from '@angular/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
@@ -10,6 +10,7 @@ import { Menubar } from 'primeng/menubar';
 import { MenuItem } from 'primeng/api';
 import { DOCUMENT } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
+import { UserAuthService } from '../../auth/user-auth.service';
 
 @Component({
   selector: 'app-header',
@@ -18,9 +19,27 @@ import { DialogModule } from 'primeng/dialog';
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnDestroy {
 
-  items: MenuItem[] | undefined;
+  private auth = inject(UserAuthService);
+
+  /**
+   * Solo los administradores ven el menú "Administración". La autorización real
+   * la aplican authGuard + paginaGuard en cada ruta; esto es únicamente UX.
+   */
+  readonly esAdmin = computed(
+    () => this.auth.estaAutenticado() && this.auth.roles().some(rol => rol.startsWith('ADMIN')),
+  );
+
+  /** Modelo del menú, reactivo a la sesión: agrega "Administración" para admins. */
+  readonly items = computed<MenuItem[]>(() => {
+    const items = this.itemsBase();
+    if (this.esAdmin()) {
+      items.push(this.itemAdministracion());
+    }
+    return items;
+  });
+
   private isScrolled = false;
   private scrollThreshold = 100; // Píxeles de scroll antes de aplicar efectos (aumentado para mejor UX)
   private isBrowser: boolean;
@@ -37,8 +56,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
-  ngOnInit() {
-    this.items = [
+  /** Menú público, común a todos los visitantes. */
+  private itemsBase(): MenuItem[] {
+    return [
       {
         label: 'Inicio',
         command: () => this.redirectHome()
@@ -182,8 +202,34 @@ export class HeaderComponent implements OnInit, OnDestroy {
           //   label: 'Manual de usuario'
           // }
         ]
-      }      
+      }
     ];
+  }
+
+  /** Sección protegida: rutas de administración (authGuard + paginaGuard). */
+  private itemAdministracion(): MenuItem {
+    return {
+      label: 'Administración',
+      icon: 'pi pi-lock',
+      items: [
+        {
+          label: 'Configuración',
+          command: () => this.redirectUrl('admin-config')
+        },
+        {
+          label: 'SGR — Carga de Insumos',
+          command: () => this.redirectUrl('sgr-carga-insumos')
+        },
+        {
+          label: 'SGR — Ejecución de la Distribución',
+          command: () => this.redirectUrl('sgr-ejecucion-distribucion')
+        },
+        {
+          label: 'SGR — Parámetros de la Distribución',
+          command: () => this.redirectUrl('sgr-parametros-distribucion')
+        }
+      ]
+    };
   }
 
   ngOnDestroy() {
