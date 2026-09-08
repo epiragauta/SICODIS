@@ -11,6 +11,7 @@ import { MenuItem } from 'primeng/api';
 import { DOCUMENT } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { UserAuthService } from '../../auth/user-auth.service';
+import { ThemeService } from '../../theme.service';
 
 @Component({
   selector: 'app-header',
@@ -22,6 +23,7 @@ import { UserAuthService } from '../../auth/user-auth.service';
 export class HeaderComponent implements OnDestroy {
 
   private auth = inject(UserAuthService);
+  private theme = inject(ThemeService);
 
   /**
    * Solo los administradores ven el menú "Administración". La autorización real
@@ -227,6 +229,25 @@ export class HeaderComponent implements OnDestroy {
         {
           label: 'SGR — Parámetros de la Distribución',
           command: () => this.redirectUrl('sgr-parametros-distribucion')
+        },
+        {
+          separator: true
+        },
+        {
+          label: 'Tema',
+          icon: 'pi pi-palette',
+          items: [
+            {
+              label: 'Clásico',
+              icon: this.theme.tema() === 'clasico' ? 'pi pi-check' : 'pi pi-circle',
+              command: () => this.theme.set('clasico')
+            },
+            {
+              label: 'PND 2026–2030',
+              icon: this.theme.tema() === 'pnd' ? 'pi pi-check' : 'pi pi-circle',
+              command: () => this.theme.set('pnd')
+            }
+          ]
         }
       ]
     };

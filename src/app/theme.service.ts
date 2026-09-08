@@ -1,4 +1,4 @@
-import { Injectable, inject, PLATFORM_ID } from '@angular/core';
+import { Injectable, inject, signal, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { updatePrimaryPalette } from '@primeng/themes';
 
@@ -35,11 +35,10 @@ const PALETA_PND = {
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
   private platformId = inject(PLATFORM_ID);
-  private _tema: Tema = TEMA_DEFECTO;
+  private _tema = signal<Tema>(TEMA_DEFECTO);
 
-  get tema(): Tema {
-    return this._tema;
-  }
+  /** Tema activo, como signal para que la UI reaccione a los cambios. */
+  readonly tema = this._tema.asReadonly();
 
   /** Resuelve el tema (URL → localStorage → por defecto) y lo aplica. */
   init(): void {
@@ -66,7 +65,7 @@ export class ThemeService {
   }
 
   private apply(tema: Tema): void {
-    this._tema = tema;
+    this._tema.set(tema);
     document.documentElement.setAttribute('data-tema', tema);
     updatePrimaryPalette(tema === 'pnd' ? PALETA_PND : PALETA_CLASICA);
   }
