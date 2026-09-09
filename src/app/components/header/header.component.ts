@@ -236,6 +236,17 @@ export class HeaderComponent implements OnDestroy {
           ]
         },
         {
+          // Equivale al menú «Cálculo» del sistema anterior, donde vive la IAC
+          // junto con las participaciones por asignación (pendientes de migrar).
+          label: 'SGR - Cálculo',
+          items: [
+            {
+              label: 'Instrucción de Abono a Cuenta',
+              command: () => this.redirectUrl('sgr-iac')
+            }
+          ]
+        },
+        {
           separator: true
         },
         {

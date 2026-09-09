@@ -1,0 +1,425 @@
+<div class="sicodis-container">
+
+  <p-confirmDialog [style]="{ width: '32rem' }"></p-confirmDialog>
+
+  <!-- Estado de carga / no encontrada -->
+  <div class="aviso" *ngIf="cargando()" aria-live="polite">
+    <i class="pi pi-spin pi-spinner" aria-hidden="true"></i> Consultando la Instrucción de Abono a Cuenta…
+  </div>
+
+  <div class="aviso aviso-error" *ngIf="noEncontrada()">
+    <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+    <span>No se encontró la Instrucción de Abono a Cuenta solicitada.</span>
+    <button pButton type="button" label="Volver al listado" class="p-button-secondary p-button-sm"
+            (click)="volverAlListado()"></button>
+  </div>
+
+  <ng-container *ngIf="iac() as cabecera">
+
+    <!-- Cabecera -->
+    <header class="detalle-header">
+      <button pButton type="button" label="Volver al listado" icon="pi pi-arrow-left"
+              class="p-button-text p-button-sm volver" (click)="volverAlListado()"></button>
+
+      <div class="detalle-titulo">
+        <div>
+          <h1>IAC #{{ cabecera.id }} · {{ cabecera.descripcion }}</h1>
+          <p class="detalle-meta">
+            {{ cabecera.tipoIac }} · vigencia {{ cabecera.bienio }} · periodo {{ cabecera.periodo }} ·
+            creada el {{ cabecera.fechaCreacion | date:'dd/MM/yyyy' }} por {{ cabecera.usuarioCreacion }}
+          </p>
+        </div>
+
+        <div class="detalle-estado">
+          <p-tag [value]="estadoLabel(cabecera.estado)" [severity]="estadoSeverity(cabecera.estado)"></p-tag>
+          <button pButton type="button"
+                  [label]="resultado()?.enviadaAValidacion ? 'Enviada a validación' : 'Enviar a validación'"
+                  icon="pi pi-send" class="p-button-primary p-button-sm"
+                  [disabled]="!puedeEnviarAValidacion" [loading]="enviando()"
+                  [pTooltip]="!resultado() ? 'La IAC debe calcularse antes de enviarse a validación' : ''"
+                  (click)="enviarAValidacion()"></button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Indicador de pasos -->
+    <nav class="pasos" aria-label="Avance de los insumos de la IAC">
+      <ol class="pasos-lista">
+        <li *ngFor="let p of participantes; let i = index"
+            class="paso-item"
+            [class.activo]="seccion === 'insumos' && i === indicePaso"
+            [class.completo]="estadoDe(p.codigo) === 'completo'"
+            [class.con-error]="estadoDe(p.codigo) === 'error'">
+          <button type="button" class="paso-boton" (click)="irAPaso(i)"
+                  [attr.aria-current]="seccion === 'insumos' && i === indicePaso ? 'step' : null">
+            <span class="paso-marca" aria-hidden="true"><i [class]="iconoPaso(p.codigo)"></i></span>
+            <span class="paso-nombre">
+              {{ p.sigla }}
+              <small *ngIf="!p.obligatorio">opcional</small>
+            </span>
+          </button>
+        </li>
+      </ol>
+
+      <p class="pasos-resumen" aria-live="polite">
+        {{ pasosObligatoriosCompletos }} de {{ totalPasosObligatorios }} pasos obligatorios completos
+      </p>
+    </nav>
+
+    <!-- Pestañas -->
+    <div class="tabs" role="tablist" aria-label="Secciones de la IAC">
+      <button type="button" role="tab" class="tab" [class.tab-activa]="seccion === 'insumos'"
+              [attr.aria-selected]="seccion === 'insumos'" (click)="irASeccion('insumos')">
+        Insumos
+      </button>
+      <button type="button" role="tab" class="tab" [class.tab-activa]="seccion === 'calculo'"
+              [attr.aria-selected]="seccion === 'calculo'" (click)="irASeccion('calculo')">
+        Cálculo
+      </button>
+      <button type="button" role="tab" class="tab" [class.tab-activa]="seccion === 'parametros'"
+              [attr.aria-selected]="seccion === 'parametros'" (click)="irASeccion('parametros')">
+        Parámetros aplicados
+      </button>
+      <button type="button" role="tab" class="tab" [class.tab-activa]="seccion === 'resumen'"
+              [attr.aria-selected]="seccion === 'resumen'" (click)="irASeccion('resumen')">
+        Resumen
+      </button>
+    </div>
+
+    <!-- ===================== Insumos ===================== -->
+    <div class="panel" *ngIf="seccion === 'insumos'" role="tabpanel" aria-label="Insumos">
+
+      <div class="aviso aviso-info" *ngIf="soloLectura">
+        <i class="pi pi-lock" aria-hidden="true"></i>
+        Esta IAC ya fue enviada a validación: los insumos se muestran en solo lectura.
+      </div>
+
+      <app-paso-mhcp *ngIf="participanteActivo.codigo === 'MHCP'"
+                     [idIac]="idIac" [soloLectura]="soloLectura"
+                     (cambio)="onCambioPaso()"></app-paso-mhcp>
+
+      <app-paso-determinaciones *ngIf="participanteActivo.tipo === 'determinaciones' && participanteActivo.codigo !== 'FUNFIS'"
+                                [idIac]="idIac"
+                                [participante]="participanteActivo"
+                                [soloLectura]="soloLectura"
+                                (cambio)="onCambioPaso()"></app-paso-determinaciones>
+
+      <app-paso-funfis *ngIf="participanteActivo.codigo === 'FUNFIS'"
+                       [idIac]="idIac" [soloLectura]="soloLectura"
+                       (cambio)="onCambioPaso()"></app-paso-funfis>
+
+      <div class="navegacion-pasos">
+        <button pButton type="button" label="Anterior" icon="pi pi-chevron-left"
+                class="p-button-secondary" *ngIf="hayAnterior" (click)="pasoAnterior()"></button>
+        <span class="navegacion-espaciador"></span>
+        <button pButton type="button" label="Siguiente" icon="pi pi-chevron-right" iconPos="right"
+                class="p-button-secondary" *ngIf="haySiguiente" (click)="pasoSiguiente()"></button>
+        <button pButton type="button" label="Ir al cálculo" icon="pi pi-play" iconPos="right"
+                class="p-button-primary" *ngIf="!haySiguiente" (click)="irASeccion('calculo')"></button>
+      </div>
+    </div>
+
+    <!-- ===================== Cálculo ===================== -->
+    <div class="panel" *ngIf="seccion === 'calculo'" role="tabpanel" aria-label="Cálculo">
+
+      <!-- Precondiciones -->
+      <div class="precondiciones" [class.precondiciones-ok]="insumosCompletos && !soloLectura">
+        <div class="precondiciones-texto">
+          <i [class]="insumosCompletos ? 'pi pi-check-circle' : 'pi pi-exclamation-triangle'" aria-hidden="true"></i>
+          <div>
+            <strong>
+              Insumos obligatorios: {{ pasosObligatoriosCompletos }} / {{ totalPasosObligatorios }}
+            </strong>
+            <p class="precondiciones-detalle" *ngIf="motivoBloqueoCalculo">{{ motivoBloqueoCalculo }}</p>
+            <p class="precondiciones-detalle" *ngIf="!motivoBloqueoCalculo">
+              Todos los insumos obligatorios están completos. Puede calcular la IAC.
+            </p>
+          </div>
+        </div>
+
+        <div class="precondiciones-acciones">
+          <button pButton type="button" label="Ver insumos" icon="pi pi-upload"
+                  class="p-button-secondary p-button-sm" (click)="irASeccion('insumos')"></button>
+          <button pButton type="button" label="Validar y calcular IAC" icon="pi pi-play"
+                  class="p-button-primary"
+                  [disabled]="!insumosCompletos || soloLectura || calculando()"
+                  [loading]="calculando()"
+                  [pTooltip]="motivoBloqueoCalculo"
+                  (click)="calcular()"></button>
+        </div>
+      </div>
+
+      <div class="aviso" *ngIf="calculando()" aria-live="polite">
+        <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+        Calculando la IAC: consolidando determinaciones, aplicando participaciones y generando salidas…
+      </div>
+
+      <ng-container *ngIf="resultado() as r; else sinCalculo">
+
+        <!-- Archivos -->
+        <section class="bloque">
+          <h2 class="bloque-titulo">Archivos de la IAC calculada</h2>
+          <p class="bloque-meta">
+            Calculada el {{ r.fechaCalculo | date:'dd/MM/yyyy HH:mm' }}
+            <ng-container *ngIf="r.versionParametros"> · parámetros {{ r.versionParametros }}</ng-container>
+            <ng-container *ngIf="r.fechaEnvioValidacion">
+              · enviada a validación el {{ r.fechaEnvioValidacion | date:'dd/MM/yyyy HH:mm' }}
+            </ng-container>
+          </p>
+
+          <ul class="archivos">
+            <li *ngFor="let a of r.archivos">
+              <i [class]="a.tipo === 'excel' ? 'pi pi-file-excel' : 'pi pi-code'" aria-hidden="true"></i>
+              <span class="archivo-nombre">{{ a.nombre }}</span>
+              <button pButton type="button" icon="pi pi-download" label="Descargar"
+                      class="p-button-secondary p-button-sm"
+                      [disabled]="!descargasDisponibles"
+                      [pTooltip]="descargasDisponibles ? 'Descargar el archivo' : 'Disponible cuando el backend esté integrado'"
+                      (click)="descargarSalida(a)"></button>
+            </li>
+          </ul>
+        </section>
+
+        <!-- Resumen por entidad -->
+        <section class="bloque">
+          <h2 class="bloque-titulo">Resumen por entidad</h2>
+          <p-table [value]="r.resumenPorEntidad" styleClass="p-datatable-sm calculo-table"
+                   [scrollable]="true" scrollHeight="420px"
+                   [tableStyle]="{ 'min-width': '90rem' }">
+            <ng-template pTemplate="header">
+              <tr>
+                <th scope="col">Entidad</th>
+                <th scope="col" class="col-num">Valor a distribuir</th>
+                <th scope="col" class="col-num">Ingresos ANH</th>
+                <th scope="col" class="col-num">Ingresos ANM</th>
+                <th scope="col" class="col-num">AD 20 %</th>
+                <th scope="col" class="col-num">AD 5 %</th>
+                <th scope="col" class="col-num">AD 20 % no aforados</th>
+                <th scope="col" class="col-num">AD 5 % no aforados</th>
+                <th scope="col" class="col-num">AD 20 % OxR SFF</th>
+                <th scope="col" class="col-num">AD 5 % OxR SFF</th>
+                <th scope="col" class="col-num">Descuentos</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-fila>
+              <tr>
+                <td>
+                  <span class="entidad-codigo">{{ fila.codigoDane }}</span>
+                  {{ fila.entidad }}
+                </td>
+                <td class="col-num total">{{ fila.valorDistribuir | numberFormat }}</td>
+                <td class="col-num">{{ fila.ingresosAnh | numberFormat }}</td>
+                <td class="col-num">{{ fila.ingresosAnm | numberFormat }}</td>
+                <td class="col-num">{{ fila.determinacionAd20 | numberFormat }}</td>
+                <td class="col-num">{{ fila.determinacionAd5 | numberFormat }}</td>
+                <td class="col-num">{{ fila.determinacionAd20NoAforados | numberFormat }}</td>
+                <td class="col-num">{{ fila.determinacionAd5NoAforados | numberFormat }}</td>
+                <td class="col-num">{{ fila.determinacionAd20OxrSff | numberFormat }}</td>
+                <td class="col-num">{{ fila.determinacionAd5OxrSff | numberFormat }}</td>
+                <td class="col-num">{{ fila.descuentos | numberFormat }}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </section>
+
+        <!-- Avance -->
+        <section class="bloque">
+          <h2 class="bloque-titulo">Avance frente al presupuesto</h2>
+          <p-table [value]="r.avance" styleClass="p-datatable-sm calculo-table"
+                   [tableStyle]="{ 'min-width': '52rem' }">
+            <ng-template pTemplate="header">
+              <tr>
+                <th scope="col">Concepto</th>
+                <th scope="col" class="col-num">Presupuesto</th>
+                <th scope="col" class="col-num">IAC</th>
+                <th scope="col" class="col-num">Avance</th>
+                <th scope="col" class="col-num">IAC nuevo acumulado</th>
+                <th scope="col" class="col-num">Avance nuevo acumulado</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-fila>
+              <tr>
+                <td>{{ fila.concepto }}</td>
+                <td class="col-num">{{ fila.presupuesto | numberFormat }}</td>
+                <td class="col-num">{{ fila.iac | numberFormat }}</td>
+                <td class="col-num">{{ fila.avance | percentFormat }}</td>
+                <td class="col-num">{{ fila.iacNuevoAcumulado | numberFormat }}</td>
+                <td class="col-num">{{ fila.avanceNuevoAcumulado | percentFormat }}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </section>
+      </ng-container>
+
+      <ng-template #sinCalculo>
+        <div class="aviso aviso-neutro" *ngIf="!calculando()">
+          <i class="pi pi-info-circle" aria-hidden="true"></i>
+          Esta IAC aún no se ha calculado. Complete los insumos obligatorios y ejecute «Validar y calcular IAC».
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- ===================== Parámetros aplicados ===================== -->
+    <div class="panel" *ngIf="seccion === 'parametros'" role="tabpanel" aria-label="Parámetros aplicados">
+
+      <div class="aviso aviso-neutro">
+        <i class="pi pi-lock" aria-hidden="true"></i>
+        Los parámetros se administran y versionan en una pantalla aparte. Aquí se muestran en solo lectura;
+        cada IAC queda anclada a la versión con la que se calculó.
+      </div>
+
+      <ng-container *ngIf="parametros() as p; else sinParametros">
+
+        <section class="bloque">
+          <h2 class="bloque-titulo">Versión</h2>
+          <dl class="resumen-datos">
+            <div class="destacado">
+              <dt>Aplicada a esta IAC</dt>
+              <dd>{{ versionAplicada ?? 'Sin calcular' }}</dd>
+            </div>
+            <div><dt>Vigente</dt><dd>{{ p.etiquetaVersion }}</dd></div>
+            <div><dt>Vigencia</dt><dd>{{ p.vigencia }}</dd></div>
+            <div><dt>Autor</dt><dd>{{ p.autor }}</dd></div>
+            <div><dt>Fecha</dt><dd>{{ p.fecha | date:'dd/MM/yyyy' }}</dd></div>
+            <div *ngIf="redondeoIac as r">
+              <dt>Redondeo de la IAC</dt>
+              <dd>{{ r.decimales }} decimales · {{ redondeoModoLabel(r.modo) }}</dd>
+            </div>
+          </dl>
+
+          <p class="bloque-meta" *ngIf="p.motivo">{{ p.motivo }}</p>
+
+          <div class="aviso aviso-info" *ngIf="parametrosDesactualizados">
+            <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+            Esta IAC se calculó con la versión <strong>{{ versionAplicada }}</strong>, pero la vigente
+            hoy es <strong>{{ p.etiquetaVersion }}</strong>. Los valores que se listan abajo son los de la
+            versión vigente, no los que se aplicaron al cálculo.
+          </div>
+
+          <a routerLink="/sgr-parametros-distribucion" class="enlace-admin">Administrar parámetros →</a>
+        </section>
+
+        <section class="bloque">
+          <h2 class="bloque-titulo">A · Porcentajes (tabla 2)</h2>
+          <p-table [value]="p.porcentajes" styleClass="p-datatable-sm param-table">
+            <ng-template pTemplate="header">
+              <tr>
+                <th scope="col">Concepto</th>
+                <th scope="col" class="col-num">Valor</th>
+                <th scope="col">Referencia normativa</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-param>
+              <tr>
+                <td>{{ param.etiqueta }}</td>
+                <td class="col-num">{{ formatValor(param) }}</td>
+                <td class="col-ref">{{ param.referenciaNormativa }}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </section>
+
+        <section class="bloque">
+          <h2 class="bloque-titulo">B · Ponderadores de fórmula</h2>
+          <p-table [value]="p.ponderadores" styleClass="p-datatable-sm param-table">
+            <ng-template pTemplate="header">
+              <tr>
+                <th scope="col">Ponderador</th>
+                <th scope="col" class="col-num">Valor</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-param>
+              <tr>
+                <td>{{ param.etiqueta }}</td>
+                <td class="col-num">{{ formatValor(param) }}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </section>
+
+        <section class="bloque">
+          <h2 class="bloque-titulo">C · Umbrales y banderas</h2>
+          <p-table [value]="p.umbrales" styleClass="p-datatable-sm param-table">
+            <ng-template pTemplate="header">
+              <tr>
+                <th scope="col">Umbral</th>
+                <th scope="col" class="col-num">Valor</th>
+                <th scope="col">Referencia normativa</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-param>
+              <tr>
+                <td>{{ param.etiqueta }}</td>
+                <td class="col-num">
+                  <span *ngIf="param.unidad === 'flag'" class="param-flag"
+                        [ngClass]="param.valor ? 'on' : 'off'">{{ formatValor(param) }}</span>
+                  <span *ngIf="param.unidad !== 'flag'">{{ formatValor(param) }}</span>
+                </td>
+                <td class="col-ref">{{ param.referenciaNormativa }}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </section>
+
+        <section class="bloque">
+          <h2 class="bloque-titulo">D · Redondeo por tipo de salida</h2>
+          <p-table [value]="p.redondeo" styleClass="p-datatable-sm param-table">
+            <ng-template pTemplate="header">
+              <tr>
+                <th scope="col">Salida</th>
+                <th scope="col" class="col-num">Decimales</th>
+                <th scope="col">Modo</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-r>
+              <tr [class.fila-destacada]="r.tipoSalida === 'IAC'">
+                <td>{{ r.etiqueta }}</td>
+                <td class="col-num">{{ r.decimales }}</td>
+                <td>{{ redondeoModoLabel(r.modo) }}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </section>
+      </ng-container>
+
+      <ng-template #sinParametros>
+        <div class="aviso aviso-error">
+          <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+          No fue posible consultar los parámetros de cálculo vigentes.
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- ===================== Resumen ===================== -->
+    <div class="panel" *ngIf="seccion === 'resumen'" role="tabpanel" aria-label="Resumen">
+      <section class="bloque">
+        <h2 class="bloque-titulo">Datos generales</h2>
+        <dl class="resumen-datos">
+          <div><dt>Identificador</dt><dd>{{ cabecera.id }}</dd></div>
+          <div><dt>Descripción</dt><dd>{{ cabecera.descripcion }}</dd></div>
+          <div><dt>Tipo</dt><dd>{{ cabecera.tipoIac }}</dd></div>
+          <div><dt>Vigencia</dt><dd>{{ cabecera.bienio }}</dd></div>
+          <div><dt>Periodo de recaudo</dt><dd>{{ cabecera.periodo }}</dd></div>
+          <div><dt>Estado</dt><dd>{{ estadoLabel(cabecera.estado) }}</dd></div>
+          <div><dt>Ingresos hidrocarburos</dt><dd>{{ cabecera.ingresosHidrocarburos | numberFormat }}</dd></div>
+          <div><dt>Ingresos minería</dt><dd>{{ cabecera.ingresosMineria | numberFormat }}</dd></div>
+          <div class="destacado"><dt>Total ingresos</dt><dd>{{ cabecera.totalIngresos | numberFormat }}</dd></div>
+        </dl>
+      </section>
+
+      <section class="bloque">
+        <h2 class="bloque-titulo">Estado de los insumos</h2>
+        <ul class="resumen-pasos">
+          <li *ngFor="let p of participantes"
+              [class.completo]="estadoDe(p.codigo) === 'completo'"
+              [class.con-error]="estadoDe(p.codigo) === 'error'">
+            <i [class]="iconoPaso(p.codigo)" aria-hidden="true"></i>
+            <span class="resumen-paso-nombre">{{ p.nombre }}</span>
+            <span class="resumen-paso-etiqueta" *ngIf="!p.obligatorio">opcional</span>
+          </li>
+        </ul>
+      </section>
+    </div>
+
+  </ng-container>
+</div>

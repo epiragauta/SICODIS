@@ -1,0 +1,122 @@
+<section class="paso-mhcp" aria-label="Información del Ministerio de Hacienda y Crédito Público">
+
+  <header class="paso-header">
+    <div class="paso-titulo">
+      <i class="pi pi-wallet" aria-hidden="true"></i>
+      <div>
+        <h3>Ministerio de Hacienda y Crédito Público</h3>
+        <p class="paso-subtitulo">
+          Radicado de comunicación e ingresos a distribuir del periodo, con su soporte.
+        </p>
+      </div>
+    </div>
+
+    <button pButton type="button" label="Editar" icon="pi pi-pencil"
+            class="p-button-secondary p-button-sm"
+            *ngIf="!editando && !soloLectura && !cargando"
+            (click)="habilitarEdicion()"></button>
+  </header>
+
+  <div class="cargando" *ngIf="cargando" aria-live="polite">
+    <i class="pi pi-spin pi-spinner" aria-hidden="true"></i> Consultando la información registrada…
+  </div>
+
+  <form class="formulario" *ngIf="!cargando" (ngSubmit)="guardar()" novalidate>
+
+    <div class="campo">
+      <label for="noRadicado">No. de radicado <span class="requerido" aria-hidden="true">*</span></label>
+      <input pInputText id="noRadicado" type="text" [(ngModel)]="noRadicado" name="noRadicado"
+             [disabled]="!editando" placeholder="1-2026-000123" maxlength="13"
+             [attr.aria-invalid]="intentoGuardar && !radicadoValido"
+             aria-describedby="ayudaRadicado" />
+      <small id="ayudaRadicado" class="ayuda" *ngIf="intentoGuardar && !radicadoValido">
+        El patrón del memorando del MHCP no coincide con el habitual. Use el formato 1-2026-000123.
+      </small>
+      <small id="ayudaRadicado" class="ayuda-neutra" *ngIf="!intentoGuardar || radicadoValido">
+        Formato: un dígito, guion, año de cuatro dígitos, guion y consecutivo de seis dígitos.
+      </small>
+    </div>
+
+    <div class="campo">
+      <label for="fechaRadicado">Fecha de radicado <span class="requerido" aria-hidden="true">*</span></label>
+      <p-datepicker inputId="fechaRadicado" [(ngModel)]="fechaRadicado" name="fechaRadicado"
+                    dateFormat="dd/mm/yy" [showIcon]="true" [disabled]="!editando"
+                    appendTo="body" [maxDate]="hoy"></p-datepicker>
+      <small class="ayuda" *ngIf="intentoGuardar && !fechaValida">
+        Debe indicar la fecha del radicado.
+      </small>
+    </div>
+
+    <div class="campo">
+      <label for="ingresosAnh">Ingresos a distribuir ANH <span class="requerido" aria-hidden="true">*</span></label>
+      <p-inputnumber inputId="ingresosAnh" [(ngModel)]="ingresosAnh" name="ingresosAnh"
+                     mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"
+                     [min]="0" locale="es-CO" [disabled]="!editando"
+                     placeholder="0,00" styleClass="w-full"></p-inputnumber>
+      <small class="ayuda" *ngIf="intentoGuardar && !ingresosAnhValido">
+        El valor de los ingresos de la ANH no es válido.
+      </small>
+    </div>
+
+    <div class="campo">
+      <label for="ingresosAnm">Ingresos a distribuir ANM <span class="requerido" aria-hidden="true">*</span></label>
+      <p-inputnumber inputId="ingresosAnm" [(ngModel)]="ingresosAnm" name="ingresosAnm"
+                     mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"
+                     [min]="0" locale="es-CO" [disabled]="!editando"
+                     placeholder="0,00" styleClass="w-full"></p-inputnumber>
+      <small class="ayuda" *ngIf="intentoGuardar && !ingresosAnmValido">
+        El valor de los ingresos de la ANM no es válido.
+      </small>
+    </div>
+
+    <div class="campo campo-total">
+      <label for="totalIngresos">Total de ingresos a distribuir (ANH + ANM)</label>
+      <output id="totalIngresos" class="total-calculado">{{ totalIngresos | numberFormat }}</output>
+      <small class="ayuda-neutra">Calculado automáticamente a partir de los dos valores anteriores.</small>
+    </div>
+
+    <div class="campo campo-ancho">
+      <label id="etiquetaSoporte">Soporte del radicado <span class="requerido" aria-hidden="true">*</span></label>
+
+      <div class="soporte">
+        <div class="soporte-actual" *ngIf="nombreSoporteGuardado && !soporte">
+          <i class="pi pi-paperclip" aria-hidden="true"></i>
+          <span class="soporte-nombre">{{ nombreSoporteGuardado }}</span>
+          <span class="soporte-etiqueta">registrado</span>
+        </div>
+
+        <div class="soporte-nuevo" *ngIf="soporte">
+          <i class="pi pi-file" aria-hidden="true"></i>
+          <span class="soporte-nombre">{{ soporte.name }}</span>
+          <button pButton type="button" icon="pi pi-times" class="p-button-text p-button-sm"
+                  pTooltip="Quitar el archivo seleccionado" [attr.aria-label]="'Quitar ' + soporte.name"
+                  (click)="quitarSoporteNuevo()"></button>
+        </div>
+
+        <app-selector-archivo
+            [label]="nombreSoporteGuardado || soporte ? 'Reemplazar soporte' : 'Adjuntar soporte'"
+            styleClass="p-button-secondary p-button-sm"
+            [accept]="acceptSoporte"
+            [extensiones]="extensionesSoporte"
+            [maxMb]="20"
+            [disabled]="!editando"
+            ariaLabel="Adjuntar el soporte del radicado del MHCP"
+            (archivoSeleccionado)="onSoporteSeleccionado($event)"
+            (archivoRechazado)="onSoporteRechazado($event)">
+        </app-selector-archivo>
+      </div>
+
+      <small class="ayuda" *ngIf="intentoGuardar && !soporteValido">
+        El soporte del radicado del MHCP es obligatorio.
+      </small>
+    </div>
+
+    <div class="acciones" *ngIf="editando">
+      <button pButton type="submit" label="Guardar" icon="pi pi-check"
+              class="p-button-primary" [loading]="guardando"></button>
+      <button pButton type="button" label="Cancelar" class="p-button-secondary"
+              [disabled]="guardando" (click)="cancelarEdicion()"></button>
+    </div>
+  </form>
+
+</section>

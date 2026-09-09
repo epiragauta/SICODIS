@@ -1,0 +1,222 @@
+<div class="sicodis-container">
+
+  <!-- Popups para Diccionario y Siglas -->
+  <app-info-popup
+    [infoText]="diccionarioContent"
+    contentTitle="Instrucción de Abono a Cuenta"
+    [showPopup]="showDiccionarioPopup"
+    (onClose)="closeDiccionarioPopup()">
+  </app-info-popup>
+
+  <app-info-popup
+    [infoText]="siglasContent"
+    contentTitle="Siglas y Abreviaciones"
+    [showPopup]="showSiglasPopup"
+    (onClose)="closeSiglasPopup()">
+  </app-info-popup>
+
+  <!-- Banner -->
+  <div class="gradient-banner">
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h1>Instrucción de Abono a Cuenta</h1>
+      <p>Registre los insumos de los participantes del proceso, valide las determinaciones y calcule la instrucción de abono de los recursos del Sistema General de Regalías.</p>
+    </div>
+  </div>
+
+  <!-- Panel de filtros -->
+  <div class="filters-panel">
+    <div class="filters-row">
+      <div class="p-field">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="vigencia" [options]="vigencias" inputId="vigenciaSelect"
+            [(ngModel)]="filtroVigencia" optionLabel="label" [showClear]="true"
+            placeholder="Todas" (onChange)="onFiltroVigenciaChange()"></p-select>
+          <label for="vigenciaSelect">Vigencia (bienio)</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="periodo" [options]="periodos" inputId="periodoSelect"
+            [(ngModel)]="filtroPeriodo" optionLabel="label" [showClear]="true"
+            placeholder="Todos" [disabled]="!filtroVigencia"></p-select>
+          <label for="periodoSelect">Periodo de recaudo</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="estado" [options]="estados" inputId="estadoSelect"
+            [(ngModel)]="filtroEstado" optionLabel="label" [showClear]="true"
+            placeholder="Todos"></p-select>
+          <label for="estadoSelect">Estado</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field acciones-filtro">
+        <button pButton type="button" label="Limpiar filtros" icon="pi pi-filter-slash"
+                class="p-button-secondary p-button-sm"
+                [disabled]="!hayFiltros" (click)="limpiarFiltros()"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Referencias y accesos a Diccionario / Siglas -->
+  <div class="meta-row">
+    <div class="meta-texts">
+      <p class="date-update">Proceso: Cálculo » Instrucción de Abono a Cuenta</p>
+      <p class="date-update">Participantes del proceso: MHCP · ANH · ANM · MME · Funcionamiento y Fiscalización</p>
+    </div>
+    <div class="meta-buttons">
+      <button pButton type="button" label="Diccionario" class="p-button-secondary"
+              (click)="showPopupDiccionario()"></button>
+      <button pButton type="button" label="Siglas" class="p-button-secondary"
+              (click)="showPopupSiglas()"></button>
+    </div>
+  </div>
+
+  <!-- Listado -->
+  <div class="listado-panel">
+    <div class="listado-header">
+      <h2 class="listado-title">Instrucciones registradas</h2>
+      <div class="listado-actions">
+        <button pButton type="button" label="Nueva IAC" icon="pi pi-plus"
+                class="p-button-primary" (click)="abrirDialogoNueva()"></button>
+        <button pButton type="button" icon="pi pi-refresh"
+                class="p-button-secondary" pTooltip="Actualizar el listado"
+                [attr.aria-label]="'Actualizar el listado'"
+                (click)="cargarListado()"></button>
+      </div>
+    </div>
+
+    <p-table [value]="iacs" [loading]="cargando()" [paginator]="iacs.length > 10" [rows]="10"
+             styleClass="p-datatable-sm iac-table" [scrollable]="true"
+             [tableStyle]="{ 'min-width': '68rem' }"
+             responsiveLayout="scroll">
+      <ng-template pTemplate="header">
+        <tr>
+          <th scope="col" class="col-id">Id</th>
+          <th scope="col">Descripción</th>
+          <th scope="col">Vigencia</th>
+          <th scope="col">Periodo</th>
+          <th scope="col" class="col-num">Ingresos hidrocarburos</th>
+          <th scope="col" class="col-num">Ingresos minería</th>
+          <th scope="col" class="col-num">Total ingresos</th>
+          <th scope="col">Estado</th>
+          <th scope="col" class="col-acciones">Acciones</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-iac>
+        <tr>
+          <td class="col-id">{{ iac.id }}</td>
+          <td>
+            <div class="iac-descripcion">{{ iac.descripcion }}</div>
+            <div class="iac-meta">
+              {{ iac.tipoIac }} · creada {{ iac.fechaCreacion | date:'dd/MM/yyyy' }} por {{ iac.usuarioCreacion }}
+            </div>
+          </td>
+          <td>{{ iac.bienio }}</td>
+          <td>{{ iac.periodo }}</td>
+          <td class="col-num">{{ iac.ingresosHidrocarburos | numberFormat }}</td>
+          <td class="col-num">{{ iac.ingresosMineria | numberFormat }}</td>
+          <td class="col-num total">{{ iac.totalIngresos | numberFormat }}</td>
+          <td>
+            <p-tag [value]="estadoLabel(iac.estado)" [severity]="estadoSeverity(iac.estado)"></p-tag>
+          </td>
+          <td class="col-acciones">
+            <button pButton type="button" icon="pi pi-eye"
+                    class="p-button-secondary p-button-sm accion-icon"
+                    pTooltip="Ver detalle" [attr.aria-label]="'Ver detalle de la IAC ' + iac.id"
+                    (click)="abrir(iac, 'resumen')"></button>
+            <button pButton type="button" icon="pi pi-upload"
+                    class="p-button-secondary p-button-sm accion-icon"
+                    pTooltip="Cargar insumos" [attr.aria-label]="'Cargar insumos de la IAC ' + iac.id"
+                    [disabled]="!puedeCargarInsumos(iac)"
+                    (click)="abrir(iac, 'insumos')"></button>
+            <button pButton type="button" icon="pi pi-play"
+                    class="p-button-secondary p-button-sm accion-icon"
+                    pTooltip="Calcular IAC" [attr.aria-label]="'Calcular la IAC ' + iac.id"
+                    (click)="abrir(iac, 'calculo')"></button>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="9" class="tabla-vacia">
+            <ng-container *ngIf="hayFiltros; else sinRegistros">
+              Ningún registro coincide con los filtros aplicados.
+            </ng-container>
+            <ng-template #sinRegistros>
+              Aún no hay instrucciones de abono a cuenta registradas. Use «Nueva IAC» para crear la primera.
+            </ng-template>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Notas -->
+  <div class="notes-section">
+    <div class="notes-content">
+      <h4 class="notes-title">Notas:</h4>
+      <ul class="notes-list">
+        <li>El cálculo de la IAC se habilita cuando están completos los insumos de MHCP, ANH, ANM y MME. Funcionamiento y Fiscalización es opcional.</li>
+        <li>Cada cargue de determinaciones queda registrado en el histórico, aunque su validación tenga errores.</li>
+        <li>El envío a validación es una acción irreversible: después de enviarla, la IAC no admite cambios de insumos.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Diálogo: nueva IAC -->
+  <p-dialog header="Nueva Instrucción de Abono a Cuenta"
+            [(visible)]="mostrarDialogoNueva" [modal]="true" [style]="{ width: '38rem' }"
+            [draggable]="false" [resizable]="false">
+    <div class="form-nueva">
+      <div class="campo">
+        <label for="nuevaVigencia">Vigencia (bienio) <span class="requerido">*</span></label>
+        <p-select id="nuevaVigencia" inputId="nuevaVigencia" [options]="vigencias"
+                  [(ngModel)]="nuevaVigencia" optionLabel="label" placeholder="Seleccione la vigencia"
+                  styleClass="w-full" (onChange)="onNuevaVigenciaChange()"></p-select>
+      </div>
+
+      <div class="campo">
+        <label for="nuevoPeriodo">Periodo de recaudo <span class="requerido">*</span></label>
+        <p-select id="nuevoPeriodo" inputId="nuevoPeriodo" [options]="periodosNueva"
+                  [(ngModel)]="nuevoPeriodo" optionLabel="label" placeholder="Seleccione el periodo"
+                  styleClass="w-full" [disabled]="!nuevaVigencia" (onChange)="sugerirNombre()"></p-select>
+        <small class="ayuda" *ngIf="intentoGuardar && !nuevoPeriodo">Debe seleccionar el periodo de recaudo.</small>
+      </div>
+
+      <div class="campo">
+        <label for="nuevoTipo">Tipo de IAC <span class="requerido">*</span></label>
+        <p-select id="nuevoTipo" inputId="nuevoTipo" [options]="tiposIac"
+                  [(ngModel)]="nuevoTipo" optionLabel="label" placeholder="Seleccione el tipo"
+                  styleClass="w-full" (onChange)="sugerirNombre()"></p-select>
+      </div>
+
+      <div class="campo">
+        <label for="nuevoNombre">Nombre <span class="requerido">*</span></label>
+        <input pInputText id="nuevoNombre" type="text" class="w-full"
+               [(ngModel)]="nuevoNombre" (input)="onNombreEditado()"
+               maxlength="120" placeholder="Nombre descriptivo de la instrucción" />
+        <small class="ayuda" *ngIf="intentoGuardar && !nombreValido">
+          El nombre es obligatorio y debe tener al menos 5 caracteres.
+        </small>
+        <small class="ayuda-neutra" *ngIf="!intentoGuardar || nombreValido">
+          Se sugiere a partir del tipo y el periodo; puede editarlo.
+        </small>
+      </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <button pButton type="button" label="Cancelar" class="p-button-secondary"
+              [disabled]="guardando" (click)="mostrarDialogoNueva = false"></button>
+      <button pButton type="button" label="Crear" icon="pi pi-check"
+              [loading]="guardando" (click)="crearIac()"></button>
+    </ng-template>
+  </p-dialog>
+
+</div>
