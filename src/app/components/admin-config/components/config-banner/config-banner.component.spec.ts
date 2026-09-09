@@ -1,23 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { of, throwError } from 'rxjs';
+import { Subject, of, throwError } from 'rxjs';
 
 import { ConfigBannerComponent } from './config-banner.component';
 import { ConfigService, BannerConfig } from '../../../../services/config.service';
 import { MessageService } from 'primeng/api';
-
-// PrimeNG imports
-import { CardModule } from 'primeng/card';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
-import { DropdownModule } from 'primeng/dropdown';
-import { CalendarModule } from 'primeng/calendar';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { CheckboxModule } from 'primeng/checkbox';
-import { ButtonModule } from 'primeng/button';
-import { DividerModule } from 'primeng/divider';
-import { MessageModule } from 'primeng/message';
-import { DialogModule } from 'primeng/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('ConfigBannerComponent', () => {
@@ -50,20 +37,11 @@ describe('ConfigBannerComponent', () => {
     const messageSpy = jasmine.createSpyObj('MessageService', ['add']);
 
     await TestBed.configureTestingModule({
+      // `ConfigBannerComponent` es standalone y declara sus propias
+      // dependencias de PrimeNG; no hace falta repetirlas aquí.
       imports: [
         ConfigBannerComponent,
         ReactiveFormsModule,
-        CardModule,
-        InputTextModule,
-        InputTextareaModule,
-        DropdownModule,
-        CalendarModule,
-        InputNumberModule,
-        CheckboxModule,
-        ButtonModule,
-        DividerModule,
-        MessageModule,
-        DialogModule,
         BrowserAnimationsModule
       ],
       providers: [
@@ -120,14 +98,17 @@ describe('ConfigBannerComponent', () => {
     it('should set loading state while loading config', () => {
       expect(component.isLoading()).toBe(false);
 
-      // No llamar detectChanges todavía para capturar el estado de loading
-      const delayedConfig = new Promise<BannerConfig>((resolve) => {
-        setTimeout(() => resolve(mockBannerConfig), 100);
-      });
-      configServiceSpy.getBannerConfig.and.returnValue(of(mockBannerConfig));
+      // Con un `of(...)` el observable completa antes de poder observar el
+      // estado intermedio; un Subject sin emitir deja la carga en curso.
+      const pendiente = new Subject<BannerConfig>();
+      configServiceSpy.getBannerConfig.and.returnValue(pendiente.asObservable());
 
       component.ngOnInit();
       expect(component.isLoading()).toBe(true);
+
+      pendiente.next(mockBannerConfig);
+      pendiente.complete();
+      expect(component.isLoading()).toBe(false);
     });
 
     it('should handle error when loading config', () => {
@@ -344,7 +325,10 @@ describe('ConfigBannerComponent', () => {
     });
 
     it('should set saving state during save', () => {
-      configServiceSpy.setConfig.and.returnValue(of(true));
+      // Igual que en la carga: hace falta un observable que no complete para
+      // poder observar el estado intermedio.
+      const pendiente = new Subject<boolean>();
+      configServiceSpy.setConfig.and.returnValue(pendiente.asObservable());
 
       component.bannerForm.patchValue({
         activo: true,
@@ -363,6 +347,10 @@ describe('ConfigBannerComponent', () => {
 
       // Durante el guardado
       expect(component.isSaving()).toBe(true);
+
+      pendiente.next(true);
+      pendiente.complete();
+      expect(component.isSaving()).toBe(false);
     });
 
     it('should show success message after save', (done) => {
@@ -479,12 +467,15 @@ describe('ConfigBannerComponent', () => {
       expect(component.showPreview()).toBe(false);
     });
 
-    it('should not open preview if form is invalid', () => {
-      component.bannerForm.patchValue({ titulo: '' }); // Inválido
+    it('should open preview even if form is invalid, using placeholders', () => {
+      // `togglePreview()` no valida el formulario a propósito: la vista previa
+      // sirve justamente para ver cómo queda mientras se está diligenciando.
+      component.bannerForm.patchValue({ titulo: '' });
 
       component.togglePreview();
 
-      expect(component.showPreview()).toBe(false);
+      expect(component.showPreview()).toBe(true);
+      expect(component.previewConfig()?.titulo).toBe('Título del banner');
     });
   });
 

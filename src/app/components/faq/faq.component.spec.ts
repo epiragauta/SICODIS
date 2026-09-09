@@ -1,18 +1,27 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { provideRouter } from '@angular/router';
 
-import { FagComponent } from './faq.component';
+import { FaqComponent } from './faq.component';
 
-describe('FagComponent', () => {
-  let component: FagComponent;
-  let fixture: ComponentFixture<FagComponent>;
+describe('FaqComponent', () => {
+  let component: FaqComponent;
+  let fixture: ComponentFixture<FaqComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FagComponent]
+      imports: [FaqComponent, NoopAnimationsModule],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([])
+      ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(FagComponent);
+    fixture = TestBed.createComponent(FaqComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -4,8 +4,11 @@ import { ConfigService, BannerConfig, BannerTrackingState, ConfiguracionBase } f
 describe('ConfigService', () => {
   let service: ConfigService;
   let localStorageSpy: jasmine.SpyObj<Storage>;
+  /** `localStorage` real, para devolverlo al terminar y no contaminar otras suites. */
+  let localStorageOriginal: PropertyDescriptor | undefined;
 
   beforeEach(() => {
+    localStorageOriginal = Object.getOwnPropertyDescriptor(window, 'localStorage');
     // Mock localStorage
     const localStorageStore: { [key: string]: string } = {};
     localStorageSpy = jasmine.createSpyObj('localStorage', ['getItem', 'setItem', 'removeItem', 'clear']);
@@ -41,6 +44,12 @@ describe('ConfigService', () => {
 
   afterEach(() => {
     localStorageSpy.clear();
+
+    // Sin esto, el doble de `localStorage` sobrevive a esta suite y hace
+    // fallar a las que se ejecuten después (p. ej. el tracking del banner).
+    if (localStorageOriginal) {
+      Object.defineProperty(window, 'localStorage', localStorageOriginal);
+    }
   });
 
   // ============================================================================
@@ -93,13 +102,13 @@ describe('ConfigService', () => {
     it('should return null for inactive config', (done) => {
       // Primero crear una config inactiva
       service.setConfig({
-        categoria: 'test',
+        categoria: 'general',
         clave: 'inactive',
         valor: 'test',
         tipo_dato: 'string',
         activo: false
       }).subscribe(() => {
-        service.getConfig<string>('test', 'inactive').subscribe(value => {
+        service.getConfig<string>('general', 'inactive').subscribe(value => {
           expect(value).toBeNull();
           done();
         });
@@ -138,14 +147,14 @@ describe('ConfigService', () => {
 
     it('should return default value for inactive config', () => {
       service.setConfig({
-        categoria: 'test',
+        categoria: 'general',
         clave: 'inactive',
         valor: 'test',
         tipo_dato: 'string',
         activo: false
       }).subscribe();
 
-      const value = service.getConfigSync<string>('test', 'inactive', 'default');
+      const value = service.getConfigSync<string>('general', 'inactive', 'default');
       expect(value).toBe('default');
     });
   });
@@ -156,19 +165,21 @@ describe('ConfigService', () => {
 
   describe('setConfig', () => {
     it('should create new configuration', (done) => {
+      // `as const` evita que TypeScript ensanche los literales a `string` y
+      // deje de encajar con la firma de `setConfig`.
       const newConfig = {
-        categoria: 'test' as any,
+        categoria: 'general',
         clave: 'new_key',
         valor: 'new_value',
         tipo_dato: 'string',
         descripcion: 'Test config'
-      };
+      } as const;
 
       service.setConfig(newConfig).subscribe(result => {
         expect(result).toBe(true);
 
         // Verificar que se guardó
-        service.getConfig<string>('test', 'new_key').subscribe(value => {
+        service.getConfig<string>('general', 'new_key').subscribe(value => {
           expect(value).toBe('new_value');
           done();
         });
@@ -178,14 +189,14 @@ describe('ConfigService', () => {
     it('should update existing configuration', (done) => {
       // Primero crear
       service.setConfig({
-        categoria: 'test' as any,
+        categoria: 'general',
         clave: 'update_test',
         valor: 'original',
         tipo_dato: 'string'
       }).subscribe(() => {
         // Luego actualizar
         service.setConfig({
-          categoria: 'test' as any,
+          categoria: 'general',
           clave: 'update_test',
           valor: 'updated',
           tipo_dato: 'string'
@@ -193,7 +204,7 @@ describe('ConfigService', () => {
           expect(result).toBe(true);
 
           // Verificar actualización
-          service.getConfig<string>('test', 'update_test').subscribe(value => {
+          service.getConfig<string>('general', 'update_test').subscribe(value => {
             expect(value).toBe('updated');
             done();
           });
@@ -203,24 +214,24 @@ describe('ConfigService', () => {
 
     it('should increment version on update', (done) => {
       service.setConfig({
-        categoria: 'test' as any,
+        categoria: 'general',
         clave: 'version_test',
         valor: 'v1',
         tipo_dato: 'string'
       }).subscribe(() => {
         service.getAllConfigs().subscribe(configs => {
-          const config1 = configs.find(c => c.categoria === 'test' && c.clave === 'version_test');
+          const config1 = configs.find(c => c.categoria === 'general' && c.clave === 'version_test');
           expect(config1?.version).toBe(1);
 
           // Actualizar
           service.setConfig({
-            categoria: 'test' as any,
+            categoria: 'general',
             clave: 'version_test',
             valor: 'v2',
             tipo_dato: 'string'
           }).subscribe(() => {
             service.getAllConfigs().subscribe(configs => {
-              const config2 = configs.find(c => c.categoria === 'test' && c.clave === 'version_test');
+              const config2 = configs.find(c => c.categoria === 'general' && c.clave === 'version_test');
               expect(config2?.version).toBe(2);
               done();
             });
@@ -230,21 +241,20 @@ describe('ConfigService', () => {
     });
 
     it('should invalidate cache after setConfig', (done) => {
-      // Forzar carga de cache
-      service.getAllConfigs().subscribe(() => {
-        // Espiar el localStorage para ver si se llama de nuevo
-        const getItemCallCount = localStorageSpy.getItem.calls.count();
+      // `getAllConfigs()` no lee de localStorage —solo del mapa en memoria—,
+      // así que la invalidación se comprueba por su efecto observable: la
+      // siguiente lectura ve la configuración recién escrita.
+      service.getAllConfigs().subscribe(antes => {
+        expect(antes.some(c => c.clave === 'cache_test')).toBe(false);
 
-        // Hacer setConfig
         service.setConfig({
-          categoria: 'test' as any,
+          categoria: 'general',
           clave: 'cache_test',
           valor: 'test',
           tipo_dato: 'string'
         }).subscribe(() => {
-          // Llamar getAllConfigs de nuevo - debería recargar
-          service.getAllConfigs().subscribe(() => {
-            expect(localStorageSpy.getItem.calls.count()).toBeGreaterThan(getItemCallCount);
+          service.getAllConfigs().subscribe(despues => {
+            expect(despues.some(c => c.clave === 'cache_test')).toBe(true);
             done();
           });
         });
@@ -260,17 +270,17 @@ describe('ConfigService', () => {
     it('should delete configuration', (done) => {
       // Crear config
       service.setConfig({
-        categoria: 'test' as any,
+        categoria: 'general',
         clave: 'to_delete',
         valor: 'test',
         tipo_dato: 'string'
       }).subscribe(() => {
         // Eliminar
-        service.deleteConfig('test', 'to_delete').subscribe(result => {
+        service.deleteConfig('general', 'to_delete').subscribe(result => {
           expect(result).toBe(true);
 
           // Verificar que no existe
-          service.getConfig<string>('test', 'to_delete').subscribe(value => {
+          service.getConfig<string>('general', 'to_delete').subscribe(value => {
             expect(value).toBeNull();
             done();
           });
@@ -761,22 +771,19 @@ describe('ConfigService', () => {
     });
 
     it('should invalidate cache after setConfig', (done) => {
-      // Cargar cache
-      service.getAllConfigs().subscribe(() => {
-        // Hacer cambio
+      service.getAllConfigs().subscribe(antes => {
+        const totalAntes = antes.length;
+
         service.setConfig({
-          categoria: 'test' as any,
+          categoria: 'general',
           clave: 'cache_invalidation',
           valor: 'test',
           tipo_dato: 'string'
         }).subscribe(() => {
-          const callCountAfterSet = localStorageSpy.getItem.calls.count();
-
-          // Llamar de nuevo - debería recargar desde localStorage
-          service.getAllConfigs().subscribe(() => {
-            const callCountAfterReload = localStorageSpy.getItem.calls.count();
-
-            expect(callCountAfterReload).toBeGreaterThan(callCountAfterSet);
+          // Sin invalidar, la segunda lectura devolvería la lista anterior.
+          service.getAllConfigs().subscribe(despues => {
+            expect(despues.length).toBe(totalAntes + 1);
+            expect(despues.some(c => c.clave === 'cache_invalidation')).toBe(true);
             done();
           });
         });
@@ -815,12 +822,12 @@ describe('ConfigService', () => {
 
     it('should parse boolean values correctly', (done) => {
       service.setConfig({
-        categoria: 'test' as any,
+        categoria: 'general',
         clave: 'bool_test',
         valor: 'true',
         tipo_dato: 'boolean'
       }).subscribe(() => {
-        service.getConfig<boolean>('test', 'bool_test').subscribe(value => {
+        service.getConfig<boolean>('general', 'bool_test').subscribe(value => {
           expect(typeof value).toBe('boolean');
           expect(value).toBe(true);
           done();
@@ -831,12 +838,12 @@ describe('ConfigService', () => {
     it('should parse date values correctly', (done) => {
       const dateStr = '2026-06-10';
       service.setConfig({
-        categoria: 'test' as any,
+        categoria: 'general',
         clave: 'date_test',
         valor: dateStr,
         tipo_dato: 'date'
       }).subscribe(() => {
-        service.getConfig<Date>('test', 'date_test').subscribe(value => {
+        service.getConfig<Date>('general', 'date_test').subscribe(value => {
           expect(value instanceof Date).toBe(true);
           done();
         });

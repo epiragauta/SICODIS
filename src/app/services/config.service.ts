@@ -128,17 +128,22 @@ export class ConfigService {
   // ============================================================================
 
   private initializeDefaultConfigs(): void {
-    const stored = localStorage.getItem(this.CONFIGS_KEY);
+    // El acceso va dentro del `try` —igual que en `getBannerTracking()`— porque
+    // `localStorage.getItem` no solo puede devolver algo inválido: en una
+    // ventana privada o con los datos de sitio bloqueados, *lanza*. Sin esta
+    // guarda, el constructor del servicio revienta y con él el arranque de la
+    // aplicación.
+    try {
+      const stored = localStorage.getItem(this.CONFIGS_KEY);
 
-    if (stored) {
-      try {
+      if (stored) {
         const configs = JSON.parse(stored) as ConfiguracionBase[];
         const map = new Map(configs.map(c => [`${c.categoria}:${c.clave}`, c]));
         this.configsSignal.set(map);
         return;
-      } catch (e) {
-        console.error('Error loading stored configs:', e);
       }
+    } catch (e) {
+      console.error('Error loading stored configs:', e);
     }
 
     // Configuraciones por defecto si no hay nada en localStorage

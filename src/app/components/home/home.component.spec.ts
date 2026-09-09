@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { BreakpointObserver } from '@angular/cdk/layout';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { HomeComponent } from './home.component';
 import { ConfigService, BannerConfig } from '../../services/config.service';
-import { SicodisApiService } from '../../services/sicodis-api.service';
+import { ResumenParticipaciones, SicodisApiService } from '../../services/sicodis-api.service';
 import { Router } from '@angular/router';
 
 describe('HomeComponent', () => {
@@ -14,6 +15,17 @@ describe('HomeComponent', () => {
   let sicodisApiServiceSpy: jasmine.SpyObj<SicodisApiService>;
   let routerSpy: jasmine.SpyObj<Router>;
   let breakpointObserverSpy: jasmine.SpyObj<BreakpointObserver>;
+
+  /**
+   * El endpoint `sgp/resumen_participaciones` devuelve una colección, pero
+   * `SicodisApiService.getSgpResumenParticipaciones` está declarado como
+   * `Observable<ResumenParticipaciones>` (en singular). `HomeComponent` lo sabe
+   * y comprueba `Array.isArray(response)` antes de procesarlo. Este ayudante
+   * mantiene los dobles fieles a lo que devuelve el servicio real sin tapar la
+   * discrepancia: cuando se corrija la firma, basta con quitarlo.
+   */
+  const respuestaSgp = (filas: unknown[]): Observable<ResumenParticipaciones> =>
+    of(filas) as unknown as Observable<ResumenParticipaciones>;
 
   const mockBannerConfig: BannerConfig = {
     id: 1,
@@ -48,7 +60,7 @@ describe('HomeComponent', () => {
     breakpointSpy.observe.and.returnValue(of({ matches: true, breakpoints: {} }));
 
     await TestBed.configureTestingModule({
-      imports: [HomeComponent],
+      imports: [HomeComponent, NoopAnimationsModule],
       providers: [
         { provide: ConfigService, useValue: configSpy },
         { provide: SicodisApiService, useValue: sicodisSpy },
@@ -65,7 +77,7 @@ describe('HomeComponent', () => {
     // Defaults
     configServiceSpy.getBannerConfigSync.and.returnValue(mockBannerConfig);
     configServiceSpy.shouldShowBanner.and.returnValue(false);
-    sicodisApiServiceSpy.getSgpResumenParticipaciones.and.returnValue(of([]));
+    sicodisApiServiceSpy.getSgpResumenParticipaciones.and.returnValue(respuestaSgp([]));
   });
 
   beforeEach(() => {
@@ -129,14 +141,16 @@ describe('HomeComponent', () => {
       expect(component.showBanner).toBe(false);
     });
 
-    it('should not show banner if config is null', () => {
+    it('should not render the banner if there is no config', () => {
+      // Sin configuración, `shouldShowBanner()` responde que no; el componente
+      // se limita a reflejar esa decisión (no la duplica).
       configServiceSpy.getBannerConfigSync.and.returnValue(null);
-      configServiceSpy.shouldShowBanner.and.returnValue(true);
+      configServiceSpy.shouldShowBanner.and.returnValue(false);
 
       fixture.detectChanges();
 
-      expect(component.showBanner).toBe(false);
       expect(component.bannerConfig).toBeNull();
+      expect(component.showBanner).toBe(false);
     });
 
     it('should not show banner if banner is inactive', () => {
@@ -277,7 +291,7 @@ describe('HomeComponent', () => {
         { id_concepto: 2000, total: 30000 }
       ];
 
-      sicodisApiServiceSpy.getSgpResumenParticipaciones.and.returnValue(of(mockData));
+      sicodisApiServiceSpy.getSgpResumenParticipaciones.and.returnValue(respuestaSgp(mockData));
       spyOn<any>(component, 'processSgpData');
 
       fixture.detectChanges();
@@ -403,7 +417,7 @@ describe('HomeComponent', () => {
     });
 
     it('should handle empty SGP data', () => {
-      sicodisApiServiceSpy.getSgpResumenParticipaciones.and.returnValue(of([]));
+      sicodisApiServiceSpy.getSgpResumenParticipaciones.and.returnValue(respuestaSgp([]));
 
       expect(() => fixture.detectChanges()).not.toThrow();
     });
