@@ -219,16 +219,21 @@ export class HeaderComponent implements OnDestroy {
           command: () => this.redirectUrl('admin-config')
         },
         {
-          label: 'SGR — Carga de Insumos',
-          command: () => this.redirectUrl('sgr-carga-insumos')
-        },
-        {
-          label: 'SGR — Ejecución de la Distribución',
-          command: () => this.redirectUrl('sgr-ejecucion-distribucion')
-        },
-        {
-          label: 'SGR — Parámetros de la Distribución',
-          command: () => this.redirectUrl('sgr-parametros-distribucion')
+          label: 'SGR - Programación',
+          items: [
+            {
+              label: 'Carga de Insumos',
+              command: () => this.redirectUrl('sgr-carga-insumos')
+            },
+            {
+              label: 'Ejecución de la Distribución',
+              command: () => this.redirectUrl('sgr-ejecucion-distribucion')
+            },
+            {
+              label: 'Parámetros de la Distribución',
+              command: () => this.redirectUrl('sgr-parametros-distribucion')
+            }
+          ]
         },
         {
           separator: true
