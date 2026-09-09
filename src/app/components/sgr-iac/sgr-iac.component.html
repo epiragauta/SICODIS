@@ -31,7 +31,7 @@
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="vigencia" [options]="vigencias" inputId="vigenciaSelect"
             [(ngModel)]="filtroVigencia" optionLabel="label" [showClear]="true"
-            placeholder="Todas" (onChange)="onFiltroVigenciaChange()"></p-select>
+            (onChange)="onFiltroVigenciaChange()"></p-select>
           <label for="vigenciaSelect">Vigencia (bienio)</label>
         </p-floatlabel>
       </div>
@@ -40,7 +40,7 @@
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="periodo" [options]="periodos" inputId="periodoSelect"
             [(ngModel)]="filtroPeriodo" optionLabel="label" [showClear]="true"
-            placeholder="Todos" [disabled]="!filtroVigencia"></p-select>
+            [disabled]="!filtroVigencia"></p-select>
           <label for="periodoSelect">Periodo de recaudo</label>
         </p-floatlabel>
       </div>
@@ -48,8 +48,7 @@
       <div class="p-field">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="estado" [options]="estados" inputId="estadoSelect"
-            [(ngModel)]="filtroEstado" optionLabel="label" [showClear]="true"
-            placeholder="Todos"></p-select>
+            [(ngModel)]="filtroEstado" optionLabel="label" [showClear]="true"></p-select>
           <label for="estadoSelect">Estado</label>
         </p-floatlabel>
       </div>

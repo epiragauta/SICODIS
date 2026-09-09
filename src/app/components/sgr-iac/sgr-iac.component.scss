@@ -79,10 +79,13 @@
 
       .p-field {
         flex: 0 0 auto;
-        min-width: 180px;
+        // Ancho fijo para que los tres filtros queden alineados. Las clases
+        // `w-full md:w-56` del marcado son de Tailwind, que en este proyecto no
+        // llega a generar utilidades, así que no dimensionan nada.
+        width: 15rem;
 
         &.acciones-filtro {
-          min-width: auto;
+          width: auto;
           margin-left: auto;
         }
       }
@@ -214,6 +217,12 @@
 }
 
 :host ::ng-deep .form-nueva .p-select { width: 100%; }
+
+// Los filtros ocupan todo el ancho de su celda para quedar alineados entre sí.
+:host ::ng-deep .filters-row {
+  .p-floatlabel,
+  .p-select { width: 100%; }
+}
 
 // Notas
 .notes-section {
