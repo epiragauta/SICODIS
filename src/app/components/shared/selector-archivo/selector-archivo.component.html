@@ -1,0 +1,10 @@
+<input type="file" [id]="idInput" class="input-archivo-oculto"
+       [accept]="accept" [disabled]="disabled"
+       [attr.aria-label]="etiquetaAccesible"
+       (change)="onCambio($event)" />
+
+<button pButton type="button"
+        [label]="label" [icon]="icon" [class]="styleClass"
+        [disabled]="disabled"
+        [pTooltip]="tooltip" [attr.aria-label]="etiquetaAccesible"
+        (click)="abrir()"></button>

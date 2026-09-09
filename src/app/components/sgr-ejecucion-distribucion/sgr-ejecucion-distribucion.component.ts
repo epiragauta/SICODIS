@@ -15,6 +15,8 @@ import { Breadcrumb } from 'primeng/breadcrumb';
 import { MenuItem, ConfirmationService } from 'primeng/api';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
+import { dispararDescarga } from '../../utils/descarga-archivo';
+import { SgrParametrosService, formatValorParametro, modoRedondeoLabel } from '../../services/sgr-parametros.service';
 import {
   SicodisApiService,
   CorridaDistribucion,
@@ -108,8 +110,6 @@ export class SgrEjecucionDistribucionComponent implements OnInit, OnDestroy {
    */
   private readonly simularEjecucion = true;
 
-  /** Igual que `simularEjecucion`, para los parámetros mientras no exista el backend. */
-  private readonly simularParametros = true;
 
   // Precondiciones
   precondicion: PrecondicionInsumos = {
@@ -131,6 +131,7 @@ export class SgrEjecucionDistribucionComponent implements OnInit, OnDestroy {
 
   constructor(
     private sicodisApiService: SicodisApiService,
+    private sgrParametrosService: SgrParametrosService,
     private confirmationService: ConfirmationService
   ) { }
 
@@ -496,7 +497,7 @@ export class SgrEjecucionDistribucionComponent implements OnInit, OnDestroy {
         const blob = response.body;
         this.descargando = null;
         if (!blob) { return; }
-        this.dispararDescarga(blob, this.nombreArchivoSalida(corrida, tipo));
+        dispararDescarga(blob, this.nombreArchivoSalida(corrida, tipo));
       },
       error: (error) => {
         console.error('Error al descargar la salida:', error);
@@ -514,7 +515,7 @@ export class SgrEjecucionDistribucionComponent implements OnInit, OnDestroy {
       ? `<?xml version="1.0" encoding="UTF-8"?>\n<!-- ${encabezado.replace(/\n/g, ' · ')} -->\n<distribucionSGR bienio="${corrida.bienio}" version="v${corrida.version}"/>`
       : encabezado + '\n' + this.detalleTotales.map(t => `${t.concepto};${t.porcentaje};${t.valor}`).join('\n');
     const mime = tipo === 'xml' ? 'application/xml' : 'text/plain;charset=utf-8';
-    this.dispararDescarga(new Blob([contenido], { type: mime }), this.nombreArchivoSalida(corrida, tipo));
+    dispararDescarga(new Blob([contenido], { type: mime }), this.nombreArchivoSalida(corrida, tipo));
   }
 
   private nombreArchivoSalida(corrida: CorridaDistribucion, tipo: TipoSalidaCorrida): string {
@@ -522,14 +523,6 @@ export class SgrEjecucionDistribucionComponent implements OnInit, OnDestroy {
     const ext = tipo === 'excel' ? 'xlsx' : (tipo === 'xml' ? 'xml' : 'txt');
     const base = tipo === 'reporte' ? 'reporte_verificacion' : (tipo === 'xml' ? 'xml_spgr' : 'distribucion');
     return `${base}_${bienio}_v${corrida.version}.${ext}`;
-  }
-
-  private dispararDescarga(blob: Blob, filename: string): void {
-    const link = document.createElement('a');
-    link.href = window.URL.createObjectURL(blob);
-    link.download = filename;
-    link.click();
-    window.URL.revokeObjectURL(link.href);
   }
 
   // ===================== Oficialización (Incremento 3) =====================
@@ -587,11 +580,7 @@ export class SgrEjecucionDistribucionComponent implements OnInit, OnDestroy {
   // ===================== Parámetros =====================
 
   private cargarParametros(): void {
-    if (this.simularParametros) {
-      this.parametros = this.parametrosMock(this.selectedBienio);
-      return;
-    }
-    this.sicodisApiService.getParametrosVigentesSgr(this.selectedBienio?.id).subscribe({
+    this.sgrParametrosService.getVigentes(this.selectedBienio?.id, this.selectedBienio?.label).subscribe({
       next: (conjunto) => this.parametros = conjunto,
       error: (error) => {
         console.error('Error al cargar parámetros:', error);
@@ -604,91 +593,13 @@ export class SgrEjecucionDistribucionComponent implements OnInit, OnDestroy {
    * Formatea el valor de un parámetro según su unidad.
    */
   formatValor(p: ParametroValor): string {
-    if (typeof p.valor === 'boolean') {
-      return p.valor ? 'Sí' : 'No';
-    }
-    const n = p.valor;
-    switch (p.unidad) {
-      case '%': return this.formatNumero(n, 2) + '%';
-      case 'factor': return this.formatNumero(n, 2);
-      case 'pp': return this.formatNumero(n, 0) + ' p.p.';
-      default: return String(n);
-    }
-  }
-
-  private formatNumero(n: number, dec: number): string {
-    return n.toLocaleString('es-CO', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+    return formatValorParametro(p);
   }
 
   redondeoModoLabel(modo: 'redondeo' | 'truncamiento'): string {
-    return modo === 'redondeo' ? 'Redondeo' : 'Truncamiento';
+    return modoRedondeoLabel(modo);
   }
 
-  private parametrosMock(bienio: any): ConjuntoParametros {
-    const pct = (clave: string, etiqueta: string, valor: number, ref?: string): ParametroValor =>
-      ({ clave, etiqueta, valor, unidad: '%', referenciaNormativa: ref });
-    const fac = (clave: string, etiqueta: string, valor: number): ParametroValor =>
-      ({ clave, etiqueta, valor, unidad: 'factor' });
-
-    return {
-      idVersion: 2,
-      etiquetaVersion: 'P-v2',
-      vigencia: bienio?.label ?? '',
-      fecha: '2026-08-12T00:00:00',
-      autor: 'admin',
-      motivo: 'Parámetros de referencia tabla 2 · Ley 2056 de 2020',
-      porcentajes: [
-        pct('inversion', 'Inversión', 92.5, 'Art. 361 C.P. · art. 22 L2056'),
-        pct('inversion.ad', '— Asignaciones Directas (20% + 5%)', 25, 'Arts. 22 y 23 L2056'),
-        pct('inversion.ail', '— Asignación Inversión Local (12,68% + 2,32%)', 15, 'Art. 48 L2056'),
-        pct('inversion.air', '— Asignación Inversión Regional (20,4% dptos / 13,6% reg.)', 34, 'Arts. 44 y 45 L2056'),
-        pct('inversion.acti', '— Ciencia, Tecnología e Innovación', 10, 'Art. 52 L2056'),
-        pct('inversion.paz', '— Asignación para la Paz', 7, 'Parág. 7.º trans. art. 361 C.P.'),
-        pct('inversion.ambiental', '— Asignación Ambiental', 1, 'Art. 50 L2056'),
-        pct('inversion.cormagdalena', '— Cormagdalena', 0.5, 'Art. 331 C.P.'),
-        pct('ahorro', 'Ahorro', 4.5, 'Art. 361 C.P. · art. 22 L2056'),
-        pct('ahorro.fae', '— FAE (referencia)', 2.25, 'Art. 113 L2056'),
-        pct('ahorro.fonpet', '— FONPET (referencia)', 2.25, 'Art. 122 L2056'),
-        pct('administracion', 'Administración', 3, 'Art. 361 C.P. · art. 22 L2056'),
-        pct('administracion.funcionamiento', '— Funcionamiento y fiscalización', 2, 'Art. 12 L2056'),
-        pct('administracion.ssec', '— SSEC (CGR · PGN · DNP)', 1, 'Art. 167 L2056')
-      ],
-      ponderadores: [
-        fac('ail.nbi', 'AIL · NBI', 0.6),
-        fac('ail.poblacion', 'AIL · Población', 0.4),
-        fac('air.nbi', 'AIR · NBI', 0.5),
-        fac('air.poblacion', 'AIR · Población', 0.4),
-        fac('air.desempleo', 'AIR · Desempleo', 0.1),
-        fac('air.particion.dptos', 'AIR · Partición departamentos', 0.6),
-        fac('air.particion.regiones', 'AIR · Partición regiones', 0.4),
-        fac('fonpet.ppnc', 'FONPET · PPNC', 0.8),
-        fac('fonpet.nbi', 'FONPET · NBI', 0.1),
-        fac('fonpet.poblacion', 'FONPET · Población', 0.1),
-        fac('etnico.urbano', 'Étnico · Ponderador urbano', 0.4),
-        fac('etnico.rural', 'Étnico · Ponderador rural', 0.6)
-      ],
-      umbrales: [
-        { clave: 'ail.compensacion.umbral', etiqueta: 'Compensación AIL · garantía', valor: 75, unidad: '%', referenciaNormativa: 'num. 3.1.1.2.2' },
-        { clave: 'ail.compensacion.parcial', etiqueta: 'Permitir compensación parcial', valor: true, unidad: 'flag' },
-        { clave: 'fae.piso', etiqueta: 'Piso FAE (del ahorro)', valor: 50, unidad: '%', referenciaNormativa: 'num. 3.2.1.1' },
-        { clave: 'etnico.bloqueo', etiqueta: 'Bloqueo étnico', valor: 20, unidad: '%', referenciaNormativa: 'Sección III' },
-        { clave: 'ambiental.minimo', etiqueta: 'Mínimo ambiental del SGR', valor: 2, unidad: 'pp' },
-        { clave: 'noaforados.corriente', etiqueta: 'No aforados · bolsa corriente', valor: 75, unidad: '%', referenciaNormativa: 'num. 5.1.1.f' },
-        { clave: 'noaforados.restante', etiqueta: 'No aforados · bolsa restante', valor: 25, unidad: '%', referenciaNormativa: 'num. 5.1.1.f' },
-        { clave: 'etnico.excluir.car', etiqueta: 'Excluir CAR de la base étnica', valor: true, unidad: 'flag' },
-        { clave: 'etnico.excluir.indeterminados', etiqueta: 'Excluir indeterminados de la base étnica', valor: true, unidad: 'flag' }
-      ],
-      redondeo: [
-        { tipoSalida: 'PR', etiqueta: 'Plan de Recursos (decenal)', decimales: 0, modo: 'redondeo' },
-        { tipoSalida: 'desahorroFAE', etiqueta: 'Desahorro FAE', decimales: 0, modo: 'redondeo' },
-        { tipoSalida: 'mayorRecaudo', etiqueta: 'Mayor recaudo', decimales: 0, modo: 'redondeo' },
-        { tipoSalida: 'multas', etiqueta: 'Multas', decimales: 0, modo: 'redondeo' },
-        { tipoSalida: 'etnicas', etiqueta: 'Destinaciones étnicas', decimales: 0, modo: 'redondeo' },
-        { tipoSalida: 'PBC', etiqueta: 'Plan Bienal de Caja', decimales: 2, modo: 'redondeo' },
-        { tipoSalida: 'IAC', etiqueta: 'IAC (límite SPGR)', decimales: 2, modo: 'redondeo' }
-      ]
-    };
-  }
 
   // ===================== Popups =====================
 
