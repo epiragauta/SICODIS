@@ -23,6 +23,8 @@ import { UserAuthService } from '../../auth/user-auth.service';
 import { PasoMhcpComponent } from './pasos/paso-mhcp.component';
 import { PasoDeterminacionesComponent } from './pasos/paso-determinaciones.component';
 import { PasoFunfisComponent } from './pasos/paso-funfis.component';
+import { VariacionesComponent } from './secciones/variaciones.component';
+import { NotificacionesComponent } from './secciones/notificaciones.component';
 import {
   ArchivoIacCalculada,
   DefinicionParticipante,
@@ -35,7 +37,7 @@ import {
   ResultadoCalculoIac,
 } from '../../models/sgr-iac.models';
 
-type Seccion = 'resumen' | 'insumos' | 'calculo' | 'parametros';
+type Seccion = 'resumen' | 'insumos' | 'calculo' | 'variaciones' | 'notificaciones' | 'parametros';
 
 /**
  * Detalle de una Instrucción de Abono a Cuenta.
@@ -59,6 +61,8 @@ type Seccion = 'resumen' | 'insumos' | 'calculo' | 'parametros';
     PasoMhcpComponent,
     PasoDeterminacionesComponent,
     PasoFunfisComponent,
+    VariacionesComponent,
+    NotificacionesComponent,
   ],
   providers: [ConfirmationService],
   templateUrl: './sgr-iac-detalle.component.html',
@@ -103,7 +107,7 @@ export class SgrIacDetalleComponent implements OnInit {
 
     this.ruta.queryParamMap.subscribe(params => {
       const seccion = params.get('seccion') as Seccion | null;
-      if (seccion && ['resumen', 'insumos', 'calculo', 'parametros'].includes(seccion)) {
+      if (seccion && ['resumen', 'insumos', 'calculo', 'variaciones', 'notificaciones', 'parametros'].includes(seccion)) {
         this.seccion = seccion;
       }
     });

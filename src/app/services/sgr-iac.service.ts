@@ -20,7 +20,9 @@ import {
   ResultadoCalculoIac,
   ResumenEntidadIac,
   ResumenValidacionDeterminaciones,
+  ReporteVariaciones,
 } from '../models/sgr-iac.models';
+import { generarReporteVariaciones } from '../utils/variaciones-iac';
 
 /**
  * Servicio de la Instrucción de Abono a Cuenta (IAC) del SGR.
@@ -59,6 +61,7 @@ export class SgrIacService {
     funFisEstado: (id: number) => `${this.base}/${id}/funfis`,
     calcular: (id: number) => `${this.base}/${id}/calcular`,
     resultado: (id: number) => `${this.base}/${id}/resultado`,
+    variaciones: (id: number) => `${this.base}/${id}/variaciones`,
     enviarValidacion: (id: number) => `${this.base}/${id}/enviar-validacion`,
     archivo: (idArchivo: number) => `${this.base}/archivo/${idArchivo}`,
     archivoLog: (idArchivo: number) => `${this.base}/archivo/${idArchivo}/log`,
@@ -422,6 +425,50 @@ export class SgrIacService {
     return this.simular({ ok: true, mensaje: 'La IAC se envió a validación correctamente.' });
   }
 
+  // ===================== Reporte de variaciones =====================
+
+  /**
+   * IAC anterior del mismo tipo con la que se compara.
+   *
+   * Es la del periodo inmediatamente previo que además esté calculada: una IAC
+   * en borrador no tiene cifras contra las que medir.
+   */
+  private iacAnteriorComparable(iac: IacResumen): IacResumen | null {
+    const candidatas = this.iacs
+      .filter(i => i.idTipoIac === iac.idTipoIac
+                && i.idPeriodo < iac.idPeriodo
+                && i.estado !== 'anulada'
+                && this.resultados.has(i.id))
+      .sort((a, b) => b.idPeriodo - a.idPeriodo);
+
+    return candidatas[0] ?? null;
+  }
+
+  /**
+   * Reporte de variaciones frente al periodo anterior.
+   *
+   * Devuelve `null` si la IAC aún no se ha calculado: no hay nada que comparar.
+   */
+  getReporteVariaciones(idIac: number): Observable<ReporteVariaciones | null> {
+    if (!this.simularIac) {
+      return this.http.get<ReporteVariaciones>(this.RUTAS.variaciones(idIac));
+    }
+
+    const iac = this.iacs.find(i => i.id === idIac);
+    const resultado = this.resultados.get(idIac);
+    if (!iac || !resultado) {
+      return this.simular(null);
+    }
+
+    const iacAnterior = this.iacAnteriorComparable(iac);
+    const resultadoAnterior = iacAnterior ? this.resultados.get(iacAnterior.id) ?? null : null;
+
+    return this.simular(
+      generarReporteVariaciones(iac, resultado, iacAnterior, resultadoAnterior),
+      600,
+    );
+  }
+
   // ===================== Archivos =====================
 
   /** Log de validación de un cargue, para descargarlo como `.txt`. */
@@ -650,6 +697,60 @@ export class SgrIacService {
     });
     this.funFisAplica.set(idCalculada, false);
     this.resultados.set(idCalculada, this.construirResultado(idCalculada));
+
+    this.sembrarPeriodoAnterior(dias);
+  }
+
+  /**
+   * IAC del periodo previo al de julio, para que haya contra qué comparar.
+   *
+   * Sin ella, ninguna IAC sembrada tendría una anterior del mismo tipo ya
+   * calculada y el reporte de variaciones saldría siempre «sin referencia».
+   * Se le da forma a propósito —una entidad menos y otra con caída fuerte—
+   * para que el reporte muestre los tres casos: aumento, disminución y entrada
+   * nueva.
+   */
+  private sembrarPeriodoAnterior(dias: (n: number) => string): void {
+    const id = ++this.secuenciaIac;
+
+    this.iacs.push({
+      id,
+      descripcion: 'IAC corriente junio 2026',
+      idVigencia: 3, bienio: '2025 - 2026',
+      idPeriodo: 318, periodo: '2026-06',
+      idTipoIac: 1, tipoIac: 'IAC Corriente',
+      ingresosHidrocarburos: 470_233_119_004.7,
+      ingresosMineria: 121_004_882_115.3,
+      totalIngresos: 591_238_001_120.0,
+      estado: 'enviada',
+      fechaCreacion: dias(66), usuarioCreacion: 'mruiz', fechaCalculo: dias(60),
+    });
+
+    this.insumosMhcp.set(id, {
+      noRadicado: '1-2026-000255',
+      fechaRadicado: dias(65),
+      ingresosAnh: 470_233_119_004.7,
+      ingresosAnm: 121_004_882_115.3,
+      totalIngresos: 591_238_001_120.0,
+      idArchivoSoporte: ++this.secuenciaArchivo,
+      nombreArchivoSoporte: 'MHCP-DNP_Radicado_1-2026-000255.pdf',
+    });
+
+    const resultado = this.construirResultado(id);
+
+    // Cauca no recibió en junio: en julio aparecerá como entidad nueva.
+    resultado.resumenPorEntidad = resultado.resumenPorEntidad.filter(f => f.codigoDane !== '19000');
+
+    // A Casanare se le infla el periodo anterior para que julio muestre caída.
+    const casanare = resultado.resumenPorEntidad.find(f => f.codigoDane === '85000');
+    if (casanare) {
+      casanare.valorDistribuir = r2(casanare.valorDistribuir * 1.6);
+      casanare.determinacionAd20 = r2(casanare.determinacionAd20 * 1.6);
+    }
+
+    resultado.enviadaAValidacion = true;
+    resultado.fechaEnvioValidacion = dias(58);
+    this.resultados.set(id, resultado);
   }
 }
 

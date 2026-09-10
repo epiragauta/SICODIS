@@ -249,6 +249,175 @@ export interface ResultadoCalculoIac {
   versionParametros?: string;
 }
 
+// ===================== Reporte de variaciones =====================
+
+/**
+ * Conceptos sobre los que se mide la variación entre dos IAC.
+ *
+ * Coinciden con las columnas del resumen por entidad del cálculo, para que el
+ * reporte se pueda leer al lado de la pestaña de cálculo sin traducir nombres.
+ */
+export type ConceptoVariacion =
+  | 'valorDistribuir'
+  | 'determinacionAd20'
+  | 'determinacionAd5'
+  | 'determinacionAd20NoAforados'
+  | 'determinacionAd5NoAforados'
+  | 'determinacionAd20OxrSff'
+  | 'determinacionAd5OxrSff'
+  | 'descuentos';
+
+export const ETIQUETA_CONCEPTO: Readonly<Record<ConceptoVariacion, string>> = {
+  valorDistribuir: 'Valor a distribuir',
+  determinacionAd20: 'AD 20 %',
+  determinacionAd5: 'AD 5 %',
+  determinacionAd20NoAforados: 'AD 20 % no aforados',
+  determinacionAd5NoAforados: 'AD 5 % no aforados',
+  determinacionAd20OxrSff: 'AD 20 % OxR SFF',
+  determinacionAd5OxrSff: 'AD 5 % OxR SFF',
+  descuentos: 'Descuentos',
+};
+
+/**
+ * Cómo entró una entidad en la comparación.
+ *
+ * `nueva` y `retirada` importan: una entidad que no estaba en el periodo
+ * anterior no tiene una variación porcentual interpretable, y conviene que el
+ * reporte lo diga en vez de mostrar un 100 % o un infinito.
+ */
+export type PresenciaEntidad = 'ambas' | 'nueva' | 'retirada';
+
+export interface VariacionValor {
+  actual: number;
+  anterior: number;
+  /** `actual − anterior`. */
+  variacionPesos: number;
+  /**
+   * Fracción 0–1 sobre el valor anterior. `null` cuando el anterior es cero:
+   * la variación existe en pesos pero no es expresable en porcentaje.
+   */
+  variacionPorcentaje: number | null;
+}
+
+export interface VariacionEntidad {
+  codigoDane: string;
+  entidad: string;
+  presencia: PresenciaEntidad;
+  /** Variación del valor a distribuir, que es la cifra que encabeza la fila. */
+  total: VariacionValor;
+  /** Desglose por concepto, en el orden de `ETIQUETA_CONCEPTO`. */
+  conceptos: Partial<Record<ConceptoVariacion, VariacionValor>>;
+}
+
+export interface VariacionConcepto {
+  concepto: ConceptoVariacion;
+  etiqueta: string;
+  valor: VariacionValor;
+}
+
+export interface ReporteVariaciones {
+  idIac: number;
+  descripcionIac: string;
+  periodoActual: string;
+  /** Referencia de comparación; `null` si no hay IAC previa del mismo tipo. */
+  idIacAnterior: number | null;
+  descripcionIacAnterior: string | null;
+  periodoAnterior: string | null;
+  tipoIac: string;
+  fechaGeneracion: string;
+  /** Variación agregada de todos los beneficiarios. */
+  totalGeneral: VariacionValor;
+  porConcepto: VariacionConcepto[];
+  porEntidad: VariacionEntidad[];
+  /** Conteos que encabezan el reporte. */
+  resumen: {
+    entidades: number;
+    nuevas: number;
+    retiradas: number;
+    suben: number;
+    bajan: number;
+    igual: number;
+  };
+}
+
+// ===================== Notificaciones a entidades =====================
+
+/**
+ * Contacto del directorio de entidades territoriales.
+ *
+ * Equivale a `Adm_DirectorioEntidadesTerritoriales` del sistema anterior, que
+ * es de donde `EnviarNotificacionesMail.aspx` sacaba sus destinatarios.
+ */
+export interface ContactoEntidad {
+  codigoDane: string;
+  entidad: string;
+  departamento: string;
+  nombreContacto: string;
+  cargo: string;
+  email: string;
+}
+
+export type EstadoDestinatario = 'pendiente' | 'enviando' | 'enviado' | 'fallido' | 'sin_correo';
+
+export interface DestinatarioLote {
+  codigoDane: string;
+  entidad: string;
+  nombreContacto: string;
+  cargo: string;
+  email: string;
+  /** Valor que se comunica a esta entidad, tomado del cálculo de la IAC. */
+  valorDistribuir: number;
+  /** Variación frente al periodo anterior, si hay reporte de variaciones. */
+  variacionPesos?: number;
+  variacionPorcentaje?: number | null;
+  estado: EstadoDestinatario;
+  fechaEnvio?: string;
+  intentos: number;
+  /** Motivo del fallo, para poder reintentar con criterio. */
+  error?: string;
+}
+
+export type EstadoLote = 'borrador' | 'enviando' | 'completado' | 'completado_con_errores' | 'cancelado';
+
+export interface LoteNotificacion {
+  id: number;
+  idIac: number;
+  asunto: string;
+  /** Cuerpo HTML con marcadores `{{...}}` sin resolver. */
+  plantillaCuerpo: string;
+  adjuntarDetalle: boolean;
+  estado: EstadoLote;
+  fechaCreacion: string;
+  usuarioCreacion: string;
+  fechaEnvio?: string;
+  destinatarios: DestinatarioLote[];
+  totales: {
+    destinatarios: number;
+    enviados: number;
+    fallidos: number;
+    sinCorreo: number;
+  };
+}
+
+/**
+ * Marcadores admitidos en el asunto y el cuerpo de la plantilla.
+ *
+ * Se resuelven por destinatario: es lo que convierte un envío masivo en un
+ * correo con la información de cada entidad.
+ */
+export const MARCADORES_PLANTILLA: ReadonlyArray<{ clave: string; descripcion: string }> = [
+  { clave: '{{entidad}}', descripcion: 'Nombre de la entidad territorial' },
+  { clave: '{{codigoDane}}', descripcion: 'Código DANE de la entidad' },
+  { clave: '{{contacto}}', descripcion: 'Nombre del contacto en el directorio' },
+  { clave: '{{cargo}}', descripcion: 'Cargo del contacto' },
+  { clave: '{{valorDistribuir}}', descripcion: 'Valor a distribuir de la entidad, formateado' },
+  { clave: '{{variacionPesos}}', descripcion: 'Variación en pesos frente al periodo anterior' },
+  { clave: '{{variacionPorcentaje}}', descripcion: 'Variación porcentual frente al periodo anterior' },
+  { clave: '{{periodo}}', descripcion: 'Periodo de recaudo de la IAC' },
+  { clave: '{{tipoIac}}', descripcion: 'Tipo de la IAC' },
+  { clave: '{{descripcionIac}}', descripcion: 'Nombre de la IAC' },
+];
+
 // ===================== Respuesta del backend =====================
 
 /**
