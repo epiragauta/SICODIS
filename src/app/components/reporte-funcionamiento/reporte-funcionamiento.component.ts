@@ -25,6 +25,7 @@ import { Select, SelectChangeEvent } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { MultiSelect, MultiSelectChangeEvent  } from 'primeng/multiselect';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
+import { InfografiaPopupComponent } from '../infografia-popup/infografia-popup.component';
 import { departamentos } from '../../data/departamentos';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { MenuItem } from 'primeng/api';
@@ -70,6 +71,7 @@ interface SelectOption {
     Select,
     MultiSelect,
     InfoPopupComponent,
+    InfografiaPopupComponent,
     SplitButtonModule,
     Breadcrumb
   ],

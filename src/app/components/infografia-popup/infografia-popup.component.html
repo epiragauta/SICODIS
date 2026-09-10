@@ -1,0 +1,26 @@
+<p-dialog
+  [(visible)]="displayPopup"
+  [modal]="true"
+  [dismissableMask]="true"
+  [closable]="true"
+  appendTo="body"
+  [draggable]="false"
+  [resizable]="false"
+  [header]="titulo"
+  styleClass="infografia-dialog"
+  [style]="{ width: '80vw', maxWidth: '1000px', height: '90vh' }"
+  [contentStyle]="{ padding: '0', height: '100%', overflow: 'hidden' }">
+
+  <div class="infografia-viewer" *ngIf="pdfUrl">
+    <iframe
+      [src]="pdfUrl"
+      title="Infografía"
+      width="100%"
+      height="100%"
+      style="border: 0; display: block;"></iframe>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button label="Cerrar" (click)="cerrar()" styleClass="p-button-text"></p-button>
+  </ng-template>
+</p-dialog>

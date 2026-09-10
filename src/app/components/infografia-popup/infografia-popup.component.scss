@@ -1,0 +1,61 @@
+// El diálogo se monta con appendTo="body" (para escapar de contenedores con
+// overflow/transform, p. ej. .container de sgp-inicio). Por eso los estilos del
+// diálogo no pueden anclarse a :host; se declaran con ::ng-deep para alcanzar el
+// nodo movido al <body>. La clase .infografia-dialog es única y evita colisiones.
+::ng-deep .infografia-dialog {
+  .p-dialog-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+  }
+
+  .p-dialog-header {
+    background: linear-gradient(135deg, #0943b5 0%, #2851a3 100%);
+    color: #fff;
+    border-bottom: none;
+
+    .p-dialog-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .p-dialog-header-icon {
+      color: #fff;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+      }
+    }
+  }
+
+  .p-dialog-footer {
+    border-top: 1px solid #dee2e6;
+    padding: 0.75rem 1rem;
+
+    .p-button {
+      background-color: #0943b5;
+      border-color: #0943b5;
+      color: #fff;
+
+      &:hover {
+        background-color: #2851a3;
+        border-color: #2851a3;
+      }
+    }
+  }
+}
+
+// .infografia-viewer conserva el atributo de contenido del componente aunque el
+// diálogo se mueva al <body>, por lo que basta el selector normal.
+.infografia-viewer {
+  width: 100%;
+  height: 100%;
+  flex: 1 1 auto;
+}
+
+@media (max-width: 768px) {
+  ::ng-deep .infografia-dialog {
+    width: 96vw !important;
+    max-width: 96vw !important;
+  }
+}
