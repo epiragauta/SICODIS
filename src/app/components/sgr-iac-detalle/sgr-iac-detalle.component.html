@@ -76,6 +76,14 @@
               [attr.aria-selected]="seccion === 'calculo'" (click)="irASeccion('calculo')">
         Cálculo
       </button>
+      <button type="button" role="tab" class="tab" [class.tab-activa]="seccion === 'variaciones'"
+              [attr.aria-selected]="seccion === 'variaciones'" (click)="irASeccion('variaciones')">
+        Variaciones
+      </button>
+      <button type="button" role="tab" class="tab" [class.tab-activa]="seccion === 'notificaciones'"
+              [attr.aria-selected]="seccion === 'notificaciones'" (click)="irASeccion('notificaciones')">
+        Notificaciones
+      </button>
       <button type="button" role="tab" class="tab" [class.tab-activa]="seccion === 'parametros'"
               [attr.aria-selected]="seccion === 'parametros'" (click)="irASeccion('parametros')">
         Parámetros aplicados
@@ -257,6 +265,21 @@
           Esta IAC aún no se ha calculado. Complete los insumos obligatorios y ejecute «Validar y calcular IAC».
         </div>
       </ng-template>
+    </div>
+
+    <!-- ===================== Variaciones ===================== -->
+    <div class="panel" *ngIf="seccion === 'variaciones'" role="tabpanel" aria-label="Variaciones">
+      <app-iac-variaciones [idIac]="idIac"
+                           [fechaCalculo]="resultado()?.fechaCalculo ?? null">
+      </app-iac-variaciones>
+    </div>
+
+    <!-- ===================== Notificaciones ===================== -->
+    <div class="panel" *ngIf="seccion === 'notificaciones'" role="tabpanel" aria-label="Notificaciones">
+      <app-iac-notificaciones [iac]="cabecera"
+                              [calculada]="!!resultado()"
+                              [fechaCalculo]="resultado()?.fechaCalculo ?? null">
+      </app-iac-notificaciones>
     </div>
 
     <!-- ===================== Parámetros aplicados ===================== -->

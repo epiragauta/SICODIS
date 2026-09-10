@@ -566,6 +566,80 @@ documentadas en §5.2.
 
 ---
 
+## 7 bis. Ampliación del 9 de septiembre de 2026
+
+Dos funcionalidades añadidas sobre el módulo ya migrado, ambas en modo simulado.
+
+### Reporte de variaciones
+
+Compara la IAC con **la anterior del mismo tipo** que ya esté calculada, entidad
+por entidad y concepto por concepto. Es la convención que el proyecto ya usaba
+en `ComparativoPresupuestoSgpIndigena` (`VariacionPesos` / `VariacionPorcentaje`).
+
+- `utils/variaciones-iac.ts` — función pura sobre los dos resultados, con 13
+  pruebas. Cuando el backend entregue la comparación ya calculada, se sustituye.
+- `utils/variaciones-excel.ts` — genera el `.xlsx` en el navegador con ExcelJS
+  (dos hojas: resumen y detalle por entidad), así que la descarga funciona sin
+  backend.
+- Pestaña **Variaciones** en el detalle, con indicadores, filtros por sentido y
+  búsqueda por entidad o código DANE.
+
+Tres decisiones que conviene no perder:
+
+1. **La variación porcentual es `null`, no cero ni infinito, cuando no hay base
+   anterior.** Una entidad que antes no recibía nada no «creció un 100 %»: la
+   interfaz y el Excel muestran un guion.
+2. **Las entidades retiradas se conservan en el reporte**, con su nombre del
+   periodo anterior y variación negativa por el total. Si desaparece del
+   cálculo, su abono cayó a cero, y eso es justo lo que hay que ver.
+3. **El orden por defecto es de mayor caída a mayor aumento**, que es lo que se
+   revisa primero en una mesa de trabajo.
+
+### Notificación masiva a entidades territoriales
+
+Sustituye a `Aspx/EnviarNotificacionesMail.aspx`, que recorría la lista y
+enviaba uno por uno desde el hilo de la petición **sin registrar el resultado**:
+si un correo fallaba, rompía el bucle y no quedaba rastro de a quién le había
+llegado.
+
+- `services/sgr-iac-notificaciones.service.ts` — directorio de entidades
+  (equivale a `Adm_DirectorioEntidadesTerritoriales`), preparación del lote,
+  envío con estado por destinatario, reintento de fallidos e histórico.
+- Pestaña **Notificaciones**: cruce de beneficiarios con el directorio,
+  redacción con marcadores `{{...}}`, vista previa con los datos de una entidad
+  concreta, confirmación explícita y seguimiento del lote.
+
+Alcance acordado: cuerpo y adjunto **personalizados por entidad**, solo a las
+que tienen valor a distribuir en esa IAC, con seguimiento por destinatario.
+
+> ⚠️ **El envío real debe ejecutarse en el servidor**, como trabajo en segundo
+> plano. Son del orden de mil correos con un adjunto distinto cada uno: ni la
+> generación de los anexos ni el envío pueden vivir en el navegador. El front
+> prepara el lote, lo dispara y consulta su avance; el contrato está declarado
+> en `RUTAS` del servicio.
+
+Detalles que la simulación deja resueltos a propósito:
+
+- Las entidades **sin contacto en el directorio** aparecen marcadas y no se
+  envían, en vez de fallar en silencio. En los datos de muestra, Atlántico y
+  Cauca quedan fuera del directorio para que ese camino sea visible.
+- La tasa de fallo simulada (~6 %) es **determinista por código y número de
+  intento**, de modo que el reintento puede prosperar y el seguimiento se puede
+  comprobar de verdad.
+- El borrador del mensaje vive en el servicio, no en el componente: la pestaña
+  se desmonta al cambiar de sección y perder un correo a medio escribir por
+  pulsar «Cálculo» sería inaceptable.
+
+### Datos de muestra
+
+Se sembró una IAC adicional (junio 2026, corriente, enviada) porque **ninguna de
+las tres anteriores tenía un periodo previo comparable** y el reporte habría
+salido siempre «sin referencia». Se le dio forma a propósito —una entidad menos
+y otra con caída fuerte— para que se vean los tres casos: aumento, disminución
+y entrada nueva.
+
+---
+
 ## 8. Trabajo derivado (fuera de alcance, recomendado)
 
 1. **Migrar `IACAutomatica.aspx` e `IACAutomatica2.aspx` a `sgr-parametros-distribucion`** como dos nuevas secciones ("Participaciones por asignación" y "Aplicabilidad por tipo de beneficiario"), aprovechando el motor de reglas duras que ya existe allí. Incluye la casilla *edición libre* que permite saltar la validación del 100 % — decidir con negocio si se conserva.

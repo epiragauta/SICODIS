@@ -1,0 +1,182 @@
+<section class="variaciones" aria-label="Reporte de variaciones">
+
+  <div class="aviso" *ngIf="cargando()" aria-live="polite">
+    <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+    Generando el reporte de variaciones…
+  </div>
+
+  <ng-container *ngIf="!cargando()">
+    <div class="aviso aviso-neutro" *ngIf="!reporte()">
+      <i class="pi pi-info-circle" aria-hidden="true"></i>
+      Esta IAC aún no se ha calculado, así que no hay cifras que comparar.
+    </div>
+
+    <ng-container *ngIf="reporte() as r">
+
+      <!-- Cabecera del reporte -->
+      <section class="bloque">
+        <div class="reporte-header">
+          <div>
+            <h2 class="bloque-titulo">Variaciones frente al periodo anterior</h2>
+            <p class="bloque-meta">
+              <ng-container *ngIf="!sinReferencia">
+                {{ r.periodoActual }} frente a <strong>{{ r.periodoAnterior }}</strong>
+                ({{ r.descripcionIacAnterior }}) · {{ r.tipoIac }}
+              </ng-container>
+              <ng-container *ngIf="sinReferencia">
+                {{ r.periodoActual }} · {{ r.tipoIac }}
+              </ng-container>
+            </p>
+          </div>
+
+          <button pButton type="button" label="Descargar Excel" icon="pi pi-file-excel"
+                  class="p-button-primary p-button-sm"
+                  [loading]="exportando()" (click)="exportar()"></button>
+        </div>
+
+        <div class="aviso aviso-info" *ngIf="sinReferencia">
+          <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+          No hay una IAC anterior calculada de tipo «{{ r.tipoIac }}», así que todas las
+          entidades figuran como nuevas y las variaciones equivalen al valor completo.
+        </div>
+
+        <!-- Indicadores -->
+        <div class="indicadores">
+          <div class="indicador destacado">
+            <span class="indicador-etiqueta">Total a distribuir</span>
+            <span class="indicador-valor">{{ r.totalGeneral.actual | numberFormat }}</span>
+            <span class="indicador-delta" [ngClass]="claseVariacion(r.totalGeneral)">
+              <i [class]="iconoVariacion(r.totalGeneral)" aria-hidden="true"></i>
+              {{ r.totalGeneral.variacionPesos | numberFormat }} ({{ porcentajeTexto(r.totalGeneral) }})
+            </span>
+          </div>
+
+          <div class="indicador">
+            <span class="indicador-etiqueta">Entidades</span>
+            <span class="indicador-valor">{{ r.resumen.entidades }}</span>
+          </div>
+          <div class="indicador">
+            <span class="indicador-etiqueta">Con aumento</span>
+            <span class="indicador-valor sube">{{ r.resumen.suben }}</span>
+          </div>
+          <div class="indicador">
+            <span class="indicador-etiqueta">Con disminución</span>
+            <span class="indicador-valor baja">{{ r.resumen.bajan }}</span>
+          </div>
+          <div class="indicador">
+            <span class="indicador-etiqueta">Sin cambio</span>
+            <span class="indicador-valor">{{ r.resumen.igual }}</span>
+          </div>
+          <div class="indicador" *ngIf="r.resumen.nuevas">
+            <span class="indicador-etiqueta">Nuevas</span>
+            <span class="indicador-valor">{{ r.resumen.nuevas }}</span>
+          </div>
+          <div class="indicador" *ngIf="r.resumen.retiradas">
+            <span class="indicador-etiqueta">Retiradas</span>
+            <span class="indicador-valor">{{ r.resumen.retiradas }}</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Variación por concepto -->
+      <section class="bloque">
+        <h2 class="bloque-titulo">Variación por concepto</h2>
+        <p-table [value]="r.porConcepto" styleClass="p-datatable-sm variaciones-table"
+                 [tableStyle]="{ 'min-width': '52rem' }">
+          <ng-template pTemplate="header">
+            <tr>
+              <th scope="col">Concepto</th>
+              <th scope="col" class="col-num">Actual</th>
+              <th scope="col" class="col-num">Anterior</th>
+              <th scope="col" class="col-num">Variación ($)</th>
+              <th scope="col" class="col-num">Variación (%)</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item>
+            <tr>
+              <td>{{ item.etiqueta }}</td>
+              <td class="col-num">{{ item.valor.actual | numberFormat }}</td>
+              <td class="col-num">{{ item.valor.anterior | numberFormat }}</td>
+              <td class="col-num" [ngClass]="claseVariacion(item.valor)">
+                {{ item.valor.variacionPesos | numberFormat }}
+              </td>
+              <td class="col-num" [ngClass]="claseVariacion(item.valor)">
+                {{ porcentajeTexto(item.valor) }}
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </section>
+
+      <!-- Detalle por entidad -->
+      <section class="bloque">
+        <div class="reporte-header">
+          <h2 class="bloque-titulo">Detalle por entidad</h2>
+
+          <div class="filtros-detalle">
+            <input pInputText type="search" [(ngModel)]="filtroTexto"
+                   placeholder="Buscar entidad o código DANE"
+                   aria-label="Buscar entidad o código DANE" />
+            <p-select [options]="sentidos" [(ngModel)]="filtroSentido" optionLabel="label"
+                      inputId="sentidoVariacion" ariaLabel="Filtrar por sentido de la variación"></p-select>
+            <button pButton type="button" icon="pi pi-filter-slash"
+                    class="p-button-secondary p-button-sm"
+                    pTooltip="Limpiar filtros" [attr.aria-label]="'Limpiar filtros'"
+                    [disabled]="!hayFiltros" (click)="limpiarFiltros()"></button>
+          </div>
+        </div>
+
+        <p class="bloque-meta">
+          Ordenado de mayor disminución a mayor aumento · {{ entidades.length }} de
+          {{ r.porEntidad.length }} entidades
+        </p>
+
+        <p-table [value]="entidades" styleClass="p-datatable-sm variaciones-table"
+                 [paginator]="entidades.length > 15" [rows]="15"
+                 [scrollable]="true" scrollHeight="460px"
+                 [tableStyle]="{ 'min-width': '60rem' }">
+          <ng-template pTemplate="header">
+            <tr>
+              <th scope="col">Entidad</th>
+              <th scope="col" class="col-num">Valor actual</th>
+              <th scope="col" class="col-num">Valor anterior</th>
+              <th scope="col" class="col-num">Variación ($)</th>
+              <th scope="col" class="col-num">Variación (%)</th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-e>
+            <tr>
+              <td>
+                <span class="entidad-codigo">{{ e.codigoDane }}</span>
+                {{ e.entidad }}
+                <p-tag *ngIf="e.presencia !== 'ambas'"
+                       [value]="etiquetaPresencia(e.presencia)"
+                       [severity]="severidadPresencia(e.presencia)"
+                       styleClass="etiqueta-presencia"></p-tag>
+              </td>
+              <td class="col-num">{{ e.total.actual | numberFormat }}</td>
+              <td class="col-num">{{ e.total.anterior | numberFormat }}</td>
+              <td class="col-num" [ngClass]="claseVariacion(e.total)">
+                <i [class]="iconoVariacion(e.total)" aria-hidden="true"></i>
+                {{ e.total.variacionPesos | numberFormat }}
+              </td>
+              <td class="col-num" [ngClass]="claseVariacion(e.total)">
+                {{ porcentajeTexto(e.total) }}
+              </td>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="5" class="tabla-vacia">
+                Ninguna entidad coincide con los filtros aplicados.
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </section>
+
+    </ng-container>
+  </ng-container>
+</section>
