@@ -247,11 +247,7 @@
   font-style: italic;
 }
 
-// Input de archivo oculto
-.hidden-file-input {
-  display: none;
-}
-
+// El input oculto lo aporta `app-selector-archivo`.
 .accion-btn {
   margin-right: 0.4rem;
 }
@@ -305,8 +301,10 @@
     font-size: 0.78rem;
   }
 
+  // `.accion-btn` es ahora el host de `app-selector-archivo`, así que el botón
+  // primario es un descendiente y no el propio elemento.
   .view-buttons-container .p-button.p-button-primary,
-  .accion-btn.p-button-primary {
+  .accion-btn .p-button-primary {
     background-color: #004583;
     border-color: #004583;
 

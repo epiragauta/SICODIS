@@ -123,18 +123,15 @@
               </ng-template>
             </td>
             <td class="col-acciones">
-              <!-- input nativo oculto por insumo -->
-              <input type="file" [id]="'file-' + fuente.id + '-' + insumo.id" class="hidden-file-input"
-                     [accept]="accept"
-                     (change)="onFileSelected($event, fuente, insumo)" />
-
-              <button pButton type="button"
-                      [label]="insumo.estado === 'cargado' ? 'Reemplazar' : 'Cargar'"
-                      icon="pi pi-upload"
-                      class="p-button-primary p-button-sm accion-btn"
-                      [disabled]="insumo.estado === 'cargando'"
-                      (click)="triggerFileInput('file-' + fuente.id + '-' + insumo.id)">
-              </button>
+              <app-selector-archivo class="accion-btn"
+                                    [label]="insumo.estado === 'cargado' ? 'Reemplazar' : 'Cargar'"
+                                    styleClass="p-button-primary p-button-sm"
+                                    [accept]="accept"
+                                    [disabled]="insumo.estado === 'cargando'"
+                                    [ariaLabel]="(insumo.estado === 'cargado' ? 'Reemplazar' : 'Cargar') + ' el insumo ' + insumo.nombre + ' de ' + fuente.sigla"
+                                    (archivoSeleccionado)="onArchivoSeleccionado($event, fuente, insumo)"
+                                    (archivoRechazado)="onArchivoRechazado($event, insumo)">
+              </app-selector-archivo>
 
               <button pButton type="button"
                       icon="pi pi-download"

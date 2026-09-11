@@ -11,16 +11,14 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { MenuItem } from 'primeng/api';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
+import { SelectorArchivoComponent } from '../shared/selector-archivo/selector-archivo.component';
+import { dispararDescarga } from '../../utils/descarga-archivo';
+import { EstadoCarga, estadoCargaLabel, estadoCargaSeverity, SeveridadTag } from '../../utils/estado-carga';
 import {
   SicodisApiService,
   CargarInsumoDistribucionParams,
   InsumoCargaResultado
 } from '../../services/sicodis-api.service';
-
-/**
- * Estado posible del cargue de un insumo.
- */
-type EstadoCarga = 'pendiente' | 'cargando' | 'cargado' | 'error';
 
 /**
  * Definición de un insumo requerido para el cálculo de la distribución del SGR.
@@ -66,7 +64,8 @@ interface FuenteInsumos {
     Select,
     FloatLabel,
     Breadcrumb,
-    InfoPopupComponent
+    InfoPopupComponent,
+    SelectorArchivoComponent
   ],
   templateUrl: './sgr-carga-insumos.component.html',
   styleUrl: './sgr-carga-insumos.component.scss'
@@ -214,53 +213,19 @@ export class SgrCargaInsumosComponent implements OnInit {
   // ===================== Etiquetas de estado =====================
 
   estadoLabel(estado: EstadoCarga): string {
-    switch (estado) {
-      case 'cargado': return 'Cargado';
-      case 'cargando': return 'Cargando…';
-      case 'error': return 'Error';
-      default: return 'Pendiente';
-    }
+    return estadoCargaLabel(estado);
   }
 
-  estadoSeverity(estado: EstadoCarga): 'success' | 'info' | 'danger' | 'warn' {
-    switch (estado) {
-      case 'cargado': return 'success';
-      case 'cargando': return 'info';
-      case 'error': return 'danger';
-      default: return 'warn';
-    }
+  estadoSeverity(estado: EstadoCarga): SeveridadTag {
+    return estadoCargaSeverity(estado);
   }
 
   // ===================== Carga de archivos =====================
 
   /**
-   * Dispara el diálogo nativo de selección de archivo asociado a un insumo.
+   * Maneja el archivo ya validado por `app-selector-archivo`.
    */
-  triggerFileInput(inputId: string): void {
-    const el = document.getElementById(inputId) as HTMLInputElement | null;
-    el?.click();
-  }
-
-  /**
-   * Maneja la selección de archivo para un insumo concreto de una fuente.
-   */
-  onFileSelected(event: Event, fuente: FuenteInsumos, insumo: InsumoDefinicion): void {
-    const input = event.target as HTMLInputElement;
-    const archivo = input.files && input.files.length ? input.files[0] : null;
-    if (!archivo) {
-      return;
-    }
-
-    // Validación mínima de extensión
-    const nombre = archivo.name.toLowerCase();
-    if (!nombre.endsWith('.xlsx') && !nombre.endsWith('.xls')) {
-      insumo.estado = 'error';
-      insumo.nombreArchivo = archivo.name;
-      insumo.mensaje = 'Formato no válido. Use un archivo de Excel (.xlsx o .xls).';
-      input.value = '';
-      return;
-    }
-
+  onArchivoSeleccionado(archivo: File, fuente: FuenteInsumos, insumo: InsumoDefinicion): void {
     insumo.estado = 'cargando';
     insumo.nombreArchivo = archivo.name;
     insumo.mensaje = undefined;
@@ -270,9 +235,14 @@ export class SgrCargaInsumosComponent implements OnInit {
     } else {
       this.cargarEnServidor(fuente, insumo, archivo);
     }
+  }
 
-    // Permite volver a seleccionar el mismo archivo
-    input.value = '';
+  /**
+   * El selector rechazó el archivo (extensión no admitida).
+   */
+  onArchivoRechazado(motivo: string, insumo: InsumoDefinicion): void {
+    insumo.estado = 'error';
+    insumo.mensaje = motivo;
   }
 
   /**
@@ -338,11 +308,7 @@ export class SgrCargaInsumosComponent implements OnInit {
       next: (response) => {
         const blob = response.body;
         if (!blob) { return; }
-        const link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
-        link.download = `plantilla_${fuente.id}_${insumo.id}.xlsx`;
-        link.click();
-        window.URL.revokeObjectURL(link.href);
+        dispararDescarga(blob, `plantilla_${fuente.id}_${insumo.id}.xlsx`);
       },
       error: (error) => console.error('Error al descargar plantilla:', error)
     });

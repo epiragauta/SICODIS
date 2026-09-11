@@ -20,6 +20,8 @@ import { SgrProgramacionComponent } from './components/sgr-programacion/sgr-prog
 import { SgrCargaInsumosComponent } from './components/sgr-carga-insumos/sgr-carga-insumos.component';
 import { SgrEjecucionDistribucionComponent } from './components/sgr-ejecucion-distribucion/sgr-ejecucion-distribucion.component';
 import { SgrParametrosDistribucionComponent } from './components/sgr-parametros-distribucion/sgr-parametros-distribucion.component';
+import { SgrIacComponent } from './components/sgr-iac/sgr-iac.component';
+import { SgrIacDetalleComponent } from './components/sgr-iac-detalle/sgr-iac-detalle.component';
 import { SgrRecaudoDirectasComponent } from './components/sgr-recaudo-directas/sgr-recaudo-directas.component';
 import { SgrMontosCorrientesConstantesComponent } from './components/sgr-montos-corrientes-constantes/sgr-montos-corrientes-constantes.component';
 import { PgnInversionPorSectorComponent } from './components/pgn-inversion-por-sector/pgn-inversion-por-sector.component';
@@ -49,6 +51,11 @@ export const routes: Routes = [
     { path: 'sgr-carga-insumos',              component: SgrCargaInsumosComponent,          canActivate: [authGuard, paginaGuard], data: { breadcrumb: 'SGR — Carga de Insumos', paginaLegado: 'SgrCargaInsumos.aspx' } },
     { path: 'sgr-ejecucion-distribucion',     component: SgrEjecucionDistribucionComponent, canActivate: [authGuard, paginaGuard], data: { breadcrumb: 'SGR — Ejecución de la Distribución', paginaLegado: 'SgrEjecucionDistribucion.aspx' } },
     { path: 'sgr-parametros-distribucion',    component: SgrParametrosDistribucionComponent, canActivate: [authGuard, paginaGuard], data: { breadcrumb: 'SGR — Parámetros de la Distribución', paginaLegado: 'SgrParametrosDistribucion.aspx' } },
+    // IAC transaccional. `paginaLegado` conserva el nombre real de la pantalla
+    // del sistema anterior para que Consulta_AccesoPaginas siga resolviendo el
+    // permiso sin tocar la tabla de permisos.
+    { path: 'sgr-iac',                        component: SgrIacComponent,                   canActivate: [authGuard, paginaGuard], data: { breadcrumb: 'SGR — Instrucción de Abono a Cuenta', paginaLegado: 'IACAutomatica4.aspx' } },
+    { path: 'sgr-iac/:id',                    component: SgrIacDetalleComponent,            canActivate: [authGuard, paginaGuard], data: { breadcrumb: 'SGR — IAC · Detalle', paginaLegado: 'IACAutomatica4.aspx' } },
     { path: 'sgr-recaudo-directas',           component: SgrRecaudoDirectasComponent,                      data: { breadcrumb: 'SGR — Recaudo Directas' } },
     { path: 'sgr-montos-corrientes-constantes', component: SgrMontosCorrientesConstantesComponent,         data: { breadcrumb: 'SGR — Montos Corrientes y Constantes' } },
     { path: 'sgr-plan-recursos',              component: SgrPlanBienalRecursosComponent,                   data: { breadcrumb: 'SGR — Plan de Recursos' } },

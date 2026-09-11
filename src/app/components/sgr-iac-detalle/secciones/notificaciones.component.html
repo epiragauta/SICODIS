@@ -1,0 +1,293 @@
+<section class="notificaciones" aria-label="Notificación a entidades territoriales">
+
+  <div class="aviso aviso-neutro" *ngIf="!calculada">
+    <i class="pi pi-info-circle" aria-hidden="true"></i>
+    La notificación se habilita cuando la IAC está calculada: el correo comunica a cada
+    entidad su valor a distribuir.
+  </div>
+
+  <ng-container *ngIf="calculada">
+
+    <!-- 1 · Destinatarios -->
+    <section class="bloque">
+      <div class="bloque-header">
+        <div>
+          <h2 class="bloque-titulo">Destinatarios</h2>
+          <p class="bloque-meta">
+            Entidades con valor a distribuir en esta IAC, cruzadas con el directorio de
+            entidades territoriales.
+          </p>
+        </div>
+        <button pButton type="button" icon="pi pi-refresh" label="Recalcular"
+                class="p-button-secondary p-button-sm"
+                [loading]="preparando()" (click)="prepararDestinatarios()"></button>
+      </div>
+
+      <div class="aviso" *ngIf="preparando()" aria-live="polite">
+        <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+        Cruzando beneficiarios con el directorio…
+      </div>
+
+      <ng-container *ngIf="!preparando()">
+        <div class="indicadores">
+          <div class="indicador destacado">
+            <span class="indicador-etiqueta">Correos a enviar</span>
+            <span class="indicador-valor">{{ conCorreo.length }}</span>
+          </div>
+          <div class="indicador">
+            <span class="indicador-etiqueta">Beneficiarios</span>
+            <span class="indicador-valor">{{ destinatarios().length }}</span>
+          </div>
+          <div class="indicador">
+            <span class="indicador-etiqueta">Sin correo</span>
+            <span class="indicador-valor" [class.alerta]="sinCorreo.length">{{ sinCorreo.length }}</span>
+          </div>
+          <div class="indicador">
+            <span class="indicador-etiqueta">Total comunicado</span>
+            <span class="indicador-valor">{{ totalADistribuir | numberFormat }}</span>
+          </div>
+        </div>
+
+        <div class="aviso aviso-info" *ngIf="sinCorreo.length">
+          <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+          <span>
+            {{ sinCorreo.length }} entidad(es) con valor a distribuir no tienen contacto en el
+            directorio y no recibirán la notificación:
+            <strong>{{ sinCorreo[0].entidad }}</strong><ng-container *ngIf="sinCorreo.length > 1">
+              y {{ sinCorreo.length - 1 }} más</ng-container>.
+          </span>
+        </div>
+
+        <p-table [value]="destinatarios()" styleClass="p-datatable-sm notif-table"
+                 [paginator]="destinatarios().length > 8" [rows]="8"
+                 [tableStyle]="{ 'min-width': '62rem' }">
+          <ng-template pTemplate="header">
+            <tr>
+              <th scope="col">Entidad</th>
+              <th scope="col">Contacto</th>
+              <th scope="col">Correo</th>
+              <th scope="col" class="col-num">Valor a distribuir</th>
+              <th scope="col" class="col-num">Variación</th>
+              <th scope="col" class="col-acciones">Vista previa</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-d>
+            <tr [class.fila-sin-correo]="d.estado === 'sin_correo'">
+              <td>
+                <span class="entidad-codigo">{{ d.codigoDane }}</span>
+                {{ d.entidad }}
+              </td>
+              <td>
+                <div>{{ d.nombreContacto || '—' }}</div>
+                <div class="sub" *ngIf="d.cargo">{{ d.cargo }}</div>
+              </td>
+              <td>
+                <span *ngIf="d.email">{{ d.email }}</span>
+                <p-tag *ngIf="!d.email" value="Sin correo" severity="secondary"></p-tag>
+              </td>
+              <td class="col-num">{{ d.valorDistribuir | numberFormat }}</td>
+              <td class="col-num">{{ porcentajeTexto(d.variacionPorcentaje) }}</td>
+              <td class="col-acciones">
+                <button pButton type="button" icon="pi pi-eye"
+                        class="p-button-secondary p-button-sm"
+                        pTooltip="Ver el correo de esta entidad"
+                        [attr.aria-label]="'Ver el correo de ' + d.entidad"
+                        (click)="abrirPrevia(d)"></button>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="6" class="tabla-vacia">
+                Ninguna entidad tiene valor a distribuir en esta IAC.
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </ng-container>
+    </section>
+
+    <!-- 2 · Plantilla -->
+    <section class="bloque">
+      <div class="bloque-header">
+        <div>
+          <h2 class="bloque-titulo">Mensaje</h2>
+          <p class="bloque-meta">
+            Los marcadores se reemplazan con los datos de cada entidad al enviar.
+          </p>
+        </div>
+        <button pButton type="button" icon="pi pi-replay" label="Restaurar texto"
+                class="p-button-text p-button-sm" (click)="restaurarPlantilla()"></button>
+      </div>
+
+      <div class="campo">
+        <label for="asuntoNotif">Asunto <span class="requerido" aria-hidden="true">*</span></label>
+        <input pInputText id="asuntoNotif" type="text" [(ngModel)]="asunto"
+               maxlength="200" class="w-full" />
+      </div>
+
+      <div class="campo">
+        <label for="cuerpoNotif">Cuerpo del correo (HTML) <span class="requerido" aria-hidden="true">*</span></label>
+        <textarea pTextarea id="cuerpoNotif" [(ngModel)]="cuerpo" rows="12" class="w-full"></textarea>
+      </div>
+
+      <div class="marcadores">
+        <span class="marcadores-titulo">Marcadores disponibles:</span>
+        <button *ngFor="let m of marcadores" type="button" class="chip-marcador"
+                [pTooltip]="m.descripcion" (click)="insertarMarcador(m.clave)">
+          {{ m.clave }}
+        </button>
+      </div>
+
+      <div class="aviso aviso-error" *ngIf="marcadoresInvalidos.length">
+        <i class="pi pi-times-circle" aria-hidden="true"></i>
+        Hay marcadores que no se reconocen y llegarían literales al destinatario:
+        <strong>{{ marcadoresInvalidos.join(', ') }}</strong>
+      </div>
+
+      <div class="campo-adjunto">
+        <p-checkbox inputId="adjuntar" [(ngModel)]="adjuntarDetalle" [binary]="true"></p-checkbox>
+        <label for="adjuntar">
+          Adjuntar a cada correo el detalle de conceptos de la entidad
+        </label>
+      </div>
+
+      <div class="acciones-mensaje">
+        <button pButton type="button" label="Vista previa" icon="pi pi-eye"
+                class="p-button-secondary"
+                [disabled]="!destinatarios().length" (click)="abrirPrevia()"></button>
+        <button pButton type="button" icon="pi pi-send"
+                [label]="'Enviar a ' + conCorreo.length + ' entidades'"
+                class="p-button-primary"
+                [disabled]="!puedeEnviar" [loading]="enviando()"
+                (click)="confirmarEnvio()"></button>
+      </div>
+    </section>
+
+    <!-- 3 · Histórico de envíos -->
+    <section class="bloque" *ngIf="lotes().length">
+      <h2 class="bloque-titulo">Envíos realizados</h2>
+      <p class="bloque-meta">Seleccione un envío para ver el resultado destinatario a destinatario.</p>
+
+      <p-table [value]="lotes()" styleClass="p-datatable-sm notif-table"
+               [tableStyle]="{ 'min-width': '54rem' }">
+        <ng-template pTemplate="header">
+          <tr>
+            <th scope="col">Envío</th>
+            <th scope="col">Asunto</th>
+            <th scope="col">Fecha</th>
+            <th scope="col">Usuario</th>
+            <th scope="col" class="col-num">Enviados</th>
+            <th scope="col" class="col-num">Fallidos</th>
+            <th scope="col">Estado</th>
+            <th scope="col" class="col-acciones">Detalle</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-l>
+          <tr [class.fila-activa]="loteActivo()?.id === l.id">
+            <td>#{{ l.id }}</td>
+            <td class="col-asunto">{{ l.asunto }}</td>
+            <td>{{ (l.fechaEnvio || l.fechaCreacion) | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>{{ l.usuarioCreacion }}</td>
+            <td class="col-num">{{ l.totales.enviados }}</td>
+            <td class="col-num" [class.alerta]="l.totales.fallidos">{{ l.totales.fallidos }}</td>
+            <td>
+              <p-tag [value]="estadoLoteLabel(l.estado)" [severity]="estadoLoteSeverity(l.estado)"></p-tag>
+            </td>
+            <td class="col-acciones">
+              <button pButton type="button"
+                      [icon]="loteActivo()?.id === l.id ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
+                      class="p-button-secondary p-button-sm"
+                      [attr.aria-label]="'Ver el detalle del envío ' + l.id"
+                      (click)="verLote(l)"></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+      <!-- Seguimiento del lote seleccionado -->
+      <div class="seguimiento" *ngIf="loteActivo() as lote">
+        <div class="seguimiento-header">
+          <h3>Resultado del envío #{{ lote.id }}</h3>
+          <div class="seguimiento-acciones">
+            <p-select [options]="filtrosEstado" [(ngModel)]="filtroEstado" optionLabel="label"
+                      inputId="filtroEstadoDest" ariaLabel="Filtrar destinatarios por estado"></p-select>
+            <button pButton type="button" label="Reintentar fallidos" icon="pi pi-replay"
+                    class="p-button-secondary p-button-sm"
+                    [disabled]="!tieneFallidos(lote)" [loading]="enviando()"
+                    (click)="reintentar(lote)"></button>
+          </div>
+        </div>
+
+        <p-table [value]="destinatariosLoteActivo" styleClass="p-datatable-sm notif-table"
+                 [paginator]="destinatariosLoteActivo.length > 10" [rows]="10"
+                 [tableStyle]="{ 'min-width': '58rem' }">
+          <ng-template pTemplate="header">
+            <tr>
+              <th scope="col">Entidad</th>
+              <th scope="col">Correo</th>
+              <th scope="col">Estado</th>
+              <th scope="col" class="col-num">Intentos</th>
+              <th scope="col">Fecha de envío</th>
+              <th scope="col">Observación</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-d>
+            <tr>
+              <td>
+                <span class="entidad-codigo">{{ d.codigoDane }}</span>
+                {{ d.entidad }}
+              </td>
+              <td>{{ d.email || '—' }}</td>
+              <td>
+                <p-tag [value]="estadoDestinatarioLabel(d.estado)"
+                       [severity]="estadoDestinatarioSeverity(d.estado)"></p-tag>
+              </td>
+              <td class="col-num">{{ d.intentos }}</td>
+              <td>{{ d.fechaEnvio ? (d.fechaEnvio | date:'dd/MM/yyyy HH:mm') : '—' }}</td>
+              <td class="col-error">{{ d.error || '' }}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="6" class="tabla-vacia">
+                Ningún destinatario coincide con el filtro.
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </section>
+  </ng-container>
+
+  <!-- Vista previa del correo -->
+  <p-dialog header="Vista previa del correo" [(visible)]="mostrarPrevia" [modal]="true"
+            [style]="{ width: '52rem' }" [draggable]="false" [resizable]="false">
+    <ng-container *ngIf="entidadPrevia as d">
+      <div class="previa-selector">
+        <label for="entidadPrevia">Ver como:</label>
+        <p-select id="entidadPrevia" inputId="entidadPrevia" [options]="destinatarios()"
+                  [ngModel]="entidadPrevia" (ngModelChange)="cambiarEntidadPrevia($event)"
+                  optionLabel="entidad" styleClass="w-full"></p-select>
+      </div>
+
+      <div class="previa-sobre">
+        <div class="previa-campo"><span>Para:</span> {{ d.email || '(sin correo registrado)' }}</div>
+        <div class="previa-campo"><span>Asunto:</span> {{ asuntoPrevia }}</div>
+        <div class="previa-campo" *ngIf="adjuntarDetalle">
+          <span>Adjunto:</span>
+          <i class="pi pi-file-excel" aria-hidden="true"></i>
+          Detalle_IAC_{{ iac.periodo }}_{{ d.codigoDane }}.xlsx
+        </div>
+      </div>
+
+      <div class="previa-cuerpo" [innerHTML]="cuerpoPrevia"></div>
+    </ng-container>
+
+    <ng-template pTemplate="footer">
+      <button pButton type="button" label="Cerrar" class="p-button-secondary"
+              (click)="mostrarPrevia = false"></button>
+    </ng-template>
+  </p-dialog>
+
+</section>

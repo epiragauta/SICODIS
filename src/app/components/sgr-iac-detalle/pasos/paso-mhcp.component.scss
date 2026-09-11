@@ -1,0 +1,156 @@
+.paso-mhcp {
+  font-family: "Work Sans", sans-serif;
+}
+
+.paso-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-bottom: .75rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+
+  .paso-titulo {
+    display: flex;
+    align-items: flex-start;
+    gap: .75rem;
+
+    i {
+      font-size: 1.5rem;
+      color: #004583;
+      margin-top: .15rem;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #004583;
+    }
+  }
+
+  .paso-subtitulo {
+    margin: .2rem 0 0;
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+}
+
+.cargando {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: 0.85rem;
+  color: #1d4ed8;
+  padding: 1rem 0;
+}
+
+.formulario {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.15rem 1.5rem;
+
+  .campo {
+    display: flex;
+    flex-direction: column;
+    gap: .35rem;
+
+    label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .requerido { color: #b91c1c; }
+
+    .ayuda {
+      font-size: 0.72rem;
+      color: #b91c1c;
+    }
+
+    .ayuda-neutra {
+      font-size: 0.72rem;
+      color: #6b7280;
+    }
+  }
+
+  .campo-ancho { grid-column: 1 / -1; }
+
+  .campo-total .total-calculado {
+    display: block;
+    padding: .55rem .75rem;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #004583;
+    text-align: right;
+  }
+
+  .acciones {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: .5rem;
+    padding-top: .5rem;
+    border-top: 1px solid #e2e8f0;
+  }
+}
+
+
+.soporte {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  flex-wrap: wrap;
+
+  .soporte-actual,
+  .soporte-nuevo {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .3rem .6rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    max-width: 100%;
+  }
+
+  .soporte-actual {
+    background: #f1f5f9;
+    color: #1f2937;
+  }
+
+  .soporte-nuevo {
+    background: #eff6ff;
+    color: #1e40af;
+  }
+
+  .soporte-nombre {
+    font-weight: 600;
+    word-break: break-all;
+  }
+
+  .soporte-etiqueta {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: .02em;
+    color: #64748b;
+  }
+}
+
+:host ::ng-deep {
+  .formulario .p-inputnumber,
+  .formulario .p-inputnumber input,
+  .formulario .p-datepicker,
+  .formulario input[type="text"] {
+    width: 100%;
+  }
+
+  .formulario .p-inputnumber input { text-align: right; }
+}
+
+@media (max-width: 768px) {
+  .formulario { grid-template-columns: 1fr; }
+}

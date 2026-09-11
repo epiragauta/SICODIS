@@ -78,6 +78,18 @@ export class SgrComparativoComponent implements OnInit {
   planBienalMunicipio1LocalDonutData: any = {};
   planBienalMunicipio2DirectasDonutData: any = {};
   planBienalMunicipio2LocalDonutData: any = {};
+
+  // Título del primer donut de "Detalle ingresos corrientes". Para gobernaciones
+  // se suprime el sufijo "25%" (que solo aplica a las asignaciones directas de
+  // municipios).
+  municipio1PrimerDonutTitle: string = 'A. Directas 25%';
+  municipio2PrimerDonutTitle: string = 'A. Directas 25%';
+
+  // Título del segundo donut de "Detalle ingresos corrientes". Varía según el
+  // tipo de entidad: "A. Directas anticipadas" (municipios) o "A. para la
+  // Inversión Regional" (gobernaciones).
+  municipio1SegundoDonutTitle: string = 'A. Directas anticipadas';
+  municipio2SegundoDonutTitle: string = 'A. Directas anticipadas';
   donutChartOptions: any = {
     responsive: true,
     maintainAspectRatio: false,
@@ -561,6 +573,9 @@ export class SgrComparativoComponent implements OnInit {
       item.categoria === '1.1.1'
     );
 
+    // Asignaciones Directas anticipadas (categoría 1.1.3). Las gobernaciones no
+    // reciben este concepto, por lo que su presencia solo se exige a las demás
+    // entidades (municipios, etc.).
     const directasAnticipadas = entityData.find(item =>
       item.categoria === '1.1.3'
     );
@@ -571,22 +586,54 @@ export class SgrComparativoComponent implements OnInit {
       item.categoria === '1.3'
     );
 
+    // Asignación para la Inversión Regional (categoría 1.2). La reciben las
+    // gobernaciones (no los municipios) y sustituye a la Inversión Local en sus
+    // gráficas.
+    const inversionRegional = entityData.find(item =>
+      item.categoria === '1.2'
+    );
+
     const ahorro = entityData.find(item =>
       item.categoria === '2.2'
     );
 
-    if (!asignacionesDirectas || !directas20 || !directasAnticipadas || !ahorro) {
+    // Identifica si la entidad seleccionada es una gobernación siguiendo la
+    // convención del proyecto (código termina en '000' y nombre "Gobernación de ").
+    const entidadSeleccionada = entityNumber === 1 ? this.selectedMunicipio : this.selectedMunicipio2;
+    const esGobernacion =
+      !!entidadSeleccionada?.codigo?.endsWith('000') &&
+      !!entidadSeleccionada?.nombre?.startsWith('Gobernación de ');
+
+    // Para gobernaciones no se exige "A. Directas anticipadas" (1.1.3).
+    if (!asignacionesDirectas || !directas20 || (!directasAnticipadas && !esGobernacion) || !ahorro) {
       console.warn(`Datos incompletos para entidad ${entityNumber}`, {
         asignacionesDirectas: !!asignacionesDirectas,
         directas20: !!directas20,
         directasAnticipadas: !!directasAnticipadas,
+        esGobernacion,
         ahorro: !!ahorro
       });
       return;
     }
 
+    // Las gobernaciones muestran "A. para la Inversión Regional" (1.2) en lugar
+    // de "A. para la Inversión Local" (1.3), tanto en la barra intermedia como en
+    // el segundo donut de detalle de ingresos corrientes.
+    const inversionLabel = esGobernacion ? 'A. para la Inversión Regional' : 'A. para la Inversión Local';
+    const inversionItem = esGobernacion ? inversionRegional : inversionLocal;
+
+    // Segundo donut de "Detalle ingresos corrientes":
+    //  - Municipios: "A. para la Inversión Local" (1.3)
+    //  - Gobernaciones: "A. para la Inversión Regional" (1.2)
+    const segundoDonutItem = esGobernacion ? inversionRegional : inversionLocal;
+    const segundoDonutTitle = esGobernacion ? 'A. para la Inversión Regional' : 'A. para la Inversión Local';
+
+    // Primer donut: para gobernaciones se suprime el "25%" (aplica solo a las
+    // asignaciones directas de municipios).
+    const primerDonutTitle = esGobernacion ? 'A. Directas' : 'A. Directas 25%';
+
     const chartData = {
-      labels: ['A. Directas', 'A. para la Inversión Local', 'Ahorro (FONPET)'],
+      labels: ['A. Directas', inversionLabel, 'Ahorro (FONPET)'],
       datasets: [
         {
           label: 'Presupuesto - A. Directas',
@@ -603,15 +650,15 @@ export class SgrComparativoComponent implements OnInit {
           borderWidth: 1
         },
         {
-          label: 'Presupuesto - A. para la Inversión Local',
-          data: [null, inversionLocal ? inversionLocal.presupuesto_total_vigente : null, null],
+          label: `Presupuesto - ${inversionLabel}`,
+          data: [null, inversionItem ? inversionItem.presupuesto_total_vigente : null, null],
           backgroundColor: '#2f9e6f',
           borderColor: '#1c6647',
           borderWidth: 1
         },
         {
-          label: 'Recaudo - A. para la Inversión Local',
-          data: [null, inversionLocal ? inversionLocal.caja_total : null, null],
+          label: `Recaudo - ${inversionLabel}`,
+          data: [null, inversionItem ? inversionItem.caja_total : null, null],
           backgroundColor: '#8ed6bd',
           borderColor: '#4f9c81',
           borderWidth: 1
@@ -696,7 +743,7 @@ export class SgrComparativoComponent implements OnInit {
       this.planBienalMunicipio1DirectasDonutData = {
         labels: ['Presupuesto', 'Recaudo'],
         datasets: [{
-          data: [directas20.presupuesto_corriente, directas20.caja_corriente_informada],
+          data: [asignacionesDirectas.presupuesto_corriente, asignacionesDirectas.caja_corriente_informada],
           backgroundColor: ['#f33aafff', '#7991e8ff'],
           borderColor: ['#b11049ff', '#3d4d7a'],
           borderWidth: 1
@@ -706,12 +753,14 @@ export class SgrComparativoComponent implements OnInit {
       this.planBienalMunicipio1LocalDonutData = {
         labels: ['Presupuesto', 'Recaudo'],
         datasets: [{
-          data: [directasAnticipadas.presupuesto_corriente, directasAnticipadas.caja_corriente_informada],
+          data: [segundoDonutItem?.presupuesto_corriente ?? null, segundoDonutItem?.caja_corriente_informada ?? null],
           backgroundColor: ['#f38135ff', '#edb87cff'],
           borderColor: ['#be480eff', '#8c5516'],
           borderWidth: 1
         }]
       };
+      this.municipio1PrimerDonutTitle = primerDonutTitle;
+      this.municipio1SegundoDonutTitle = segundoDonutTitle;
 
       this.municipality1TableData = this.buildTableData(entityData);
     } else {
@@ -721,7 +770,7 @@ export class SgrComparativoComponent implements OnInit {
       this.planBienalMunicipio2DirectasDonutData = {
         labels: ['Presupuesto', 'Recaudo'],
         datasets: [{
-          data: [directas20.presupuesto_corriente, directas20.caja_corriente_informada],
+          data: [asignacionesDirectas.presupuesto_corriente, asignacionesDirectas.caja_corriente_informada],
           backgroundColor: ['#f33aafff', '#7991e8ff'],
           borderColor: ['#b11049ff', '#3d4d7a'],
           borderWidth: 1
@@ -731,12 +780,14 @@ export class SgrComparativoComponent implements OnInit {
       this.planBienalMunicipio2LocalDonutData = {
         labels: ['Presupuesto', 'Recaudo'],
         datasets: [{
-          data: [directasAnticipadas.presupuesto_corriente, directasAnticipadas.caja_corriente_informada],
+          data: [segundoDonutItem?.presupuesto_corriente ?? null, segundoDonutItem?.caja_corriente_informada ?? null],
           backgroundColor: ['#f38135ff', '#edb87cff'],
           borderColor: ['#be480eff', '#8c5516'],
           borderWidth: 1
         }]
       };
+      this.municipio2PrimerDonutTitle = primerDonutTitle;
+      this.municipio2SegundoDonutTitle = segundoDonutTitle;
 
       this.municipality2TableData = this.buildTableData(entityData);
     }

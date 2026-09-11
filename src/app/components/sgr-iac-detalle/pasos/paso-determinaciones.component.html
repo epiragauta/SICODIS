@@ -1,0 +1,202 @@
+<section class="paso-determinaciones" [attr.aria-label]="'Determinaciones de ' + participante.nombre">
+
+  <!-- Encabezado del participante -->
+  <header class="paso-header">
+    <div class="paso-titulo">
+      <i [class]="participante.icono" aria-hidden="true"></i>
+      <div>
+        <h3>{{ participante.nombre }}</h3>
+        <p class="paso-subtitulo" *ngIf="definicion">
+          Plantilla {{ definicion.idPlantilla }} · hoja «{{ definicion.hoja }}» · datos desde la fila {{ definicion.filaInicial }}
+        </p>
+      </div>
+    </div>
+
+    <button pButton type="button" label="Descargar plantilla" icon="pi pi-download"
+            class="p-button-secondary p-button-sm"
+            [disabled]="!descargasDisponibles"
+            [pTooltip]="descargasDisponibles ? 'Descargar la plantilla oficial' : 'Disponible cuando el backend esté integrado'"
+            (click)="descargarPlantillaOficial()"></button>
+  </header>
+
+  <!-- Cargue activo -->
+  <div class="bloque cargue-activo" *ngIf="cargueActivo as activo">
+    <div class="bloque-header">
+      <h4>Cargue activo</h4>
+      <p-tag [value]="activo.resumen.validacion"
+             [severity]="severidadValidacion(activo.resumen.validacion)"></p-tag>
+    </div>
+
+    <div class="archivo-linea">
+      <i class="pi pi-file-excel" aria-hidden="true"></i>
+      <span class="archivo-nombre">{{ activo.nombreArchivo }}</span>
+      <span class="archivo-meta">
+        validado el {{ activo.fechaCargue | date:'dd/MM/yyyy HH:mm' }} por {{ activo.usuarioCargue }}
+      </span>
+    </div>
+
+    <dl class="totales">
+      <div><dt>Registros</dt><dd>{{ activo.resumen.totalRegistros | numberFormat }}</dd></div>
+      <div><dt>AD 20 %</dt><dd>{{ activo.resumen.totalAd20 | numberFormat }}</dd></div>
+      <div><dt>AD 5 %</dt><dd>{{ activo.resumen.totalAd5 | numberFormat }}</dd></div>
+      <div><dt>AD 20 % OxR SFF</dt><dd>{{ activo.resumen.totalAd20OxrSff | numberFormat }}</dd></div>
+      <div><dt>AD 5 % OxR SFF</dt><dd>{{ activo.resumen.totalAd5OxrSff | numberFormat }}</dd></div>
+      <div><dt>Descuentos</dt><dd>{{ activo.resumen.totalDescuentos | numberFormat }}</dd></div>
+      <div *ngIf="activo.resumen.totalFuncionamiento !== undefined">
+        <dt>Funcionamiento</dt><dd>{{ activo.resumen.totalFuncionamiento | numberFormat }}</dd>
+      </div>
+      <div *ngIf="activo.resumen.totalFiscalizacion !== undefined">
+        <dt>Fiscalización</dt><dd>{{ activo.resumen.totalFiscalizacion | numberFormat }}</dd>
+      </div>
+      <div class="destacado"><dt>Total a distribuir</dt><dd>{{ activo.resumen.totalADistribuir | numberFormat }}</dd></div>
+    </dl>
+
+    <div class="bloque-acciones">
+      <button pButton type="button" label="Descargar Excel" icon="pi pi-file-excel"
+              class="p-button-secondary p-button-sm"
+              [disabled]="!descargasDisponibles"
+              [pTooltip]="descargasDisponibles ? 'Descargar el archivo cargado' : 'Disponible cuando el backend esté integrado'"
+              (click)="descargarArchivoCargue(activo)"></button>
+      <button pButton type="button" label="Descargar log" icon="pi pi-file"
+              class="p-button-secondary p-button-sm"
+              (click)="descargarLogCargue(activo)"></button>
+      <button pButton type="button" label="Eliminar" icon="pi pi-trash"
+              class="p-button-danger p-button-sm"
+              *ngIf="!soloLectura"
+              (click)="eliminarCargueActivo()"></button>
+    </div>
+  </div>
+
+  <div class="bloque sin-cargue" *ngIf="!cargueActivo && !cargandoDatos">
+    <i class="pi pi-info-circle" aria-hidden="true"></i>
+    <span>Aún no hay determinaciones activas de {{ participante.sigla }} para esta IAC.</span>
+  </div>
+
+  <!-- Selección de archivo -->
+  <div class="bloque cargue-nuevo" *ngIf="!soloLectura">
+    <div class="bloque-header">
+      <h4>{{ cargueActivo ? 'Reemplazar determinaciones' : 'Cargar determinaciones' }}</h4>
+    </div>
+
+    <div class="selector">
+      <app-selector-archivo label="Seleccionar archivo…"
+                            styleClass="p-button-primary p-button-sm"
+                            [disabled]="fase === 'validando' || fase === 'enviando'"
+                            [ariaLabel]="'Seleccionar archivo de determinaciones de ' + participante.sigla"
+                            (archivoSeleccionado)="onArchivoSeleccionado($event)"
+                            (archivoRechazado)="onArchivoRechazado($event)">
+      </app-selector-archivo>
+
+      <span class="selector-ayuda">
+        <i class="pi pi-info-circle" aria-hidden="true"></i>
+        El archivo se valida en el navegador antes de enviarlo al servidor.
+      </span>
+    </div>
+
+    <div class="estado-validando" *ngIf="fase === 'validando'" aria-live="polite">
+      <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+      Validando «{{ archivoSeleccionado?.name }}»…
+    </div>
+
+    <!-- Resultado de la prevalidación -->
+    <div class="resultado" *ngIf="resumen as r" aria-live="polite"
+         [class.resultado-ok]="r.validacion === 'Sin Errores'"
+         [class.resultado-error]="r.validacion === 'Con Errores'">
+
+      <div class="resultado-header">
+        <i [class]="r.validacion === 'Sin Errores' ? 'pi pi-check-circle' : 'pi pi-exclamation-triangle'"
+           aria-hidden="true"></i>
+        <span class="resultado-titulo">
+          {{ r.validacion === 'Sin Errores' ? 'Sin errores' : 'Con errores' }}
+          · {{ r.totalRegistros | numberFormat }} registros leídos
+          <ng-container *ngIf="r.errores.length"> · {{ r.errores.length }} hallazgos</ng-container>
+        </span>
+        <span class="resultado-archivo">{{ archivoSeleccionado?.name }}</span>
+      </div>
+
+      <ul class="hallazgos" *ngIf="erroresVisibles.length">
+        <li *ngFor="let e of erroresVisibles">{{ e }}</li>
+        <li class="hallazgos-mas" *ngIf="erroresRestantes > 0">
+          … y {{ erroresRestantes }} hallazgos más. Descargue el log para verlos todos.
+        </li>
+      </ul>
+
+      <dl class="totales">
+        <div><dt>AD 20 %</dt><dd>{{ r.totalAd20 | numberFormat }}</dd></div>
+        <div><dt>AD 5 %</dt><dd>{{ r.totalAd5 | numberFormat }}</dd></div>
+        <div><dt>AD 20 % OxR SFF</dt><dd>{{ r.totalAd20OxrSff | numberFormat }}</dd></div>
+        <div><dt>AD 5 % OxR SFF</dt><dd>{{ r.totalAd5OxrSff | numberFormat }}</dd></div>
+        <div><dt>Descuentos</dt><dd>{{ r.totalDescuentos | numberFormat }}</dd></div>
+        <div *ngIf="r.totalFuncionamiento !== undefined">
+          <dt>Funcionamiento</dt><dd>{{ r.totalFuncionamiento | numberFormat }}</dd>
+        </div>
+        <div *ngIf="r.totalFiscalizacion !== undefined">
+          <dt>Fiscalización</dt><dd>{{ r.totalFiscalizacion | numberFormat }}</dd>
+        </div>
+        <div class="destacado"><dt>Total a distribuir</dt><dd>{{ r.totalADistribuir | numberFormat }}</dd></div>
+      </dl>
+
+      <div class="bloque-acciones">
+        <button pButton type="button" label="Cargar determinaciones" icon="pi pi-check"
+                class="p-button-primary p-button-sm"
+                [disabled]="!puedeEnviar" [loading]="fase === 'enviando'"
+                (click)="enviarCargue()"></button>
+        <button pButton type="button" label="Descargar log" icon="pi pi-file"
+                class="p-button-secondary p-button-sm"
+                (click)="descargarLogPrevalidacion()"></button>
+        <button pButton type="button" label="Descartar" icon="pi pi-times"
+                class="p-button-secondary p-button-sm"
+                [disabled]="fase === 'enviando'"
+                (click)="descartarSeleccion()"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Histórico de cargues -->
+  <div class="bloque historico" *ngIf="historico.length">
+    <button pButton type="button"
+            [label]="(mostrarHistorico ? 'Ocultar' : 'Ver') + ' histórico de cargues (' + historico.length + ')'"
+            [icon]="mostrarHistorico ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
+            class="p-button-text p-button-sm"
+            [attr.aria-expanded]="mostrarHistorico"
+            (click)="alternarHistorico()"></button>
+
+    <p-table *ngIf="mostrarHistorico" [value]="historico" styleClass="p-datatable-sm historico-table"
+             [paginator]="historico.length > 5" [rows]="5">
+      <ng-template pTemplate="header">
+        <tr>
+          <th scope="col">Archivo</th>
+          <th scope="col">Fecha de cargue</th>
+          <th scope="col">Usuario</th>
+          <th scope="col">Resultado</th>
+          <th scope="col" class="col-num">Registros</th>
+          <th scope="col" class="col-num">Total a distribuir</th>
+          <th scope="col">Estado</th>
+          <th scope="col" class="col-acciones">Log</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-c>
+        <tr>
+          <td>{{ c.nombreArchivo }}</td>
+          <td>{{ c.fechaCargue | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>{{ c.usuarioCargue }}</td>
+          <td><p-tag [value]="c.resumen.validacion" [severity]="severidadValidacion(c.resumen.validacion)"></p-tag></td>
+          <td class="col-num">{{ c.resumen.totalRegistros | numberFormat }}</td>
+          <td class="col-num">{{ c.resumen.totalADistribuir | numberFormat }}</td>
+          <td>
+            <span class="chip-activo" *ngIf="c.activo">Activo</span>
+            <span class="chip-inactivo" *ngIf="!c.activo">Inactivo</span>
+          </td>
+          <td class="col-acciones">
+            <button pButton type="button" icon="pi pi-file"
+                    class="p-button-secondary p-button-sm"
+                    pTooltip="Descargar log de validación"
+                    [attr.aria-label]="'Descargar log del cargue ' + c.nombreArchivo"
+                    (click)="descargarLogCargue(c)"></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+</section>

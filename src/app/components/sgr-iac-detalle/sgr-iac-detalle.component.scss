@@ -1,0 +1,467 @@
+.sicodis-container {
+  padding: 1rem;
+  max-width: 1320px;
+  margin: 0 auto;
+  font-family: "Work Sans", sans-serif;
+}
+
+// ===================== Avisos =====================
+
+.aviso {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .85rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  background: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+
+  &.aviso-error {
+    background: #fef2f2;
+    color: #991b1b;
+    border-color: #fecaca;
+  }
+
+  &.aviso-neutro {
+    background: #f8fafc;
+    color: #475569;
+    border-color: #e2e8f0;
+  }
+
+  &.aviso-info {
+    background: #fffbeb;
+    color: #92400e;
+    border-color: #fde68a;
+  }
+}
+
+// ===================== Cabecera =====================
+
+.detalle-header {
+  margin-bottom: 1.25rem;
+
+  .volver { padding-left: 0; }
+
+  .detalle-titulo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    h1 {
+      margin: 0;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #1a408c;
+    }
+  }
+
+  .detalle-meta {
+    margin: .3rem 0 0;
+    font-size: 0.78rem;
+    color: #6b7280;
+  }
+
+  .detalle-estado {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    flex-wrap: wrap;
+  }
+}
+
+// ===================== Indicador de pasos =====================
+
+.pasos {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: .85rem 1rem;
+  margin-bottom: 1rem;
+
+  .pasos-lista {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: .25rem;
+    flex-wrap: wrap;
+  }
+
+  .paso-item {
+    flex: 1 1 8rem;
+    min-width: 8rem;
+  }
+
+  .paso-boton {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    width: 100%;
+    background: none;
+    border: none;
+    border-bottom: 3px solid #cbd5e1;
+    padding: .5rem .35rem;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+
+    &:hover { background: #eef2f7; }
+
+    &:focus-visible {
+      outline: 2px solid #1d4ed8;
+      outline-offset: 2px;
+    }
+  }
+
+  .paso-marca {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    background: #e2e8f0;
+    color: #64748b;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+  }
+
+  .paso-nombre {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #475569;
+
+    small {
+      font-size: 0.62rem;
+      font-weight: 500;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+    }
+  }
+
+  .paso-item.completo {
+    .paso-boton { border-bottom-color: #16a34a; }
+    .paso-marca { background: #16a34a; color: #ffffff; }
+  }
+
+  .paso-item.con-error {
+    .paso-boton { border-bottom-color: #dc2626; }
+    .paso-marca { background: #dc2626; color: #ffffff; }
+  }
+
+  .paso-item.activo {
+    .paso-boton { border-bottom-color: #1d4ed8; background: #eef2ff; }
+    .paso-nombre { color: #1a408c; }
+  }
+
+  .pasos-resumen {
+    margin: .6rem 0 0;
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+}
+
+// ===================== Pestañas =====================
+
+.tabs {
+  display: flex;
+  gap: .25rem;
+  border-bottom: 2px solid #e2e8f0;
+  margin-bottom: 1.25rem;
+
+  .tab {
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    padding: .6rem 1.1rem;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+
+    &:hover { color: #1a408c; }
+
+    &:focus-visible {
+      outline: 2px solid #1d4ed8;
+      outline-offset: -2px;
+    }
+
+    &.tab-activa {
+      color: #1a408c;
+      border-bottom-color: #1a408c;
+    }
+  }
+}
+
+// ===================== Paneles =====================
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.bloque {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem 1.25rem 1.25rem;
+  background: #ffffff;
+
+  .bloque-titulo {
+    margin: 0 0 .35rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #004583;
+  }
+
+  .bloque-meta {
+    margin: 0 0 .85rem;
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+}
+
+.navegacion-pasos {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+
+  .navegacion-espaciador { flex: 1; }
+}
+
+// ===================== Precondiciones =====================
+
+.precondiciones {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  border: 1px solid #fde68a;
+  background: #fffbeb;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+
+  &.precondiciones-ok {
+    border-color: #bbf7d0;
+    background: #f0fdf4;
+
+    .precondiciones-texto i { color: #15803d; }
+  }
+
+  .precondiciones-texto {
+    display: flex;
+    align-items: flex-start;
+    gap: .65rem;
+
+    i {
+      font-size: 1.2rem;
+      color: #b45309;
+      margin-top: .1rem;
+    }
+
+    strong {
+      font-size: 0.88rem;
+      color: #1f2937;
+    }
+  }
+
+  .precondiciones-detalle {
+    margin: .2rem 0 0;
+    font-size: 0.78rem;
+    color: #4b5563;
+    max-width: 46rem;
+  }
+
+  .precondiciones-acciones {
+    display: flex;
+    gap: .5rem;
+    flex-wrap: wrap;
+  }
+}
+
+// ===================== Archivos =====================
+
+.archivos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    padding: .5rem .75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.82rem;
+
+    i { color: #16794c; }
+
+    .archivo-nombre {
+      font-weight: 600;
+      color: #1f2937;
+      word-break: break-all;
+      flex: 1;
+    }
+  }
+}
+
+// ===================== Tablas =====================
+
+:host ::ng-deep .calculo-table {
+  font-size: 0.78rem;
+
+  th {
+    background-color: #004583;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.72rem;
+    white-space: nowrap;
+  }
+
+  .col-num { text-align: right; white-space: nowrap; }
+  .col-num.total { font-weight: 700; color: #004583; }
+}
+
+:host ::ng-deep .param-table {
+  font-size: 0.78rem;
+
+  th {
+    background-color: #f1f5f9;
+    color: #1f2937;
+    font-weight: 600;
+    font-size: 0.72rem;
+    white-space: nowrap;
+  }
+
+  .col-num { text-align: right; white-space: nowrap; }
+
+  .col-ref {
+    font-size: 0.7rem;
+    color: #6b7280;
+  }
+
+  .fila-destacada {
+    background: #eff6ff;
+
+    td { font-weight: 600; color: #1a408c; }
+  }
+}
+
+.param-flag {
+  display: inline-block;
+  padding: .1rem .5rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 600;
+
+  &.on { background: #dcfce7; color: #166534; }
+  &.off { background: #f1f5f9; color: #64748b; }
+}
+
+.enlace-admin {
+  display: inline-block;
+  margin-top: .85rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #1a408c;
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+}
+
+.entidad-codigo {
+  display: inline-block;
+  min-width: 3.4rem;
+  font-family: "Courier New", monospace;
+  font-size: 0.72rem;
+  color: #64748b;
+}
+
+// ===================== Resumen =====================
+
+.resumen-datos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: .75rem 1.25rem;
+  margin: 0;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    border-left: 3px solid #e2e8f0;
+    padding-left: .6rem;
+  }
+
+  dt {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: .02em;
+    color: #6b7280;
+  }
+
+  dd {
+    margin: 0;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #1f2937;
+  }
+
+  .destacado {
+    border-left-color: #004583;
+
+    dd { color: #004583; font-weight: 700; }
+  }
+}
+
+.resumen-pasos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    font-size: 0.85rem;
+    color: #475569;
+
+    i { color: #94a3b8; }
+
+    &.completo i { color: #16a34a; }
+    &.con-error i { color: #dc2626; }
+  }
+
+  .resumen-paso-etiqueta {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: .02em;
+    color: #94a3b8;
+  }
+}
+
+@media (max-width: 768px) {
+  .pasos .paso-item { flex: 1 1 100%; }
+
+  .detalle-header .detalle-titulo h1 { font-size: 1.1rem; }
+}

@@ -11,11 +11,10 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { MenuItem } from 'primeng/api';
 import {
-  SicodisApiService,
   ConjuntoParametros,
-  ParametroValor,
-  ConfigRedondeo
+  ParametroValor
 } from '../../services/sicodis-api.service';
+import { SgrParametrosService } from '../../services/sgr-parametros.service';
 
 /**
  * Resultado de una regla de validación dura sobre el conjunto de parámetros.
@@ -62,8 +61,6 @@ export class SgrParametrosDistribucionComponent implements OnInit {
   /** Perfil administrador (simulado). */
   esAdministrador = true;
 
-  /** Mock mientras no exista el backend `sgrdistribucion/parametros/*`. */
-  private readonly simularParametros = true;
 
   // Conjunto editable (clon de la versión vigente) y su base para restaurar
   conjunto: ConjuntoParametros | null = null;
@@ -84,7 +81,7 @@ export class SgrParametrosDistribucionComponent implements OnInit {
   readonly decimalesOpts = [0, 2];
   readonly modoOpts: Array<'redondeo' | 'truncamiento'> = ['redondeo', 'truncamiento'];
 
-  constructor(private sicodisApiService: SicodisApiService) { }
+  constructor(private sgrParametrosService: SgrParametrosService) { }
 
   ngOnInit(): void {
     this.items = [
@@ -102,14 +99,7 @@ export class SgrParametrosDistribucionComponent implements OnInit {
 
   private cargar(): void {
     this.guardadoOk = false;
-    if (this.simularParametros) {
-      this.baseVigente = this.parametrosMock(this.selectedBienio);
-      this.conjunto = this.clonar(this.baseVigente);
-      this.nuevoMotivo = '';
-      this.recalcular();
-      return;
-    }
-    this.sicodisApiService.getParametrosVigentesSgr(this.selectedBienio?.id).subscribe({
+    this.sgrParametrosService.getVigentes(this.selectedBienio?.id, this.selectedBienio?.label).subscribe({
       next: (c) => {
         this.baseVigente = c;
         this.conjunto = this.clonar(c);
@@ -252,16 +242,7 @@ export class SgrParametrosDistribucionComponent implements OnInit {
     };
 
     this.guardando = true;
-    if (this.simularParametros) {
-      this.baseVigente = this.clonar(nueva);
-      this.conjunto = this.clonar(nueva);
-      this.versionGuardada = nueva.etiquetaVersion;
-      this.guardadoOk = true;
-      this.guardando = false;
-      this.nuevoMotivo = '';
-      return;
-    }
-    this.sicodisApiService.guardarParametrosSgr(nueva).subscribe({
+    this.sgrParametrosService.guardar(nueva).subscribe({
       next: (persistida) => {
         this.baseVigente = this.clonar(persistida);
         this.conjunto = this.clonar(persistida);
@@ -298,71 +279,4 @@ export class SgrParametrosDistribucionComponent implements OnInit {
 
   // ===================== Mock =====================
 
-  private parametrosMock(bienio: any): ConjuntoParametros {
-    const pct = (clave: string, etiqueta: string, valor: number, ref?: string): ParametroValor =>
-      ({ clave, etiqueta, valor, unidad: '%', referenciaNormativa: ref });
-    const fac = (clave: string, etiqueta: string, valor: number): ParametroValor =>
-      ({ clave, etiqueta, valor, unidad: 'factor' });
-    const red = (tipoSalida: ConfigRedondeo['tipoSalida'], etiqueta: string, decimales: 0 | 2): ConfigRedondeo =>
-      ({ tipoSalida, etiqueta, decimales, modo: 'redondeo' });
-
-    return {
-      idVersion: 2,
-      etiquetaVersion: 'P-v2',
-      vigencia: bienio?.label ?? '',
-      fecha: '2026-08-12T00:00:00',
-      autor: 'admin',
-      motivo: 'Parámetros de referencia tabla 2 · Ley 2056 de 2020',
-      porcentajes: [
-        pct('inversion', 'Inversión', 92.5, 'Art. 361 C.P. · art. 22 L2056'),
-        pct('inversion.ad', '— Asignaciones Directas (20% + 5%)', 25, 'Arts. 22 y 23 L2056'),
-        pct('inversion.ail', '— Asignación Inversión Local', 15, 'Art. 48 L2056'),
-        pct('inversion.air', '— Asignación Inversión Regional', 34, 'Arts. 44 y 45 L2056'),
-        pct('inversion.acti', '— Ciencia, Tecnología e Innovación', 10, 'Art. 52 L2056'),
-        pct('inversion.paz', '— Asignación para la Paz', 7, 'Parág. 7.º trans. art. 361 C.P.'),
-        pct('inversion.ambiental', '— Asignación Ambiental', 1, 'Art. 50 L2056'),
-        pct('inversion.cormagdalena', '— Cormagdalena', 0.5, 'Art. 331 C.P.'),
-        pct('ahorro', 'Ahorro', 4.5, 'Art. 361 C.P. · art. 22 L2056'),
-        pct('ahorro.fae', '— FAE (referencia)', 2.25, 'Art. 113 L2056'),
-        pct('ahorro.fonpet', '— FONPET (referencia)', 2.25, 'Art. 122 L2056'),
-        pct('administracion', 'Administración', 3, 'Art. 361 C.P. · art. 22 L2056'),
-        pct('administracion.funcionamiento', '— Funcionamiento y fiscalización', 2, 'Art. 12 L2056'),
-        pct('administracion.ssec', '— SSEC (CGR · PGN · DNP)', 1, 'Art. 167 L2056')
-      ],
-      ponderadores: [
-        fac('ail.nbi', 'AIL · NBI', 0.6),
-        fac('ail.poblacion', 'AIL · Población', 0.4),
-        fac('air.nbi', 'AIR · NBI', 0.5),
-        fac('air.poblacion', 'AIR · Población', 0.4),
-        fac('air.desempleo', 'AIR · Desempleo', 0.1),
-        fac('air.particion.dptos', 'AIR · Partición departamentos', 0.6),
-        fac('air.particion.regiones', 'AIR · Partición regiones', 0.4),
-        fac('fonpet.ppnc', 'FONPET · PPNC', 0.8),
-        fac('fonpet.nbi', 'FONPET · NBI', 0.1),
-        fac('fonpet.poblacion', 'FONPET · Población', 0.1),
-        fac('etnico.urbano', 'Étnico · Ponderador urbano', 0.4),
-        fac('etnico.rural', 'Étnico · Ponderador rural', 0.6)
-      ],
-      umbrales: [
-        { clave: 'ail.compensacion.umbral', etiqueta: 'Compensación AIL · garantía', valor: 75, unidad: '%', referenciaNormativa: 'num. 3.1.1.2.2' },
-        { clave: 'ail.compensacion.parcial', etiqueta: 'Permitir compensación parcial', valor: true, unidad: 'flag' },
-        { clave: 'fae.piso', etiqueta: 'Piso FAE (del ahorro)', valor: 50, unidad: '%', referenciaNormativa: 'num. 3.2.1.1' },
-        { clave: 'etnico.bloqueo', etiqueta: 'Bloqueo étnico', valor: 20, unidad: '%', referenciaNormativa: 'Sección III' },
-        { clave: 'ambiental.minimo', etiqueta: 'Mínimo ambiental del SGR', valor: 2, unidad: 'pp' },
-        { clave: 'noaforados.corriente', etiqueta: 'No aforados · bolsa corriente', valor: 75, unidad: '%', referenciaNormativa: 'num. 5.1.1.f' },
-        { clave: 'noaforados.restante', etiqueta: 'No aforados · bolsa restante', valor: 25, unidad: '%', referenciaNormativa: 'num. 5.1.1.f' },
-        { clave: 'etnico.excluir.car', etiqueta: 'Excluir CAR de la base étnica', valor: true, unidad: 'flag' },
-        { clave: 'etnico.excluir.indeterminados', etiqueta: 'Excluir indeterminados de la base étnica', valor: true, unidad: 'flag' }
-      ],
-      redondeo: [
-        red('PR', 'Plan de Recursos (decenal)', 0),
-        red('desahorroFAE', 'Desahorro FAE', 0),
-        red('mayorRecaudo', 'Mayor recaudo', 0),
-        red('multas', 'Multas', 0),
-        red('etnicas', 'Destinaciones étnicas', 0),
-        red('PBC', 'Plan Bienal de Caja', 2),
-        red('IAC', 'IAC (límite SPGR)', 2)
-      ]
-    };
-  }
 }

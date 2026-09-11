@@ -79,7 +79,22 @@
       .p-multiselect {
         flex: 0 0 auto; // Don't grow or shrink, base size on content or fixed width
         width: 210px;
-      }      
+      }
+
+      // Departamento, Municipio y Entidad deben mantener un ancho consistente con los
+      // demás selects y no colapsar cuando la fila se queda sin espacio horizontal.
+      .dpto-select,
+      .mpio-select,
+      .entidades-cr-select {
+        flex: 0 0 auto;
+        width: 210px;
+
+        p-floatlabel,
+        .p-select,
+        .p-multiselect {
+          width: 100%;
+        }
+      }
     }
 
     // Indicador de estado de selección
@@ -293,14 +308,15 @@
           width: 100%;
 
           &.metrics-row-recaudo {
-            flex-direction: column;
-            justify-content: center;
+            flex-direction: row;
+            justify-content: space-around;
             gap: 0.5rem;
 
             .metric-item {
               min-width: unset;
               max-width: unset;
-              width: 100%;
+              width: auto;
+              flex: 1;
             }
           }
 

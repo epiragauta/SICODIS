@@ -48,7 +48,7 @@
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="municipio" [options]="municipios" inputId="municipioSelect" [(ngModel)]="selectedMunicipio"
             (onChange)="onMunicipioChange($event)" optionLabel="nombre" [showClear]="false" [disabled]="!selectedDepartamento"></p-select>
-          <label for="municipioSelect">Municipio</label>
+          <label for="municipioSelect">Entidad</label>
         </p-floatlabel>
       </div>
 
@@ -64,7 +64,7 @@
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="municipio2" [options]="municipios2" inputId="municipio2Select" [(ngModel)]="selectedMunicipio2"
             (onChange)="onMunicipio2Change($event)" optionLabel="nombre" [showClear]="false" [disabled]="!selectedDepartamento2"></p-select>
-          <label for="municipio2Select">Municipio 2</label>
+          <label for="municipio2Select">Entidad 2</label>
         </p-floatlabel>
       </div>
 
@@ -140,7 +140,7 @@
           <div class="donut-charts-container">
             <!-- First donut chart -->
             <div class="donut-chart-item">
-              <h4 class="donut-chart-title">Presupuesto y recaudo corrientes A. Directas</h4>
+              <h4 class="donut-chart-title">Presupuesto y recaudo corrientes {{ municipio1PrimerDonutTitle }}</h4>
               <div class="donut-chart-wrapper">
                 <p-chart
                   type="doughnut"
@@ -154,7 +154,7 @@
 
             <!-- Second donut chart -->
             <div class="donut-chart-item">
-              <h4 class="donut-chart-title">Presupuesto y recaudo corrientes A. Directas anticipadas</h4>
+              <h4 class="donut-chart-title">Presupuesto y recaudo corrientes {{ municipio1SegundoDonutTitle }}</h4>
               <div class="donut-chart-wrapper">
                 <p-chart
                   type="doughnut"
@@ -195,7 +195,7 @@
           <div class="donut-charts-container">
             <!-- First donut chart -->
             <div class="donut-chart-item">
-              <h4 class="donut-chart-title">Presupuesto y recaudo corrientes A. Directas</h4>
+              <h4 class="donut-chart-title">Presupuesto y recaudo corrientes {{ municipio2PrimerDonutTitle }}</h4>
               <div class="donut-chart-wrapper">
                 <p-chart
                   type="doughnut"
@@ -209,7 +209,7 @@
 
             <!-- Second donut chart -->
             <div class="donut-chart-item">
-              <h4 class="donut-chart-title">Presupuesto y recaudo corrientes A. Directas anticipadas</h4>
+              <h4 class="donut-chart-title">Presupuesto y recaudo corrientes {{ municipio2SegundoDonutTitle }}</h4>
               <div class="donut-chart-wrapper">
                 <p-chart
                   type="doughnut"

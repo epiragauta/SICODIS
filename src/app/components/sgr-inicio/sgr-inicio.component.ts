@@ -13,6 +13,7 @@ import { PercentFormatPipe } from '../../utils/percentFormatPipe';
 import { Router } from '@angular/router';
 import { SicodisApiService, SgrPtoRecaudoItem, Vigencia } from '../../services/sicodis-api.service';
 import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
+import { InfografiaPopupComponent } from '../infografia-popup/infografia-popup.component';
 
 @Component({
   selector: 'app-sgr-inicio',
@@ -27,7 +28,8 @@ import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
     TreeTableModule,
     ProgressSpinnerModule,
     NumberFormatPipe,
-    PercentFormatPipe
+    PercentFormatPipe,
+    InfografiaPopupComponent
   ],
   templateUrl: './sgr-inicio.component.html',
   styleUrl: './sgr-inicio.component.scss'

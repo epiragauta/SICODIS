@@ -142,8 +142,7 @@
   <!-- Seccion de tabla -->
   <div class="table-section">
     <div class="table-header">
-      <h2 class="table-title">Totales plan bienal de caja (PBC) {{ vigenciaLabel }}</h2>
-      <p class="table-subtitle">Ley 2441 de 2024</p>
+      <h2 class="table-title">Totales plan bienal de caja (PBC) {{ vigenciaLabel }}</h2>      
     </div>
 
     <div style="overflow-x: auto;">
@@ -200,7 +199,7 @@
                   <span [ngClass]="{
                     'font-bold': rowNode.level === 0 || rowData.section === 'total'
                   }">
-                    {{rowData.concepto}}
+                    {{ rowData.section === 'total' ? (rowData.concepto | uppercase) : rowData.concepto }}
                   </span>
                 </ng-container>
 

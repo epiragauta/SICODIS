@@ -1,0 +1,51 @@
+<section class="paso-funfis" aria-label="Información de Funcionamiento y Fiscalización">
+
+  <header class="paso-header">
+    <div class="paso-titulo">
+      <i class="pi pi-briefcase" aria-hidden="true"></i>
+      <div>
+        <h3>Funcionamiento y Fiscalización</h3>
+        <p class="paso-subtitulo">
+          Paso opcional. No se exige para habilitar el cálculo de la IAC.
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <div class="cargando" *ngIf="cargando" aria-live="polite">
+    <i class="pi pi-spin pi-spinner" aria-hidden="true"></i> Consultando el estado registrado…
+  </div>
+
+  <fieldset class="pregunta" *ngIf="!cargando">
+    <legend>¿Esta IAC incluye determinaciones de Funcionamiento y Fiscalización?</legend>
+
+    <div class="opciones">
+      <div class="opcion">
+        <p-radiobutton inputId="funfisSi" name="funfisAplica" [value]="true"
+                       [(ngModel)]="aplica" [disabled]="soloLectura || guardando"
+                       (onClick)="onAplicaChange(true)"></p-radiobutton>
+        <label for="funfisSi">Sí</label>
+      </div>
+
+      <div class="opcion">
+        <p-radiobutton inputId="funfisNo" name="funfisAplica" [value]="false"
+                       [(ngModel)]="aplica" [disabled]="soloLectura || guardando"
+                       (onClick)="onAplicaChange(false)"></p-radiobutton>
+        <label for="funfisNo">No</label>
+      </div>
+    </div>
+
+    <p class="pregunta-ayuda" *ngIf="aplica === false">
+      Se registró que no aplican determinaciones de Funcionamiento y Fiscalización. El paso queda resuelto.
+    </p>
+  </fieldset>
+
+  <!-- El cargue solo aparece cuando se declara que sí aplica -->
+  <app-paso-determinaciones *ngIf="!cargando && aplica === true"
+                            [idIac]="idIac"
+                            [participante]="participante"
+                            [soloLectura]="soloLectura"
+                            (cambio)="onCambioDeterminaciones()">
+  </app-paso-determinaciones>
+
+</section>

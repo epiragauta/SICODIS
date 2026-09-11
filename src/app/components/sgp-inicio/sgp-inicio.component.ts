@@ -11,6 +11,7 @@ import { BillonesFormatPipe } from '../../utils/billonesFormatPipe';
 import { MatIconModule } from '@angular/material/icon';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
+import { InfografiaPopupComponent } from '../infografia-popup/infografia-popup.component';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
@@ -37,6 +38,7 @@ import { TreeTableModule } from 'primeng/treetable';
       MatIconModule,
       FloatLabel,
       InfoPopupComponent,
+      InfografiaPopupComponent,
       SplitButtonModule,
       CardModule,
       Select,
