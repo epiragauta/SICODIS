@@ -177,7 +177,7 @@
                     'font-bold': rowNode.level === 0 || rowData.section === 'total',
                     'total-row-text': rowData.section === 'total'
                   }">
-                    {{rowData.concepto}}
+                    {{ rowData.section === 'total' ? (rowData.concepto | uppercase) : rowData.concepto }}
                   </span>
                 </ng-container>
 
