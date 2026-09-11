@@ -112,7 +112,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
   selectedConcepto: any[] = [];
   selectedBeneficiario: any[] = [];
   selectedDepartamento: any;
-  selectedMunicipio: any;
+  selectedMunicipio: any[] = [];
   selectedEntidadCR: any;
   isEntidadCRSelected: boolean = false;
 
@@ -187,6 +187,35 @@ export class ReporteFuncionamientoComponent implements OnInit {
   
   // Registro actualmente seleccionado
   registroActual: any = null;
+
+  /**
+   * Indica si se debe ocultar la tarjeta "Ejecución Presupuestal" y la gráfica
+   * "Afectación Presupuestal". Aplica para el item "Recursos por distribuir" de las
+   * asignaciones "Funcionamiento SGR" y "Fiscalización" (beneficiarios
+   * "Recursos por distribuir - Funcionamiento" y "Recursos por distribuir - Fiscalización"),
+   * que por ser recursos aún sin distribuir no tienen ejecución ni afectación presupuestal.
+   */
+  get ocultarEjecucionYAfectacion(): boolean {
+    return this.selectedBeneficiario?.length === 1 &&
+      (this.selectedBeneficiario[0]?.label ?? '')
+        .trim()
+        .toLowerCase()
+        .startsWith('recursos por distribuir');
+  }
+
+  /**
+   * Indica si se deben ocultar las tarjetas "Situación de Caja" y "Avance del recaudo de
+   * ingresos corrientes" con sus gráficos. Aplica cuando el beneficiario es
+   * "Departamento Nacional de Planeación - Comisión Rectora" y la entidad de la Comisión
+   * Rectora seleccionada NO es "Comisión Rectora - DNP" (las demás entidades —departamentos,
+   * municipios y asociaciones— no tienen situación de caja ni avance de recaudo propios).
+   */
+  get ocultarCajaYRecaudo(): boolean {
+    return this.selectedBeneficiario?.length === 1 &&
+      (this.selectedBeneficiario[0]?.label ?? '').trim() === this.DNP_CR &&
+      this.selectedEntidadCR != null &&
+      (this.selectedEntidadCR.nombre_entidad ?? '').trim() !== 'Comisión Rectora - DNP';
+  }
 
   vigencias: any[] = [];
 
@@ -841,6 +870,39 @@ export class ReporteFuncionamientoComponent implements OnInit {
   }
 
   /**
+   * Filtra conceptos que no cuentan con información para la vigencia seleccionada.
+   * Caso conocido: para la asignación "Fiscalización" en la vigencia 2013 - 2014 solo el
+   * concepto "Fiscalización" tiene datos; se ocultan del selector "Formulación, articulación
+   * y seguimiento", "Conocimiento y cartografía" y "Otros".
+   */
+  private filtrarConceptosSinDatos(conceptos: any[] | undefined): any[] {
+    if (!conceptos) {
+      return [];
+    }
+
+    const normalizar = (texto: string): string =>
+      (texto ?? '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .trim()
+        .toLowerCase();
+
+    const esVigencia2013_2014 =
+      this.selectedVigencia?.id === 2 ||
+      normalizar(this.selectedVigencia?.label ?? '') === '2013 - 2014';
+
+    if (!esVigencia2013_2014) {
+      return conceptos;
+    }
+
+    return conceptos.filter((concepto: any) => {
+      const esFiscalizacion = normalizar(concepto.fuente) === 'fiscalizacion';
+      // De la asignación Fiscalización solo se conserva el concepto "Fiscalización".
+      return !esFiscalizacion || normalizar(concepto.concepto) === 'fiscalizacion';
+    });
+  }
+
+  /**
    * Cargar conceptos desde las fuentes seleccionadas usando API (optimizado)
    */
   private async cargarConceptosDesdeFuentes(): Promise<void> {
@@ -874,8 +936,9 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
       // Llamar al API con los IDs de fuentes separados por comas
       const idsFuentesString = idsFuentesSeleccionadas.join(',');
-      const conceptosFuentes = await this.sicodisApiService.getConceptosFuentes(idsFuentesString).toPromise();
-      
+      const conceptosFuentesApi = await this.sicodisApiService.getConceptosFuentes(idsFuentesString).toPromise();
+      const conceptosFuentes = this.filtrarConceptosSinDatos(conceptosFuentesApi);
+
       if (conceptosFuentes && conceptosFuentes.length > 0) {
         // Usar conceptos del API ordenados alfabéticamente
         const conceptosOrdenados = conceptosFuentes.sort((a: any, b: any) => a.concepto.localeCompare(b.concepto));
@@ -1247,6 +1310,12 @@ export class ReporteFuncionamientoComponent implements OnInit {
      codDpto += "000";
 
     if (this.selectedBeneficiario.length === 1 && this.selectedBeneficiario[0].label.trim() === "Municipios") {
+      // Al cambiar de departamento, los municipios seleccionados dejan de ser válidos:
+      // limpiar selección y la comparación previa.
+      this.selectedMunicipio = [];
+      this.distribucionTotalMultiple = [];
+      this.detailChartData = null;
+      this.showDetailInfo = false;
       // Cargar municipios usando API
       this.cargarMunicipiosPorDepartamento(event.value.value);
     }else{
@@ -1317,10 +1386,76 @@ export class ReporteFuncionamientoComponent implements OnInit {
     
   }
 
-  onMunicipioChange(event: MultiSelectChangeEvent): void {
+  async onMunicipioChange(event: MultiSelectChangeEvent): Promise<void> {
+    // Salvaguarda: máximo 3 municipios para la comparación
+    if (this.selectedMunicipio && this.selectedMunicipio.length > 3) {
+      this.selectedMunicipio = this.selectedMunicipio.slice(0, 3);
+    }
 
-    // Llamar a la API para actualizar los datos con los nuevos filtros
-    this.cargarDistribucionTotalDesdeAPI();
+    // Actualizar las tarjetas superiores con el consolidado de los municipios seleccionados
+    await this.cargarDistribucionTotalDesdeAPI();
+
+    // Construir la comparación por municipio en la sección de detalle
+    if (this.selectedMunicipio && this.selectedMunicipio.length > 0) {
+      await this.cargarDistribucionTotalPorCadaMunicipio();
+      this.showDetailInfo = true;
+    } else {
+      this.distribucionTotalMultiple = [];
+      this.detailChartData = null;
+      this.showDetailInfo = false;
+    }
+  }
+
+  /**
+   * Cargar la distribución total de cada municipio seleccionado (hasta 3) para poder
+   * compararlos en la sección "Detalle del Registro Seleccionado".
+   */
+  private async cargarDistribucionTotalPorCadaMunicipio(): Promise<void> {
+    try {
+      this.distribucionTotalMultiple = [];
+
+      for (const municipio of this.selectedMunicipio) {
+        const params = this.construirParametrosAPIParaMunicipio(municipio);
+        const distribucionMunicipio = await this.sicodisApiService.getDistribucionTotal(params).toPromise();
+
+        if (distribucionMunicipio && distribucionMunicipio.length > 0) {
+          const fuentePrincipal = distribucionMunicipio[0].nombre_fuente
+            ?? (this.selectedFuente.length > 0 ? this.selectedFuente[0].label : 'N/A');
+
+          const registros = distribucionMunicipio.map((registro: any) => ({
+            ...registro,
+            beneficiario_seleccionado: municipio.label,
+            beneficiario_value: municipio.value,
+            beneficiario_info: { label: municipio.label, value: municipio.value },
+            fuente_asociada: fuentePrincipal,
+            fuente_principal: fuentePrincipal ?? 'N/A'
+          }));
+
+          this.distribucionTotalMultiple.push(...registros);
+        }
+      }
+
+      if (this.distribucionTotalMultiple.length > 0) {
+        this.actualizarGraficoDetalle();
+      } else {
+        this.detailChartData = null;
+      }
+    } catch (error) {
+      console.error('Error cargando distribución total por municipio:', error);
+      this.detailChartData = null;
+    }
+  }
+
+  /**
+   * Construir parámetros API para un municipio específico (tipoEntidad = MUNICIPIO).
+   */
+  private construirParametrosAPIParaMunicipio(municipio: any): any {
+    // Reutiliza la lógica de vigencia/fuentes/conceptos del helper de beneficiario
+    const params = this.construirParametrosAPIParaBeneficiario({ value: municipio.value, label: 'Municipios' });
+    // El helper limpia idsBeneficiario para tipo MUNICIPIO; aquí sí se requiere el código del municipio
+    params.idsBeneficiario = municipio.value;
+    params.tipoEntidad = this.MUNICIPIO;
+    return params;
   }
 
   /**
@@ -1431,9 +1566,15 @@ export class ReporteFuncionamientoComponent implements OnInit {
   private async cargarDistribucionTotalPorCadaBeneficiario(): Promise<void> {
     try {
       this.distribucionTotalMultiple = [];
-      
+
+      // Deduplicar beneficiarios por su código (value) para no repetir tarjetas en el detalle
+      const beneficiariosUnicos = this.selectedBeneficiario.filter(
+        (beneficiario: any, indice: number, lista: any[]) =>
+          lista.findIndex((b: any) => b.value === beneficiario.value) === indice
+      );
+
       // Iterar por cada beneficiario seleccionado
-      for (const beneficiario of this.selectedBeneficiario) {
+      for (const beneficiario of beneficiariosUnicos) {
         if (beneficiario.value !== "TOTAL") {
           // Construir parámetros específicos para este beneficiario
           const params = this.construirParametrosAPIParaBeneficiario(beneficiario);
@@ -1676,13 +1817,14 @@ export class ReporteFuncionamientoComponent implements OnInit {
     
     // 4. Beneficiarios (idsBeneficiario)
     // lógica especial para Municipios y Departamentos
-    if (this.selectedBeneficiario && this.selectedBeneficiario.length === 1 && 
+    if (this.selectedBeneficiario && this.selectedBeneficiario.length === 1 &&
         this.selectedBeneficiario[0].label.trim() === "Municipios" &&
-        this.selectedMunicipio) {
-      // Si beneficiario es "Municipios" y hay municipio seleccionado, usar ID del municipio
-      params.idsBeneficiario = this.selectedMunicipio.value;
-      
-    } else if (this.selectedBeneficiario && this.selectedBeneficiario.length === 1 && 
+        this.selectedMunicipio && this.selectedMunicipio.length > 0) {
+      // Si beneficiario es "Municipios" y hay municipios seleccionados (hasta 3),
+      // usar los códigos de los municipios separados por comas
+      params.idsBeneficiario = this.selectedMunicipio.map((m: any) => m.value).join(',');
+
+    } else if (this.selectedBeneficiario && this.selectedBeneficiario.length === 1 &&
                this.selectedBeneficiario[0].label.trim() === "Departamentos" &&
                this.selectedDepartamento) {
       // Si beneficiario es "Departamentos" y hay departamento seleccionado, usar ID del departamento
@@ -1717,7 +1859,8 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
     // 6. Si tipo de entidad es "", forzar idsBeneficiario a "" y validar si selectedBeneficiario es DEPARTAMENTO o MUNICIPIO
 
-    if (this.selectedBeneficiario && this.selectedBeneficiario.length === 1 && this.selectedDepartamento == null && this.selectedMunicipio == null &&
+    if (this.selectedBeneficiario && this.selectedBeneficiario.length === 1 && this.selectedDepartamento == null &&
+       (this.selectedMunicipio == null || this.selectedMunicipio.length === 0) &&
        (this.selectedBeneficiario[0].label.trim() === "Departamentos" || this.selectedBeneficiario[0].label.trim() === "Municipios")) {
        params.idsBeneficiario = "";
     }
@@ -1928,6 +2071,36 @@ export class ReporteFuncionamientoComponent implements OnInit {
   /**
    * Actualizar gráfico de detalle con datos de distribución
    */
+  /**
+   * Divide una etiqueta larga en varias líneas para que Chart.js la muestre en el eje
+   * sin consumir demasiado ancho (lo que contraía la barra). Limita a un máximo de líneas
+   * y agrega elipsis si el texto excede ese máximo.
+   */
+  private envolverEtiqueta(texto: string, maxCaracteres: number = 24, maxLineas: number = 3): string[] {
+    const palabras = (texto ?? '').trim().split(/\s+/);
+    const lineas: string[] = [];
+    let actual = '';
+
+    for (const palabra of palabras) {
+      if (actual && (actual.length + 1 + palabra.length) > maxCaracteres) {
+        lineas.push(actual);
+        actual = palabra;
+      } else {
+        actual = actual ? `${actual} ${palabra}` : palabra;
+      }
+    }
+    if (actual) {
+      lineas.push(actual);
+    }
+
+    if (lineas.length > maxLineas) {
+      const recortadas = lineas.slice(0, maxLineas);
+      recortadas[maxLineas - 1] = recortadas[maxLineas - 1].replace(/\s*\S*$/, '') + '…';
+      return recortadas;
+    }
+    return lineas.length > 0 ? lineas : [texto];
+  }
+
   private actualizarGraficoDetalle(): void {
     try {
       // Determinar qué datos usar
@@ -1952,7 +2125,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
 
       // Generar un chart data por cada registro
       this.detailChartData = datosParaGrafico.map((registro: any) => ({
-        labels: [registro.beneficiario_seleccionado || registro.fuente_principal || 'S/N'],
+        labels: [this.envolverEtiqueta(registro.beneficiario_seleccionado || registro.fuente_principal || 'S/N')],
         datasets: [
           {
             label: 'Compromisos',
@@ -2861,7 +3034,7 @@ export class ReporteFuncionamientoComponent implements OnInit {
     this.showMpios = false;
     this.showEntidadesCR = false;
     this.selectedDepartamento = null;
-    this.selectedMunicipio = null;
+    this.selectedMunicipio = [];
     this.selectedEntidadCR = null;
     this.isEntidadCRSelected = false;
   }

@@ -86,18 +86,20 @@
       <div class="p-field entidades-cr-select" *ngIf="showEntidadesCR">
         <p-floatlabel class="w-full md:w-56" variant="on">
           <p-select id="entidad-cr" [options]="funcionamientoDataEntitiesCR" inputId="entidadCrSelect"
-            [(ngModel)]="selectedEntidadCR" optionLabel="nombre_entidad" (onChange)="onEntidadCRChange($event)" 
-            placeholder="Entidad" ></p-select>
+            [(ngModel)]="selectedEntidadCR" optionLabel="nombre_entidad" (onChange)="onEntidadCRChange($event)">
+          </p-select>
           <label for="entidadCrSelect">Entidad</label>
         </p-floatlabel>
       </div>
 
       <div class="p-field mpio-select" *ngIf="showMpios">
         <p-floatlabel class="w-full md:w-56" variant="on">
-          <p-select id="municipio" [options]="municipios" inputId="municipioSelect"
-            [(ngModel)]="selectedMunicipio" optionLabel="label" (onChange)="onMunicipioChange($event)" 
-          ></p-select>
-          <label for="municipioSelect">Municipio</label>
+          <p-multiselect id="municipio" [options]="municipios" inputId="municipioSelect"
+            [(ngModel)]="selectedMunicipio" optionLabel="label" (onChange)="onMunicipioChange($event)"
+            [selectionLimit]="3" [maxSelectedLabels]="3"
+            emptyMessage="Sin municipios">
+          </p-multiselect>
+          <label for="municipioSelect">Municipio (hasta 3)</label>
         </p-floatlabel>
       </div>
 
@@ -176,7 +178,7 @@
       </mat-card>
 
       <!-- Tarjeta 2: Ejecución Presupuestal -->
-      <mat-card class="info-card" [class.loading]="isLoadingData">
+      <mat-card class="info-card" [class.loading]="isLoadingData" *ngIf="!ocultarEjecucionYAfectacion">
         <mat-card-header>
           <mat-card-title class="card-title card-main">Ejecución Presupuestal</mat-card-title>
         </mat-card-header>
@@ -206,8 +208,8 @@
         </mat-card-content>
       </mat-card>
 
-      <!-- Tarjeta 3: Situación de Caja *ngIf="!isEntidadCRSelected"-->
-      <mat-card class="info-card" [class.loading]="isLoadingData" >
+      <!-- Tarjeta 3: Situación de Caja -->
+      <mat-card class="info-card" [class.loading]="isLoadingData" *ngIf="!ocultarCajaYRecaudo">
         <mat-card-header>
           <mat-card-title class="card-title card-main">Situación de Caja</mat-card-title>
         </mat-card-header>
@@ -233,8 +235,8 @@
         </mat-card-content>
       </mat-card>
 
-      <!-- Tarjeta 4: Avance de Recaudo *ngIf="!isEntidadCRSelected"-->
-      <div style="display: flex;gap: 0.25rem" >
+      <!-- Tarjeta 4: Avance de Recaudo -->
+      <div style="display: flex;gap: 0.25rem" *ngIf="!ocultarCajaYRecaudo">
         <mat-card class="info-card info-card-recaudo" [class.loading]="isLoadingData">
           <mat-card-header class="card-header-avance-recaudo">
             <mat-card-title class="card-title card-main">Avance del recaudo de ingresos corrientes</mat-card-title>
@@ -273,20 +275,20 @@
         <p-chart type="doughnut" [data]="donutAvanceEjecucionData" [options]="donutAvanceEjecucionOptions" class="chart"></p-chart>
       </div>
 
-      <!-- Gráfico 2: Barra horizontal -->
-      <div class="chart-container horizontal-bar-container" [class.loading]="isLoadingData">
+      <!-- Gráfico 2: Barra horizontal (Afectación Presupuestal) -->
+      <div class="chart-container horizontal-bar-container" [class.loading]="isLoadingData" *ngIf="!ocultarEjecucionYAfectacion">
         <p-chart type="bar" [data]="horizontalBarAfectacionData" [options]="horizontalBarAfectacionOptions" class="chart horizontal-bar-chart">
         </p-chart>
       </div>
 
-      <!-- Gráfico 3: Barra horizontal *ngIf="!isEntidadCRSelected"-->
-      <div class="chart-container horizontal-bar-container" [class.loading]="isLoadingData" >
+      <!-- Gráfico 3: Barra horizontal (Situación de Caja) -->
+      <div class="chart-container horizontal-bar-container" [class.loading]="isLoadingData" *ngIf="!ocultarCajaYRecaudo">
         <p-chart type="bar" [data]="hBarSituacionCajaData" [options]="hBarSituacionCajaOpts" class="chart horizontal-bar-chart"></p-chart>
       </div>
-      <!-- Gráfico 4: Barras Horizontales Avance de Recaudo *ngIf="!isEntidadCRSelected"-->
-      <div class="chart-container horizontal-bar-container" [class.loading]="isLoadingData" >
+      <!-- Gráfico 4: Barras Horizontales Avance de Recaudo -->
+      <div class="chart-container horizontal-bar-container" [class.loading]="isLoadingData" *ngIf="!ocultarCajaYRecaudo">
         <p-chart type="bar" [data]="hBarAvanceRecaudoData" [options]="hBarAvanceRecaudoOptions" class="chart horizontal-bar-chart"></p-chart>
-      </div> 
+      </div>
     </div>
   </div>
   
