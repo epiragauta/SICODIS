@@ -119,7 +119,8 @@ export class SgpResguardosComponent implements OnInit {
    * (información basada en documentos CONPES), alojado en el sitio de colaboración del DNP.
    */
   readonly urlHistoricoConpes = 'https://colaboracion.dnp.gov.co/CDT/Inversiones%20y%20finanzas%20pblicas/Documentos%20GFT/Documentos_SGP/resguardos/detalle_sgp_indigenas_conpes.xlsx';
-
+  readonly urlHistoricosIndigenas = 'https://colaboracion.dnp.gov.co/CDT/Inversiones%20y%20finanzas%20pblicas/Documentos%20GFT/Documentos_SGP/resguardos/detalle_sgp_indigenas_historico.xlsx';
+  
   // Enlaces de interés (cada uno abre un popup con información ampliada)
   enlacesInteres: EnlaceInteres[] = [
     {
@@ -473,6 +474,11 @@ export class SgpResguardosComponent implements OnInit {
     window.open(this.urlHistoricoConpes, '_blank');
   }
 
+  descargarHistoricoNacional(): void {
+    window.open(this.urlHistoricosIndigenas, '_blank');
+  }
+
+  
   private getNombreOpcion(opciones: OpcionFiltro[], id: string): string {
     return opciones.find(o => o.id === id)?.label ?? '';
   }

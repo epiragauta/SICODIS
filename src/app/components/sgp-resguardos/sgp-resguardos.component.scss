@@ -553,17 +553,6 @@
             border-color: #10b981;
           }
 
-          // Aclaración de alcance de la cifra (no es un indicador de variación)
-          &.info {
-            background-color: #eff6ff;
-            border-color: #3b82f6;
-
-            p {
-              color: #1e3a8a;
-              font-weight: 400;
-            }
-          }
-
           p {
             margin: 0;
             font-size: 0.85rem;
@@ -779,10 +768,11 @@
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 25px 60px rgba(15, 23, 42, 0.25);
+  max-height: 95vh;
 
   .p-dialog-content {
     border-radius: 16px;
-    overflow: hidden;
+    overflow: visible;
   }
 }
 
