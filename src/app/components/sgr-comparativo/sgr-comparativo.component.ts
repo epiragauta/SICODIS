@@ -554,6 +554,64 @@ export class SgrComparativoComponent implements OnInit {
   }
 
   /**
+   * Descarga el archivo Excel de resumen presupuesto vs recaudo para las dos
+   * entidades seleccionadas en la consulta comparativa (un archivo por entidad).
+   */
+  descargarComparativo(): void {
+    if (!this.selectedBienio || !this.selectedMunicipio || !this.selectedMunicipio2) {
+      console.warn('Filtros incompletos, no se puede descargar el comparativo');
+      return;
+    }
+
+    this.descargarEntidad(this.selectedDepartamento, this.selectedMunicipio);
+    this.descargarEntidad(this.selectedDepartamento2, this.selectedMunicipio2);
+  }
+
+  /**
+   * Descarga el Excel de resumen presupuesto vs recaudo de una entidad. Reutiliza
+   * el mismo endpoint de presupuesto-y-recaudo (tipoConsulta 7 para entidad).
+   */
+  private descargarEntidad(departamento: any, entidad: any): void {
+    const idVigencia = this.selectedBienio.id;
+    const tipoConsulta = '7';
+    const codigoEntidad = entidad.codigo;
+    const nombreDepartamento = departamento?.nombre ?? '';
+    const nombreEntidad = entidad?.nombre ?? '';
+
+    this.sicodisApiService.getSgrDescargaResumenPtoRecaudoQA(
+      idVigencia,
+      tipoConsulta,
+      codigoEntidad,
+      this.selectedBienio.label,
+      nombreDepartamento,
+      nombreEntidad,
+      this.fechaActualizacion,
+      this.fechaCorteRecaudo
+    ).subscribe({
+      next: (archivo: Blob) => {
+        if (!archivo) {
+          console.warn('No se recibió archivo para', nombreEntidad);
+          return;
+        }
+
+        const excelBlob = new Blob([archivo], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        });
+
+        const url = window.URL.createObjectURL(excelBlob);
+        const enlace = document.createElement('a');
+        enlace.href = url;
+        enlace.download = `ResumenPresupuestovsRecaudo_${nombreEntidad}.xlsx`;
+        enlace.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (error) => {
+        console.error('Error descargando el resumen de', nombreEntidad, error);
+      }
+    });
+  }
+
+  /**
    * Procesar datos comparativos del API
    */
   private processComparativeData(data: SgrResumenPtoRecaudoComparador): void {
@@ -593,8 +651,15 @@ export class SgrComparativoComponent implements OnInit {
       item.categoria === '1.2'
     );
 
+    // FONPET (categoría 2.2): lo reciben todas las entidades.
     const ahorro = entityData.find(item =>
       item.categoria === '2.2'
+    );
+
+    // FAE - Fondo de Ahorro y Estabilización (categoría 2.1). Solo lo reciben las
+    // gobernaciones, por lo que su presencia es opcional y solo se grafica cuando existe.
+    const fae = entityData.find(item =>
+      item.categoria === '2.1'
     );
 
     // Identifica si la entidad seleccionada es una gobernación siguiendo la
@@ -632,52 +697,78 @@ export class SgrComparativoComponent implements OnInit {
     // asignaciones directas de municipios).
     const primerDonutTitle = esGobernacion ? 'A. Directas' : 'A. Directas 25%';
 
+    // Grupos que conforman la gráfica de barras horizontal. Cada grupo aporta un par
+    // de barras (Presupuesto y Recaudo) con su propio color. El FAE (2.1) solo se
+    // incluye cuando la entidad lo recibe (gobernaciones). El ahorro se rotula
+    // únicamente como "FONPET" (sin el prefijo "Ahorro").
+    const gruposBarras: {
+      label: string;
+      item: SgrPtoRecaudoItem | undefined;
+      presColor: string;
+      presBorder: string;
+      recColor: string;
+      recBorder: string;
+    }[] = [
+      {
+        label: 'A. Directas',
+        item: asignacionesDirectas,
+        presColor: '#f38135ff', presBorder: '#be480eff',
+        recColor: '#edb87cff', recBorder: '#8c5516'
+      },
+      {
+        label: inversionLabel,
+        item: inversionItem,
+        presColor: '#2f9e6f', presBorder: '#1c6647',
+        recColor: '#8ed6bd', recBorder: '#4f9c81'
+      }
+    ];
+
+    // FAE (solo gobernaciones que lo reciben)
+    if (fae) {
+      gruposBarras.push({
+        label: 'FAE',
+        item: fae,
+        presColor: '#6d28d9', presBorder: '#4c1d95',
+        recColor: '#c4b5fd', recBorder: '#7c3aed'
+      });
+    }
+
+    // FONPET (siempre presente)
+    gruposBarras.push({
+      label: 'FONPET',
+      item: ahorro,
+      presColor: '#f33aafff', presBorder: '#b11049ff',
+      recColor: '#7991e8ff', recBorder: '#3d4d7a'
+    });
+
+    const totalGrupos = gruposBarras.length;
+    const chartLabels = gruposBarras.map(g => g.label);
+    const chartDatasets: any[] = [];
+    gruposBarras.forEach((grupo, indice) => {
+      const dataPresupuesto = new Array(totalGrupos).fill(null);
+      const dataRecaudo = new Array(totalGrupos).fill(null);
+      dataPresupuesto[indice] = grupo.item ? grupo.item.presupuesto_total_vigente : null;
+      dataRecaudo[indice] = grupo.item ? grupo.item.caja_total : null;
+
+      chartDatasets.push({
+        label: `Presupuesto - ${grupo.label}`,
+        data: dataPresupuesto,
+        backgroundColor: grupo.presColor,
+        borderColor: grupo.presBorder,
+        borderWidth: 1
+      });
+      chartDatasets.push({
+        label: `Recaudo - ${grupo.label}`,
+        data: dataRecaudo,
+        backgroundColor: grupo.recColor,
+        borderColor: grupo.recBorder,
+        borderWidth: 1
+      });
+    });
+
     const chartData = {
-      labels: ['A. Directas', inversionLabel, 'Ahorro (FONPET)'],
-      datasets: [
-        {
-          label: 'Presupuesto - A. Directas',
-          data: [asignacionesDirectas.presupuesto_total_vigente, null, null],
-          backgroundColor: '#f38135ff',
-          borderColor: '#be480eff',
-          borderWidth: 1
-        },
-        {
-          label: 'Recaudo - A. Directas',
-          data: [asignacionesDirectas.caja_total, null, null],
-          backgroundColor: '#edb87cff',
-          borderColor: '#8c5516',
-          borderWidth: 1
-        },
-        {
-          label: `Presupuesto - ${inversionLabel}`,
-          data: [null, inversionItem ? inversionItem.presupuesto_total_vigente : null, null],
-          backgroundColor: '#2f9e6f',
-          borderColor: '#1c6647',
-          borderWidth: 1
-        },
-        {
-          label: `Recaudo - ${inversionLabel}`,
-          data: [null, inversionItem ? inversionItem.caja_total : null, null],
-          backgroundColor: '#8ed6bd',
-          borderColor: '#4f9c81',
-          borderWidth: 1
-        },
-        {
-          label: 'Presupuesto - Ahorro (FONPET)',
-          data: [null, null, ahorro.presupuesto_total_vigente],
-          backgroundColor: '#f33aafff',
-          borderColor: '#b11049ff',
-          borderWidth: 1
-        },
-        {
-          label: 'Recaudo - Ahorro (FONPET)',
-          data: [null, null, ahorro.caja_total],
-          backgroundColor: '#7991e8ff',
-          borderColor: '#3d4d7a',
-          borderWidth: 1
-        }
-      ]
+      labels: chartLabels,
+      datasets: chartDatasets
     };
 
     const chartOptions = {

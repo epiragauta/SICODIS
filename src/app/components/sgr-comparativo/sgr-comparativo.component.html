@@ -84,6 +84,7 @@
     <div style="width: 83%;">
       <p class="date-update">Fecha de actualización: {{ fechaActualizacion }}</p>
       <p class="date-update">Fecha de corte de recaudo: {{ fechaCorteRecaudo }}</p>
+      <p class="date-update">Cifras en pesos corrientes</p>
     </div>
     <div style="position: relative; padding-bottom: .25rem;">
       <button pButton type="button" label="Diccionario" class="p-button-secondary" style="margin-right: 1.8rem; width: 96px;"
@@ -135,7 +136,7 @@
           </div>
           <!-- Detalle ingresos corrientes for Presupuesto y recaudo Municipality 1 -->
         <div class="detalle-ingresos-section">
-          <h3 class="detalle-title">Detalle ingresos corrientes</h3>
+          <h3 class="detalle-title">Detalle inversión ingresos corrientes</h3>
           
           <div class="donut-charts-container">
             <!-- First donut chart -->
@@ -190,7 +191,7 @@
           </div>
           <!-- Detalle ingresos corrientes for Plan Bienal Municipality 2 -->
         <div class="detalle-ingresos-section">
-          <h3 class="detalle-title">Detalle ingresos corrientes</h3>
+          <h3 class="detalle-title">Detalle inversión ingresos corrientes</h3>
           
           <div class="donut-charts-container">
             <!-- First donut chart -->
@@ -241,6 +242,14 @@
               label="Tabla Consolidada"
               icon="pi pi-align-justify"
               (click)="toggleTableView()">
+      </button>
+      <button pButton type="button"
+              class="p-button-success"
+              label="Descargar Excel"
+              icon="pi pi-file-excel"
+              pTooltip="Descarga el resumen presupuesto vs recaudo de las dos entidades comparadas"
+              tooltipPosition="top"
+              (click)="descargarComparativo()">
       </button>
     </div>
 
