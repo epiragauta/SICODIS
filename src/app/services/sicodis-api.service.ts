@@ -1031,6 +1031,17 @@ export class SicodisApiService {
     return this.http.get<ConceptoFuente[]>(url);
   }
 
+/**
+   * Obtiene conceptos de funcionamiento para fuentes específicas
+   * @param idsFuentes - IDs de fuentes separados por comas
+   * @param idVigencia - ID de la vigencia
+   * @returns Observable con el array de conceptos
+   */
+  getConceptosFuentesVigencia(idsFuentes: string, idVigencia: number): Observable<ConceptoFuente[]> {
+    const url = `${this.baseUrl}/sgrfun/conceptos_fuentes_vigencia/${idsFuentes}/${idVigencia}`;
+    return this.http.get<ConceptoFuente[]>(url);
+  }
+
   /**
    * Obtiene las entidades asociadas a un concepto específico
    * @param idConcepto - ID del concepto
