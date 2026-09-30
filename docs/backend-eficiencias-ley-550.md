@@ -24,7 +24,10 @@ eficiencia se le asigna el **promedio nacional** del respectivo indicador (art. 
 Condición 2), lo que explica que reciba recursos aun con indicadores propios negativos.
 
 > El frontend ya está preparado para consumir estos campos (interfaz `ResumenMunicipioEficiencia` +
-> aviso condicional en la ficha). Mientras el backend no los envíe, el aviso simplemente no se muestra.
+> aviso condicional en la ficha). **Mientras el backend no los envíe**, el componente usa como
+> respaldo la tabla estática `src/app/data/ley550-eficiencias.ts` (extraída del Excel con la misma
+> lógica descrita abajo). Cuando el backend provea los campos, estos tienen prioridad y la tabla
+> estática puede eliminarse.
 
 ## 2. De dónde sale el dato (fuente de verdad)
 

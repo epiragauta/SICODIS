@@ -12,6 +12,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TableModule } from 'primeng/table';
 
 import { departamentos } from '../../data/departamentos';
+import { LEY_550_EFICIENCIAS } from '../../data/ley550-eficiencias';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { MenuItem } from 'primeng/api';
 import { EficienciasService, ResumenMunicipioEficiencia } from '../../services/sicodis-api.service';
@@ -269,9 +270,12 @@ export class SgpEficienciasComponent implements OnInit {
     // Guardar la vigencia aplicada para los títulos de las tablas
     this.vigenciaAplicada = vigencia;
 
-    // Estado Ley 550 (lo provee el backend cuando esté disponible)
-    this.enLey550Fiscal = data.ley_550_eficiencia_fiscal === true;
-    this.enLey550Admin = data.ley_550_eficiencia_administrativa === true;
+    // Estado Ley 550: prioriza el dato del backend; si no lo provee, usa la tabla
+    // estática extraída del Excel (docs/backend-eficiencias-ley-550.md).
+    const dane550 = (data.municipio?.codigo_dane || '').padStart(5, '0');
+    const entry550 = LEY_550_EFICIENCIAS[dane550];
+    this.enLey550Fiscal = data.ley_550_eficiencia_fiscal ?? (entry550?.ef.includes(vigencia) ?? false);
+    this.enLey550Admin = data.ley_550_eficiencia_administrativa ?? (entry550?.ea.includes(vigencia) ?? false);
 
     // ============================================================================
     // EFICIENCIA FISCAL - Tabla 1 (Vigencia Anterior)
