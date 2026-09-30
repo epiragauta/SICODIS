@@ -132,9 +132,9 @@ export class SgpEficienciasComponent implements OnInit {
   }
 
   private initializeFilters(): void {
-    // Initialize years from 2025 to 2020
+    // Initialize years from 2026 to 2020
     this.vigencias = [];
-    for (let year = 2025; year >= 2020; year--) {
+    for (let year = 2026; year >= 2020; year--) {
       this.vigencias.push({
         label: year.toString(),
         value: year.toString()

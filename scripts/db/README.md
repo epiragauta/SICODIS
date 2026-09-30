@@ -5,10 +5,32 @@ Este directorio contiene los scripts para migrar los datos fiscales de archivos 
 ## Archivos
 
 - **`create_schema.sql`**: Esquema de base de datos (12 tablas + índices)
-- **`migrate_data.py`**: Script principal de migración
+- **`migrate_from_excel.py`**: Migración **directa desde el Excel** (recomendado). Detecta las
+  columnas de año dinámicamente, por lo que soporta vigencias nuevas (p. ej. 2026) sin tocar código.
+- **`migrate_data.py`**: Migración desde JSON intermedios (`Eficiencias_hojas/*.json`) — legado, con
+  posiciones de columna y rangos de año fijos.
 - **`verify_data.py`**: Script de validación post-migración
 - **`export_all_municipios.py`**: Exportar todos los municipios a JSON para modo mock
 - **`config.py`**: Configuración de rutas y parámetros
+
+## Migración desde Excel (recomendado)
+
+Regenera `eficiencias.db` leyendo directamente el Excel de eficiencias:
+
+```bash
+cd scripts/db
+python migrate_from_excel.py                 # usa "Eficiencias Propósito General_2026_v_0.2.xlsx"
+python migrate_from_excel.py --excel "otro.xlsx" --out "otra.db"   # opcional
+```
+
+Requiere `openpyxl` (`pip install openpyxl`). Tras migrar, regenera el JSON de modo mock:
+
+```bash
+python export_all_municipios.py              # -> src/assets/data/eficiencias/resumen-municipios.json
+```
+
+> La app lee ese JSON cuando `USE_MOCK_EFICIENCIAS = true` (valor actual) en
+> `sicodis-api.service.ts`. Es la fuente de datos efectiva del componente de eficiencias.
 
 ## Requisitos
 
@@ -98,22 +120,22 @@ SELECT * FROM municipios LIMIT 5;        # Ver primeros 5 municipios
 ### Tabla Maestra
 - **`municipios`**: Catálogo de 1,122 municipios colombianos
 
-### Series Temporales
+### Series Temporales (cobertura con Excel v0.2)
 - **`ingresos_tributarios`**: Ingresos tributarios por municipio (2013-2024)
-- **`poblacion`**: Proyecciones de población (2013-2025)
-- **`recursos_proposito_general`**: Once Doceavas con métricas múltiples (2018-2025)
+- **`poblacion`**: Proyecciones de población (2013-2026)
+- **`recursos_proposito_general`**: Once Doceavas con métricas múltiples (2018-2026)
 
 ### Ley 617 de 2000
-- **`ley_617_icld`**: Ingresos Corrientes Libre Destinación (2016-2023)
-- **`ley_617_gastos_funcionamiento`**: Gastos de Funcionamiento (2016-2023)
-- **`ley_617_razon`**: Razón (2016-2023)
-- **`ley_617_holgura`**: Holgura (2016-2023)
-- **`ley_617_limite_gasto`**: Límite de Gasto vigencia 2025
+- **`ley_617_icld`**: Ingresos Corrientes Libre Destinación (2016-2024)
+- **`ley_617_gastos_funcionamiento`**: Gastos de Funcionamiento (2016-2024)
+- **`ley_617_razon`**: Razón (2016-2024)
+- **`ley_617_holgura`**: Holgura (2016-2024)
+- **`ley_617_limite_gasto`**: Límite de Gasto
 - **`ley_617_vigencia_2026`**: Proyecciones para 2026
 
 ### Indicadores Ley 550
-- **`indicadores_eficiencia_fiscal`**: Eficiencia Fiscal (2019-2025)
-- **`indicadores_eficiencia_administrativa`**: Eficiencia Administrativa (2019-2025)
+- **`indicadores_eficiencia_fiscal`**: Eficiencia Fiscal (2019-2026)
+- **`indicadores_eficiencia_administrativa`**: Eficiencia Administrativa (2019-2026)
 
 ### Metadatos
 - **`_metadata`**: Información de versión y fecha de migración
