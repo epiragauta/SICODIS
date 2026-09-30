@@ -121,6 +121,7 @@
           <div class="horizontal-tables-container">
             <!-- Left Table -->
             <div class="table-section left-table">
+              <h4 class="table-title">Vigencia Anterior ({{getPreviousYear()}})</h4>
               <p-table [value]="eficienciaFiscalTable1" [scrollable]="true" size="small">
                 <ng-template pTemplate="header">
                   <tr>
@@ -136,10 +137,16 @@
                   <tr>
                     <td>{{row.vigencia}}</td>
                     <td>{{row.anoRefrendado}}</td>
-                    <td class="text-right">{{formatCurrency(row.ingresosTributarios)}}</td>
+                    <td class="text-right">{{formatCurrencyWithSymbol(row.ingresosTributarios)}}</td>
                     <td class="text-right">{{formatCurrency(row.poblacion)}}</td>
-                    <td class="text-right">{{formatCurrency(row.perCapita)}}</td>
+                    <td class="text-right">{{formatCurrencyWithSymbol(row.perCapita)}}</td>
                     <td class="text-right">{{formatPercentage(row.crecimientoPerCapita)}}</td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                  <tr class="total-row">
+                    <td colspan="5" class="text-right" style="font-weight: bold;">Crecimiento</td>
+                    <td class="text-right" style="font-weight: bold;">{{formatPercentage(crecimientoFinalFiscal1)}}</td>
                   </tr>
                 </ng-template>
               </p-table>
@@ -147,6 +154,7 @@
 
             <!-- Right Table -->
             <div class="table-section right-table">
+              <h4 class="table-title">Vigencia Seleccionada ({{getCurrentYear()}})</h4>
               <p-table [value]="eficienciaFiscalTable2" [scrollable]="true" size="small">
                 <ng-template pTemplate="header">
                   <tr>
@@ -162,14 +170,46 @@
                   <tr>
                     <td>{{row.vigencia}}</td>
                     <td>{{row.anoRefrendado}}</td>
-                    <td class="text-right">{{formatCurrency(row.ingresosTributarios)}}</td>
+                    <td class="text-right">{{formatCurrencyWithSymbol(row.ingresosTributarios)}}</td>
                     <td class="text-right">{{formatCurrency(row.poblacion)}}</td>
-                    <td class="text-right">{{formatCurrency(row.perCapita)}}</td>
+                    <td class="text-right">{{formatCurrencyWithSymbol(row.perCapita)}}</td>
                     <td class="text-right">{{formatPercentage(row.crecimientoPerCapita)}}</td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                  <tr class="total-row">
+                    <td colspan="5" class="text-right" style="font-weight: bold;">Crecimiento</td>
+                    <td class="text-right" style="font-weight: bold;">{{formatPercentage(crecimientoFinalFiscal2)}}</td>
                   </tr>
                 </ng-template>
               </p-table>
             </div>
+          </div>
+
+          <!-- Aviso Ley 550 (Eficiencia Fiscal) -->
+          <div class="ley550-alert" *ngIf="enLey550Fiscal">
+            <mat-icon>info</mat-icon>
+            <span>
+              Esta entidad territorial cuenta con concepto favorable del Ministerio de Hacienda y Crédito
+              Público sobre el cumplimiento de un Acuerdo de Reestructuración de Pasivos (Ley 550 de 1999)
+              y/o Programa de Saneamiento Fiscal y Financiero. Por ello, para la distribución se le asigna
+              el promedio nacional del indicador de eficiencia fiscal.
+            </span>
+          </div>
+
+          <!-- Notas Eficiencia Fiscal -->
+          <div class="table-notes">
+            <p>
+              <strong>Eficiencia Fiscal:</strong> entendida como el crecimiento promedio de los ingresos
+              tributarios per cápita de las tres últimas vigencias fiscales (Ley 1176 de 2007, artículo 23,
+              numeral c).
+            </p>
+            <ul>
+              <li>1/ La información tiene un rezago de dos años.</li>
+              <li>2/ Información refrendada por la Contaduría General de la Nación (CGN) — Cifras en miles de pesos corrientes.</li>
+              <li>3/ La población corresponde a la certificada por el DANE para el año refrendado.</li>
+              <li><strong>Crecimiento:</strong> promedio del crecimiento per cápita; es el indicador utilizado para la distribución por Eficiencia Fiscal.</li>
+            </ul>
           </div>
         </mat-card-content>
       </mat-card>
@@ -189,6 +229,7 @@
           <div class="horizontal-tables-container">
             <!-- Left Table -->
             <div class="table-section left-table">
+              <h4 class="table-title">Vigencia Anterior ({{getPreviousYear()}})</h4>
               <p-table [value]="eficienciaAdministrativaTable1" [scrollable]="true" size="small">
                 <ng-template pTemplate="header">
                   <tr>
@@ -203,8 +244,8 @@
                 <ng-template pTemplate="body" let-row>
                   <tr>
                     <td>{{row.anoCertificado}}</td>
-                    <td class="text-right">{{formatCurrency(row.icld)}}</td>
-                    <td class="text-right">{{formatCurrency(row.gf)}}</td>
+                    <td class="text-right">{{formatCurrencyWithSymbol(row.icld)}}</td>
+                    <td class="text-right">{{formatCurrencyWithSymbol(row.gf)}}</td>
                     <td class="text-right">{{formatPercentage(row.lg)}}</td>
                     <td class="text-right">{{formatPercentage(row.razon)}}</td>
                     <td class="text-right">{{formatPercentage(row.holgura)}}</td>
@@ -215,6 +256,7 @@
 
             <!-- Right Table -->
             <div class="table-section right-table">
+              <h4 class="table-title">Vigencia Seleccionada ({{getCurrentYear()}})</h4>
               <p-table [value]="eficienciaAdministrativaTable2" [scrollable]="true" size="small">
                 <ng-template pTemplate="header">
                   <tr>
@@ -229,8 +271,8 @@
                 <ng-template pTemplate="body" let-row>
                   <tr>
                     <td>{{row.anoCertificado}}</td>
-                    <td class="text-right">{{formatCurrency(row.icld)}}</td>
-                    <td class="text-right">{{formatCurrency(row.gf)}}</td>
+                    <td class="text-right">{{formatCurrencyWithSymbol(row.icld)}}</td>
+                    <td class="text-right">{{formatCurrencyWithSymbol(row.gf)}}</td>
                     <td class="text-right">{{formatPercentage(row.lg)}}</td>
                     <td class="text-right">{{formatPercentage(row.razon)}}</td>
                     <td class="text-right">{{formatPercentage(row.holgura)}}</td>
@@ -240,20 +282,49 @@
             </div>
           </div>
 
+          <!-- Aviso Ley 550 (Eficiencia Administrativa) -->
+          <div class="ley550-alert" *ngIf="enLey550Admin">
+            <mat-icon>info</mat-icon>
+            <span>
+              Esta entidad territorial cuenta con concepto favorable del Ministerio de Hacienda y Crédito
+              Público sobre el cumplimiento de un Acuerdo de Reestructuración de Pasivos (Ley 550 de 1999)
+              y/o Programa de Saneamiento Fiscal y Financiero. Por ello, para la distribución se le asigna
+              el promedio nacional del indicador de eficiencia administrativa.
+            </span>
+          </div>
+
+          <!-- Notas Eficiencia Administrativa (siglas) -->
+          <div class="table-notes">
+            <p>
+              <strong>Eficiencia Administrativa:</strong> incentivo a los distritos y municipios que cumplan
+              con los límites establecidos para los gastos de funcionamiento de la administración central de
+              que trata la Ley 617 de 2000. El indicador es la diferencia entre el límite establecido por la
+              Ley 617/2000 y el porcentaje de gastos de funcionamiento certificado por la Contraloría General
+              de la República (Ley 1176 de 2007, artículo 23, numeral d).
+            </p>
+            <ul>
+              <li><strong>ICLD</strong> — Ingresos Corrientes de Libre Destinación.</li>
+              <li><strong>GF</strong> — Gastos de Funcionamiento.</li>
+              <li><strong>LG</strong> — Límite de Gasto de la Ley 617 de 2000.</li>
+              <li>2/ Cifras en miles de pesos corrientes.</li>
+              <li>3/ Si el valor es igual a «N/C» significa que no fue certificado por la Contraloría General de la República.</li>
+            </ul>
+          </div>
+
           <!-- Subtarjetas adicionales -->
           <!-- Subtarjeta 1: Once Doceavas -->
           <div class="sub-card">
             <div class="sub-card-header" (click)="toggleSubCard('onceDoceavas')">
               <div class="sub-card-title">
                 <mat-icon class="toggle-icon">{{subCardStates.onceDoceavas ? 'remove' : 'add'}}</mat-icon>
-                <span>Once Doceavas (Bolsa 83%)</span>
+                <span>Once Doceavas (Bolsa 17% y Bolsa 83%)</span>
               </div>
             </div>
             <div class="sub-card-content" [class.collapsed]="!subCardStates.onceDoceavas">
               <div class="horizontal-tables-container">
                 <!-- Left Table -->
                 <div class="table-section left-table">
-                  <h4 class="table-title">Bolsa del 83% - Todos los municipios</h4>
+                  <h4 class="table-title">Vigencia Anterior ({{getPreviousYear()}})</h4>
                   <p-table [value]="onceDoceavasTable1" [scrollable]="true" size="small">
                     <ng-template pTemplate="header">
                       <tr>
@@ -262,9 +333,12 @@
                       </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-row>
-                      <tr [class.total-row]="row.isTotal">
-                        <td [style.font-weight]="row.isTotal ? 'bold' : 'normal'">{{row.variable}}</td>
-                        <td class="text-right" [style.font-weight]="row.isTotal ? 'bold' : 'normal'">{{row.valor}}</td>
+                      <tr *ngIf="row.isHeader" class="section-row">
+                        <td colspan="2">{{row.variable}}</td>
+                      </tr>
+                      <tr *ngIf="!row.isHeader" [class.total-row]="row.isTotal" [class.subtotal-row]="row.isSubtotal">
+                        <td [style.font-weight]="row.isTotal || row.isSubtotal ? 'bold' : 'normal'">{{row.variable}}</td>
+                        <td class="text-right" [style.font-weight]="row.isTotal || row.isSubtotal ? 'bold' : 'normal'">{{row.valor}}</td>
                       </tr>
                     </ng-template>
                   </p-table>
@@ -272,7 +346,7 @@
 
                 <!-- Right Table -->
                 <div class="table-section right-table">
-                  <h4 class="table-title">Bolsa del 83% - Todos los municipios</h4>
+                  <h4 class="table-title">Vigencia Seleccionada ({{getCurrentYear()}})</h4>
                   <p-table [value]="onceDoceavasTable2" [scrollable]="true" size="small">
                     <ng-template pTemplate="header">
                       <tr>
@@ -281,13 +355,26 @@
                       </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-row>
-                      <tr [class.total-row]="row.isTotal">
-                        <td [style.font-weight]="row.isTotal ? 'bold' : 'normal'">{{row.variable}}</td>
-                        <td class="text-right" [style.font-weight]="row.isTotal ? 'bold' : 'normal'">{{row.valor}}</td>
+                      <tr *ngIf="row.isHeader" class="section-row">
+                        <td colspan="2">{{row.variable}}</td>
+                      </tr>
+                      <tr *ngIf="!row.isHeader" [class.total-row]="row.isTotal" [class.subtotal-row]="row.isSubtotal">
+                        <td [style.font-weight]="row.isTotal || row.isSubtotal ? 'bold' : 'normal'">{{row.variable}}</td>
+                        <td class="text-right" [style.font-weight]="row.isTotal || row.isSubtotal ? 'bold' : 'normal'">{{row.valor}}</td>
                       </tr>
                     </ng-template>
                   </p-table>
                 </div>
+              </div>
+
+              <!-- Nota Once Doceavas -->
+              <div class="table-notes">
+                <p>
+                  <strong>Nota:</strong> La bolsa del 17% se distribuye únicamente entre los municipios
+                  menores de 25 mil habitantes por los criterios de población y pobreza. La bolsa del 83%
+                  se distribuye entre todos los municipios por los criterios de población, pobreza,
+                  eficiencia fiscal, eficiencia administrativa y Sisbén. Cifras en pesos.
+                </p>
               </div>
             </div>
           </div>
@@ -339,6 +426,16 @@
                     </ng-template>
                   </p-table>
                 </div>
+              </div>
+
+              <!-- Nota normativa Restricción del 50% -->
+              <div class="table-notes">
+                <p><strong>Restricción del 50% — Artículo 79 de la Ley 715 de 2001 y artículo 23 de la Ley 1176 de 2007:</strong></p>
+                <p>
+                  Los recursos asignados por los criterios de eficiencia fiscal y eficiencia administrativa
+                  no pueden superar el 50% de lo asignado por los criterios de población y pobreza relativa
+                  de la bolsa del 83% de propósito general.
+                </p>
               </div>
             </div>
           </div>

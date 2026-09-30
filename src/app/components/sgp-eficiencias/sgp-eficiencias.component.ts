@@ -60,7 +60,19 @@ export class SgpEficienciasComponent implements OnInit {
   // Eficiencia Administrativa data
   eficienciaAdministrativaTable1: any[] = [];
   eficienciaAdministrativaTable2: any[] = [];
-  
+
+  // Vigencia efectivamente aplicada (para los títulos de las tablas)
+  vigenciaAplicada: number | null = null;
+
+  // Crecimiento final (promedio) de la Eficiencia Fiscal — dato principal del indicador
+  crecimientoFinalFiscal1: number = 0;
+  crecimientoFinalFiscal2: number = 0;
+
+  // Estado Ley 550 (Acuerdo de Reestructuración de Pasivos) por indicador.
+  // Lo debe proveer el backend; mientras tanto permanece en false.
+  enLey550Fiscal: boolean = false;
+  enLey550Admin: boolean = false;
+
   // Sub-cards state
   subCardStates = {
     onceDoceavas: false,
@@ -254,6 +266,13 @@ export class SgpEficienciasComponent implements OnInit {
   private procesarDatosAPI(data: ResumenMunicipioEficiencia, vigencia: number): void {
     console.log('Procesando datos para vigencia:', vigencia);
 
+    // Guardar la vigencia aplicada para los títulos de las tablas
+    this.vigenciaAplicada = vigencia;
+
+    // Estado Ley 550 (lo provee el backend cuando esté disponible)
+    this.enLey550Fiscal = data.ley_550_eficiencia_fiscal === true;
+    this.enLey550Admin = data.ley_550_eficiencia_administrativa === true;
+
     // ============================================================================
     // EFICIENCIA FISCAL - Tabla 1 (Vigencia Anterior)
     // ============================================================================
@@ -305,7 +324,8 @@ export class SgpEficienciasComponent implements OnInit {
 
       // Si encontramos un año base, calcular crecimiento
       if (perCapitaBase > 0) {
-        const crecimiento = ((perCapitaActual - perCapitaBase) / perCapitaBase) * 100;
+        // Se almacena como fracción (p. ej. 0.00847); formatPercentage se encarga de multiplicar por 100
+        const crecimiento = (perCapitaActual - perCapitaBase) / perCapitaBase;
         this.eficienciaFiscalTable1[i].crecimientoPerCapita = crecimiento;
       } else {
         // Si no hay ningún año anterior con per cápita > 0, el crecimiento es 0
@@ -324,6 +344,7 @@ export class SgpEficienciasComponent implements OnInit {
       : 0;
 
     this.eficienciaFiscalTable1.forEach(row => row.promedioCrecimiento = promedioTable1);
+    this.crecimientoFinalFiscal1 = promedioTable1;
 
     // ============================================================================
     // EFICIENCIA FISCAL - Tabla 2 (Vigencia Seleccionada)
@@ -375,7 +396,8 @@ export class SgpEficienciasComponent implements OnInit {
 
       // Si encontramos un año base, calcular crecimiento
       if (perCapitaBase > 0) {
-        const crecimiento = ((perCapitaActual - perCapitaBase) / perCapitaBase) * 100;
+        // Se almacena como fracción (p. ej. 0.00847); formatPercentage se encarga de multiplicar por 100
+        const crecimiento = (perCapitaActual - perCapitaBase) / perCapitaBase;
         this.eficienciaFiscalTable2[i].crecimientoPerCapita = crecimiento;
       } else {
         // Si no hay ningún año anterior con per cápita > 0, el crecimiento es 0
@@ -394,6 +416,7 @@ export class SgpEficienciasComponent implements OnInit {
       : 0;
 
     this.eficienciaFiscalTable2.forEach(row => row.promedioCrecimiento = promedioTable2);
+    this.crecimientoFinalFiscal2 = promedioTable2;
 
     // ============================================================================
     // EFICIENCIA ADMINISTRATIVA
@@ -453,48 +476,18 @@ export class SgpEficienciasComponent implements OnInit {
     }];
 
     // ============================================================================
-    // ONCE DOCEAVAS
+    // ONCE DOCEAVAS (Bolsa del 17% menores de 25 mil hab. + Bolsa del 83%)
     // ============================================================================
     // Tabla 1: Vigencia Anterior (vigencia - 1)
     const recursosTable1 = data.recursos_proposito_general.find(r => r.anio === vigenciaAnterior);
-
     if (recursosTable1) {
-      const totalTable1 =
-        (recursosTable1.poblacion || 0) +
-        (recursosTable1.pobreza || 0) +
-        (recursosTable1.eficiencia_fiscal || 0) +
-        (recursosTable1.eficiencia_administrativa || 0) +
-        (recursosTable1.sisben || 0);
-
-      this.onceDoceavasTable1 = [
-        { variable: 'Población', valor: this.formatNumber(recursosTable1.poblacion), isTotal: false },
-        { variable: 'Pobreza', valor: this.formatNumber(recursosTable1.pobreza), isTotal: false },
-        { variable: 'Eficiencia Fiscal', valor: this.formatNumber(recursosTable1.eficiencia_fiscal), isTotal: false },
-        { variable: 'Eficiencia Administrativa', valor: this.formatNumber(recursosTable1.eficiencia_administrativa), isTotal: false },
-        { variable: 'Sisben', valor: this.formatNumber(recursosTable1.sisben), isTotal: false },
-        { variable: 'TOTAL', valor: this.formatCurrencyWithSymbol(totalTable1), isTotal: true }
-      ];
+      this.onceDoceavasTable1 = this.buildOnceDoceavasRows(recursosTable1);
     }
 
     // Tabla 2: Vigencia Seleccionada (vigencia)
     const recursosTable2 = data.recursos_proposito_general.find(r => r.anio === vigencia);
-
     if (recursosTable2) {
-      const totalTable2 =
-        (recursosTable2.poblacion || 0) +
-        (recursosTable2.pobreza || 0) +
-        (recursosTable2.eficiencia_fiscal || 0) +
-        (recursosTable2.eficiencia_administrativa || 0) +
-        (recursosTable2.sisben || 0);
-
-      this.onceDoceavasTable2 = [
-        { variable: 'Población', valor: this.formatNumber(recursosTable2.poblacion), isTotal: false },
-        { variable: 'Pobreza', valor: this.formatNumber(recursosTable2.pobreza), isTotal: false },
-        { variable: 'Eficiencia Fiscal', valor: this.formatNumber(recursosTable2.eficiencia_fiscal), isTotal: false },
-        { variable: 'Eficiencia Administrativa', valor: this.formatNumber(recursosTable2.eficiencia_administrativa), isTotal: false },
-        { variable: 'Sisben', valor: this.formatNumber(recursosTable2.sisben), isTotal: false },
-        { variable: 'TOTAL', valor: this.formatCurrencyWithSymbol(totalTable2), isTotal: true }
-      ];
+      this.onceDoceavasTable2 = this.buildOnceDoceavasRows(recursosTable2);
     }
 
     // ============================================================================
@@ -545,6 +538,41 @@ export class SgpEficienciasComponent implements OnInit {
   }
 
   /**
+   * Construye las filas de la tabla "Once Doceavas" para una vigencia, separando
+   * la bolsa del 17% (municipios menores de 25 mil habitantes: población y pobreza)
+   * de la bolsa del 83% (todos los municipios: población, pobreza, eficiencias y Sisbén).
+   */
+  private buildOnceDoceavasRows(recursos: any): any[] {
+    const poblacion17 = recursos.poblacion_m || 0;
+    const pobreza17 = recursos.pobreza_m || 0;
+    const subtotal17 = poblacion17 + pobreza17;
+
+    const poblacion83 = recursos.poblacion || 0;
+    const pobreza83 = recursos.pobreza || 0;
+    const eficienciaFiscal = recursos.eficiencia_fiscal || 0;
+    const eficienciaAdmin = recursos.eficiencia_administrativa || 0;
+    const sisben = recursos.sisben || 0;
+    const subtotal83 = poblacion83 + pobreza83 + eficienciaFiscal + eficienciaAdmin + sisben;
+
+    const total = subtotal17 + subtotal83;
+
+    return [
+      { variable: 'Bolsa del 17% - Menores de 25 mil habitantes', isHeader: true },
+      { variable: 'Población', valor: this.formatCurrencyWithSymbol(poblacion17) },
+      { variable: 'Pobreza', valor: this.formatCurrencyWithSymbol(pobreza17) },
+      { variable: 'Subtotal 17%', valor: this.formatCurrencyWithSymbol(subtotal17), isSubtotal: true },
+      { variable: 'Bolsa del 83% - Todos los municipios', isHeader: true },
+      { variable: 'Población', valor: this.formatCurrencyWithSymbol(poblacion83) },
+      { variable: 'Pobreza', valor: this.formatCurrencyWithSymbol(pobreza83) },
+      { variable: 'Eficiencia Fiscal', valor: this.formatCurrencyWithSymbol(eficienciaFiscal) },
+      { variable: 'Eficiencia Administrativa', valor: this.formatCurrencyWithSymbol(eficienciaAdmin) },
+      { variable: 'Sisbén', valor: this.formatCurrencyWithSymbol(sisben) },
+      { variable: 'Subtotal 83%', valor: this.formatCurrencyWithSymbol(subtotal83), isSubtotal: true },
+      { variable: 'TOTAL', valor: this.formatCurrencyWithSymbol(total), isTotal: true }
+    ];
+  }
+
+  /**
    * Formatear número con separadores de miles
    */
   private formatNumber(value: number | null): string {
@@ -555,7 +583,7 @@ export class SgpEficienciasComponent implements OnInit {
   /**
    * Formatear valor monetario con símbolo
    */
-  private formatCurrencyWithSymbol(value: number | null): string {
+  formatCurrencyWithSymbol(value: number | null): string {
     if (value === null || value === undefined) return 'N/A';
     return new Intl.NumberFormat('es-CO', {
       style: 'currency',
@@ -583,7 +611,7 @@ export class SgpEficienciasComponent implements OnInit {
 
   formatPercentage(value: number | null): string {
     if (value === null || value === undefined) return 'N/A';
-    return `${(value * 100).toFixed(1)}%`;
+    return `${(value * 100).toFixed(2)}%`;
   }
 
   formatDecimal(value: number | null): string {
@@ -602,11 +630,10 @@ export class SgpEficienciasComponent implements OnInit {
   }
 
   getCurrentYear(): string {
-    return this.selectedVigencia?.label || '2025';
+    return (this.vigenciaAplicada ?? 2025).toString();
   }
 
   getPreviousYear(): string {
-    const currentYear = parseInt(this.getCurrentYear());
-    return (currentYear - 1).toString();
+    return ((this.vigenciaAplicada ?? 2025) - 1).toString();
   }
 }

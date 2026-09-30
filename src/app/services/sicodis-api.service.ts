@@ -118,6 +118,16 @@ export interface ResumenMunicipioEficiencia {
   ley_617_razon: Ley617Razon[];
   ley_617_holgura: Ley617Holgura[];
   nbi: NBI[];
+  /**
+   * Indica si la entidad territorial cuenta con concepto favorable del MHCP sobre el
+   * cumplimiento de un Acuerdo de Reestructuración de Pasivos (Ley 550 de 1999) y/o
+   * Programa de Saneamiento Fiscal y Financiero. En ese caso, para la distribución se le
+   * asigna el promedio nacional del respectivo indicador (por eso puede recibir recursos
+   * de eficiencia aun con indicadores propios negativos). Campos opcionales: el backend
+   * los debe calcular/exponer (ver docs/backend-eficiencias-ley-550.md).
+   */
+  ley_550_eficiencia_fiscal?: boolean;
+  ley_550_eficiencia_administrativa?: boolean;
 }
 
 export interface ComparacionMunicipios {

@@ -196,20 +196,76 @@
           mat-card-title {
             color: #0b1c3f;
             font-weight: bold;
-            font-size: 1.7 llama5rem;
+            font-size: 1.75rem;
             margin: 0;
             padding-left: 5rem;
-          } 
+          }
         }
       }
 
       mat-card-content {
         padding: 0;
 
+        // Título de vigencia para las tablas principales (Fiscal / Administrativa)
+        .table-title {
+          color: #1a408c;
+          font-weight: bold;
+          font-size: 0.95rem;
+          margin: 0 0 0.5rem;
+          text-align: center;
+        }
+
+        // Aviso destacado de Ley 550 (Acuerdo de Reestructuración de Pasivos)
+        .ley550-alert {
+          display: flex;
+          align-items: flex-start;
+          gap: 0.5rem;
+          margin: 0.75rem 5px 0;
+          padding: 0.75rem 1rem;
+          background: #fff4e5;
+          border-left: 4px solid #e6912b;
+          border-radius: 4px;
+          font-size: 0.82rem;
+          color: #6b4a12;
+
+          mat-icon {
+            color: #e6912b;
+            font-size: 1.2rem;
+            height: 1.2rem;
+            width: 1.2rem;
+            flex-shrink: 0;
+          }
+        }
+
+        // Notas al pie (unidades, siglas, normatividad)
+        .table-notes {
+          margin: 0.75rem 5px 0;
+          padding: 0.75rem 1rem;
+          background: #f8f9fa;
+          border-left: 3px solid #1a408c;
+          border-radius: 4px;
+          font-size: 0.78rem;
+          color: #495057;
+
+          p {
+            margin: 0 0 0.35rem;
+          }
+
+          ul {
+            margin: 0;
+            padding-left: 1.1rem;
+
+            li {
+              margin-bottom: 0.2rem;
+              line-height: 1.35;
+            }
+          }
+        }
+
         .horizontal-tables-container {
           display: flex;
           gap: 1rem;
-          
+
           .table-section {
             flex: 1;
             
@@ -238,6 +294,14 @@
               .p-datatable {
                 border: none;
 
+                // Ancho de columnas fijo para que las dos tablas contiguas
+                // conserven el mismo tamaño de encabezado independientemente del
+                // contenido (evita que el encabezado cambie de alto entre ET).
+                .p-datatable-table {
+                  table-layout: fixed;
+                  width: 100%;
+                }
+
                 .p-datatable-thead > tr > th {
                   background-color: #dbdfe3;
                   font-weight: bold;
@@ -246,6 +310,8 @@
                   padding: 0.75rem;
                   text-align: center;
                   font-size: 0.85rem;
+                  vertical-align: middle;
+                  word-break: break-word;
                 }
 
                 .p-datatable-tbody > tr > td {
@@ -390,10 +456,28 @@
 
                   .total-row {
                     background-color: #e9ecef;
-                    
+
                     td {
                       border-top: 2px solid #495057;
                       font-weight: bold;
+                    }
+                  }
+
+                  // Fila de encabezado de bolsa (17% / 83%)
+                  .section-row td {
+                    background-color: #1a408c;
+                    color: #ffffff;
+                    font-weight: bold;
+                    font-size: 0.8rem;
+                    text-align: left;
+                  }
+
+                  // Subtotal por bolsa
+                  .subtotal-row {
+                    background-color: #eef2fb;
+
+                    td {
+                      border-top: 1px solid #b9c6e6;
                     }
                   }
                 }
