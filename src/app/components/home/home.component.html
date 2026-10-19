@@ -241,20 +241,22 @@
     </div>
 
     <div class="grid-container geovisor-section">
-      <p-card class="card-container geovisor-card pgn-full-width">
-        <div class="card-header">
-          <img class="img-icon" src="/assets/img/icon-geovisor.png" alt="Icono del Geovisor">
-          <h2 class="sicodis-large-title">{{titleGeovisor}}</h2>
+      <div class="geovisor-banner">
+        <img class="geovisor-banner__icon" src="/assets/img/icono-geovisor.png" alt="Icono del Geovisor">
+        <div class="geovisor-banner__content">
+          <h2 class="geovisor-banner__title">{{titleGeovisor}}</h2>
+          <p class="geovisor-banner__subtitle">{{subtitleGeovisor}}</p>
+          <p class="geovisor-banner__description">{{descriptionGeovisor}}</p>
         </div>
-        <div class="card-description">
-          <p>{{descriptionGeovisor}}</p>
+        <div class="geovisor-banner__action">
+          <button type="button" class="geovisor-banner__button" (click)="redirectTo('mapa-recursos')">
+            <i class="pi pi-map"></i>
+            <span class="geovisor-banner__divider"></span>
+            <span>Ingresar al Geovisor</span>
+            <i class="pi pi-arrow-right"></i>
+          </button>
         </div>
-        <ng-template pTemplate="footer">
-          <div class="card-footer">
-            <button pButton type="button" label="Ir al Geovisor" (click)="redirectTo('mapa-recursos')" class="p-button-primary"></button>
-          </div>
-        </ng-template>
-      </p-card>
+      </div>
     </div>
 
     </div> <!-- /reports cifras -->
