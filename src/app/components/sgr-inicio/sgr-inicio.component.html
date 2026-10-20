@@ -70,11 +70,10 @@
                    *ngIf="!isLoading && treeTableData.length > 0">
         <ng-template pTemplate="colgroup">
           <colgroup>
-            <col style="width:35%">
-            <col style="width:18%">
-            <col style="width:18%">
-            <col style="width:18%">
-            <col style="width:11%">
+            <col style="width:40%">
+            <col style="width:22%">
+            <col style="width:22%">
+            <col style="width:16%">
           </colgroup>
         </ng-template>
         <ng-template pTemplate="header">
@@ -82,7 +81,6 @@
             <th class="concepto-header">Concepto</th>
             <th class="col-number">Presupuesto ($)</th>
             <th class="col-number">Recaudo ($)</th>
-            <th class="col-number">Saldo a recaudar ($)</th>
             <th class="col-avance">Avance (%)</th>
           </tr>
         </ng-template>
@@ -94,7 +92,6 @@
             </td>
             <td class="col-number">{{ rowData.presupuesto | numberFormat }}</td>
             <td class="col-number">{{ rowData.recaudo | numberFormat }}</td>
-            <td class="col-number">{{ rowData.saldo | numberFormat }}</td>
             <td class="col-avance">
               <span class="avance-badge"
                     [class.badge-green]="rowData.avance >= 1"
@@ -109,7 +106,6 @@
             <td><strong>Total SGR</strong></td>
             <td class="col-number"><strong>{{ presupuestoTotal | numberFormat }}</strong></td>
             <td class="col-number"><strong>{{ recaudoTotal | numberFormat }}</strong></td>
-            <td class="col-number"><strong>{{ saldoTotal | numberFormat }}</strong></td>
             <td></td>
           </tr>
         </ng-template>

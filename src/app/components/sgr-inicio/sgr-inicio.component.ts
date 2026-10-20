@@ -45,7 +45,6 @@ export class SgrInicioComponent implements OnInit {
   presupuestoTotal: number = 0;
   recaudoTotal: number = 0;
   avanceTotal: number = 0;
-  saldoTotal: number = 0;
 
   treeTableData: TreeNode[] = [];
 
@@ -155,7 +154,6 @@ export class SgrInicioComponent implements OnInit {
         this.presupuestoTotal = 64087661072292;
         this.recaudoTotal = 49658264357763;
         this.avanceTotal = 0.7748;
-        this.saldoTotal = Math.max(0, this.presupuestoTotal - this.recaudoTotal);
         this.treeTableData = [];
         this.isLoading = false;
       }
@@ -171,8 +169,6 @@ export class SgrInicioComponent implements OnInit {
       this.presupuestoTotal = totalRecord.presupuesto_total_vigente;
       this.recaudoTotal = totalRecord.caja_total;
       this.avanceTotal = totalRecord.avance_iac_presupuesto;
-      // El saldo a recaudar total no se muestra en negativo (se presenta como 0).
-      this.saldoTotal = Math.max(0, this.presupuestoTotal - this.recaudoTotal);
     }
 
     const treeData = data.filter(
@@ -208,31 +204,17 @@ export class SgrInicioComponent implements OnInit {
     });
   }
 
-  // Conceptos cuyo saldo a recaudar no debe mostrarse en negativo (mayor
-  // recaudo / recaudo corriente no aforado): el recaudo supera al presupuesto,
-  // por lo que el saldo negativo se muestra como 0. La regla se propaga a los hijos.
-  private esConceptoSaldoNoNegativo(concepto: string | undefined): boolean {
-    const texto = (concepto ?? '').toUpperCase();
-    return texto.includes('MAYOR RECAUDO') || texto.includes('RECAUDO CORRIENTE NO AFORADO');
-  }
-
-  private mapTreeNodes(nodes: any[], forzarSaldoNoNegativo = false): TreeNode[] {
+  private mapTreeNodes(nodes: any[]): TreeNode[] {
     return nodes.map(node => {
-      const noNegativo = forzarSaldoNoNegativo || this.esConceptoSaldoNoNegativo(node.data.concepto);
-      let saldo = node.data.presupuesto_total_vigente - node.data.caja_total;
-      if (noNegativo && saldo < 0) {
-        saldo = 0;
-      }
       return {
         key: node.data.categoria,
         data: {
           concepto: node.data.concepto,
           presupuesto: node.data.presupuesto_total_vigente,
           recaudo: node.data.caja_total,
-          saldo,
           avance: node.data.avance_iac_presupuesto
         },
-        children: node.children?.length ? this.mapTreeNodes(node.children, noNegativo) : [],
+        children: node.children?.length ? this.mapTreeNodes(node.children) : [],
         expanded: false
       };
     });
