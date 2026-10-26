@@ -17,31 +17,22 @@
       <p class="date-update">Cifras en pesos corrientes</p>
     </div>
   </div>
-<!-- 
-  Navigation tabs
-  <div class="navigation-tabs">
-    <button
-      pButton
-      type="button"
-      [class]="'p-button-sm ' + (activeTab === 'recursos' ? 'p-button-primary' : 'p-button-outlined')"
-      label="Recursos"
-      (click)="setActiveTab('recursos')">
+
+  <!-- Main tabs -->
+  <div class="main-tabs" role="tablist" aria-label="Secciones del tablero comparativo">
+    <button type="button" role="tab" class="main-tab"
+            [class.active]="activeTab === 'recursos'"
+            [attr.aria-selected]="activeTab === 'recursos'"
+            (click)="setActiveTab('recursos')">
+      Recursos
     </button>
-    <button
-      pButton
-      type="button"
-      [class]="'p-button-sm ' + (activeTab === 'detalle-recaudo' ? 'p-button-primary' : 'p-button-outlined')"
-      label="Detalle de Recaudo"
-      (click)="setActiveTab('detalle-recaudo')">
+    <button type="button" role="tab" class="main-tab"
+            [class.active]="activeTab === 'variables'"
+            [attr.aria-selected]="activeTab === 'variables'"
+            (click)="setActiveTab('variables')">
+      Variables Comparadas
     </button>
-    <button
-      pButton
-      type="button"
-      [class]="'p-button-sm ' + (activeTab === 'informe-trimestral' ? 'p-button-primary' : 'p-button-outlined')"
-      label="Informe Trimestral de Gestión Financiera"
-      (click)="setActiveTab('informe-trimestral')">
-    </button>
-  </div> -->
+  </div>
 
     <!-- Filters section -->
   <div class="filters-section">
@@ -168,7 +159,7 @@
   </div>
 
   <!-- Informative message when no municipalities are selected -->
-  <div class="info-message-section" *ngIf="!townSelected || !townSelected2">
+  <div class="info-message-section" *ngIf="activeTab === 'recursos' ? (!townSelected || !townSelected2) : !townSelected">
     <p-card class="info-card">
       <div class="info-content" style="text-align: center; padding: 2rem;">
         <i class="pi pi-info-circle" style="font-size: 3rem; color: #2196F3; margin-bottom: 1rem;"></i>
@@ -185,7 +176,7 @@
   </div>
 
   <!-- Loading indicator while fetching comparative data -->
-  <div class="loading-section" *ngIf="isLoadingComparativeData && townSelected && townSelected2">
+  <div class="loading-section" *ngIf="activeTab === 'recursos' && isLoadingComparativeData && townSelected && townSelected2">
     <p-card class="loading-card">
       <div class="loading-content" style="text-align: center; padding: 3rem;">
         <p-progress-spinner 
@@ -437,361 +428,113 @@
     </div>
   </div>
 
-  <!-- Detalle de Recaudo tab content -->
-  <div class="tab-content detalle-recaudo-tab" *ngIf="townSelected && townSelected2 && !isLoadingComparativeData && activeTab === 'detalle-recaudo'">
-    <!-- Municipal comparison header -->
-    <div class="municipal-comparison-header">
-      <h2>Comparativo entre {{ getSelectedMunicipalityName(1) }} y {{ getSelectedMunicipalityName(2) }}</h2>
+  <!-- Variables Comparadas tab content -->
+  <div class="tab-content variables-tab" *ngIf="activeTab === 'variables' && townSelected">
+    <!-- Sub-tabs -->
+    <div class="variables-subtabs" role="tablist" aria-label="Variables por participación">
+      <button type="button" role="tab" class="variables-subtab"
+              *ngFor="let seccion of seccionesVariables"
+              [class.active]="activeSeccion === seccion.id"
+              [attr.aria-selected]="activeSeccion === seccion.id"
+              (click)="setActiveSeccion(seccion.id)">
+        {{ seccion.label }}
+      </button>
     </div>
 
-    <!-- Variables sections with accordion -->
-    <div class="variables-sections">
-      <p-accordion [value]="['0']" [multiple]="true">
-        <!-- Variables generales accordion panel -->
-        <p-accordion-panel  value="0">
-          <p-accordion-header>Variables generales</p-accordion-header>
-          <p-accordion-content>
-            <div class="dual-variables-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; width: 100%; margin-top: 1rem;">
-              <!-- First Municipality Variables Table -->
-              <div class="municipality-variables-column">                
-                <p-table
-                  [value]="variablesGeneralesData1"
-                  [tableStyle]="{'min-width': '100%'}"
-                  styleClass="p-datatable-sm">
-                  <ng-template pTemplate="header">
-                    <tr>
-                      <th>Variable</th>
-                      <th>{{ getSelectedVigenciaName() }}</th>
-                      <th>{{ getPreviousVigenciaName() }}</th>
-                      <th>Variación</th>
-                    </tr>
-                  </ng-template>
-                  <ng-template pTemplate="body" let-variable>
-                    <tr>
-                      <td><strong>{{ variable.nombre }}</strong></td>
-                      <td>{{ variable.vigenciaActual | numberFormat }}</td>
-                      <td>{{ variable.vigenciaAnterior | numberFormat }}</td>
-                      <td>{{ variable.variacion }}</td>
-                    </tr>
-                  </ng-template>
-                </p-table>                
-              </div>
-
-              <!-- Second Municipality Variables Table -->
-              <div class="municipality-variables-column">                
-                  <p-table
-                    [value]="variablesGeneralesData2"
-                    [tableStyle]="{'min-width': '100%'}"
-                    styleClass="p-datatable-sm">
-                    <ng-template pTemplate="header">
-                      <tr>
-                        <th>Variable</th>
-                        <th>{{ getSelectedVigenciaName() }}</th>
-                        <th>{{ getPreviousVigenciaName() }}</th>
-                        <th>Variación</th>
-                      </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-variable>
-                      <tr>
-                        <td><strong>{{ variable.nombre }}</strong></td>
-                        <td>{{ variable.vigenciaActual | numberFormat }}</td>
-                        <td>{{ variable.vigenciaAnterior | numberFormat }}</td>
-                        <td>{{ variable.variacion }}</td>
-                      </tr>
-                    </ng-template>
-                  </p-table>                
-              </div>
-            </div>
-          </p-accordion-content>
-        </p-accordion-panel>
-
-        <!-- Variables Sector Educación accordion panel -->
-        <p-accordion-panel  value="1">
-          <p-accordion-header>Variables Sector Educación</p-accordion-header>
-          <p-accordion-content>
-            <div class="dual-variables-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; width: 100%; margin-top: 1rem;">
-              <!-- First Municipality Education Variables Table -->
-              <div class="municipality-variables-column">
-                <p-table
-                  [value]="variablesEducacionData1"
-                  [tableStyle]="{'min-width': '100%'}"
-                  styleClass="p-datatable-sm">
-                  <ng-template pTemplate="header">
-                    <tr>
-                      <th>Variable</th>
-                      <th>{{ getSelectedVigenciaName() }}</th>
-                      <th>{{ getPreviousVigenciaName() }}</th>
-                      <th>Variación</th>
-                    </tr>
-                  </ng-template>
-                  <ng-template pTemplate="body" let-variable>
-                    <tr>
-                      <td><strong>{{ variable.nombre }}</strong></td>
-                      <td>{{ variable.vigenciaActual | numberFormat }}</td>
-                      <td>{{ variable.vigenciaAnterior | numberFormat }}</td>
-                      <td>{{ variable.variacion }}</td>
-                    </tr>
-                  </ng-template>
-                </p-table>                
-              </div>
-
-              <!-- Second Municipality Education Variables Table -->
-              <div class="municipality-variables-column">                
-                  <p-table
-                    [value]="variablesEducacionData2"
-                    [tableStyle]="{'min-width': '100%'}"
-                    styleClass="p-datatable-sm">
-                    <ng-template pTemplate="header">
-                      <tr>
-                        <th>Variable</th>
-                        <th>{{ getSelectedVigenciaName() }}</th>
-                        <th>{{ getPreviousVigenciaName() }}</th>
-                        <th>Variación</th>
-                      </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-variable>
-                      <tr>
-                        <td><strong>{{ variable.nombre }}</strong></td>
-                        <td>{{ variable.vigenciaActual | numberFormat }}</td>
-                        <td>{{ variable.vigenciaAnterior | numberFormat }}</td>
-                        <td>{{ variable.variacion }}</td>
-                      </tr>
-                    </ng-template>
-                  </p-table>                
-              </div>
-            </div>
-          </p-accordion-content>            
-        </p-accordion-panel>
-
-        <!-- Variables Sector Agua Potable accordion panel -->
-        <p-accordion-panel  value="2">
-          <p-accordion-header>Variables Agua Potable</p-accordion-header>
-          <p-accordion-content>
-            <div class="dual-variables-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; width: 100%; margin-top: 1rem;">
-              <!-- First Municipality Agua Potable Variables Table -->
-              <div class="municipality-variables-column">
-                <p-table
-                  [value]="variablesAguaPotableData1"
-                  [tableStyle]="{'min-width': '100%'}"
-                  styleClass="p-datatable-sm">
-                  <ng-template pTemplate="header">
-                    <tr>
-                      <th>Variable</th>
-                      <th>{{ getSelectedVigenciaName() }}</th>
-                      <th>{{ getPreviousVigenciaName() }}</th>
-                      <th>Variación</th>
-                    </tr>
-                  </ng-template>
-                  <ng-template pTemplate="body" let-variable>
-                    <tr>
-                      <td><strong>{{ variable.nombre }}</strong></td>
-                      <td>{{ variable.vigenciaActual | numberFormat }}</td>
-                      <td>{{ variable.vigenciaAnterior | numberFormat }}</td>
-                      <td>{{ variable.variacion }}</td>
-                    </tr>
-                  </ng-template>
-                </p-table>                
-              </div>
-
-              <!-- Second Municipality Agua Potable Variables Table -->
-              <div class="municipality-variables-column">                
-                  <p-table
-                    [value]="variablesAguaPotableData2"
-                    [tableStyle]="{'min-width': '100%'}"
-                    styleClass="p-datatable-sm">
-                    <ng-template pTemplate="header">
-                      <tr>
-                        <th>Variable</th>
-                        <th>{{ getSelectedVigenciaName() }}</th>
-                        <th>{{ getPreviousVigenciaName() }}</th>
-                        <th>Variación</th>
-                      </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-variable>
-                      <tr>
-                        <td><strong>{{ variable.nombre }}</strong></td>
-                        <td>{{ variable.vigenciaActual | numberFormat }}</td>
-                        <td>{{ variable.vigenciaAnterior | numberFormat }}</td>
-                        <td>{{ variable.variacion }}</td>
-                      </tr>
-                    </ng-template>
-                  </p-table>                
-              </div>
-            </div>
-          </p-accordion-content>            
-        </p-accordion-panel>
-
-        <!-- Variables Sector Propósito General accordion panel -->
-        <p-accordion-panel  value="3">
-          <p-accordion-header>Variables Propósito General</p-accordion-header>
-          <p-accordion-content>
-            <div class="dual-variables-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; width: 100%; margin-top: 1rem;">
-              <!-- First Municipality Propósito General Variables Table -->
-              <div class="municipality-variables-column">
-                <p-table
-                  [value]="variablesPropositoGeneralData1"
-                  [tableStyle]="{'min-width': '100%'}"
-                  styleClass="p-datatable-sm">
-                  <ng-template pTemplate="header">
-                    <tr>
-                      <th>Variable</th>
-                      <th>{{ getSelectedVigenciaName() }}</th>
-                      <th>{{ getPreviousVigenciaName() }}</th>
-                      <th>Variación</th>
-                    </tr>
-                  </ng-template>
-                  <ng-template pTemplate="body" let-variable>
-                    <tr>
-                      <td><strong>{{ variable.nombre }}</strong></td>
-                      <td>{{ variable.vigenciaActual | numberFormat }}</td>
-                      <td>{{ variable.vigenciaAnterior | numberFormat }}</td>
-                      <td>{{ variable.variacion }}</td>
-                    </tr>
-                  </ng-template>
-                </p-table>                
-              </div>
-
-              <!-- Second Municipality Propósito General Variables Table -->
-              <div class="municipality-variables-column">                
-                  <p-table
-                    [value]="variablesPropositoGeneralData2"
-                    [tableStyle]="{'min-width': '100%'}"
-                    styleClass="p-datatable-sm">
-                    <ng-template pTemplate="header">
-                      <tr>
-                        <th>Variable</th>
-                        <th>{{ getSelectedVigenciaName() }}</th>
-                        <th>{{ getPreviousVigenciaName() }}</th>
-                        <th>Variación</th>
-                      </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-variable>
-                      <tr>
-                        <td><strong>{{ variable.nombre }}</strong></td>
-                        <td>{{ variable.vigenciaActual | numberFormat }}</td>
-                        <td>{{ variable.vigenciaAnterior | numberFormat }}</td>
-                        <td>{{ variable.variacion }}</td>
-                      </tr>
-                    </ng-template>
-                  </p-table>                
-              </div>
-            </div>
-          </p-accordion-content>            
-        </p-accordion-panel>
-
-        <!-- Variables Sector Asignaciones Especiales accordion panel -->
-        <p-accordion-panel  value="4">
-          <p-accordion-header>Variables Asignaciones Especiales</p-accordion-header>
-          <p-accordion-content>
-            <div class="dual-variables-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; width: 100%; margin-top: 1rem;">
-              <!-- First Municipality Asignaciones Especiales Variables Table -->
-              <div class="municipality-variables-column">
-                <p-table
-                  [value]="variablesAsignacionesEspecialesData1"
-                  [tableStyle]="{'min-width': '100%'}"
-                  styleClass="p-datatable-sm">
-                  <ng-template pTemplate="header">
-                    <tr>
-                      <th>Variable</th>
-                      <th>{{ getSelectedVigenciaName() }}</th>
-                      <th>{{ getPreviousVigenciaName() }}</th>
-                      <th>Variación</th>
-                    </tr>
-                  </ng-template>
-                  <ng-template pTemplate="body" let-variable>
-                    <tr>
-                      <td><strong>{{ variable.nombre }}</strong></td>
-                      <td>{{ variable.vigenciaActual | numberFormat }}</td>
-                      <td>{{ variable.vigenciaAnterior | numberFormat }}</td>
-                      <td>{{ variable.variacion }}</td>
-                    </tr>
-                  </ng-template>
-                </p-table>                
-              </div>
-
-              <!-- Second Municipality Asignaciones Especiales Variables Table -->
-              <div class="municipality-variables-column">                
-                  <p-table
-                    [value]="variablesAsignacionesEspecialesData2"
-                    [tableStyle]="{'min-width': '100%'}"
-                    styleClass="p-datatable-sm">
-                    <ng-template pTemplate="header">
-                      <tr>
-                        <th>Variable</th>
-                        <th>{{ getSelectedVigenciaName() }}</th>
-                        <th>{{ getPreviousVigenciaName() }}</th>
-                        <th>Variación</th>
-                      </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-variable>
-                      <tr>
-                        <td><strong>{{ variable.nombre }}</strong></td>
-                        <td>{{ variable.vigenciaActual | numberFormat }}</td>
-                        <td>{{ variable.vigenciaAnterior | numberFormat }}</td>
-                        <td>{{ variable.variacion }}</td>
-                      </tr>
-                    </ng-template>
-                  </p-table>                
-              </div>
-            </div>
-          </p-accordion-content>            
-        </p-accordion-panel>
-
-      </p-accordion>
-
-      <!-- Download button for Detalle de Recaudo tab -->
-      <!-- <div class="download-button-container">
-        <button
-          pButton
-          type="button"
-          label="Descargar"
-          icon="pi pi-download"
-          class="p-button p-button-primary download-button"
-          (click)="downloadDetalleRecaudo()">
-        </button>
-      </div> -->
-
-    </div>
-  </div>
-
-  <!-- Informe Trimestral tab content -->
-  <div class="tab-content informe-trimestral-tab" *ngIf="activeTab === 'informe-trimestral'">
-    <div class="informe-trimestral-section">
-      <p-card class="informe-table-card">
-        <p-table
-          [value]="informeTrimestraData"
-          [scrollable]="true"
-          scrollHeight="600px"
-          [tableStyle]="{'min-width': '70rem'}"
-          styleClass="p-datatable-sm">
-          <ng-template pTemplate="header">
-            <tr>
-              <th>Cod entidad</th>
-              <th>Entidad</th>
-              <th *ngFor="let year of getYearColumns()">{{ year }}</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-entity>
-            <tr>
-              <td>{{ entity.codigoEntidad }}</td>
-              <td>{{ entity.nombreEntidad }}</td>
-              <td *ngFor="let year of getYearColumns()">{{ entity.years[year] | numberFormat }}</td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </p-card>
-
-      <!-- Download button for Informe Trimestral tab -->
-      <div class="download-button-container">
-        <button
-          pButton
-          type="button"
-          label="Descargar"
-          icon="pi pi-download"
-          class="p-button p-button-primary download-button"
-          (click)="downloadInformeTrimestral()">
+    <div class="variables-card">
+      <div class="variables-card-header">
+        <span class="variables-icon" aria-hidden="true"
+              [style.--variables-icon]="'url(' + seccionActiva.icono + ')'"></span>
+        <h3 class="variables-card-title">{{ seccionActiva.titulo }}</h3>
+        <button type="button" class="variables-collapse"
+                [attr.aria-expanded]="!seccionColapsada"
+                [attr.aria-label]="seccionColapsada ? 'Expandir sección' : 'Contraer sección'"
+                (click)="seccionColapsada = !seccionColapsada">
+          <i class="pi" [ngClass]="seccionColapsada ? 'pi-chevron-down' : 'pi-chevron-up'"></i>
         </button>
       </div>
+
+      <ng-container *ngIf="!seccionColapsada">
+        <!-- Loading -->
+        <div class="variables-state" *ngIf="isLoadingVariables">
+          <p-progress-spinner styleClass="w-3rem h-3rem" strokeWidth="4" animationDuration=".5s"></p-progress-spinner>
+          <p>Consultando variables de las entidades seleccionadas...</p>
+        </div>
+
+        <!-- Section without data yet -->
+        <div class="variables-state" *ngIf="!isLoadingVariables && seccionActiva.enDepuracion">
+          <i class="pi pi-clock" aria-hidden="true"></i>
+          <p><strong>Información en proceso de depuración.</strong></p>
+          <p>Las variables de esta participación estarán disponibles próximamente.</p>
+        </div>
+
+        <!-- Not applied yet -->
+        <div class="variables-state" *ngIf="!isLoadingVariables && !seccionActiva.enDepuracion && entidadesVariables.length === 0">
+          <i class="pi pi-filter" aria-hidden="true"></i>
+          <p>Seleccione las entidades y presione <strong>Aplicar</strong> para consultar las variables.</p>
+        </div>
+
+        <ng-container *ngIf="!isLoadingVariables && !seccionActiva.enDepuracion && entidadesVariables.length > 0">
+          <div class="variables-grid" [class.single]="entidadesVariables.length === 1">
+            <div class="variables-column" *ngFor="let entidad of entidadesVariables; let i = index"
+                 [ngClass]="i === 0 ? 'entidad-1' : 'entidad-2'">
+              <div class="entidad-header">
+                <i class="pi pi-map-marker" aria-hidden="true"></i>
+                <span class="entidad-nombre">{{ entidad.nombre }}</span>
+                <span class="entidad-badge">Entidad {{ i + 1 }}</span>
+              </div>
+
+              <div class="variables-table-wrapper">
+                <table class="variables-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Variable</th>
+                      <th scope="col" class="num">{{ variablesAnio ? variablesAnio - 1 : '' }}</th>
+                      <th scope="col" class="num">{{ variablesAnio }}</th>
+                      <th scope="col" class="num">Var.</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let variable of entidad.secciones[activeSeccion]">
+                      <td class="variable-nombre">
+                        {{ variable.nombre }}<sup *ngIf="variable.preliminar" class="preliminar-mark" title="Dato preliminar">*</sup>
+                      </td>
+                      <td class="num">{{ formatearValorVariable(variable.anterior, variable.formato) }}</td>
+                      <td class="num">{{ formatearValorVariable(variable.actual, variable.formato) }}</td>
+                      <td class="num">
+                        <span class="variacion" [ngClass]="getTendencia(variable.variacion)">
+                          <ng-container [ngSwitch]="getTendencia(variable.variacion)">
+                            <span *ngSwitchCase="'sube'" aria-label="Aumento">▲</span>
+                            <span *ngSwitchCase="'baja'" aria-label="Disminución">▼</span>
+                            <span *ngSwitchDefault aria-hidden="true">—</span>
+                          </ng-container>
+                          {{ formatearVariacion(variable.variacion) }}
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="variables-legend">
+            <div class="legend-group">
+              <span class="legend-item"><span class="dot entidad-1"></span>Entidad 1</span>
+              <span class="legend-item" *ngIf="entidadesVariables.length > 1"><span class="dot entidad-2"></span>Entidad 2</span>
+            </div>
+            <div class="legend-group">
+              <span class="legend-item sube">▲ Aumento</span>
+              <span class="legend-item baja">▼ Disminución</span>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+
+    <div class="shared-table-notes variables-notes" *ngIf="!seccionActiva.enDepuracion && seccionTienePreliminares">
+      <h4>NOTAS</h4>
+      <p>(*) Dato preliminar en proceso de depuración. Las variables y cifras definitivas se publicarán una vez concluya la revisión de la información.</p>
     </div>
   </div>
 </div>

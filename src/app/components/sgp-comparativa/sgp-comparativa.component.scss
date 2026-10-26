@@ -14,54 +14,59 @@
   }
 }
 
-// Navigation tabs styling
-.navigation-tabs {
-  display: flex;
+// Tokens de la vista Variables Comparadas
+:host {
+  --vc-entidad-1: var(--p-primary-color, #0943b5);
+  --vc-entidad-1-soft: #e0eaff;
+  --vc-entidad-2: #15803d;
+  --vc-entidad-2-soft: #dcfce7;
+  --vc-sube: #15803d;
+  --vc-baja: #dc2626;
+  --vc-igual: #64748b;
+  --vc-tab-inactive: #6b7a8a;
+  --vc-border: #e2e8f0;
+  --vc-header-bg: #f1f5f9;
+  --vc-title: #0f2f6b;
+}
+
+// Pestañas principales (Recursos / Variables Comparadas)
+.main-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
-  margin: 1rem auto;
-  width: 100%;
-  max-width: 1320px;
-  padding: 0 1rem;
+  margin: 1rem 0 0.75rem;
 
-  button {
-    flex: 0 0 auto;
-    min-width: 120px;
-    transition: all 0.3s ease;
+  .main-tab {
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 8px 8px 0 0;
+    background: var(--vc-tab-inactive);
+    color: #e2e8f0;
+    font-size: 1.15rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
 
-    &.p-button-outlined {
-      background: #ffffff;
-      border-color: #d1d5db;
-      color: #6b7280;
-
-      &:hover {
-        background: #f9fafb;
-        border-color: #9ca3af;
-        color: #374151;
-      }
-    }
-
-    &.p-button-primary {
-      background: #0943b5;
-      border-color: #0943b5;
+    &:hover {
+      background: #5a6878;
       color: #ffffff;
-
-      &:hover {
-        background: #0532a0;
-        border-color: #0532a0;
-      }
     }
 
-    &:disabled {
-      background: #f3f4f6 !important;
-      border-color: #d1d5db !important;
-      color: #9ca3af !important;
-      cursor: not-allowed;
+    &.active {
+      background: var(--vc-entidad-1);
+      color: #ffffff;
+    }
 
-      &:hover {
-        background: #f3f4f6 !important;
-        border-color: #d1d5db !important;
-        color: #9ca3af !important;
-      }
+    &:focus-visible {
+      outline: 3px solid #93c5fd;
+      outline-offset: 2px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .main-tab {
+      font-size: 0.95rem;
+      padding: 0.6rem 0.5rem;
     }
   }
 }
@@ -72,184 +77,269 @@
   max-width: 1320px;
   margin: 0 auto;
 
-  .municipal-comparison-header {
-    text-align: center;
-    margin-bottom: 2rem;
+  // Subpestañas de Variables Comparadas
+  .variables-subtabs {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin: 1rem 0;
 
-    h2 {
-      color: #0943b5;
-      font-size: 1.5rem;
-      font-weight: bold;
+    @media (max-width: 992px) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    @media (max-width: 576px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .variables-subtab {
+      padding: 0.6rem 0.5rem;
+      border: 1px solid var(--vc-border);
+      border-radius: 6px;
+      background: #eef2f7;
+      color: #334155;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease;
+
+      &:hover {
+        background: #e2e8f0;
+      }
+
+      &.active {
+        background: var(--vc-entidad-1);
+        border-color: var(--vc-entidad-1);
+        color: #ffffff;
+        font-weight: 600;
+      }
+
+      &:focus-visible {
+        outline: 3px solid #93c5fd;
+        outline-offset: 2px;
+      }
+    }
+  }
+
+  .variables-card {
+    border: 1px solid var(--vc-border);
+    border-radius: 8px;
+    background: #ffffff;
+    padding: 0 1rem 1rem;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  }
+
+  .variables-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0 -1rem 1rem;
+    padding: 0.85rem 1rem;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--vc-border);
+    border-radius: 8px 8px 0 0;
+
+    .variables-icon {
+      flex: 0 0 auto;
+      width: 28px;
+      height: 28px;
+      background-color: var(--vc-entidad-1);
+      -webkit-mask: var(--variables-icon) center / contain no-repeat;
+      mask: var(--variables-icon) center / contain no-repeat;
+    }
+
+    .variables-card-title {
+      flex: 1;
       margin: 0;
-    }
-  }
-
-  .variables-sections {
-    margin-bottom: 2rem;
-
-    ::ng-deep .p-accordion {
-      .p-accordion-tab {
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        margin-bottom: 1rem;
-
-        &:last-child {
-          margin-bottom: 0;
-        }
-
-        .p-accordion-header {
-          background: #f8fafc;
-          border: none;
-          border-radius: 8px 8px 0 0;
-
-          .p-accordion-header-link {
-            padding: 1rem 1.5rem;
-            color: #374151;
-            font-weight: 600;
-            font-size: 1.1rem;
-            border-radius: 8px 8px 0 0;
-
-            &:hover {
-              background: #f1f5f9;
-            }
-
-            &:focus {
-              box-shadow: 0 0 0 0.2rem rgba(7, 67, 181, 0.25);
-            }
-          }
-        }
-
-        .p-accordion-content {
-          padding: 1.5rem;
-          border-top: 1px solid #e5e7eb;
-          background: #ffffff;
-        }
-
-        &.p-accordion-tab-active {
-          .p-accordion-header {
-            background: #0943b5;
-
-            .p-accordion-header-link {
-              color: #ffffff;
-
-              &:hover {
-                background: #0532a0;
-              }
-            }
-          }
-        }
-      }
+      color: var(--vc-title);
+      font-size: 1.05rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
     }
 
-    .dual-variables-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      width: 100%;
+    .variables-collapse {
+      border: none;
+      background: transparent;
+      color: var(--vc-title);
+      padding: 0.35rem;
+      border-radius: 4px;
+      cursor: pointer;
 
-      @media (max-width: 1200px) {
-        grid-template-columns: 1fr;
-      }
-
-      .municipality-variables-column {
-        width: 100%;
-
-        &:first-child {
-          .variables-table-card {
-            border-top: 4px solid #447721;
-
-            .municipality-title {
-              color: #447721;
-              font-size: 1.1rem;
-              font-weight: bold;
-              margin: 0;
-            }
-          }
-        }
-
-        &:last-child {
-          .variables-table-card {
-            border-top: 4px solid #0f4987;
-
-            .municipality-title {
-              color: #0f4987;
-              font-size: 1.1rem;
-              font-weight: bold;
-              margin: 0;
-            }
-          }
-        }
-
-        .variables-table-card {
-          border: 1px solid #e5e7eb;
-          border-radius: 8px;
-          height: 100%;
-        }
+      &:hover {
+        background: var(--vc-header-bg);
       }
     }
   }
 
-  .informe-trimestral-section {
-    .informe-table-card {
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
+  .variables-state {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    color: #475569;
 
-      ::ng-deep .p-datatable {
-        .p-datatable-header {
-          background: #f8fafc;
-        }
+    .pi {
+      font-size: 2rem;
+      color: var(--vc-entidad-1);
+      margin-bottom: 0.75rem;
+    }
 
-        th {
-          background: #f1f5f9;
-          color: #374151;
-          font-weight: 600;
-          border: 1px solid #e2e8f0;
-          min-width: 100px;
-
-          &:first-child {
-            position: sticky;
-            left: 0;
-            z-index: 2;
-            background: #f1f5f9;
-            min-width: 120px;
-          }
-
-          &:nth-child(2) {
-            position: sticky;
-            left: 120px;
-            z-index: 1;
-            background: #f1f5f9;
-            min-width: 200px;
-          }
-        }
-
-        td {
-          border: 1px solid #e2e8f0;
-          min-width: 100px;
-          text-align: center;
-
-          &:first-child {
-            position: sticky;
-            left: 0;
-            z-index: 2;
-            background: #ffffff;
-            min-width: 120px;
-            text-align: left;
-            font-weight: 500;
-          }
-
-          &:nth-child(2) {
-            position: sticky;
-            left: 120px;
-            z-index: 1;
-            background: #ffffff;
-            min-width: 200px;
-            text-align: left;
-          }
-        }
-      }
+    p {
+      margin: 0.25rem 0;
     }
   }
+
+  .variables-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+
+    &.single {
+      grid-template-columns: 1fr;
+    }
+
+    @media (max-width: 992px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .variables-column {
+    min-width: 0;
+
+    --vc-entidad: var(--vc-entidad-1);
+    --vc-entidad-soft: var(--vc-entidad-1-soft);
+
+    &.entidad-2 {
+      --vc-entidad: var(--vc-entidad-2);
+      --vc-entidad-soft: var(--vc-entidad-2-soft);
+    }
+  }
+
+  .entidad-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+
+    .pi-map-marker {
+      color: var(--vc-entidad);
+      font-size: 1.1rem;
+    }
+
+    .entidad-nombre {
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .entidad-badge {
+      padding: 0.1rem 0.6rem;
+      border-radius: 999px;
+      background: var(--vc-entidad-soft);
+      color: var(--vc-entidad);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+  }
+
+  .variables-table-wrapper {
+    overflow-x: auto;
+    border: 1px solid var(--vc-border);
+    border-radius: 6px;
+  }
+
+  .variables-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+
+    th {
+      background: var(--vc-header-bg);
+      color: var(--vc-title);
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      text-align: left;
+      padding: 0.6rem 0.75rem;
+      border-bottom: 2px solid var(--vc-entidad);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid var(--vc-border);
+      color: #334155;
+      vertical-align: middle;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:nth-child(even) td {
+      background: #fafbfc;
+    }
+
+    .num {
+      text-align: right;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .variable-nombre {
+      min-width: 9rem;
+    }
+
+    .preliminar-mark {
+      color: #b45309;
+      font-weight: 700;
+      margin-left: 0.1rem;
+    }
+  }
+
+  .variacion {
+    font-weight: 600;
+
+    &.sube { color: var(--vc-sube); }
+    &.baja { color: var(--vc-baja); }
+    &.igual { color: var(--vc-igual); font-weight: 400; }
+  }
+
+  .variables-legend {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: #475569;
+
+    .legend-group {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+
+      &.sube { color: var(--vc-sube); }
+      &.baja { color: var(--vc-baja); }
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+
+      &.entidad-1 { background: var(--vc-entidad-1); }
+      &.entidad-2 { background: var(--vc-entidad-2); }
+    }
+  }
+
+  .variables-notes {
+    margin-top: 1rem;
+  }
+
 
   // Export and download buttons styling
   .export-buttons-container {

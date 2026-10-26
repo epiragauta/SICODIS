@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, Renderer2 } from '@angular/core';
+import { Component, DestroyRef, Renderer2, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { catchError, forkJoin, of } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { ButtonModule } from 'primeng/button';
@@ -12,12 +14,24 @@ import { TableModule } from 'primeng/table';
 import { TreeTableModule } from 'primeng/treetable';
 import { NumberFormatPipe } from '../../utils/numberFormatPipe';
 import { departamentos } from '../../data/departamentos';
-import { SicodisApiService, FichaComparativaEntidad } from '../../services/sicodis-api.service';
+import { SicodisApiService, FichaComparativaEntidad, EficienciasService, ResumenMunicipioEficiencia } from '../../services/sicodis-api.service';
+import {
+  SECCIONES_VARIABLES,
+  SeccionVariables,
+  SeccionVariablesId,
+  ValorVariable,
+  VariableComparada
+} from '../../data/sgp-variables-comparadas';
 import { TreeNode } from 'primeng/api';
 import { Chart } from 'chart.js';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { MenuItem } from 'primeng/api';
-import { AccordionModule } from 'primeng/accordion';
+
+/** Entidad territorial con sus variables calculadas por sección */
+interface EntidadVariables {
+  nombre: string;
+  secciones: Record<SeccionVariablesId, VariableComparada[]>;
+}
 
 @Component({
   selector: 'app-sgp-comparativa',
@@ -35,8 +49,7 @@ import { AccordionModule } from 'primeng/accordion';
     CardModule,
     ProgressSpinnerModule,
     NumberFormatPipe,
-    Breadcrumb,
-    AccordionModule
+    Breadcrumb
   ],
   templateUrl: './sgp-comparativa.component.html',
   styleUrl: './sgp-comparativa.component.scss'
@@ -64,7 +77,19 @@ export class SgpComparativaComponent {
   tableClass = "p-datatable-sm";
 
   // Tab functionality
-  activeTab: string = 'recursos';
+  activeTab: 'recursos' | 'variables' = 'recursos';
+
+  // Variables Comparadas
+  readonly seccionesVariables: SeccionVariables[] = SECCIONES_VARIABLES;
+  activeSeccion: SeccionVariablesId = 'generales';
+  seccionColapsada = false;
+  entidadesVariables: EntidadVariables[] = [];
+  isLoadingVariables = false;
+  /** Año de vigencia con el que se cargaron las variables */
+  variablesAnio: number | null = null;
+  private variablesCargadasKey = '';
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly eficienciasService = inject(EficienciasService);
   
   // Lista de años disponibles
   availableYears: any[] = [];
@@ -94,18 +119,6 @@ export class SgpComparativaComponent {
 
   distributionData: any = [];
 
-  // Data for new tabs
-  variablesGeneralesData1: any[] = [];
-  variablesGeneralesData2: any[] = [];
-  variablesEducacionData1: any[] = [];
-  variablesEducacionData2: any[] = [];
-  variablesAguaPotableData1: any[] = [];
-  variablesAguaPotableData2: any[] = [];
-  variablesPropositoGeneralData1: any[] = [];
-  variablesPropositoGeneralData2: any[] = [];
-  variablesAsignacionesEspecialesData1: any[] = [];
-  variablesAsignacionesEspecialesData2: any[] = [];
-  informeTrimestraData: any[] = [];
 
   constructor(private renderer: Renderer2, private sicodisApiService: SicodisApiService) {}
   
@@ -119,12 +132,6 @@ export class SgpComparativaComponent {
 
     this.loadVigencias();
     this.cargarDepartamentos();
-    this.loadInformeTrimestraldData(); // Load sample data for Informe Trimestral
-    this.loadVariablesGeneralesData(); // Load sample data for Variables Generales
-    this.loadVariablesEducacionData(); // Load sample data for Variables Educacion
-    this.loadVariablesAguaPotableData();
-    this.loadVariablesPropositoGeneralData();
-    this.loadVariablesAsignacionesEspecialesData();
 
     // Don't load any charts or data initially
     console.log('Component initialized');
@@ -812,24 +819,6 @@ export class SgpComparativaComponent {
   }
 
   /**
-   * Descarga los datos de detalle de recaudo
-   */
-  downloadDetalleRecaudo(): void {
-    console.log('Descargando datos de detalle de recaudo...');
-    // Aquí iría la lógica para descargar el reporte de detalle de recaudo
-    // Podría incluir las variables generales, educación, agua potable, etc.
-  }
-
-  /**
-   * Descarga el informe trimestral
-   */
-  downloadInformeTrimestral(): void {
-    console.log('Descargando informe trimestral...');
-    // Aquí iría la lógica para descargar el informe trimestral de gestión financiera
-    // con los datos históricos de todos los municipios
-  }
-
-  /**
    * Evento cuando cambia la vigencia seleccionada
    */
   onVigenciaChange(event: SelectChangeEvent): void {
@@ -1057,6 +1046,7 @@ export class SgpComparativaComponent {
     
     //this.loadFilteredData();
     this.loadComparativeDataIfReady();
+    this.loadVariablesComparadas(true);
   }
 
   /**
@@ -1073,7 +1063,9 @@ export class SgpComparativaComponent {
     this.towns2 = [];
     this.fichaComparativaData = [];
     this.isLoadingComparativeData = false;
-    
+    this.entidadesVariables = [];
+    this.variablesCargadasKey = '';
+
     this.loadSgpData();
     this.loadSgpData2();
   }
@@ -1843,617 +1835,169 @@ export class SgpComparativaComponent {
   }
 
   /**
-   * Sets the active tab
+   * Cambia entre las pestañas Recursos y Variables Comparadas
    */
-  setActiveTab(tab: string): void {
+  setActiveTab(tab: 'recursos' | 'variables'): void {
+    if (this.activeTab === tab) return;
     this.activeTab = tab;
 
-    // Load data specific to the tab when switching
-    if (tab === 'detalle-recaudo') {
-      this.loadVariablesGeneralesData();
-      this.loadVariablesEducacionData();
-    } else if (tab === 'informe-trimestral') {
-      this.loadInformeTrimestraldData();
+    if (tab === 'variables') {
+      this.loadVariablesComparadas();
+    } else if (this.fichaComparativaData.length > 0) {
+      // Los canvas se recrean con *ngIf al volver a la pestaña
+      setTimeout(() => {
+        this.createBarChart();
+        this.createBarChart2();
+      }, 200);
     }
   }
 
-  /**
-   * Loads the variables generales data for the detalle de recaudo tab
-   */
-  private loadVariablesGeneralesData(): void {
-    // Sample data for Variables generales - Municipality 1
-    this.variablesGeneralesData1 = [
-      {
-        nombre: 'Población total',
-        vigenciaActual: 150000,
-        vigenciaAnterior: 148000,
-        variacion: '+1.35%'
-      },
-      {
-        nombre: 'Población rural',
-        vigenciaActual: 45000,
-        vigenciaAnterior: 44000,
-        variacion: '+2.27%'
-      },
-      {
-        nombre: 'Población urbana',
-        vigenciaActual: 105000,
-        vigenciaAnterior: 104000,
-        variacion: '+0.96%'
-      },
-      {
-        nombre: 'NBI total',
-        vigenciaActual: 25.5,
-        vigenciaAnterior: 26.8,
-        variacion: '-4.85%'
-      },
-      {
-        nombre: 'Categoría Ley 617/00',
-        vigenciaActual: 4,
-        vigenciaAnterior: 4,
-        variacion: 'Sin cambio'
-      },
-      {
-        nombre: 'Área geográfica',
-        vigenciaActual: 1250.5,
-        vigenciaAnterior: 1250.5,
-        variacion: 'Sin cambio'
-      },
-      {
-        nombre: 'Longitud ribera sobre el río Magdalena',
-        vigenciaActual: 35.2,
-        vigenciaAnterior: 35.2,
-        variacion: 'Sin cambio'
-      }
-    ];
+  setActiveSeccion(seccion: SeccionVariablesId): void {
+    this.activeSeccion = seccion;
+    this.seccionColapsada = false;
+  }
 
-    // Sample data for Variables generales - Municipality 2
-    this.variablesGeneralesData2 = [
-      {
-        nombre: 'Población total',
-        vigenciaActual: 85000,
-        vigenciaAnterior: 82000,
-        variacion: '+3.66%'
-      },
-      {
-        nombre: 'Población rural',
-        vigenciaActual: 35000,
-        vigenciaAnterior: 34000,
-        variacion: '+2.94%'
-      },
-      {
-        nombre: 'Población urbana',
-        vigenciaActual: 50000,
-        vigenciaAnterior: 48000,
-        variacion: '+4.17%'
-      },
-      {
-        nombre: 'NBI total',
-        vigenciaActual: 32.1,
-        vigenciaAnterior: 33.5,
-        variacion: '-4.18%'
-      },
-      {
-        nombre: 'Categoría Ley 617/00',
-        vigenciaActual: 5,
-        vigenciaAnterior: 5,
-        variacion: 'Sin cambio'
-      },
-      {
-        nombre: 'Área geográfica',
-        vigenciaActual: 850.3,
-        vigenciaAnterior: 850.3,
-        variacion: 'Sin cambio'
-      },
-      {
-        nombre: 'Longitud ribera sobre el río Magdalena',
-        vigenciaActual: 28.7,
-        vigenciaAnterior: 28.7,
-        variacion: 'Sin cambio'
-      }
-    ];
+  get seccionActiva(): SeccionVariables {
+    return this.seccionesVariables.find(s => s.id === this.activeSeccion) ?? this.seccionesVariables[0];
+  }
+
+  /** Indica si la sección activa contiene datos preliminares (de ejemplo) */
+  get seccionTienePreliminares(): boolean {
+    return this.entidadesVariables.some(e => e.secciones[this.activeSeccion].some(v => v.preliminar));
+  }
+
+  /** Año de inicio de la vigencia seleccionada ("2025 - 2026" → 2025) */
+  private getVigenciaAnio(): number | null {
+    const match = String(this.infoToResume?.vigencia ?? '').match(/(\d{4})/);
+    return match ? parseInt(match[1], 10) : null;
+  }
+
+  /** Código DANE de 5 dígitos a partir de los códigos de departamento y municipio del SGP */
+  private getCodigoDane(codigoDepto: string, codigoMunicipio: string): string {
+    return codigoMunicipio.length >= 5
+      ? codigoMunicipio
+      : String(codigoDepto).padStart(2, '0') + codigoMunicipio.padStart(3, '0');
   }
 
   /**
-   * Loads the variables sector educacion data for the detalle de recaudo tab
+   * Carga las variables comparadas de las entidades seleccionadas (una o dos).
+   * Sin `forzar`, no repite la consulta si los filtros no han cambiado.
    */
-  private loadVariablesEducacionData(): void {
-    // Sample data for Variables Sector Educación - Municipality 1
-    this.variablesEducacionData1 = [
-      {
-        nombre: 'Entidad Territorial Certificada en Educación (ETC)',
-        vigenciaActual: 'Sí',
-        vigenciaAnterior: 'Sí',
-        variacion: 'Sin cambio'
-      },
-      {
-        nombre: 'Matrícula total',
-        vigenciaActual: 35420,
-        vigenciaAnterior: 34850,
-        variacion: '+1.64%'
-      },
-      {
-        nombre: 'Matrícula oficial',
-        vigenciaActual: 28950,
-        vigenciaAnterior: 28500,
-        variacion: '+1.58%'
-      },
-      {
-        nombre: 'Deserción escolar',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      }
-    ];
+  loadVariablesComparadas(forzar = false): void {
+    const anio = this.getVigenciaAnio();
+    const entidades = [
+      { numero: 1, depto: this.departmentSelected, municipio: this.townSelected },
+      { numero: 2, depto: this.departmentSelected2, municipio: this.townSelected2 }
+    ].filter(e => typeof e.depto === 'string' && e.depto && e.municipio && e.municipio !== '0');
 
-    // Sample data for Variables Sector Educación - Municipality 2
-    this.variablesEducacionData2 = [
-      {
-        nombre: 'Entidad Territorial Certificada en Educación (ETC)',
-        vigenciaActual: 'No',
-        vigenciaAnterior: 'No',
-        variacion: 'Sin cambio'
-      },
-      {
-        nombre: 'Matrícula total',
-        vigenciaActual: 18650,
-        vigenciaAnterior: 18200,
-        variacion: '+2.47%'
-      },
-      {
-        nombre: 'Matrícula oficial',
-        vigenciaActual: 16850,
-        vigenciaAnterior: 16500,
-        variacion: '+2.12%'
-      },
-      {
-        nombre: 'Deserción escolar',
-        vigenciaActual: 4.5,
-        vigenciaAnterior: 4.8,
-        variacion: '-6.25%'
-      }
-    ];
-  }
-
-  /**
-   * Loads the variables sector agua potable data for the detalle de recaudo tab
-   */
-  private loadVariablesAguaPotableData(): void {
-    // Sample data for Variables Sector agua potable - Municipality 1
-    this.variablesAguaPotableData1 = [
-      {
-        nombre: 'Cobertura de acueducto en área total',
-        vigenciaActual: 'Sí',
-        vigenciaAnterior: 'Sí',
-        variacion: 'Sin cambio'
-      },
-      {
-        nombre: 'Cobertura de alcantarillado en área total',
-        vigenciaActual: 35420,
-        vigenciaAnterior: 34850,
-        variacion: '+1.64%'
-      },
-      {
-        nombre: 'Uso adecuado recursos',
-        vigenciaActual: 28950,
-        vigenciaAnterior: 28500,
-        variacion: '+1.58%'
-      },
-      {
-        nombre: 'Subsidios pagados',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Aplicación estratificación socioeconómica',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Planes sectoriales adoptados (PGIRS)',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Tarifa de prestadores directos AAA',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Avance cobertura alcantarillado',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Avance cobertura rural acueducto',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Avance cobertura rural alcantarillado',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Avance cobertura urbana acueducto',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Avance cobertura urbana aseo',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Avance indicadir calidad de agua (IRCA)',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      }
-    ];
-
-    // Sample data for Variables Sector agua potable - Municipality 2
-    this.variablesAguaPotableData2 = [
-      {
-        nombre: 'Cobertura de acueducto en área total',
-        vigenciaActual: 'Sí',
-        vigenciaAnterior: 'Sí',
-        variacion: 'Sin cambio'
-      },
-      {
-        nombre: 'Cobertura de alcantarillado en área total',
-        vigenciaActual: 35420,
-        vigenciaAnterior: 34850,
-        variacion: '+1.64%'
-      },
-      {
-        nombre: 'Uso adecuado recursos',
-        vigenciaActual: 28950,
-        vigenciaAnterior: 28500,
-        variacion: '+1.58%'
-      },
-      {
-        nombre: 'Subsidios pagados',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Aplicación estratificación socioeconómica',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Planes sectoriales adoptados (PGIRS)',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Tarifa de prestadores directos AAA',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Avance cobertura alcantarillado',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Avance cobertura rural acueducto',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Avance cobertura rural alcantarillado',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Avance cobertura urbana acueducto',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Avance cobertura urbana aseo',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Avance indicadir calidad de agua (IRCA)',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      }
-    ];
-  }
-
-  /**
-   * Loads the variables sector Propósito General data for the detalle de recaudo tab
-   */
-  private loadVariablesPropositoGeneralData(): void {
-    // Sample data for Variables Sector Propósito General - Municipality 1
-    this.variablesPropositoGeneralData1 = [
-      {
-        nombre: 'Reporte oportuno ingresos tributarios en FUT',
-        vigenciaActual: 'Sí',
-        vigenciaAnterior: 'Sí',
-        variacion: 'Sin cambio'
-      },
-      {
-        nombre: 'Ingresos tributarios refrendados',
-        vigenciaActual: 35420,
-        vigenciaAnterior: 34850,
-        variacion: '+1.64%'
-      },
-      {
-        nombre: 'Ingresos tributarios per cápita',
-        vigenciaActual: 28950,
-        vigenciaAnterior: 28500,
-        variacion: '+1.58%'
-      },
-      {
-        nombre: 'Indicador crecimiento ingresos per cápita',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Cumplimiento límite de gastos de funcionamiento Ley 617/00',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Municipio en Ley 550/99 0 617/00 y utiliza recursos del SGP',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Envío actualización SISBÉN',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Ingresos corrientes de libre destinación (ICLD)',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Gastos de funcionamiento (GF)',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Razón',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Holgura',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Límite de gasto',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Utiliza recursos del SGP para financiar acuerdo de restructuración',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      }
-    ];
-
-    // Sample data for Variables Sector Propósito General - Municipality 2
-    this.variablesPropositoGeneralData2 = [
-      {
-        nombre: 'Reporte oportuno ingresos tributarios en FUT',
-        vigenciaActual: 'Sí',
-        vigenciaAnterior: 'Sí',
-        variacion: 'Sin cambio'
-      },
-      {
-        nombre: 'Ingresos tributarios refrendados',
-        vigenciaActual: 35420,
-        vigenciaAnterior: 34850,
-        variacion: '+1.64%'
-      },
-      {
-        nombre: 'Ingresos tributarios per cápita',
-        vigenciaActual: 28950,
-        vigenciaAnterior: 28500,
-        variacion: '+1.58%'
-      },
-      {
-        nombre: 'Indicador crecimiento ingresos per cápita',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Cumplimiento límite de gastos de funcionamiento Ley 617/00',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Municipio en Ley 550/99 0 617/00 y utiliza recursos del SGP',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Envío actualización SISBÉN',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Ingresos corrientes de libre destinación (ICLD)',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Gastos de funcionamiento (GF)',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Razón',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Holgura',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Límite de gasto',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      },
-      {
-        nombre: 'Utiliza recursos del SGP para financiar acuerdo de restructuración',
-        vigenciaActual: 3.8,
-        vigenciaAnterior: 4.2,
-        variacion: '-9.52%'
-      }
-    ];
-  }
-
-  /**
-   * Loads the variables sector Asignaciones Especiales data for the detalle de recaudo tab
-   */
-  private loadVariablesAsignacionesEspecialesData(): void {
-    // Sample data for Variables Sector Asignaciones Especiales - Municipality 1
-    this.variablesAsignacionesEspecialesData1 = [
-      {
-        nombre: 'Población en resguardo indígena',
-        vigenciaActual: 'Sí',
-        vigenciaAnterior: 'Sí',
-        variacion: 'Sin cambio'
-      },
-      {
-        nombre: 'Pasivo pensional total',
-        vigenciaActual: 35420,
-        vigenciaAnterior: 34850,
-        variacion: '+1.64%'
-      }
-    ];
-
-    // Sample data for Variables Sector Asignaciones Especiales - Municipality 2
-    this.variablesAsignacionesEspecialesData2 = [
-      {
-        nombre: 'Población en resguardo indígena',
-        vigenciaActual: 'No',
-        vigenciaAnterior: 'No',
-        variacion: 'Sin cambio'
-      },
-      {
-        nombre: 'Pasivo pensional total',
-        vigenciaActual: 18650,
-        vigenciaAnterior: 18200,
-        variacion: '+2.47%'
-      }
-    ];
-  }
-
-
-  /**
-   * Loads the informe trimestral data
-   */
-  private loadInformeTrimestraldData(): void {
-    // Sample data for Informe Trimestral with 20 sample municipalities
-    const sampleMunicipalities = [
-      { codigo: '05001', nombre: 'Medellín' },
-      { codigo: '11001', nombre: 'Bogotá D.C.' },
-      { codigo: '76001', nombre: 'Cali' },
-      { codigo: '08001', nombre: 'Barranquilla' },
-      { codigo: '13001', nombre: 'Cartagena' },
-      { codigo: '68001', nombre: 'Bucaramanga' },
-      { codigo: '66001', nombre: 'Pereira' },
-      { codigo: '17001', nombre: 'Manizales' },
-      { codigo: '23001', nombre: 'Montería' },
-      { codigo: '15001', nombre: 'Tunja' },
-      { codigo: '50001', nombre: 'Villavicencio' },
-      { codigo: '52001', nombre: 'Pasto' },
-      { codigo: '41001', nombre: 'Neiva' },
-      { codigo: '73001', nombre: 'Ibagué' },
-      { codigo: '54001', nombre: 'Cúcuta' },
-      { codigo: '19001', nombre: 'Popayán' },
-      { codigo: '63001', nombre: 'Armenia' },
-      { codigo: '70001', nombre: 'Sincelejo' },
-      { codigo: '44001', nombre: 'Riohacha' },
-      { codigo: '47001', nombre: 'Santa Marta' }
-    ];
-
-    this.informeTrimestraData = sampleMunicipalities.map((municipality, index) => ({
-      codigoEntidad: municipality.codigo,
-      nombreEntidad: municipality.nombre,
-      years: this.generateYearlyData(0.7 + (index * 0.1)) // Different multiplier for each municipality
-    }));
-  }
-
-  /**
-   * Generates sample yearly data from 2003 to 2024
-   */
-  private generateYearlyData(multiplier: number = 1): { [key: string]: number } {
-    const data: { [key: string]: number } = {};
-    const baseAmount = 50000000000; // 50 billion base amount
-
-    for (let year = 2003; year <= 2024; year++) {
-      // Generate realistic growth pattern with some variation
-      const yearsSince2003 = year - 2003;
-      const growth = Math.pow(1.03, yearsSince2003); // 3% annual growth
-      const variation = 0.8 + (Math.random() * 0.4); // Random variation ±20%
-
-      data[year.toString()] = Math.round(baseAmount * growth * variation * multiplier);
+    if (!anio || entidades.length === 0) {
+      this.entidadesVariables = [];
+      this.variablesCargadasKey = '';
+      return;
     }
 
-    return data;
+    const codigos = entidades.map(e => this.getCodigoDane(e.depto, e.municipio));
+    const key = `${anio}|${codigos.join('|')}`;
+    if (!forzar && key === this.variablesCargadasKey) return;
+
+    this.isLoadingVariables = true;
+    forkJoin(codigos.map(codigo =>
+      this.eficienciasService.getResumenMunicipio(codigo).pipe(
+        catchError(error => {
+          console.warn(`Sin datos de eficiencias para ${codigo}:`, error);
+          return of(null);
+        })
+      )
+    ))
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(resumenes => {
+        this.entidadesVariables = entidades.map((entidad, i) => ({
+          nombre: this.getNombreEntidadVariables(entidad.numero),
+          secciones: this.buildSeccionesVariables(resumenes[i], anio, entidad.numero - 1)
+        }));
+        this.variablesCargadasKey = key;
+        this.variablesAnio = anio;
+        this.isLoadingVariables = false;
+      });
   }
 
-  /**
-   * Gets the column years for the informe trimestral table
-   */
-  getYearColumns(): string[] {
-    const years: string[] = [];
-    for (let year = 2003; year <= 2024; year++) {
-      years.push(year.toString());
+  /** Nombre "Municipio, Departamento" para el encabezado de la columna */
+  private getNombreEntidadVariables(numero: number): string {
+    const towns = numero === 1 ? this.towns : this.towns2;
+    const townId = numero === 1 ? this.townSelected : this.townSelected2;
+    const deptoId = numero === 1 ? this.departmentSelected : this.departmentSelected2;
+    const municipio = towns.find(t => t.id === townId)?.label ?? `Entidad ${numero}`;
+    const departamento = this.departments.find(d => d.id === deptoId)?.label;
+    // Las gobernaciones (código terminado en 000) ya incluyen el departamento en el nombre
+    return departamento && !townId.endsWith('000') ? `${municipio}, ${departamento}` : municipio;
+  }
+
+  private buildSeccionesVariables(
+    resumen: ResumenMunicipioEficiencia | null,
+    anio: number,
+    indiceEntidad: number
+  ): Record<SeccionVariablesId, VariableComparada[]> {
+    const secciones = {} as Record<SeccionVariablesId, VariableComparada[]>;
+
+    for (const seccion of this.seccionesVariables) {
+      secciones[seccion.id] = seccion.variables.map(variable => {
+        let anterior: ValorVariable = null;
+        let actual: ValorVariable = null;
+        let preliminar = false;
+
+        if (variable.eficiencias) {
+          if (resumen) {
+            anterior = variable.eficiencias(resumen, anio - 1);
+            actual = variable.eficiencias(resumen, anio);
+          }
+        } else if (variable.ejemplo) {
+          [anterior, actual] = variable.ejemplo[indiceEntidad];
+          preliminar = true;
+        }
+
+        const variacion = typeof anterior === 'number' && typeof actual === 'number' && anterior !== 0
+          ? (actual - anterior) / Math.abs(anterior)
+          : null;
+
+        return { nombre: variable.nombre, formato: variable.formato, anterior, actual, variacion, preliminar };
+      });
     }
-    return years;
+
+    return secciones;
+  }
+
+  formatearValorVariable(valor: ValorVariable, formato: VariableComparada['formato']): string {
+    if (valor === null || valor === undefined || valor === '') return '—';
+    if (typeof valor === 'string' || formato === 'texto') return String(valor);
+
+    const numero = (decimales: number) => valor.toLocaleString('es-CO', {
+      minimumFractionDigits: decimales,
+      maximumFractionDigits: decimales
+    });
+
+    switch (formato) {
+      case 'entero': return numero(0);
+      case 'decimal': return numero(2);
+      case 'porcentaje': return `${numero(2)} %`;
+      case 'indice': return numero(4);
+      case 'moneda': return `$ ${numero(0)}`;
+      default: return String(valor);
+    }
+  }
+
+  formatearVariacion(variacion: number | null): string {
+    if (variacion === null) return '—';
+    const texto = (Math.abs(variacion) * 100).toLocaleString('es-CO', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+    if (this.getTendencia(variacion) === 'igual') return `${texto} %`;
+    return `${variacion > 0 ? '+' : '−'}${texto} %`;
+  }
+
+  getTendencia(variacion: number | null): 'sube' | 'baja' | 'igual' {
+    if (variacion === null || Math.abs(variacion) < 0.00005) return 'igual';
+    return variacion > 0 ? 'sube' : 'baja';
   }
 
   /**
