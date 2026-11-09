@@ -2156,7 +2156,87 @@ getSgrDescargaResumenPbcRecaudoMensual( idvigencia: number
                                                                   , id_fuente  : string): Observable<Blob> {
     const url = `${this.baseUrl}/pgn/descargadatosseguimiento_por_vigencia_periodo_region_depto_fuente/${id_vigencia}/${id_periodo}/${codigo_region}/${codigo_dane_depto}/${id_fuente}`;
     return this.http.get(url, { responseType: 'blob' });  // responseType 'blob' indica que será un archivo binario
-  }   
+  }
+
+
+
+  // ========== PGN Programación (pgnprog) Methods ==========
+  // Controlador paralelo a pgn/* pero sobre el presupuesto de PROGRAMACIÓN.
+  // Reutiliza las mismas interfaces de pgn/* porque las estructuras de respuesta son idénticas.
+
+  /**
+   * Obtiene las vigencias de programación para PGN
+   * @returns Observable con el array de vigencias de programación
+   */
+  getPgnProgVigencias(): Observable<VigenciaPgn[]> {
+    const url = `${this.baseUrl}/pgnprog/vigencias`;
+    return this.http.get<VigenciaPgn[]>(url);
+  }
+
+  /**
+   * Obtiene los periodos de programación de PGN para una vigencia específica
+   * @param id_vigencia - Año de consulta
+   * @returns Observable con los periodos del año
+   */
+  getPgnProgPeriodoPorVigencia(id_vigencia : string): Observable<PeriodoPgn[]> {
+    const url = `${this.baseUrl}/pgnprog/periodos_por_vigencia/${id_vigencia}`;
+    return this.http.get<PeriodoPgn[]>(url);
+  }
+
+  /**
+   * Obtiene los departamentos para regionalización de programación según vigencia y periodo
+   * @param id_vigencia - Año de consulta
+   * @param id_periodo - Periodo de consulta
+   * @returns Observable con los departamentos para la vigencia y periodo seleccionados
+   */
+  getPgnProgDepartamentosPorVigenciaPeriodo(id_vigencia : string, id_periodo  : string): Observable<DepartamentoPgn[]> {
+    const url = `${this.baseUrl}/pgnprog/departamentos_por_vigencia_periodo/${id_vigencia}/${id_periodo}`;
+    return this.http.get<DepartamentoPgn[]>(url);
+  }
+
+  /**
+   * Obtiene las fuentes para regionalización de programación según vigencia y periodo
+   * @param id_vigencia - Año de consulta
+   * @param id_periodo - Periodo de consulta
+   * @returns Observable con las fuentes para la vigencia y periodo seleccionados
+   */
+  getPgnProgFuentesPorVigenciaPeriodo(id_vigencia : string, id_periodo  : string): Observable<FuentePgn[]> {
+    const url = `${this.baseUrl}/pgnprog/fuentes_por_vigencia_periodo/${id_vigencia}/${id_periodo}`;
+    return this.http.get<FuentePgn[]>(url);
+  }
+
+  /**
+   * Obtiene los datos de resumen y detalle de regionalización de programación dados unos parámetros
+   * @param id_vigencia - Año de consulta
+   * @param id_periodo - Periodo de consulta
+   * @param codigo_dane_depto - Código del departamento
+   * @param id_fuente - Código de la fuente
+   * @returns Observable con los datos de regionalización de programación
+   */
+  getPgnProgDatosRegionalizacionPorVigenciaPeriodo(id_vigencia : string
+                                                  , id_periodo  : string
+                                                  , codigo_dane_depto  : string
+                                                  , id_fuente  : string): Observable<PgnDatosRegionalizacionResponse> {
+    const url = `${this.baseUrl}/pgnprog/datosregionalizacion_por_vigencia_periodo/${id_vigencia}/${id_periodo}/${codigo_dane_depto}/${id_fuente}`;
+    return this.http.get<PgnDatosRegionalizacionResponse>(url);
+  }
+
+  /**
+   * Descarga el archivo Excel de regionalización de programación dados unos parámetros
+   * @param id_vigencia - Año de consulta
+   * @param id_periodo - Periodo de consulta
+   * @param codigo_dane_depto - Código del departamento
+   * @param id_fuente - Código de la fuente
+   * @returns Observable con el archivo binario (Blob)
+   */
+  getPgnProgDescargaDatosRegionalizacionPorVigenciaPeriodo( id_vigencia: string,
+                                                            id_periodo: string,
+                                                            codigo_dane_depto: string,
+                                                            id_fuente: string
+                                                          ): Observable<Blob> {
+    const url = `${this.baseUrl}/pgnprog/descargadatosregionalizacion_por_vigencia_periodo/${id_vigencia}/${id_periodo}/${codigo_dane_depto}/${id_fuente}`;
+    return this.http.get(url, { responseType: 'blob' });  // responseType 'blob' indica que será un archivo binario
+  }
 
 
 
