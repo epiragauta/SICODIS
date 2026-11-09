@@ -1,25 +1,30 @@
 /**
  * Configuración de desarrollo local (`ng serve`).
  *
- * Mientras no exista el puente `AuthApi.ashx` en el proyecto .NET legado, la
- * sesión de usuario se resuelve con el proveedor simulado. Los tres usuarios
- * de prueba cubren los tres resultados de `Consulta_AccesoPaginas`.
+ * La sesión de usuario se valida contra el endpoint real de `apiws`
+ * (`/apiws/auth/usuario/*`), a través del proxy (`/api` → sicodis.dnp.gov.co).
+ * El control de acceso por pantalla se deriva de los `permisos[]` del login.
  *
- * Para probar contra el legado ya desplegado basta con cambiar `provider` a
- * 'legacy' y ajustar `legacyUrl` (o dejar la ruta relativa /api… del proxy).
+ * Para volver al proveedor simulado (usuarios de prueba admin/limitado/
+ * noautorizado) basta con cambiar `provider` a 'mock'; para el puente .NET
+ * legado, a 'legacy'. Ningún componente ni guard depende de la implementación.
  */
 export const environment = {
   production: false,
 
   auth: {
-    provider: 'mock' as 'legacy' | 'apiws' | 'mock',
+    provider: 'apiws' as 'legacy' | 'apiws' | 'mock',
 
     legacyUrl: '/api/APIProxy/AuthApi.ashx',
-    apiwsUrl: '/api/apiws/auth/usuario',
+    // URL absoluta (igual que auth.service.ts y sicodis-api.service.ts): el
+    // servidor permite CORS desde localhost. La ruta del proxy `/api/...` no
+    // reenvía estos endpoints (devuelve 404).
+    apiwsUrl: 'https://sicodis.dnp.gov.co/apiws/auth/usuario',
 
     minutosSesion: 30,
     minutosUmbralRenovacion: 5,
 
+    // Inactivos mientras `provider` sea 'apiws'; se conservan para rollback a 'mock'.
     usuariosMock: [
       {
         usuario: 'admin',

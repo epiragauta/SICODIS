@@ -144,6 +144,7 @@ export class UserAuthService {
       usuario: respuesta.usuario,
       nombre: respuesta.nombre,
       roles: respuesta.roles,
+      permisos: respuesta.permisos ?? [],
       token: respuesta.token,
       expiraEn: Date.now() + respuesta.expiraEnSegundos * 1000,
     };

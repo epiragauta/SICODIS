@@ -195,31 +195,101 @@ Diseño alineado al portal nuevo (PrimeNG + tema Lara + paleta WCAG AA ya defini
 
 ---
 
-## 7. Fase 3 — Endpoint definitivo en `apiws` (contrato a implementar por backend)
+## 7. Fase 3 — Endpoint definitivo en `apiws`
+
+> **Actualización 2026-11-08.** El backend ya publicó el controlador
+> `/apiws/auth/usuario/*` (verificado contra `apiws/swagger/v1/swagger.json`).
+> El contrato **difiere** del que se había propuesto aquí: los campos del login
+> se llaman `login`/`clave` (no `usuario`/`password`), la respuesta trae además
+> `permisos[]` y `menu[]`, y **no existe el endpoint `/acceso`**. El
+> `ApiwsAuthProvider` ya quedó alineado a este contrato real; ver «Estado de
+> implementación» al final de la sección.
+
+### 7.1 Contrato real (Swagger de apiws)
 
 ```
-POST /apiws/auth/usuario/login
-  body   { "usuario": "jperez", "password": "…" }
+POST /apiws/auth/usuario/login                               (público)
+  body   { "login": "jperez", "clave": "…" }                  ← LoginUsuarioRequest
   200    { "access_token": "<JWT>", "token_type": "Bearer", "expires_in": 1800,
-           "usuario": { "login": "jperez", "nombre": "Juan Pérez", "correo": "…", "entidad": "DNP" },
-           "roles": ["ADMIN_SGR", "CONSULTA"] }
-  401    { "error": "credenciales_invalidas", "mensaje": "Usuario o contraseña incorrectos" }
-  403    { "error": "usuario_inactivo",       "mensaje": "El usuario no está activo en el sistema" }
+           "usuario": { "login": "jperez", "nombre": "Juan Pérez",
+                        "correo": "…", "cargo": "…", "dependencia": "DNP" },
+           "roles":    ["ADMIN_SGR", "CONSULTA"],
+           "permisos": ["AdminConfig.aspx", "SgrCargaInsumos.aspx", …],
+           "menu":     [ { "codigo", "label", "icon", "routerLink", "items":[…] } ] }
+  401    { "error": "credenciales_invalidas", "mensaje": "…", "codigoSeguimiento": "…" }
+  429    { "error": "…", "mensaje": "…", "codigoSeguimiento": "…" }   ← rate limiting
 
-GET  /apiws/auth/usuario/acceso?pagina=CargaInsumos.aspx     → { "resultado": "OK" | "NOK" | "UNOK" }
-POST /apiws/auth/usuario/renovar                             → { "access_token", "expires_in" }
-POST /apiws/auth/usuario/logout                              → 204
+GET  /apiws/auth/usuario/menu     (UsuarioBearer)  → MenuItemDto[]  (menú del usuario)
+POST /apiws/auth/usuario/renovar  (UsuarioBearer)  → LoginUsuarioResponse (mismo cuerpo del login)
+POST /apiws/auth/usuario/logout   (UsuarioBearer)  → 204
 ```
 
-Lado servidor:
+Diferencias frente al contrato propuesto originalmente:
+
+| Punto | Propuesta original | Contrato real (Swagger) |
+|---|---|---|
+| Campos del login | `{ usuario, password }` | `{ login, clave }` |
+| Datos del usuario | `usuario.entidad` | `usuario.cargo`, `usuario.dependencia` |
+| Autorización por pantalla | `GET /acceso?pagina=` → OK/NOK/UNOK | **No existe**; se devuelven `permisos[]` y `menu[]` en el login |
+| Errores | `error` + `mensaje` | `error` + `mensaje` + `codigoSeguimiento`; incluye 429 |
+
+### 7.2 Control de acceso por pantalla sin `/acceso`
+
+Al no existir `Consulta_AccesoPaginas` en el nuevo backend, la autorización por
+pantalla se resuelve **en cliente** a partir de los `permisos[]` que el login
+devuelve y que se persisten en la sesión (decisión 2026-11-08):
+
+- Si el código de permiso que la ruta exige está en `permisos[]` → `OK`.
+- Si no está → `UNOK` (no autorizado).
+- Se descarta el matiz intermedio `NOK` (acceso limitado), que dependía del SP legado.
+
+**Formato real de `permisos[]`** (verificado 2026-11-08 con el usuario
+`edpiragauta`, rol `ADMINISTRADOR`): códigos `RECURSO:ACCION`, no nombres de
+página `.aspx`. Ejemplos: `ADMIN_CONFIGURACION:VER`,
+`ADMIN_CONFIG_FECHAS_VIGENCIAS:EDITAR`, `ADMIN_TEMA:VER`. Para acceder a una
+pantalla basta el permiso de vista (`:VER`); las acciones internas de edición
+usan el mismo recurso con `:EDITAR`.
+
+Cada ruta protegida declara en `app.routes.ts` el código requerido en
+`data.permiso` (antes `data.paginaLegado`). Mapeo actual:
+
+| Ruta Angular | `data.permiso` | Estado |
+|---|---|---|
+| `/admin-config` | `ADMIN_CONFIGURACION:VER` | ✅ confirmado |
+| `/sgr-carga-insumos` | `SGR_CARGA_INSUMOS:VER` | ⚠️ por confirmar con backend |
+| `/sgr-ejecucion-distribucion` | `SGR_EJECUCION_DISTRIBUCION:VER` | ⚠️ por confirmar |
+| `/sgr-parametros-distribucion` | `SGR_PARAMETROS_DISTRIBUCION:VER` | ⚠️ por confirmar |
+| `/sgr-iac`, `/sgr-iac/:id` | `SGR_IAC:VER` | ⚠️ por confirmar |
+
+Los códigos de las pantallas SGR siguen la convención observada pero no están
+verificados: el usuario de prueba no las incluye en sus `permisos[]`. Secure by
+default: mientras el código no coincida con uno real, esas pantallas deniegan el
+acceso (es un `UNOK`). Hay que confirmarlos contra el catálogo de permisos del
+backend.
+
+### 7.3 Lado servidor (ya implementado por backend; se conserva como referencia)
 
 - Validación LDAP con `PrincipalContext.ValidateCredentials` (reemplazo moderno del `DirectoryEntry.NativeObject` del legado).
 - Verificación de estado activo en BD (equivalente a `ConsultarDatosUsuario`, columna `Estado`).
 - `sp_RegistrarAcceso` con IP real (respetando `X-Forwarded-For` si hay proxy).
 - JWT firmado, claims `sub`, `name`, `roles`, `exp`; clave en configuración, no en código.
+- Rate limiting (respuesta 429) ya contemplado en el contrato.
 - La verificación de vencimiento en AD (`?verificar=1` del legado) pasa a **job programado**.
 
-**Corte de migración:** cambiar `environment.authProvider` de `'legacy'` a `'apiws'` y retirar `AuthApi.ashx`. No se toca ningún componente.
+### 7.4 Estado de implementación (front)
+
+- ✅ `ApiwsAuthProvider` alineado al contrato real: `login` con `{ login, clave }`,
+  mapeo de `access_token`/`expires_in`/`roles`/`permisos`, `renovar` y `logout`.
+- ✅ `verificarAcceso` deriva de `permisos[]` en cliente (sin llamar a `/acceso`).
+- ✅ `SesionUsuario.permisos` y `RespuestaLogin.permisos` añadidos; mock/legacy
+  no se ven afectados (permiso opcional, su `verificarAcceso` sigue igual).
+- ⏳ `menu[]` se recibe pero **no se consume** aún (el menú sigue estático). Menú
+  dinámico por usuario queda como incremento futuro.
+
+**Corte de migración:** cambiar `environment.auth.provider` de `'legacy'` a
+`'apiws'` (dev y/o prod) y retirar `AuthApi.ashx`. No se toca ningún componente.
+Requisito: que el backend devuelva en `permisos[]` los identificadores de pantalla
+listados en §7.2.
 
 ---
 

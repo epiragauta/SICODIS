@@ -22,6 +22,13 @@ export interface SesionUsuario {
   /** Nombre para mostrar (el `CN` de Active Directory). */
   nombre: string;
   roles: string[];
+  /**
+   * Identificadores de pantalla que el usuario tiene habilitados.
+   * El proveedor `apiws` los devuelve en el login y con ellos resuelve el
+   * control de acceso por pantalla en cliente (no hay endpoint `/acceso`).
+   * Los proveedores `mock`/`legacy` no los usan (queda `[]`).
+   */
+  permisos: string[];
   /** Token opaco (legado) o JWT (apiws). El cliente nunca lo interpreta. */
   token: string;
   /** Momento de expiración en milisegundos desde época. */
@@ -33,6 +40,8 @@ export interface RespuestaLogin {
   usuario: string;
   nombre: string;
   roles: string[];
+  /** Permisos por pantalla; solo lo provee `apiws`. Opcional para mock/legacy. */
+  permisos?: string[];
   token: string;
   expiraEnSegundos: number;
 }

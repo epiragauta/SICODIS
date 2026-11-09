@@ -3,7 +3,7 @@ import { authGuard } from './auth.guard';
 
 /**
  * @deprecated Usar `authGuard` (sesión) junto con `paginaGuard` (permiso por
- * pantalla, vía `data.paginaLegado`). Se conserva como alias para no romper
+ * pantalla, vía `data.permiso`). Se conserva como alias para no romper
  * rutas que aún lo referencien.
  *
  * La versión anterior solo comprobaba la existencia del token de servicio

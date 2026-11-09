@@ -40,7 +40,7 @@ class ProveedorConAcceso {
 /** Ejecuta el guard con sesión iniciada y devuelve la URL resultante o `true`. */
 async function ejecutarGuard(
   resultado: ResultadoAcceso,
-  data: Record<string, unknown> = { paginaLegado: 'AdminConfig.aspx' },
+  data: Record<string, unknown> = { permiso: 'ADMIN_CONFIGURACION:VER' },
 ): Promise<string | boolean> {
   sessionStorage.clear();
   TestBed.resetTestingModule();
@@ -76,7 +76,7 @@ describe('paginaGuard', () => {
     expect(await ejecutarGuard('UNOK')).toBe('/acceso-no-autorizado');
   });
 
-  it('no restringe cuando la ruta no declara paginaLegado', async () => {
+  it('no restringe cuando la ruta no declara permiso', async () => {
     expect(await ejecutarGuard('UNOK', {})).toBeTrue();
   });
 });

@@ -5,29 +5,31 @@ import { map } from 'rxjs/operators';
 import { UserAuthService } from '../auth/user-auth.service';
 
 /**
- * Control de acceso por pantalla, equivalente a `Dnp.Web.Page.OnInit` del
- * proyecto legado: consulta `Consulta_AccesoPaginas(usuario, pagina)` y
- * redirige igual que allí.
+ * Control de acceso por pantalla según el permiso que la ruta exige.
+ *
+ * La ruta declara el código de permiso requerido en `data.permiso`
+ * (formato `RECURSO:ACCION` que devuelve el login de apiws, p. ej.
+ * `ADMIN_CONFIGURACION:VER`). Con el proveedor `apiws` el permiso se contrasta
+ * en cliente contra los `permisos[]` de la sesión; con `mock`/`legacy` se
+ * resuelve como antes a través del proveedor.
  *
  *   OK   → se muestra la pantalla
- *   NOK  → /acceso-limitado        (antes AccesoLimitado.aspx)
- *   UNOK → /acceso-no-autorizado   (antes AccesoNoAutorizado.html)
+ *   NOK  → /acceso-limitado        (solo mock/legacy; apiws no usa este matiz)
+ *   UNOK → /acceso-no-autorizado
  *
- * La ruta declara el identificador de pantalla en `data.paginaLegado`; si no lo
- * declara, el guard no restringe nada (basta con `authGuard`).
- *
- * Debe usarse después de `authGuard`, que garantiza que hay sesión.
+ * Si la ruta no declara `data.permiso`, el guard no restringe nada (basta con
+ * `authGuard`). Debe usarse después de `authGuard`, que garantiza que hay sesión.
  */
 export const paginaGuard: CanActivateFn = route => {
   if (isPlatformServer(inject(PLATFORM_ID))) return true;
 
-  const pagina = route.data?.['paginaLegado'] as string | undefined;
-  if (!pagina) return true;
+  const permiso = route.data?.['permiso'] as string | undefined;
+  if (!permiso) return true;
 
   const auth = inject(UserAuthService);
   const router = inject(Router);
 
-  return auth.verificarAcceso(pagina).pipe(
+  return auth.verificarAcceso(permiso).pipe(
     map(resultado => {
       if (resultado === 'OK') return true;
       return router.createUrlTree([

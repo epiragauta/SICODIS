@@ -47,15 +47,16 @@ export const routes: Routes = [
     { path: 'sgr-comparativo',                component: SgrComparativoComponent,                          data: { breadcrumb: 'SGR — Comparativo' } },
     { path: 'sgr-programacion',               component: SgrProgramacionComponent,                         data: { breadcrumb: 'SGR — Programación' } },
     // Pantallas restringidas del módulo de distribución SGR: exigen sesión
-    // (authGuard) y permiso de pantalla (paginaGuard → Consulta_AccesoPaginas).
-    { path: 'sgr-carga-insumos',              component: SgrCargaInsumosComponent,          canActivate: [authGuard, paginaGuard], data: { breadcrumb: 'SGR — Carga de Insumos', paginaLegado: 'SgrCargaInsumos.aspx' } },
-    { path: 'sgr-ejecucion-distribucion',     component: SgrEjecucionDistribucionComponent, canActivate: [authGuard, paginaGuard], data: { breadcrumb: 'SGR — Ejecución de la Distribución', paginaLegado: 'SgrEjecucionDistribucion.aspx' } },
-    { path: 'sgr-parametros-distribucion',    component: SgrParametrosDistribucionComponent, canActivate: [authGuard, paginaGuard], data: { breadcrumb: 'SGR — Parámetros de la Distribución', paginaLegado: 'SgrParametrosDistribucion.aspx' } },
-    // IAC transaccional. `paginaLegado` conserva el nombre real de la pantalla
-    // del sistema anterior para que Consulta_AccesoPaginas siga resolviendo el
-    // permiso sin tocar la tabla de permisos.
-    { path: 'sgr-iac',                        component: SgrIacComponent,                   canActivate: [authGuard, paginaGuard], data: { breadcrumb: 'SGR — Instrucción de Abono a Cuenta', paginaLegado: 'IACAutomatica4.aspx' } },
-    { path: 'sgr-iac/:id',                    component: SgrIacDetalleComponent,            canActivate: [authGuard, paginaGuard], data: { breadcrumb: 'SGR — IAC · Detalle', paginaLegado: 'IACAutomatica4.aspx' } },
+    // (authGuard) y permiso de pantalla (paginaGuard → permiso `RECURSO:ACCION`).
+    // TODO(backend): confirmar el código de permiso real de estas pantallas; el
+    // usuario ADMINISTRADOR de prueba no las incluye en `permisos[]`, así que
+    // estos códigos siguen la convención observada pero están sin verificar.
+    { path: 'sgr-carga-insumos',              component: SgrCargaInsumosComponent,          canActivate: [authGuard, paginaGuard], data: { breadcrumb: 'SGR — Carga de Insumos', permiso: 'SGR_CARGA_INSUMOS:VER' } },
+    { path: 'sgr-ejecucion-distribucion',     component: SgrEjecucionDistribucionComponent, canActivate: [authGuard, paginaGuard], data: { breadcrumb: 'SGR — Ejecución de la Distribución', permiso: 'SGR_EJECUCION_DISTRIBUCION:VER' } },
+    { path: 'sgr-parametros-distribucion',    component: SgrParametrosDistribucionComponent, canActivate: [authGuard, paginaGuard], data: { breadcrumb: 'SGR — Parámetros de la Distribución', permiso: 'SGR_PARAMETROS_DISTRIBUCION:VER' } },
+    // IAC transaccional.
+    { path: 'sgr-iac',                        component: SgrIacComponent,                   canActivate: [authGuard, paginaGuard], data: { breadcrumb: 'SGR — Instrucción de Abono a Cuenta', permiso: 'SGR_IAC:VER' } },
+    { path: 'sgr-iac/:id',                    component: SgrIacDetalleComponent,            canActivate: [authGuard, paginaGuard], data: { breadcrumb: 'SGR — IAC · Detalle', permiso: 'SGR_IAC:VER' } },
     { path: 'sgr-recaudo-directas',           component: SgrRecaudoDirectasComponent,                      data: { breadcrumb: 'SGR — Recaudo Directas' } },
     { path: 'sgr-montos-corrientes-constantes', component: SgrMontosCorrientesConstantesComponent,         data: { breadcrumb: 'SGR — Montos Corrientes y Constantes' } },
     { path: 'sgr-plan-recursos',              component: SgrPlanBienalRecursosComponent,                   data: { breadcrumb: 'SGR — Plan de Recursos' } },
@@ -87,9 +88,10 @@ export const routes: Routes = [
     { path: 'acceso-limitado',                component: AccesoLimitadoComponent },
     { path: 'acceso-no-autorizado',           component: AccesoNoAutorizadoComponent },
     // Administración — exige sesión (authGuard) y permiso de pantalla (paginaGuard).
-    // 'paginaLegado' es el identificador que consulta Consulta_AccesoPaginas;
-    // para restringir otra pantalla basta con replicar canActivate + paginaLegado.
-    { path: 'admin-config',                   component: AdminConfigComponent,    canActivate: [authGuard, paginaGuard], data: { breadcrumb: 'Administración', paginaLegado: 'AdminConfig.aspx' } },
+    // 'permiso' es el código `RECURSO:ACCION` que el login de apiws devuelve en
+    // `permisos[]`; para restringir otra pantalla basta con replicar
+    // canActivate + data.permiso con el código correspondiente.
+    { path: 'admin-config',                   component: AdminConfigComponent,    canActivate: [authGuard, paginaGuard], data: { breadcrumb: 'Administración', permiso: 'ADMIN_CONFIGURACION:VER' } },
     // 404
     { path: '**', component: NotFoundComponent, data: { breadcrumb: 'Página no encontrada' } },
 ];
